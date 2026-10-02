@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Sep 29, 2026 at 08:16 AM
+-- Generation Time: Oct 02, 2026 at 06:41 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -80,7 +80,9 @@ CREATE TABLE `game_player_stats` (
   `deaths` int DEFAULT '0',
   `assists` int DEFAULT '0',
   `gold_earned` int DEFAULT '0',
-  `damage_to_heroes` int DEFAULT '0'
+  `damage_to_heroes` int DEFAULT '0',
+  `turret_damage` int DEFAULT '0',
+  `teamfight_percentage` decimal(5,2) DEFAULT '0.00'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -421,7 +423,7 @@ ALTER TABLE `team_rosters`
 -- AUTO_INCREMENT for table `games`
 --
 ALTER TABLE `games`
-  MODIFY `game_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `game_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `game_drafts`
@@ -439,7 +441,7 @@ ALTER TABLE `game_item_builds`
 -- AUTO_INCREMENT for table `game_player_stats`
 --
 ALTER TABLE `game_player_stats`
-  MODIFY `stat_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `stat_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `game_timelines`
@@ -451,7 +453,7 @@ ALTER TABLE `game_timelines`
 -- AUTO_INCREMENT for table `heroes`
 --
 ALTER TABLE `heroes`
-  MODIFY `hero_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `hero_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=103;
 
 --
 -- AUTO_INCREMENT for table `hero_attributes`
@@ -475,13 +477,13 @@ ALTER TABLE `master_items`
 -- AUTO_INCREMENT for table `matches`
 --
 ALTER TABLE `matches`
-  MODIFY `match_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `match_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=502;
 
 --
 -- AUTO_INCREMENT for table `players`
 --
 ALTER TABLE `players`
-  MODIFY `player_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `player_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `player_transfers`
@@ -511,19 +513,19 @@ ALTER TABLE `scraping_logs`
 -- AUTO_INCREMENT for table `seasons`
 --
 ALTER TABLE `seasons`
-  MODIFY `season_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `season_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `teams`
 --
 ALTER TABLE `teams`
-  MODIFY `team_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `team_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `team_rosters`
 --
 ALTER TABLE `team_rosters`
-  MODIFY `roster_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `roster_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables
