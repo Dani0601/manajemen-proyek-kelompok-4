@@ -121,7 +121,14 @@ function loadController(string $controllerFile, string $controllerClass): object
     return new $controllerClass();
 }
 
+if ($uri === 'api/dashboard') {
+    $controller = loadController(
+        'DashboardController.php',
+        'DashboardController'
+    );
 
+    $controller->index();
+}
 /*
 |--------------------------------------------------------------------------
 | META
@@ -205,7 +212,122 @@ if ($uri === 'api/heroes') {
     $controller->index();
 }
 
+if (
+    $method === 'GET' &&
+    $uri === 'api/heroes'
+) {
+    $controller = loadController(
+        'HeroController.php',
+        'HeroController'
+    );
 
+    $controller->index();
+}
+
+if (
+    $method === 'GET' &&
+    preg_match(
+        '#^api/heroes/([0-9]+)/stats$#',
+        $uri,
+        $matches
+    )
+) {
+    $heroId = validatePositiveInteger(
+        $matches[1],
+        'hero_id'
+    );
+
+    $controller = loadController(
+        'HeroController.php',
+        'HeroController'
+    );
+
+    $controller->stats($heroId);
+}
+
+if (
+    $method === 'GET' &&
+    preg_match(
+        '#^api/heroes/([0-9]+)/builds$#',
+        $uri,
+        $matches
+    )
+) {
+    $heroId = validatePositiveInteger(
+        $matches[1],
+        'hero_id'
+    );
+
+    $controller = loadController(
+        'HeroController.php',
+        'HeroController'
+    );
+
+    $controller->builds($heroId);
+}
+
+if (
+    $method === 'GET' &&
+    preg_match(
+        '#^api/heroes/([0-9]+)/counters$#',
+        $uri,
+        $matches
+    )
+) {
+    $heroId = validatePositiveInteger(
+        $matches[1],
+        'hero_id'
+    );
+
+    $controller = loadController(
+        'HeroController.php',
+        'HeroController'
+    );
+
+    $controller->counters($heroId);
+}
+
+if (
+    $method === 'GET' &&
+    preg_match(
+        '#^api/heroes/([0-9]+)/skills$#',
+        $uri,
+        $matches
+    )
+) {
+    $heroId = validatePositiveInteger(
+        $matches[1],
+        'hero_id'
+    );
+
+    $controller = loadController(
+        'HeroController.php',
+        'HeroController'
+    );
+
+    $controller->skills($heroId);
+}
+
+if (
+    $method === 'GET' &&
+    preg_match(
+        '#^api/heroes/([0-9]+)$#',
+        $uri,
+        $matches
+    )
+) {
+    $heroId = validatePositiveInteger(
+        $matches[1],
+        'hero_id'
+    );
+
+    $controller = loadController(
+        'HeroController.php',
+        'HeroController'
+    );
+
+    $controller->show($heroId);
+}
 /*
 | GET /api/heroes/{id}
 | GET /api/heroes/{id}/stats
