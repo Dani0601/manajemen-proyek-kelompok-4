@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Oct 07, 2026 at 01:17 AM
+-- Generation Time: Oct 07, 2026 at 01:34 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -18368,23 +18368,6 @@ INSERT INTO `hero_details` (`hero_detail_id`, `source_hero_id`, `hero_id`, `hero
 -- --------------------------------------------------------
 
 --
--- Table structure for table `hero_official_ratings`
---
-
-CREATE TABLE `hero_official_ratings` (
-  `hero_rating_id` bigint UNSIGNED NOT NULL,
-  `hero_id` int UNSIGNED NOT NULL,
-  `offense` tinyint UNSIGNED DEFAULT NULL,
-  `durability` tinyint UNSIGNED DEFAULT NULL,
-  `control_effects` tinyint UNSIGNED DEFAULT NULL,
-  `difficulty` tinyint UNSIGNED DEFAULT NULL,
-  `source` varchar(255) DEFAULT NULL,
-  `scraped_at` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `hero_season_stats`
 --
 
@@ -20375,13 +20358,6 @@ ALTER TABLE `hero_details`
   ADD KEY `idx_hero_details_ban_rate` (`ban_rate`);
 
 --
--- Indexes for table `hero_official_ratings`
---
-ALTER TABLE `hero_official_ratings`
-  ADD PRIMARY KEY (`hero_rating_id`),
-  ADD UNIQUE KEY `uq_hero_official_ratings_hero` (`hero_id`);
-
---
 -- Indexes for table `hero_season_stats`
 --
 ALTER TABLE `hero_season_stats`
@@ -20535,12 +20511,6 @@ ALTER TABLE `hero_details`
   MODIFY `hero_detail_id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=134;
 
 --
--- AUTO_INCREMENT for table `hero_official_ratings`
---
-ALTER TABLE `hero_official_ratings`
-  MODIFY `hero_rating_id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `hero_season_stats`
 --
 ALTER TABLE `hero_season_stats`
@@ -20686,12 +20656,6 @@ ALTER TABLE `hero_counters`
 --
 ALTER TABLE `hero_details`
   ADD CONSTRAINT `fk_hero_details_hero` FOREIGN KEY (`hero_id`) REFERENCES `heroes` (`hero_id`) ON DELETE SET NULL ON UPDATE CASCADE;
-
---
--- Constraints for table `hero_official_ratings`
---
-ALTER TABLE `hero_official_ratings`
-  ADD CONSTRAINT `fk_hor_hero` FOREIGN KEY (`hero_id`) REFERENCES `heroes` (`hero_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `hero_season_stats`
