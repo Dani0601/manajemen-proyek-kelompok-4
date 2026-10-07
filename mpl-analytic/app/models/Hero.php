@@ -1,14 +1,14 @@
 <?php
 class Hero {
-    private $db;
-    public function __construct($dbConnection) {
+    private PDO $db;
+    public function __construct(PDO $dbConnection) {
         $this->db = $dbConnection;
     }
 
     /**
      * 1. Mengambil Informasi Dasar Hero
      */
-    public function getBaseInfo($heroId) {
+    public function getBaseInfo(PDO $heroId) {
         $sql = "SELECT hero_id, hero_name, primary_role FROM heroes WHERE hero_id = :hero_id";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([':hero_id' => $heroId]);
@@ -18,7 +18,7 @@ class Hero {
     /**
      * 2. Menghitung Pick Rate dan Win Rate spesifik untuk satu hero
      */
-    public function getStats($heroId, $seasonId) {
+    public function getStats(PDO $heroId, PDO $seasonId) {
         $sql = "SELECT 
                     (SELECT COUNT(*) FROM games g JOIN matches m ON g.match_id = m.match_id WHERE m.season_id = :s1) AS total_games,
                     (SELECT COUNT(*) FROM game_player_stats gps JOIN games g ON gps.game_id = g.game_id JOIN matches m ON g.match_id = m.match_id WHERE gps.hero_id = :h1 AND m.season_id = :s2) AS total_picked,
@@ -46,7 +46,7 @@ class Hero {
     /**
      * 3. Mengambil Rekomendasi 6 Slot Pro Build Item
      */
-    public function getProBuild($heroId) {
+    public function getProBuild(PDO $heroId) {
         $sql = "SELECT 
                     rb.build_name, 
                     rb.description,
@@ -69,7 +69,7 @@ class Hero {
     /**
      * 4. Mengambil Aturan Situasional (Counter Item)
      */
-    public function getSituationalRules($heroId) {
+    public function getSituationalRules(PDO $heroId) {
         $sql = "SELECT 
                     isr.rule_id, 
                     isr.target_attribute, 

@@ -3,9 +3,9 @@
 require_once __DIR__ . '/../models/Tournament.php';
 
 class TournamentService {
-    private $tournamentModel;
+    private Tournament $tournamentModel;
 
-    public function __construct($db) {
+    public function __construct(PDO $db) {
         $this->tournamentModel = new Tournament($db);
     }
 

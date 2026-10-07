@@ -2,6 +2,21 @@
 
 declare(strict_types=1);
 
+// routes/api.php
+$uri = $uri ?? '';
+
+if ($uri === 'api/players/compare') {
+    require_once __DIR__ . '/../app/controllers/PlayerController.php';
+    
+    $controller = new PlayerController($db); 
+    $controller->compare();
+    exit;
+}
+
+jsonResponse(null, "Endpoint tidak ditemukan.", 404, ["code" => "ENDPOINT_NOT_FOUND"]);
+
+// declare(strict_types=1);
+
 /*
 |--------------------------------------------------------------------------
 | Helpers
@@ -251,6 +266,7 @@ if (
         $segments[3] === 'stats'
     ) {
         $controller->stats($heroId);
+        exit;
     }
 
 
@@ -277,6 +293,21 @@ if (
         }
 
         $controller->games($heroId);
+        exit;
+    }
+
+
+    /*
+    | GET /api/heroes/{id}/builds
+    */
+
+    if (
+        isset($segments[3]) &&
+        $segments[3] === 'builds'
+    ) {
+        // Memanggil fungsi 'detail' atau 'build' di HeroController yang kita buat sebelumnya
+        $controller->detail($heroId);
+        exit;
     }
 
 
@@ -286,6 +317,7 @@ if (
 
     if (!isset($segments[3])) {
         $controller->show($heroId);
+        exit;
     }
 }
 
