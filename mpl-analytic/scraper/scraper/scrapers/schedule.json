@@ -1,0 +1,1187 @@
+{
+  "metadata": {
+    "league": "MPL Indonesia",
+    "season": 17,
+    "stage": "Regular Season",
+    "format": "Double Round Robin, Bo3",
+    "source": "https://id-mpl.com/en/schedule",
+    "source_type": "official_mpl_schedule",
+    "scraped_at": "2026-10-06T06:31:45.005132+00:00",
+    "total_matches": 72
+  },
+  "schedule": [
+    {
+      "schedule_id": "s17_w01_m01",
+      "season": 17,
+      "week": 1,
+      "date": "2026-08-14",
+      "time": "15:00",
+      "team1": "EVOS",
+      "team2": "RRQ Hoshi",
+      "score": {
+        "team1": 2,
+        "team2": 0
+      },
+      "winner": "EVOS",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1036"
+    },
+    {
+      "schedule_id": "s17_w01_m02",
+      "season": 17,
+      "week": 1,
+      "date": "2026-08-14",
+      "time": "18:00",
+      "team1": "Natus Vincere",
+      "team2": "Alter Ego",
+      "score": {
+        "team1": 0,
+        "team2": 2
+      },
+      "winner": "Alter Ego",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1037"
+    },
+    {
+      "schedule_id": "s17_w01_m03",
+      "season": 17,
+      "week": 1,
+      "date": "2026-08-15",
+      "time": "14:00",
+      "team1": "Team Liquid ID",
+      "team2": "Geek Fam ID",
+      "score": {
+        "team1": 2,
+        "team2": 1
+      },
+      "winner": "Team Liquid ID",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1038"
+    },
+    {
+      "schedule_id": "s17_w01_m04",
+      "season": 17,
+      "week": 1,
+      "date": "2026-08-15",
+      "time": "17:00",
+      "team1": "Dewa United Esports",
+      "team2": "RRQ Hoshi",
+      "score": {
+        "team1": 1,
+        "team2": 2
+      },
+      "winner": "RRQ Hoshi",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1039"
+    },
+    {
+      "schedule_id": "s17_w01_m05",
+      "season": 17,
+      "week": 1,
+      "date": "2026-08-15",
+      "time": "20:00",
+      "team1": "EVOS",
+      "team2": "Natus Vincere",
+      "score": {
+        "team1": 1,
+        "team2": 2
+      },
+      "winner": "Natus Vincere",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1040"
+    },
+    {
+      "schedule_id": "s17_w01_m06",
+      "season": 17,
+      "week": 1,
+      "date": "2026-08-16",
+      "time": "14:00",
+      "team1": "Team Liquid ID",
+      "team2": "Dewa United Esports",
+      "score": {
+        "team1": 2,
+        "team2": 0
+      },
+      "winner": "Team Liquid ID",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1041"
+    },
+    {
+      "schedule_id": "s17_w01_m07",
+      "season": 17,
+      "week": 1,
+      "date": "2026-08-16",
+      "time": "17:00",
+      "team1": "Bigetron by Vitality",
+      "team2": "Geek Fam ID",
+      "score": {
+        "team1": 2,
+        "team2": 1
+      },
+      "winner": "Bigetron by Vitality",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1042"
+    },
+    {
+      "schedule_id": "s17_w01_m08",
+      "season": 17,
+      "week": 1,
+      "date": "2026-08-16",
+      "time": "20:00",
+      "team1": "Alter Ego",
+      "team2": "ONIC",
+      "score": {
+        "team1": 0,
+        "team2": 2
+      },
+      "winner": "ONIC",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1043"
+    },
+    {
+      "schedule_id": "s17_w02_m09",
+      "season": 17,
+      "week": 2,
+      "date": "2026-08-21",
+      "time": "15:00",
+      "team1": "Team Liquid ID",
+      "team2": "Natus Vincere",
+      "score": {
+        "team1": 0,
+        "team2": 2
+      },
+      "winner": "Natus Vincere",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1044"
+    },
+    {
+      "schedule_id": "s17_w02_m10",
+      "season": 17,
+      "week": 2,
+      "date": "2026-08-21",
+      "time": "18:00",
+      "team1": "Bigetron by Vitality",
+      "team2": "Dewa United Esports",
+      "score": {
+        "team1": 2,
+        "team2": 0
+      },
+      "winner": "Bigetron by Vitality",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1045"
+    },
+    {
+      "schedule_id": "s17_w02_m11",
+      "season": 17,
+      "week": 2,
+      "date": "2026-08-22",
+      "time": "14:00",
+      "team1": "Team Liquid ID",
+      "team2": "EVOS",
+      "score": {
+        "team1": 2,
+        "team2": 0
+      },
+      "winner": "Team Liquid ID",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1046"
+    },
+    {
+      "schedule_id": "s17_w02_m12",
+      "season": 17,
+      "week": 2,
+      "date": "2026-08-22",
+      "time": "17:00",
+      "team1": "Natus Vincere",
+      "team2": "Geek Fam ID",
+      "score": {
+        "team1": 2,
+        "team2": 1
+      },
+      "winner": "Natus Vincere",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1047"
+    },
+    {
+      "schedule_id": "s17_w02_m13",
+      "season": 17,
+      "week": 2,
+      "date": "2026-08-22",
+      "time": "20:00",
+      "team1": "ONIC",
+      "team2": "RRQ Hoshi",
+      "score": {
+        "team1": 2,
+        "team2": 0
+      },
+      "winner": "ONIC",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1048"
+    },
+    {
+      "schedule_id": "s17_w02_m14",
+      "season": 17,
+      "week": 2,
+      "date": "2026-08-23",
+      "time": "14:00",
+      "team1": "Dewa United Esports",
+      "team2": "Alter Ego",
+      "score": {
+        "team1": 0,
+        "team2": 2
+      },
+      "winner": "Alter Ego",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1049"
+    },
+    {
+      "schedule_id": "s17_w02_m15",
+      "season": 17,
+      "week": 2,
+      "date": "2026-08-23",
+      "time": "17:00",
+      "team1": "ONIC",
+      "team2": "Bigetron by Vitality",
+      "score": {
+        "team1": 1,
+        "team2": 2
+      },
+      "winner": "Bigetron by Vitality",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1050"
+    },
+    {
+      "schedule_id": "s17_w02_m16",
+      "season": 17,
+      "week": 2,
+      "date": "2026-08-23",
+      "time": "20:00",
+      "team1": "Geek Fam ID",
+      "team2": "EVOS",
+      "score": {
+        "team1": 0,
+        "team2": 2
+      },
+      "winner": "EVOS",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1051"
+    },
+    {
+      "schedule_id": "s17_w03_m17",
+      "season": 17,
+      "week": 3,
+      "date": "2026-08-28",
+      "time": "15:00",
+      "team1": "Bigetron by Vitality",
+      "team2": "Natus Vincere",
+      "score": {
+        "team1": 2,
+        "team2": 0
+      },
+      "winner": "Bigetron by Vitality",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1052"
+    },
+    {
+      "schedule_id": "s17_w03_m18",
+      "season": 17,
+      "week": 3,
+      "date": "2026-08-28",
+      "time": "18:00",
+      "team1": "Dewa United Esports",
+      "team2": "Geek Fam ID",
+      "score": {
+        "team1": 2,
+        "team2": 0
+      },
+      "winner": "Dewa United Esports",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1053"
+    },
+    {
+      "schedule_id": "s17_w03_m19",
+      "season": 17,
+      "week": 3,
+      "date": "2026-08-29",
+      "time": "14:00",
+      "team1": "Team Liquid ID",
+      "team2": "ONIC",
+      "score": {
+        "team1": 2,
+        "team2": 1
+      },
+      "winner": "Team Liquid ID",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1054"
+    },
+    {
+      "schedule_id": "s17_w03_m20",
+      "season": 17,
+      "week": 3,
+      "date": "2026-08-29",
+      "time": "17:00",
+      "team1": "Alter Ego",
+      "team2": "EVOS",
+      "score": {
+        "team1": 2,
+        "team2": 0
+      },
+      "winner": "Alter Ego",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1055"
+    },
+    {
+      "schedule_id": "s17_w03_m21",
+      "season": 17,
+      "week": 3,
+      "date": "2026-08-29",
+      "time": "20:00",
+      "team1": "RRQ Hoshi",
+      "team2": "Bigetron by Vitality",
+      "score": {
+        "team1": 1,
+        "team2": 2
+      },
+      "winner": "Bigetron by Vitality",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1056"
+    },
+    {
+      "schedule_id": "s17_w03_m22",
+      "season": 17,
+      "week": 3,
+      "date": "2026-08-30",
+      "time": "14:00",
+      "team1": "Natus Vincere",
+      "team2": "ONIC",
+      "score": {
+        "team1": 2,
+        "team2": 0
+      },
+      "winner": "Natus Vincere",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1057"
+    },
+    {
+      "schedule_id": "s17_w03_m23",
+      "season": 17,
+      "week": 3,
+      "date": "2026-08-30",
+      "time": "17:00",
+      "team1": "Geek Fam ID",
+      "team2": "RRQ Hoshi",
+      "score": {
+        "team1": 0,
+        "team2": 2
+      },
+      "winner": "RRQ Hoshi",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1058"
+    },
+    {
+      "schedule_id": "s17_w03_m24",
+      "season": 17,
+      "week": 3,
+      "date": "2026-08-30",
+      "time": "20:00",
+      "team1": "Team Liquid ID",
+      "team2": "Alter Ego",
+      "score": {
+        "team1": 2,
+        "team2": 1
+      },
+      "winner": "Team Liquid ID",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1059"
+    },
+    {
+      "schedule_id": "s17_w04_m25",
+      "season": 17,
+      "week": 4,
+      "date": "2026-09-04",
+      "time": "15:00",
+      "team1": "Natus Vincere",
+      "team2": "Dewa United Esports",
+      "score": {
+        "team1": 2,
+        "team2": 0
+      },
+      "winner": "Natus Vincere",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1060"
+    },
+    {
+      "schedule_id": "s17_w04_m26",
+      "season": 17,
+      "week": 4,
+      "date": "2026-09-04",
+      "time": "18:00",
+      "team1": "Team Liquid ID",
+      "team2": "RRQ Hoshi",
+      "score": {
+        "team1": 2,
+        "team2": 0
+      },
+      "winner": "Team Liquid ID",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1061"
+    },
+    {
+      "schedule_id": "s17_w04_m27",
+      "season": 17,
+      "week": 4,
+      "date": "2026-09-05",
+      "time": "14:00",
+      "team1": "Dewa United Esports",
+      "team2": "ONIC",
+      "score": {
+        "team1": 2,
+        "team2": 1
+      },
+      "winner": "Dewa United Esports",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1062"
+    },
+    {
+      "schedule_id": "s17_w04_m28",
+      "season": 17,
+      "week": 4,
+      "date": "2026-09-05",
+      "time": "17:00",
+      "team1": "EVOS",
+      "team2": "Bigetron by Vitality",
+      "score": {
+        "team1": 2,
+        "team2": 1
+      },
+      "winner": "EVOS",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1063"
+    },
+    {
+      "schedule_id": "s17_w04_m29",
+      "season": 17,
+      "week": 4,
+      "date": "2026-09-05",
+      "time": "20:00",
+      "team1": "Alter Ego",
+      "team2": "Geek Fam ID",
+      "score": {
+        "team1": 2,
+        "team2": 0
+      },
+      "winner": "Alter Ego",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1064"
+    },
+    {
+      "schedule_id": "s17_w04_m30",
+      "season": 17,
+      "week": 4,
+      "date": "2026-09-06",
+      "time": "14:00",
+      "team1": "RRQ Hoshi",
+      "team2": "Natus Vincere",
+      "score": {
+        "team1": 0,
+        "team2": 2
+      },
+      "winner": "Natus Vincere",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1065"
+    },
+    {
+      "schedule_id": "s17_w04_m31",
+      "season": 17,
+      "week": 4,
+      "date": "2026-09-06",
+      "time": "17:00",
+      "team1": "ONIC",
+      "team2": "EVOS",
+      "score": {
+        "team1": 2,
+        "team2": 0
+      },
+      "winner": "ONIC",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1066"
+    },
+    {
+      "schedule_id": "s17_w04_m32",
+      "season": 17,
+      "week": 4,
+      "date": "2026-09-06",
+      "time": "20:00",
+      "team1": "Bigetron by Vitality",
+      "team2": "Alter Ego",
+      "score": {
+        "team1": 0,
+        "team2": 2
+      },
+      "winner": "Alter Ego",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1067"
+    },
+    {
+      "schedule_id": "s17_w05_m33",
+      "season": 17,
+      "week": 5,
+      "date": "2026-09-11",
+      "time": "18:00",
+      "team1": "Geek Fam ID",
+      "team2": "ONIC",
+      "score": {
+        "team1": 2,
+        "team2": 1
+      },
+      "winner": "Geek Fam ID",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1069"
+    },
+    {
+      "schedule_id": "s17_w05_m34",
+      "season": 17,
+      "week": 5,
+      "date": "2026-09-12",
+      "time": "14:00",
+      "team1": "Team Liquid ID",
+      "team2": "Bigetron by Vitality",
+      "score": {
+        "team1": 2,
+        "team2": 0
+      },
+      "winner": "Team Liquid ID",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1070"
+    },
+    {
+      "schedule_id": "s17_w05_m35",
+      "season": 17,
+      "week": 5,
+      "date": "2026-09-12",
+      "time": "17:00",
+      "team1": "Alter Ego",
+      "team2": "RRQ Hoshi",
+      "score": {
+        "team1": 2,
+        "team2": 0
+      },
+      "winner": "Alter Ego",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1071"
+    },
+    {
+      "schedule_id": "s17_w05_m36",
+      "season": 17,
+      "week": 5,
+      "date": "2026-09-12",
+      "time": "20:00",
+      "team1": "Natus Vincere",
+      "team2": "EVOS",
+      "score": {
+        "team1": 2,
+        "team2": 0
+      },
+      "winner": "Natus Vincere",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1072"
+    },
+    {
+      "schedule_id": "s17_w05_m37",
+      "season": 17,
+      "week": 5,
+      "date": "2026-09-13",
+      "time": "14:00",
+      "team1": "Geek Fam ID",
+      "team2": "Team Liquid ID",
+      "score": {
+        "team1": 0,
+        "team2": 2
+      },
+      "winner": "Team Liquid ID",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1073"
+    },
+    {
+      "schedule_id": "s17_w05_m38",
+      "season": 17,
+      "week": 5,
+      "date": "2026-09-13",
+      "time": "17:00",
+      "team1": "ONIC",
+      "team2": "Alter Ego",
+      "score": {
+        "team1": 0,
+        "team2": 2
+      },
+      "winner": "Alter Ego",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1074"
+    },
+    {
+      "schedule_id": "s17_w06_m39",
+      "season": 17,
+      "week": 6,
+      "date": "2026-09-18",
+      "time": "14:00",
+      "team1": "ONIC",
+      "team2": "Geek Fam ID",
+      "score": {
+        "team1": 0,
+        "team2": 2
+      },
+      "winner": "Geek Fam ID",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1076"
+    },
+    {
+      "schedule_id": "s17_w06_m40",
+      "season": 17,
+      "week": 6,
+      "date": "2026-09-18",
+      "time": "17:00",
+      "team1": "Dewa United Esports",
+      "team2": "EVOS",
+      "score": {
+        "team1": 0,
+        "team2": 2
+      },
+      "winner": "EVOS",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1077"
+    },
+    {
+      "schedule_id": "s17_w06_m41",
+      "season": 17,
+      "week": 6,
+      "date": "2026-09-18",
+      "time": "20:00",
+      "team1": "RRQ Hoshi",
+      "team2": "Dewa United Esports",
+      "score": {
+        "team1": 1,
+        "team2": 2
+      },
+      "winner": "Dewa United Esports",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1075"
+    },
+    {
+      "schedule_id": "s17_w06_m42",
+      "season": 17,
+      "week": 6,
+      "date": "2026-09-19",
+      "time": "14:00",
+      "team1": "Geek Fam ID",
+      "team2": "Natus Vincere",
+      "score": {
+        "team1": 0,
+        "team2": 2
+      },
+      "winner": "Natus Vincere",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1078"
+    },
+    {
+      "schedule_id": "s17_w06_m43",
+      "season": 17,
+      "week": 6,
+      "date": "2026-09-19",
+      "time": "17:00",
+      "team1": "RRQ Hoshi",
+      "team2": "Alter Ego",
+      "score": {
+        "team1": 1,
+        "team2": 2
+      },
+      "winner": "Alter Ego",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1079"
+    },
+    {
+      "schedule_id": "s17_w06_m44",
+      "season": 17,
+      "week": 6,
+      "date": "2026-09-19",
+      "time": "20:00",
+      "team1": "Bigetron by Vitality",
+      "team2": "Team Liquid ID",
+      "score": {
+        "team1": 0,
+        "team2": 2
+      },
+      "winner": "Team Liquid ID",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1080"
+    },
+    {
+      "schedule_id": "s17_w06_m45",
+      "season": 17,
+      "week": 6,
+      "date": "2026-09-20",
+      "time": "14:00",
+      "team1": "Alter Ego",
+      "team2": "Dewa United Esports",
+      "score": {
+        "team1": 0,
+        "team2": 2
+      },
+      "winner": "Dewa United Esports",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1081"
+    },
+    {
+      "schedule_id": "s17_w06_m46",
+      "season": 17,
+      "week": 6,
+      "date": "2026-09-20",
+      "time": "17:00",
+      "team1": "Bigetron by Vitality",
+      "team2": "ONIC",
+      "score": {
+        "team1": 0,
+        "team2": 2
+      },
+      "winner": "ONIC",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1082"
+    },
+    {
+      "schedule_id": "s17_w06_m47",
+      "season": 17,
+      "week": 6,
+      "date": "2026-09-20",
+      "time": "20:00",
+      "team1": "EVOS",
+      "team2": "Team Liquid ID",
+      "score": {
+        "team1": 2,
+        "team2": 1
+      },
+      "winner": "EVOS",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1083"
+    },
+    {
+      "schedule_id": "s17_w07_m48",
+      "season": 17,
+      "week": 7,
+      "date": "2026-10-02",
+      "time": "15:00",
+      "team1": "Geek Fam ID",
+      "team2": "Bigetron by Vitality",
+      "score": {
+        "team1": 1,
+        "team2": 2
+      },
+      "winner": "Bigetron by Vitality",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1084"
+    },
+    {
+      "schedule_id": "s17_w07_m49",
+      "season": 17,
+      "week": 7,
+      "date": "2026-10-02",
+      "time": "18:00",
+      "team1": "Dewa United Esports",
+      "team2": "Team Liquid ID",
+      "score": {
+        "team1": 2,
+        "team2": 1
+      },
+      "winner": "Dewa United Esports",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1085"
+    },
+    {
+      "schedule_id": "s17_w07_m50",
+      "season": 17,
+      "week": 7,
+      "date": "2026-10-03",
+      "time": "14:00",
+      "team1": "Alter Ego",
+      "team2": "Natus Vincere",
+      "score": {
+        "team1": 1,
+        "team2": 2
+      },
+      "winner": "Natus Vincere",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1086"
+    },
+    {
+      "schedule_id": "s17_w07_m51",
+      "season": 17,
+      "week": 7,
+      "date": "2026-10-03",
+      "time": "17:00",
+      "team1": "Bigetron by Vitality",
+      "team2": "RRQ Hoshi",
+      "score": {
+        "team1": 2,
+        "team2": 1
+      },
+      "winner": "Bigetron by Vitality",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1087"
+    },
+    {
+      "schedule_id": "s17_w07_m52",
+      "season": 17,
+      "week": 7,
+      "date": "2026-10-03",
+      "time": "20:00",
+      "team1": "Geek Fam ID",
+      "team2": "Dewa United Esports",
+      "score": {
+        "team1": 2,
+        "team2": 1
+      },
+      "winner": "Geek Fam ID",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1088"
+    },
+    {
+      "schedule_id": "s17_w07_m53",
+      "season": 17,
+      "week": 7,
+      "date": "2026-10-04",
+      "time": "14:00",
+      "team1": "Alter Ego",
+      "team2": "Team Liquid ID",
+      "score": {
+        "team1": 0,
+        "team2": 2
+      },
+      "winner": "Team Liquid ID",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1089"
+    },
+    {
+      "schedule_id": "s17_w07_m54",
+      "season": 17,
+      "week": 7,
+      "date": "2026-10-04",
+      "time": "17:00",
+      "team1": "RRQ Hoshi",
+      "team2": "EVOS",
+      "score": {
+        "team1": 2,
+        "team2": 1
+      },
+      "winner": "RRQ Hoshi",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1090"
+    },
+    {
+      "schedule_id": "s17_w07_m55",
+      "season": 17,
+      "week": 7,
+      "date": "2026-10-04",
+      "time": "20:00",
+      "team1": "ONIC",
+      "team2": "Natus Vincere",
+      "score": {
+        "team1": 2,
+        "team2": 1
+      },
+      "winner": "ONIC",
+      "status": "completed",
+      "source": "official_mpl",
+      "source_match_id": "1091"
+    },
+    {
+      "schedule_id": "s17_w08_m56",
+      "season": 17,
+      "week": 8,
+      "date": "2026-10-08",
+      "time": "14:00",
+      "team1": "EVOS",
+      "team2": "Dewa United Esports",
+      "score": null,
+      "winner": null,
+      "status": "scheduled",
+      "source": "official_mpl",
+      "source_match_id": null
+    },
+    {
+      "schedule_id": "s17_w08_m57",
+      "season": 17,
+      "week": 8,
+      "date": "2026-10-08",
+      "time": "17:00",
+      "team1": "Alter Ego",
+      "team2": "Bigetron by Vitality",
+      "score": null,
+      "winner": null,
+      "status": "scheduled",
+      "source": "official_mpl",
+      "source_match_id": null
+    },
+    {
+      "schedule_id": "s17_w08_m58",
+      "season": 17,
+      "week": 8,
+      "date": "2026-10-08",
+      "time": "20:00",
+      "team1": "Natus Vincere",
+      "team2": "Team Liquid ID",
+      "score": null,
+      "winner": null,
+      "status": "scheduled",
+      "source": "official_mpl",
+      "source_match_id": null
+    },
+    {
+      "schedule_id": "s17_w08_m59",
+      "season": 17,
+      "week": 8,
+      "date": "2026-10-09",
+      "time": "14:00",
+      "team1": "EVOS",
+      "team2": "ONIC",
+      "score": null,
+      "winner": null,
+      "status": "scheduled",
+      "source": "official_mpl",
+      "source_match_id": null
+    },
+    {
+      "schedule_id": "s17_w08_m60",
+      "season": 17,
+      "week": 8,
+      "date": "2026-10-09",
+      "time": "17:00",
+      "team1": "RRQ Hoshi",
+      "team2": "Team Liquid ID",
+      "score": null,
+      "winner": null,
+      "status": "scheduled",
+      "source": "official_mpl",
+      "source_match_id": null
+    },
+    {
+      "schedule_id": "s17_w08_m61",
+      "season": 17,
+      "week": 8,
+      "date": "2026-10-09",
+      "time": "20:00",
+      "team1": "Dewa United Esports",
+      "team2": "Natus Vincere",
+      "score": null,
+      "winner": null,
+      "status": "scheduled",
+      "source": "official_mpl",
+      "source_match_id": null
+    },
+    {
+      "schedule_id": "s17_w08_m62",
+      "season": 17,
+      "week": 8,
+      "date": "2026-10-11",
+      "time": "14:00",
+      "team1": "EVOS",
+      "team2": "Geek Fam ID",
+      "score": null,
+      "winner": null,
+      "status": "scheduled",
+      "source": "official_mpl",
+      "source_match_id": null
+    },
+    {
+      "schedule_id": "s17_w08_m63",
+      "season": 17,
+      "week": 8,
+      "date": "2026-10-11",
+      "time": "17:00",
+      "team1": "RRQ Hoshi",
+      "team2": "ONIC",
+      "score": null,
+      "winner": null,
+      "status": "scheduled",
+      "source": "official_mpl",
+      "source_match_id": null
+    },
+    {
+      "schedule_id": "s17_w08_m64",
+      "season": 17,
+      "week": 8,
+      "date": "2026-10-11",
+      "time": "20:00",
+      "team1": "Dewa United Esports",
+      "team2": "Bigetron by Vitality",
+      "score": null,
+      "winner": null,
+      "status": "scheduled",
+      "source": "official_mpl",
+      "source_match_id": null
+    },
+    {
+      "schedule_id": "s17_w09_m65",
+      "season": 17,
+      "week": 9,
+      "date": "2026-10-16",
+      "time": "15:00",
+      "team1": "Natus Vincere",
+      "team2": "RRQ Hoshi",
+      "score": null,
+      "winner": null,
+      "status": "scheduled",
+      "source": "official_mpl",
+      "source_match_id": null
+    },
+    {
+      "schedule_id": "s17_w09_m66",
+      "season": 17,
+      "week": 9,
+      "date": "2026-10-16",
+      "time": "18:00",
+      "team1": "Geek Fam ID",
+      "team2": "Alter Ego",
+      "score": null,
+      "winner": null,
+      "status": "scheduled",
+      "source": "official_mpl",
+      "source_match_id": null
+    },
+    {
+      "schedule_id": "s17_w09_m67",
+      "season": 17,
+      "week": 9,
+      "date": "2026-10-17",
+      "time": "14:00",
+      "team1": "ONIC",
+      "team2": "Dewa United Esports",
+      "score": null,
+      "winner": null,
+      "status": "scheduled",
+      "source": "official_mpl",
+      "source_match_id": null
+    },
+    {
+      "schedule_id": "s17_w09_m68",
+      "season": 17,
+      "week": 9,
+      "date": "2026-10-17",
+      "time": "17:00",
+      "team1": "Bigetron by Vitality",
+      "team2": "EVOS",
+      "score": null,
+      "winner": null,
+      "status": "scheduled",
+      "source": "official_mpl",
+      "source_match_id": null
+    },
+    {
+      "schedule_id": "s17_w09_m69",
+      "season": 17,
+      "week": 9,
+      "date": "2026-10-17",
+      "time": "20:00",
+      "team1": "RRQ Hoshi",
+      "team2": "Geek Fam ID",
+      "score": null,
+      "winner": null,
+      "status": "scheduled",
+      "source": "official_mpl",
+      "source_match_id": null
+    },
+    {
+      "schedule_id": "s17_w09_m70",
+      "season": 17,
+      "week": 9,
+      "date": "2026-10-18",
+      "time": "14:00",
+      "team1": "EVOS",
+      "team2": "Alter Ego",
+      "score": null,
+      "winner": null,
+      "status": "scheduled",
+      "source": "official_mpl",
+      "source_match_id": null
+    },
+    {
+      "schedule_id": "s17_w09_m71",
+      "season": 17,
+      "week": 9,
+      "date": "2026-10-18",
+      "time": "17:00",
+      "team1": "Natus Vincere",
+      "team2": "Bigetron by Vitality",
+      "score": null,
+      "winner": null,
+      "status": "scheduled",
+      "source": "official_mpl",
+      "source_match_id": null
+    },
+    {
+      "schedule_id": "s17_w09_m72",
+      "season": 17,
+      "week": 9,
+      "date": "2026-10-18",
+      "time": "20:00",
+      "team1": "ONIC",
+      "team2": "Team Liquid ID",
+      "score": null,
+      "winner": null,
+      "status": "scheduled",
+      "source": "official_mpl",
+      "source_match_id": null
+    }
+  ]
+}

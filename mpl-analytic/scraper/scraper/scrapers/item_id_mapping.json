@@ -1,0 +1,1010 @@
+{
+  "metadata": {
+    "name": "MLBB game item source -> Rone Arena master item mapping",
+    "source_dataset": "game_items.json",
+    "master_dataset": "Rone Arena API",
+    "resolver_api": "https://arena.rone.dev/api/academy/equipment",
+    "resolver_api_field": "data.records[].data.equipid",
+    "resolver_name_field": "data.records[].data.equipname",
+    "resolver_icon_field": "data.records[].data.equipicon",
+    "matching_policy": "exact numeric ID equality: game_items.item_id == API equipid",
+    "master_items_file_used": false,
+    "source_row_count": 7920,
+    "source_item_id_count": 110,
+    "api_item_count": 184,
+    "matched_count": 110,
+    "unresolved_count": 0
+  },
+  "records": [
+    {
+      "source_item_id": 1001,
+      "master_item_id": 1001,
+      "equipid": 1001,
+      "item_name": "Dagger",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_6bdd65f8ff0949df1909b701886ccd54.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 1002,
+      "master_item_id": 1002,
+      "equipid": 1002,
+      "item_name": "Knife",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_faa3e01370ba06df5450c2e72be3ab87.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 1003,
+      "master_item_id": 1003,
+      "equipid": 1003,
+      "item_name": "Javelin",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_a78a1805dc68321d4387e249dc5f94e3.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 1004,
+      "master_item_id": 1004,
+      "equipid": 1004,
+      "item_name": "Vampire Mallet",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_fef66fcdbfd2832c0bf0826717bd63f6.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 1005,
+      "master_item_id": 1005,
+      "equipid": 1005,
+      "item_name": "Iron Hunting Bow",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_9234041b6f36b92d02a897de18b64f7f.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 1006,
+      "master_item_id": 1006,
+      "equipid": 1006,
+      "item_name": "Regular Spear",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_ffb2bec411ad9b19f965b91890b34c3c.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 1007,
+      "master_item_id": 1007,
+      "equipid": 1007,
+      "item_name": "Swift Crossbow",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_2a72cb1a9926a0bccba6a545fd5e10db.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 1008,
+      "master_item_id": 1008,
+      "equipid": 1008,
+      "item_name": "Expert Gloves",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage_92/100_f1253585310979e711b19b23b548c8ae.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 1101,
+      "master_item_id": 1101,
+      "equipid": 1101,
+      "item_name": "Mystery Codex",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_5752f6ae11fb5034dcd93c104a907cdd.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 1102,
+      "master_item_id": 1102,
+      "equipid": 1102,
+      "item_name": "Power Crystal",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_7c78baf13741907145bfcc6edef00983.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 1103,
+      "master_item_id": 1103,
+      "equipid": 1103,
+      "item_name": "Magic Necklace",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_200828350a334470aafa0fb994db6a97.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 1104,
+      "master_item_id": 1104,
+      "equipid": 1104,
+      "item_name": "Book of Sages",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_141945fe41a643a365ed31aef54e5569.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 1105,
+      "master_item_id": 1105,
+      "equipid": 1105,
+      "item_name": "Mystic Container",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_62b51831e9b6ea449980efed96b16e74.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 1201,
+      "master_item_id": 1201,
+      "equipid": 1201,
+      "item_name": "Vitality Crystal",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_5e5450eb0eed665d0c091dc4c527d6d2.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 1202,
+      "master_item_id": 1202,
+      "equipid": 1202,
+      "item_name": "Leather Jerkin",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_951ba34634a0c59c4c86114914ac44c6.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 1203,
+      "master_item_id": 1203,
+      "equipid": 1203,
+      "item_name": "Magic Resist Cloak",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_73280a235cba94ce7ab3a1eb11437c5c.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 1204,
+      "master_item_id": 1204,
+      "equipid": 1204,
+      "item_name": "Healing Necklace",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_02eb5bb4715b76ea83fadaf0ea2ed7f9.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 1205,
+      "master_item_id": 1205,
+      "equipid": 1205,
+      "item_name": "Hero's Ring",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_b22e32d735916c255243c1bd67d0bd25.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 1301,
+      "master_item_id": 1301,
+      "equipid": 1301,
+      "item_name": "Boots",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_6f6fff2d249bb97e6654db5deab3821b.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2001,
+      "master_item_id": 2001,
+      "equipid": 2001,
+      "item_name": "Legion Sword",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_2b948809f6012448a5d1a0bcbb8830b3.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2002,
+      "master_item_id": 2002,
+      "equipid": 2002,
+      "item_name": "Ogre Tomahawk",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_8037da38d004a630d777769b6da6fe42.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2003,
+      "master_item_id": 2003,
+      "equipid": 2003,
+      "item_name": "Rogue Meteor",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_fc61c70139d72ca02c5340b5d7208270.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2004,
+      "master_item_id": 2004,
+      "equipid": 2004,
+      "item_name": "Fury hammer",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_03c3965f5cf72a0a80ca82e07319e609.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2005,
+      "master_item_id": 2005,
+      "equipid": 2005,
+      "item_name": "Magic Blade",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_d100e1f697a743ab67303535f4128a8c.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2006,
+      "master_item_id": 2006,
+      "equipid": 2006,
+      "item_name": "Demon Hunter Sword",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_4f63658b2ae982d7684b74fca8163014.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2008,
+      "master_item_id": 2008,
+      "equipid": 2008,
+      "item_name": "Corrosion Scythe",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_486be2a89fc7fba69cd82c71d80395af.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2009,
+      "master_item_id": 2009,
+      "equipid": 2009,
+      "item_name": "Golden Staff",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_98d1154b4f017c7b68a4071e3c5e9364.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2011,
+      "master_item_id": 2011,
+      "equipid": 2011,
+      "item_name": "Wind of Nature",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_ae8965c4fc07454431c6b1f129c7d1ae.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2013,
+      "master_item_id": 2013,
+      "equipid": 2013,
+      "item_name": "War Axe",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage_2_1_60_2/100_fa1f5745cf88227722a9ff22c95c0bc4.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2014,
+      "master_item_id": 2014,
+      "equipid": 2014,
+      "item_name": "Sky Piercer",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage_92/100_a80160d168038deb13d7d93ec41c8401.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2101,
+      "master_item_id": 2101,
+      "equipid": 2101,
+      "item_name": "Magic Wand",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_3e8291fc89dbe707affe1cbe1c53e950.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2102,
+      "master_item_id": 2102,
+      "equipid": 2102,
+      "item_name": "Tome of Evil",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_146c5a3ca5d24026fddb35702345315a.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2103,
+      "master_item_id": 2103,
+      "equipid": 2103,
+      "item_name": "Azure Blade",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_87ddbdea5307ba208cbc192a6c925bde.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2104,
+      "master_item_id": 2104,
+      "equipid": 2104,
+      "item_name": "Exotic Veil",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_64628528b63be9c6e24fbb5b6fcb1410.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2105,
+      "master_item_id": 2105,
+      "equipid": 2105,
+      "item_name": "Elegant Gem",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage_92/100_a1e265a2277ddb21eff3c5ec7a78873d.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2106,
+      "master_item_id": 2106,
+      "equipid": 2106,
+      "item_name": "Enchanted Talisman",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_6f55284f79c40b01eec5b151ff791094.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2107,
+      "master_item_id": 2107,
+      "equipid": 2107,
+      "item_name": "Winter Crown",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_6b2cad377dc9b185f6e4e79f14bcaed9.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2108,
+      "master_item_id": 2108,
+      "equipid": 2108,
+      "item_name": "Feather of Heaven",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_e3c784601c1f2addd276194bf0b27ebe.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2112,
+      "master_item_id": 2112,
+      "equipid": 2112,
+      "item_name": "Wishing Lantern",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage_92/100_6fda020574d0e7ad461b12c88d2730e5.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2201,
+      "master_item_id": 2201,
+      "equipid": 2201,
+      "item_name": "Ares Belt",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_a9143e82dd8f9a7509ecff36db789379.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2202,
+      "master_item_id": 2202,
+      "equipid": 2202,
+      "item_name": "Molten Essence",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_39d34b9a4a08c462415e346488ffd87b.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2203,
+      "master_item_id": 2203,
+      "equipid": 2203,
+      "item_name": "Silence Robe",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_638f2b7847e969ec6b8be78b4748b402.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2204,
+      "master_item_id": 2204,
+      "equipid": 2204,
+      "item_name": "Black Ice Shield",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_9d6d68ecfcd706b697be76b501e06325.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2205,
+      "master_item_id": 2205,
+      "equipid": 2205,
+      "item_name": "Dreadnaught Armor",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_b5f11fa4a5eaeebe3d0f1c3ec1340847.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2206,
+      "master_item_id": 2206,
+      "equipid": 2206,
+      "item_name": "Steel Legplates",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_34a3cd6c5e2927a0ee8357487bf57a58.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2207,
+      "master_item_id": 2207,
+      "equipid": 2207,
+      "item_name": "Blade Armor",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_29d321d8fe1089a93f0e3f3c5a838ebd.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2208,
+      "master_item_id": 2208,
+      "equipid": 2208,
+      "item_name": "Queen's Wings",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_f6bab0819a3203e65eb28da7ef1c4478.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2212,
+      "master_item_id": 2212,
+      "equipid": 2212,
+      "item_name": "Thunder Belt",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_efae63dc9b3da2bb48dbea60de7c79bc.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2301,
+      "master_item_id": 2301,
+      "equipid": 2301,
+      "item_name": "Warrior Boots",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_1b75a49ef76b0d85c774041463892a29.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2302,
+      "master_item_id": 2302,
+      "equipid": 2302,
+      "item_name": "Tough Boots",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_e7045efd7cf5bcb488594a7eac3ab4e2.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2303,
+      "master_item_id": 2303,
+      "equipid": 2303,
+      "item_name": "Magic Boots",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_80a7900e7afd6a7f63384c781b043d33.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2304,
+      "master_item_id": 2304,
+      "equipid": 2304,
+      "item_name": "Arcane Boots",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_1a0d5709c23c25849cca889cb1303ecb.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2306,
+      "master_item_id": 2306,
+      "equipid": 2306,
+      "item_name": "Rapid Boots",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_d68aaf3f8586be360a0b4058d15d2775.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 2308,
+      "master_item_id": 2308,
+      "equipid": 2308,
+      "item_name": "Demon Boots",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_825a1ccf8f7568572ae2ac62c4d48173.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3001,
+      "master_item_id": 3001,
+      "equipid": 3001,
+      "item_name": "Malefic Roar",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_282edd3dffb41e1b95b08592707ba88f.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3002,
+      "master_item_id": 3002,
+      "equipid": 3002,
+      "item_name": "Haas' Claws",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_139190ae1087ea51233fdbefb1bbbf5b.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3003,
+      "master_item_id": 3003,
+      "equipid": 3003,
+      "item_name": "Berserker's Fury",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_020f531307fa505083b791e6f3093eb4.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3004,
+      "master_item_id": 3004,
+      "equipid": 3004,
+      "item_name": "Endless Battle",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_94d8c6e27b6f01274bec5156474f4d2c.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3005,
+      "master_item_id": 3005,
+      "equipid": 3005,
+      "item_name": "Windtalker",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_9c06b97bb75d8a81e28a87df1ab92193.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3007,
+      "master_item_id": 3007,
+      "equipid": 3007,
+      "item_name": "Blade of the Heptaseas",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_b79e4ea658ca0ff70c98c3d82e582348.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3008,
+      "master_item_id": 3008,
+      "equipid": 3008,
+      "item_name": "Blade of Despair",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_f9fa31f80ff0aa02216bc85efe81ea1f.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3009,
+      "master_item_id": 3009,
+      "equipid": 3009,
+      "item_name": "Hunter Strike",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_f523b2a5fb397bd5f37475b5f0b4fbd1.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3012,
+      "master_item_id": 3012,
+      "equipid": 3012,
+      "item_name": "Rose Gold Meteor",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_da94005b9d67024c8f189889ba6368cb.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3013,
+      "master_item_id": 3013,
+      "equipid": 3013,
+      "item_name": "Sea Halberd",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_d78fb27df8def66bd1460e851bfbf7a9.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3014,
+      "master_item_id": 3014,
+      "equipid": 3014,
+      "item_name": "Great Dragon Spear",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_f6453844f4f326287d4ec7920d2f1044.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3015,
+      "master_item_id": 3015,
+      "equipid": 3015,
+      "item_name": "Malefic Gun",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage_92/100_05092a6a401a83fd4c6dea577ffd6ed4.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3101,
+      "master_item_id": 3101,
+      "equipid": 3101,
+      "item_name": "Divine Glaive",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_ef0ab8d629f06ebd67cf2b65e144f803.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3102,
+      "master_item_id": 3102,
+      "equipid": 3102,
+      "item_name": "Holy Crystal",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_25c17fb08406548b8476673ce7fc3078.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3103,
+      "master_item_id": 3103,
+      "equipid": 3103,
+      "item_name": "Concentrated Energy",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_0bf7aa2a2ab3f03a2f8ac3b9f37dd2d1.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3104,
+      "master_item_id": 3104,
+      "equipid": 3104,
+      "item_name": "Ice Queen Wand",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_d1a51e6386475e91d2cb913020d24ab9.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3105,
+      "master_item_id": 3105,
+      "equipid": 3105,
+      "item_name": "Glowing Wand",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage_92/100_df12c0f80844640a7b40cf64798be915.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3106,
+      "master_item_id": 3106,
+      "equipid": 3106,
+      "item_name": "Starlium Scythe",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_d63b065df23070a6b69328482efc6efa.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3108,
+      "master_item_id": 3108,
+      "equipid": 3108,
+      "item_name": "Blood Wings",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_8635fde5353c9c68778e2aa59b931844.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3109,
+      "master_item_id": 3109,
+      "equipid": 3109,
+      "item_name": "Fleeting Time",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage_2_1_60_2/100_1bc2929321c6797f3fd039342cbcbd28.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3110,
+      "master_item_id": 3110,
+      "equipid": 3110,
+      "item_name": "Lightning Truncheon",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_ff18dc8e5abef3934886191fe6c161a0.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3111,
+      "master_item_id": 3111,
+      "equipid": 3111,
+      "item_name": "Genius Wand",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_5f615aa7cb949d4e43d24561b12ff0e1.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3112,
+      "master_item_id": 3112,
+      "equipid": 3112,
+      "item_name": "Flask of the Oasis",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_bd4250e426ca1cf5e7f8a7b0861ad4b1.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3113,
+      "master_item_id": 3113,
+      "equipid": 3113,
+      "item_name": "Clock of Destiny",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_623986dee375d8a04101d626c02f6d36.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3201,
+      "master_item_id": 3201,
+      "equipid": 3201,
+      "item_name": "Cursed Helmet",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_f10a5ab8cc0a4df1b9fddcc7566dad0e.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3202,
+      "master_item_id": 3202,
+      "equipid": 3202,
+      "item_name": "Guardian Helmet",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_fc3154808d5848c4b3d28ea921ee58b9.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3203,
+      "master_item_id": 3203,
+      "equipid": 3203,
+      "item_name": "Antique Cuirass",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_f20c5fef57268ccb59a1b818c0b0c769.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3204,
+      "master_item_id": 3204,
+      "equipid": 3204,
+      "item_name": "Oracle",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_bc24b55abbbec6da408eb0ea5c37cad4.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3205,
+      "master_item_id": 3205,
+      "equipid": 3205,
+      "item_name": "Athena's Shield",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_d9bb48a8df64ae5065d370adca6a5153.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3206,
+      "master_item_id": 3206,
+      "equipid": 3206,
+      "item_name": "Dominance Ice",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_1b1672399a7836284effcc60aaddd7de.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3207,
+      "master_item_id": 3207,
+      "equipid": 3207,
+      "item_name": "Immortality",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_cc8a7730e6d539ac10d2e0ed91bf2785.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3208,
+      "master_item_id": 3208,
+      "equipid": 3208,
+      "item_name": "Brute Force Breastplate",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_b830fbf0e825c3c46010bf5fbf814767.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3210,
+      "master_item_id": 3210,
+      "equipid": 3210,
+      "item_name": "Radiant Armor",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_2235566ea07c98eeece80a2cb56c296f.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3212,
+      "master_item_id": 3212,
+      "equipid": 3212,
+      "item_name": "Chastise Pauldron",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage_2_1_18_2/100_b8ee29e065b82634a0453f1178b3c06f.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3411,
+      "master_item_id": 3411,
+      "equipid": 3411,
+      "item_name": "Ice Hunter's Warrior Boots",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_23a296990c03e5d00ddea71eac0488b1.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3412,
+      "master_item_id": 3412,
+      "equipid": 3412,
+      "item_name": "Flame Hunter's Warrior Boots",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_e060a104d7706d1cce24ff97f65f5935.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3421,
+      "master_item_id": 3421,
+      "equipid": 3421,
+      "item_name": "Ice Hunter's Tough Boots",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_a8d1d86a8d37e872f66334a4c373621c.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3422,
+      "master_item_id": 3422,
+      "equipid": 3422,
+      "item_name": "Flame Hunter's Tough Boots",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_8db29d866ea977468d370d3ac1f3311f.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3431,
+      "master_item_id": 3431,
+      "equipid": 3431,
+      "item_name": "Ice Hunter's Magic Boots",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_1e4895deedd40daecf2b7dcd39a8311c.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3432,
+      "master_item_id": 3432,
+      "equipid": 3432,
+      "item_name": "Flame Hunter's Magic Boots",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_76f59ac114d53329f4bfd3861e4f6acd.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3433,
+      "master_item_id": 3433,
+      "equipid": 3433,
+      "item_name": "Behemoth Hunter's Magic Boots",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_d926c964f405492714ccda797fadd60d.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3442,
+      "master_item_id": 3442,
+      "equipid": 3442,
+      "item_name": "Flame Hunter's Arcane Boots",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_0c5dc3bc594c58e4a2ae6f51dfee8f5f.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3513,
+      "master_item_id": 3513,
+      "equipid": 3513,
+      "item_name": "Warrior Boots - Favor",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_a5984d139eb8679bbc22779e7e3b1ca5.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3521,
+      "master_item_id": 3521,
+      "equipid": 3521,
+      "item_name": "Tough Boots - Conceal",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_21dfb9b1648a554db7b55a5ec2e5d02f.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3522,
+      "master_item_id": 3522,
+      "equipid": 3522,
+      "item_name": "Tough Boots - Encourage",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_570fc1bf3d3e97c6ecc0e65859cfe715.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3523,
+      "master_item_id": 3523,
+      "equipid": 3523,
+      "item_name": "Tough Boots - Favor",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_12cd58877c425abbd4bbcc5003c6d032.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3524,
+      "master_item_id": 3524,
+      "equipid": 3524,
+      "item_name": "Tough Boots - Dire Hit",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_6e5971b429e55f59cf100d8920cd7c32.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3531,
+      "master_item_id": 3531,
+      "equipid": 3531,
+      "item_name": "Magic Boots - Conceal",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_9d5e1914d8656bd7aef2decd45fd4024.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3533,
+      "master_item_id": 3533,
+      "equipid": 3533,
+      "item_name": "Magic Boots - Favor",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_31b38e4c781032ae2d2b1debf6ce2170.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3543,
+      "master_item_id": 3543,
+      "equipid": 3543,
+      "item_name": "Arcane Boots - Favor",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_acbb2af65175fee5bd976cc33fc9b66d.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3544,
+      "master_item_id": 3544,
+      "equipid": 3544,
+      "item_name": "Arcane Boots - Dire Hit",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_f3f0e21fd8ac1f377bfe97feccbed1e4.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3561,
+      "master_item_id": 3561,
+      "equipid": 3561,
+      "item_name": "Rapid Boots- Conceal",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_2c2d96ba0d12f7ecd4704917e92059bb.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3562,
+      "master_item_id": 3562,
+      "equipid": 3562,
+      "item_name": "Rapid Boots - Encourage",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_c5f2489ac5899556052ac0e963eff1cc.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3563,
+      "master_item_id": 3563,
+      "equipid": 3563,
+      "item_name": "Rapid Boots - Favor",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_25b201d7616ad25bd6a5a8eb07c848cf.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3564,
+      "master_item_id": 3564,
+      "equipid": 3564,
+      "item_name": "Rapid Boots - Dire Hit",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_08d07b5406ea87e966acda136ddd9d15.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    },
+    {
+      "source_item_id": 3573,
+      "master_item_id": 3573,
+      "equipid": 3573,
+      "item_name": "Demon Boots - Favor",
+      "item_icon": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_ca2a5c2be6010eb0ecff954a27bf05db.png",
+      "status": "matched",
+      "mapping_method": "game_item_id_equals_api_equipid"
+    }
+  ]
+}

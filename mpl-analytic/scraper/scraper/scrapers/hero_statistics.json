@@ -1,0 +1,1074 @@
+{
+  "metadata": {
+    "source": "https://mlbb.io",
+    "source_type": "mlbb.io",
+    "scraped_at": "2026-10-06T12:54:22.720299+00:00",
+    "total_heroes": 133
+  },
+  "heroes": [
+    {
+      "hero_id": "aulus",
+      "hero_name": "Aulus",
+      "hero_url": "https://mlbb.io/en/hero/aulus",
+      "raw_text": "Aulus",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:20.550111+00:00"
+    },
+    {
+      "hero_id": "rafaela",
+      "hero_name": "Rafaela",
+      "hero_url": "https://mlbb.io/en/hero/rafaela",
+      "raw_text": "Rafaela",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:20.591136+00:00"
+    },
+    {
+      "hero_id": "masha",
+      "hero_name": "Masha",
+      "hero_url": "https://mlbb.io/en/hero/masha",
+      "raw_text": "Masha",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:20.621744+00:00"
+    },
+    {
+      "hero_id": "marcel",
+      "hero_name": "Marcel",
+      "hero_url": "https://mlbb.io/en/hero/marcel",
+      "raw_text": "Marcel",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:20.657986+00:00"
+    },
+    {
+      "hero_id": "argus",
+      "hero_name": "Argus",
+      "hero_url": "https://mlbb.io/en/hero/argus",
+      "raw_text": "Argus",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:20.906587+00:00"
+    },
+    {
+      "hero_id": "minotaur",
+      "hero_name": "Minotaur",
+      "hero_url": "https://mlbb.io/en/hero/minotaur",
+      "raw_text": "Minotaur",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:20.936876+00:00"
+    },
+    {
+      "hero_id": "khufra",
+      "hero_name": "Khufra",
+      "hero_url": "https://mlbb.io/en/hero/khufra",
+      "raw_text": "Khufra",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:20.960720+00:00"
+    },
+    {
+      "hero_id": "popol-and-kupa",
+      "hero_name": "Popol and Kupa",
+      "hero_url": "https://mlbb.io/en/hero/popol-and-kupa",
+      "raw_text": "Popol and Kupa",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:20.985542+00:00"
+    },
+    {
+      "hero_id": "floryn",
+      "hero_name": "Floryn",
+      "hero_url": "https://mlbb.io/en/hero/floryn",
+      "raw_text": "Floryn",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.012945+00:00"
+    },
+    {
+      "hero_id": "lolita",
+      "hero_name": "Lolita",
+      "hero_url": "https://mlbb.io/en/hero/lolita",
+      "raw_text": "Lolita",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.036508+00:00"
+    },
+    {
+      "hero_id": "obsidia",
+      "hero_name": "Obsidia",
+      "hero_url": "https://mlbb.io/en/hero/obsidia",
+      "raw_text": "Obsidia",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.062263+00:00"
+    },
+    {
+      "hero_id": "carmilla",
+      "hero_name": "Carmilla",
+      "hero_url": "https://mlbb.io/en/hero/carmilla",
+      "raw_text": "Carmilla",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.084853+00:00"
+    },
+    {
+      "hero_id": "gloo",
+      "hero_name": "Gloo",
+      "hero_url": "https://mlbb.io/en/hero/gloo",
+      "raw_text": "Gloo",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.102343+00:00"
+    },
+    {
+      "hero_id": "hirara",
+      "hero_name": "Hirara",
+      "hero_url": "https://mlbb.io/en/hero/hirara",
+      "raw_text": "Hirara",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.125649+00:00"
+    },
+    {
+      "hero_id": "valir",
+      "hero_name": "Valir",
+      "hero_url": "https://mlbb.io/en/hero/valir",
+      "raw_text": "Valir",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.142754+00:00"
+    },
+    {
+      "hero_id": "diggie",
+      "hero_name": "Diggie",
+      "hero_url": "https://mlbb.io/en/hero/diggie",
+      "raw_text": "Diggie",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.156852+00:00"
+    },
+    {
+      "hero_id": "bruno",
+      "hero_name": "Bruno",
+      "hero_url": "https://mlbb.io/en/hero/bruno",
+      "raw_text": "Bruno",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.171123+00:00"
+    },
+    {
+      "hero_id": "estes",
+      "hero_name": "Estes",
+      "hero_url": "https://mlbb.io/en/hero/estes",
+      "raw_text": "Estes",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.185178+00:00"
+    },
+    {
+      "hero_id": "lukas",
+      "hero_name": "Lukas",
+      "hero_url": "https://mlbb.io/en/hero/lukas",
+      "raw_text": "Lukas",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.200489+00:00"
+    },
+    {
+      "hero_id": "gord",
+      "hero_name": "Gord",
+      "hero_url": "https://mlbb.io/en/hero/gord",
+      "raw_text": "Gord",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.218766+00:00"
+    },
+    {
+      "hero_id": "edith",
+      "hero_name": "Edith",
+      "hero_url": "https://mlbb.io/en/hero/edith",
+      "raw_text": "Edith",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.234961+00:00"
+    },
+    {
+      "hero_id": "irithel",
+      "hero_name": "Irithel",
+      "hero_url": "https://mlbb.io/en/hero/irithel",
+      "raw_text": "Irithel",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.252140+00:00"
+    },
+    {
+      "hero_id": "benedetta",
+      "hero_name": "Benedetta",
+      "hero_url": "https://mlbb.io/en/hero/benedetta",
+      "raw_text": "Benedetta",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.270977+00:00"
+    },
+    {
+      "hero_id": "ling",
+      "hero_name": "Ling",
+      "hero_url": "https://mlbb.io/en/hero/ling",
+      "raw_text": "Ling",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.285997+00:00"
+    },
+    {
+      "hero_id": "belerick",
+      "hero_name": "Belerick",
+      "hero_url": "https://mlbb.io/en/hero/belerick",
+      "raw_text": "Belerick",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.301271+00:00"
+    },
+    {
+      "hero_id": "sun",
+      "hero_name": "Sun",
+      "hero_url": "https://mlbb.io/en/hero/sun",
+      "raw_text": "Sun",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.316803+00:00"
+    },
+    {
+      "hero_id": "zhask",
+      "hero_name": "Zhask",
+      "hero_url": "https://mlbb.io/en/hero/zhask",
+      "raw_text": "Zhask",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.335878+00:00"
+    },
+    {
+      "hero_id": "hanabi",
+      "hero_name": "Hanabi",
+      "hero_url": "https://mlbb.io/en/hero/hanabi",
+      "raw_text": "Hanabi",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.351854+00:00"
+    },
+    {
+      "hero_id": "yve",
+      "hero_name": "Yve",
+      "hero_url": "https://mlbb.io/en/hero/yve",
+      "raw_text": "Yve",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.367868+00:00"
+    },
+    {
+      "hero_id": "barats",
+      "hero_name": "Barats",
+      "hero_url": "https://mlbb.io/en/hero/barats",
+      "raw_text": "Barats",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.385379+00:00"
+    },
+    {
+      "hero_id": "atlas",
+      "hero_name": "Atlas",
+      "hero_url": "https://mlbb.io/en/hero/atlas",
+      "raw_text": "Atlas",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.405327+00:00"
+    },
+    {
+      "hero_id": "kagura",
+      "hero_name": "Kagura",
+      "hero_url": "https://mlbb.io/en/hero/kagura",
+      "raw_text": "Kagura",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.422355+00:00"
+    },
+    {
+      "hero_id": "kadita",
+      "hero_name": "Kadita",
+      "hero_url": "https://mlbb.io/en/hero/kadita",
+      "raw_text": "Kadita",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.440051+00:00"
+    },
+    {
+      "hero_id": "fredrinn",
+      "hero_name": "Fredrinn",
+      "hero_url": "https://mlbb.io/en/hero/fredrinn",
+      "raw_text": "Fredrinn",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.458287+00:00"
+    },
+    {
+      "hero_id": "faramis",
+      "hero_name": "Faramis",
+      "hero_url": "https://mlbb.io/en/hero/faramis",
+      "raw_text": "Faramis",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.487723+00:00"
+    },
+    {
+      "hero_id": "beatrix",
+      "hero_name": "Beatrix",
+      "hero_url": "https://mlbb.io/en/hero/beatrix",
+      "raw_text": "Beatrix",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.507915+00:00"
+    },
+    {
+      "hero_id": "eudora",
+      "hero_name": "Eudora",
+      "hero_url": "https://mlbb.io/en/hero/eudora",
+      "raw_text": "Eudora",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.522613+00:00"
+    },
+    {
+      "hero_id": "guinevere",
+      "hero_name": "Guinevere",
+      "hero_url": "https://mlbb.io/en/hero/guinevere",
+      "raw_text": "Guinevere",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.536649+00:00"
+    },
+    {
+      "hero_id": "cyclops",
+      "hero_name": "Cyclops",
+      "hero_url": "https://mlbb.io/en/hero/cyclops",
+      "raw_text": "Cyclops",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.550845+00:00"
+    },
+    {
+      "hero_id": "minsitthar",
+      "hero_name": "Minsitthar",
+      "hero_url": "https://mlbb.io/en/hero/minsitthar",
+      "raw_text": "Minsitthar",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.564501+00:00"
+    },
+    {
+      "hero_id": "natan",
+      "hero_name": "Natan",
+      "hero_url": "https://mlbb.io/en/hero/natan",
+      "raw_text": "Natan",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.580439+00:00"
+    },
+    {
+      "hero_id": "alice",
+      "hero_name": "Alice",
+      "hero_url": "https://mlbb.io/en/hero/alice",
+      "raw_text": "Alice",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.593960+00:00"
+    },
+    {
+      "hero_id": "silvanna",
+      "hero_name": "Silvanna",
+      "hero_url": "https://mlbb.io/en/hero/silvanna",
+      "raw_text": "Silvanna",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.607872+00:00"
+    },
+    {
+      "hero_id": "cecilion",
+      "hero_name": "Cecilion",
+      "hero_url": "https://mlbb.io/en/hero/cecilion",
+      "raw_text": "Cecilion",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.622127+00:00"
+    },
+    {
+      "hero_id": "bane",
+      "hero_name": "Bane",
+      "hero_url": "https://mlbb.io/en/hero/bane",
+      "raw_text": "Bane",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.637481+00:00"
+    },
+    {
+      "hero_id": "terizla",
+      "hero_name": "Terizla",
+      "hero_url": "https://mlbb.io/en/hero/terizla",
+      "raw_text": "Terizla",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.651037+00:00"
+    },
+    {
+      "hero_id": "natalia",
+      "hero_name": "Natalia",
+      "hero_url": "https://mlbb.io/en/hero/natalia",
+      "raw_text": "Natalia",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.664548+00:00"
+    },
+    {
+      "hero_id": "zetian",
+      "hero_name": "Zetian",
+      "hero_url": "https://mlbb.io/en/hero/zetian",
+      "raw_text": "Zetian",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.678388+00:00"
+    },
+    {
+      "hero_id": "brody",
+      "hero_name": "Brody",
+      "hero_url": "https://mlbb.io/en/hero/brody",
+      "raw_text": "Brody",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.692689+00:00"
+    },
+    {
+      "hero_id": "clint",
+      "hero_name": "Clint",
+      "hero_url": "https://mlbb.io/en/hero/clint",
+      "raw_text": "Clint",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.706766+00:00"
+    },
+    {
+      "hero_id": "aldous",
+      "hero_name": "Aldous",
+      "hero_url": "https://mlbb.io/en/hero/aldous",
+      "raw_text": "Aldous",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.720770+00:00"
+    },
+    {
+      "hero_id": "khaleed",
+      "hero_name": "Khaleed",
+      "hero_url": "https://mlbb.io/en/hero/khaleed",
+      "raw_text": "Khaleed",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.734945+00:00"
+    },
+    {
+      "hero_id": "hilda",
+      "hero_name": "Hilda",
+      "hero_url": "https://mlbb.io/en/hero/hilda",
+      "raw_text": "Hilda",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.748803+00:00"
+    },
+    {
+      "hero_id": "akai",
+      "hero_name": "Akai",
+      "hero_url": "https://mlbb.io/en/hero/akai",
+      "raw_text": "Akai",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.760798+00:00"
+    },
+    {
+      "hero_id": "moskov",
+      "hero_name": "Moskov",
+      "hero_url": "https://mlbb.io/en/hero/moskov",
+      "raw_text": "Moskov",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.773239+00:00"
+    },
+    {
+      "hero_id": "paquito",
+      "hero_name": "Paquito",
+      "hero_url": "https://mlbb.io/en/hero/paquito",
+      "raw_text": "Paquito",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.786051+00:00"
+    },
+    {
+      "hero_id": "badang",
+      "hero_name": "Badang",
+      "hero_url": "https://mlbb.io/en/hero/badang",
+      "raw_text": "Badang",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.798468+00:00"
+    },
+    {
+      "hero_id": "leomord",
+      "hero_name": "Leomord",
+      "hero_url": "https://mlbb.io/en/hero/leomord",
+      "raw_text": "Leomord",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.811035+00:00"
+    },
+    {
+      "hero_id": "xborg",
+      "hero_name": "X.Borg",
+      "hero_url": "https://mlbb.io/en/hero/xborg",
+      "raw_text": "X.Borg",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.823483+00:00"
+    },
+    {
+      "hero_id": "vale",
+      "hero_name": "Vale",
+      "hero_url": "https://mlbb.io/en/hero/vale",
+      "raw_text": "Vale",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.835874+00:00"
+    },
+    {
+      "hero_id": "zhuxin",
+      "hero_name": "Zhuxin",
+      "hero_url": "https://mlbb.io/en/hero/zhuxin",
+      "raw_text": "Zhuxin",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.852221+00:00"
+    },
+    {
+      "hero_id": "julian",
+      "hero_name": "Julian",
+      "hero_url": "https://mlbb.io/en/hero/julian",
+      "raw_text": "Julian",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.864066+00:00"
+    },
+    {
+      "hero_id": "sora",
+      "hero_name": "Sora",
+      "hero_url": "https://mlbb.io/en/hero/sora",
+      "raw_text": "Sora",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.875746+00:00"
+    },
+    {
+      "hero_id": "xavier",
+      "hero_name": "Xavier",
+      "hero_url": "https://mlbb.io/en/hero/xavier",
+      "raw_text": "Xavier",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.887221+00:00"
+    },
+    {
+      "hero_id": "ixia",
+      "hero_name": "Ixia",
+      "hero_url": "https://mlbb.io/en/hero/ixia",
+      "raw_text": "Ixia",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.898395+00:00"
+    },
+    {
+      "hero_id": "yi-sun-shin",
+      "hero_name": "Yi Sun-shin",
+      "hero_url": "https://mlbb.io/en/hero/yi-sun-shin",
+      "raw_text": "Yi Sun-shin",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.909736+00:00"
+    },
+    {
+      "hero_id": "novaria",
+      "hero_name": "Novaria",
+      "hero_url": "https://mlbb.io/en/hero/novaria",
+      "raw_text": "Novaria",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.921331+00:00"
+    },
+    {
+      "hero_id": "saber",
+      "hero_name": "Saber",
+      "hero_url": "https://mlbb.io/en/hero/saber",
+      "raw_text": "Saber",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.932482+00:00"
+    },
+    {
+      "hero_id": "miya",
+      "hero_name": "Miya",
+      "hero_url": "https://mlbb.io/en/hero/miya",
+      "raw_text": "Miya",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.944436+00:00"
+    },
+    {
+      "hero_id": "ruby",
+      "hero_name": "Ruby",
+      "hero_url": "https://mlbb.io/en/hero/ruby",
+      "raw_text": "Ruby",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.956026+00:00"
+    },
+    {
+      "hero_id": "odette",
+      "hero_name": "Odette",
+      "hero_url": "https://mlbb.io/en/hero/odette",
+      "raw_text": "Odette",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.976115+00:00"
+    },
+    {
+      "hero_id": "suyou",
+      "hero_name": "Suyou",
+      "hero_url": "https://mlbb.io/en/hero/suyou",
+      "raw_text": "Suyou",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.987142+00:00"
+    },
+    {
+      "hero_id": "vexana",
+      "hero_name": "Vexana",
+      "hero_url": "https://mlbb.io/en/hero/vexana",
+      "raw_text": "Vexana",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:21.997858+00:00"
+    },
+    {
+      "hero_id": "aamon",
+      "hero_name": "Aamon",
+      "hero_url": "https://mlbb.io/en/hero/aamon",
+      "raw_text": "Aamon",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.010288+00:00"
+    },
+    {
+      "hero_id": "angela",
+      "hero_name": "Angela",
+      "hero_url": "https://mlbb.io/en/hero/angela",
+      "raw_text": "Angela",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.048264+00:00"
+    },
+    {
+      "hero_id": "lylia",
+      "hero_name": "Lylia",
+      "hero_url": "https://mlbb.io/en/hero/lylia",
+      "raw_text": "Lylia",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.065698+00:00"
+    },
+    {
+      "hero_id": "hanzo",
+      "hero_name": "Hanzo",
+      "hero_url": "https://mlbb.io/en/hero/hanzo",
+      "raw_text": "Hanzo",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.080030+00:00"
+    },
+    {
+      "hero_id": "kaja",
+      "hero_name": "Kaja",
+      "hero_url": "https://mlbb.io/en/hero/kaja",
+      "raw_text": "Kaja",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.091668+00:00"
+    },
+    {
+      "hero_id": "layla",
+      "hero_name": "Layla",
+      "hero_url": "https://mlbb.io/en/hero/layla",
+      "raw_text": "Layla",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.103758+00:00"
+    },
+    {
+      "hero_id": "claude",
+      "hero_name": "Claude",
+      "hero_url": "https://mlbb.io/en/hero/claude",
+      "raw_text": "Claude",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.115834+00:00"
+    },
+    {
+      "hero_id": "yu-zhong",
+      "hero_name": "Yu Zhong",
+      "hero_url": "https://mlbb.io/en/hero/yu-zhong",
+      "raw_text": "Yu Zhong",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.128074+00:00"
+    },
+    {
+      "hero_id": "nolan",
+      "hero_name": "Nolan",
+      "hero_url": "https://mlbb.io/en/hero/nolan",
+      "raw_text": "Nolan",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.141292+00:00"
+    },
+    {
+      "hero_id": "uranus",
+      "hero_name": "Uranus",
+      "hero_url": "https://mlbb.io/en/hero/uranus",
+      "raw_text": "Uranus",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.153569+00:00"
+    },
+    {
+      "hero_id": "cici",
+      "hero_name": "Cici",
+      "hero_url": "https://mlbb.io/en/hero/cici",
+      "raw_text": "Cici",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.165801+00:00"
+    },
+    {
+      "hero_id": "selena",
+      "hero_name": "Selena",
+      "hero_url": "https://mlbb.io/en/hero/selena",
+      "raw_text": "Selena",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.178151+00:00"
+    },
+    {
+      "hero_id": "roger",
+      "hero_name": "Roger",
+      "hero_url": "https://mlbb.io/en/hero/roger",
+      "raw_text": "Roger",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.189939+00:00"
+    },
+    {
+      "hero_id": "lunox",
+      "hero_name": "Lunox",
+      "hero_url": "https://mlbb.io/en/hero/lunox",
+      "raw_text": "Lunox",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.200670+00:00"
+    },
+    {
+      "hero_id": "thamuz",
+      "hero_name": "Thamuz",
+      "hero_url": "https://mlbb.io/en/hero/thamuz",
+      "raw_text": "Thamuz",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.211981+00:00"
+    },
+    {
+      "hero_id": "lapu-lapu",
+      "hero_name": "Lapu-Lapu",
+      "hero_url": "https://mlbb.io/en/hero/lapu-lapu",
+      "raw_text": "Lapu-Lapu",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.223200+00:00"
+    },
+    {
+      "hero_id": "yin",
+      "hero_name": "Yin",
+      "hero_url": "https://mlbb.io/en/hero/yin",
+      "raw_text": "Yin",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.234701+00:00"
+    },
+    {
+      "hero_id": "joy",
+      "hero_name": "Joy",
+      "hero_url": "https://mlbb.io/en/hero/joy",
+      "raw_text": "Joy",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.249997+00:00"
+    },
+    {
+      "hero_id": "kimmy",
+      "hero_name": "Kimmy",
+      "hero_url": "https://mlbb.io/en/hero/kimmy",
+      "raw_text": "Kimmy",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.265148+00:00"
+    },
+    {
+      "hero_id": "karrie",
+      "hero_name": "Karrie",
+      "hero_url": "https://mlbb.io/en/hero/karrie",
+      "raw_text": "Karrie",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.277805+00:00"
+    },
+    {
+      "hero_id": "aurora",
+      "hero_name": "Aurora",
+      "hero_url": "https://mlbb.io/en/hero/aurora",
+      "raw_text": "Aurora",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.291527+00:00"
+    },
+    {
+      "hero_id": "johnson",
+      "hero_name": "Johnson",
+      "hero_url": "https://mlbb.io/en/hero/johnson",
+      "raw_text": "Johnson",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.303069+00:00"
+    },
+    {
+      "hero_id": "melissa",
+      "hero_name": "Melissa",
+      "hero_url": "https://mlbb.io/en/hero/melissa",
+      "raw_text": "Melissa",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.314084+00:00"
+    },
+    {
+      "hero_id": "wanwan",
+      "hero_name": "Wanwan",
+      "hero_url": "https://mlbb.io/en/hero/wanwan",
+      "raw_text": "Wanwan",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.325299+00:00"
+    },
+    {
+      "hero_id": "gusion",
+      "hero_name": "Gusion",
+      "hero_url": "https://mlbb.io/en/hero/gusion",
+      "raw_text": "Gusion",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.336679+00:00"
+    },
+    {
+      "hero_id": "lesley",
+      "hero_name": "Lesley",
+      "hero_url": "https://mlbb.io/en/hero/lesley",
+      "raw_text": "Lesley",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.347839+00:00"
+    },
+    {
+      "hero_id": "hylos",
+      "hero_name": "Hylos",
+      "hero_url": "https://mlbb.io/en/hero/hylos",
+      "raw_text": "Hylos",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.359594+00:00"
+    },
+    {
+      "hero_id": "alpha",
+      "hero_name": "Alpha",
+      "hero_url": "https://mlbb.io/en/hero/alpha",
+      "raw_text": "Alpha",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.370685+00:00"
+    },
+    {
+      "hero_id": "hayabusa",
+      "hero_name": "Hayabusa",
+      "hero_url": "https://mlbb.io/en/hero/hayabusa",
+      "raw_text": "Hayabusa",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.382193+00:00"
+    },
+    {
+      "hero_id": "freya",
+      "hero_name": "Freya",
+      "hero_url": "https://mlbb.io/en/hero/freya",
+      "raw_text": "Freya",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.394774+00:00"
+    },
+    {
+      "hero_id": "phoveus",
+      "hero_name": "Phoveus",
+      "hero_url": "https://mlbb.io/en/hero/phoveus",
+      "raw_text": "Phoveus",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.405847+00:00"
+    },
+    {
+      "hero_id": "change",
+      "hero_name": "Chang'e",
+      "hero_url": "https://mlbb.io/en/hero/change",
+      "raw_text": "Chang'e",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.416534+00:00"
+    },
+    {
+      "hero_id": "dyrroth",
+      "hero_name": "Dyrroth",
+      "hero_url": "https://mlbb.io/en/hero/dyrroth",
+      "raw_text": "Dyrroth",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.427534+00:00"
+    },
+    {
+      "hero_id": "arlott",
+      "hero_name": "Arlott",
+      "hero_url": "https://mlbb.io/en/hero/arlott",
+      "raw_text": "Arlott",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.439062+00:00"
+    },
+    {
+      "hero_id": "harley",
+      "hero_name": "Harley",
+      "hero_url": "https://mlbb.io/en/hero/harley",
+      "raw_text": "Harley",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.450166+00:00"
+    },
+    {
+      "hero_id": "luo-yi",
+      "hero_name": "Luo Yi",
+      "hero_url": "https://mlbb.io/en/hero/luo-yi",
+      "raw_text": "Luo Yi",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.461563+00:00"
+    },
+    {
+      "hero_id": "esmeralda",
+      "hero_name": "Esmeralda",
+      "hero_url": "https://mlbb.io/en/hero/esmeralda",
+      "raw_text": "Esmeralda",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.472678+00:00"
+    },
+    {
+      "hero_id": "jawhead",
+      "hero_name": "Jawhead",
+      "hero_url": "https://mlbb.io/en/hero/jawhead",
+      "raw_text": "Jawhead",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.483502+00:00"
+    },
+    {
+      "hero_id": "karina",
+      "hero_name": "Karina",
+      "hero_url": "https://mlbb.io/en/hero/karina",
+      "raw_text": "Karina",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.494294+00:00"
+    },
+    {
+      "hero_id": "nana",
+      "hero_name": "Nana",
+      "hero_url": "https://mlbb.io/en/hero/nana",
+      "raw_text": "Nana",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.505191+00:00"
+    },
+    {
+      "hero_id": "martis",
+      "hero_name": "Martis",
+      "hero_url": "https://mlbb.io/en/hero/martis",
+      "raw_text": "Martis",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.515700+00:00"
+    },
+    {
+      "hero_id": "pharsa",
+      "hero_name": "Pharsa",
+      "hero_url": "https://mlbb.io/en/hero/pharsa",
+      "raw_text": "Pharsa",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.526058+00:00"
+    },
+    {
+      "hero_id": "helcurt",
+      "hero_name": "Helcurt",
+      "hero_url": "https://mlbb.io/en/hero/helcurt",
+      "raw_text": "Helcurt",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.536823+00:00"
+    },
+    {
+      "hero_id": "baxia",
+      "hero_name": "Baxia",
+      "hero_url": "https://mlbb.io/en/hero/baxia",
+      "raw_text": "Baxia",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.547175+00:00"
+    },
+    {
+      "hero_id": "chip",
+      "hero_name": "Chip",
+      "hero_url": "https://mlbb.io/en/hero/chip",
+      "raw_text": "Chip",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.557417+00:00"
+    },
+    {
+      "hero_id": "alucard",
+      "hero_name": "Alucard",
+      "hero_url": "https://mlbb.io/en/hero/alucard",
+      "raw_text": "Alucard",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.567823+00:00"
+    },
+    {
+      "hero_id": "grock",
+      "hero_name": "Grock",
+      "hero_url": "https://mlbb.io/en/hero/grock",
+      "raw_text": "Grock",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.578751+00:00"
+    },
+    {
+      "hero_id": "balmond",
+      "hero_name": "Balmond",
+      "hero_url": "https://mlbb.io/en/hero/balmond",
+      "raw_text": "Balmond",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.589746+00:00"
+    },
+    {
+      "hero_id": "harith",
+      "hero_name": "Harith",
+      "hero_url": "https://mlbb.io/en/hero/harith",
+      "raw_text": "Harith",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.600631+00:00"
+    },
+    {
+      "hero_id": "valentina",
+      "hero_name": "Valentina",
+      "hero_url": "https://mlbb.io/en/hero/valentina",
+      "raw_text": "Valentina",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.612948+00:00"
+    },
+    {
+      "hero_id": "zilong",
+      "hero_name": "Zilong",
+      "hero_url": "https://mlbb.io/en/hero/zilong",
+      "raw_text": "Zilong",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.624308+00:00"
+    },
+    {
+      "hero_id": "gatotkaca",
+      "hero_name": "Gatotkaca",
+      "hero_url": "https://mlbb.io/en/hero/gatotkaca",
+      "raw_text": "Gatotkaca",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.634966+00:00"
+    },
+    {
+      "hero_id": "mathilda",
+      "hero_name": "Mathilda",
+      "hero_url": "https://mlbb.io/en/hero/mathilda",
+      "raw_text": "Mathilda",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.646466+00:00"
+    },
+    {
+      "hero_id": "kalea",
+      "hero_name": "Kalea",
+      "hero_url": "https://mlbb.io/en/hero/kalea",
+      "raw_text": "Kalea",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.656873+00:00"
+    },
+    {
+      "hero_id": "chou",
+      "hero_name": "Chou",
+      "hero_url": "https://mlbb.io/en/hero/chou",
+      "raw_text": "Chou",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.668396+00:00"
+    },
+    {
+      "hero_id": "tigreal",
+      "hero_name": "Tigreal",
+      "hero_url": "https://mlbb.io/en/hero/tigreal",
+      "raw_text": "Tigreal",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.678607+00:00"
+    },
+    {
+      "hero_id": "granger",
+      "hero_name": "Granger",
+      "hero_url": "https://mlbb.io/en/hero/granger",
+      "raw_text": "Granger",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.689224+00:00"
+    },
+    {
+      "hero_id": "lancelot",
+      "hero_name": "Lancelot",
+      "hero_url": "https://mlbb.io/en/hero/lancelot",
+      "raw_text": "Lancelot",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.699329+00:00"
+    },
+    {
+      "hero_id": "fanny",
+      "hero_name": "Fanny",
+      "hero_url": "https://mlbb.io/en/hero/fanny",
+      "raw_text": "Fanny",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.709287+00:00"
+    },
+    {
+      "hero_id": "franco",
+      "hero_name": "Franco",
+      "hero_url": "https://mlbb.io/en/hero/franco",
+      "raw_text": "Franco",
+      "source": "https://mlbb.io/en/hero-statistics",
+      "scraped_at": "2026-10-06T12:54:22.720124+00:00"
+    }
+  ]
+}
