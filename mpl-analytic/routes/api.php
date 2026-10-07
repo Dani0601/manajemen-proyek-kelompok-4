@@ -121,7 +121,14 @@ function loadController(string $controllerFile, string $controllerClass): object
     return new $controllerClass();
 }
 
+if ($uri === 'api/dashboard') {
+    $controller = loadController(
+        'DashboardController.php',
+        'DashboardController'
+    );
 
+    $controller->index();
+}
 /*
 |--------------------------------------------------------------------------
 | META
