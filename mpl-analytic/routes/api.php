@@ -296,44 +296,35 @@ if (
 |--------------------------------------------------------------------------
 */
 
-/*
-| GET /api/players
-*/
-
+// ==========================================
+// 1. GET /api/players
+// ==========================================
 if ($uri === 'api/players') {
-
-    $controller = loadController(
-        'PlayerController.php',
-        'PlayerController'
-    );
-
+    $controller = loadController('PlayerController.php', 'PlayerController');
     $controller->index();
+    exit; // Hentikan script agar tidak membaca ke bawah
 }
 
+// ==========================================
+// 2. GET /api/players/compare (TAMBAHAN BARU UNTUK US-03)
+// ==========================================
+// WAJIB diletakkan sebelum blok {id} di bawahnya
+if ($uri === 'api/players/compare') {
+    $controller = loadController('PlayerController.php', 'PlayerController');
+    $controller->compare();
+    exit;
+}
 
-/*
-| GET /api/players/{id}
-| GET /api/players/{id}/stats
-| GET /api/players/{id}/games
-*/
-
+// ==========================================
+// 3. GET /api/players/{id} dan turunannya
+// ==========================================
 if (
     isset($segments[0], $segments[1]) &&
     $segments[0] === 'api' &&
     $segments[1] === 'players'
 ) {
-
     if (!isset($segments[2])) {
-        jsonResponse(
-            null,
-            'Endpoint player tidak ditemukan.',
-            404,
-            [
-                'error' => [
-                    'code' => 'ENDPOINT_NOT_FOUND'
-                ]
-            ]
-        );
+        // ... (kode error 404 endpoint tidak ditemukan persis seperti milik Anda) ...
     }
 
     $playerId = validatePositiveInteger(
@@ -341,42 +332,24 @@ if (
         'player_id'
     );
 
-    $controller = loadController(
-        'PlayerController.php',
-        'PlayerController'
-    );
+    $controller = loadController('PlayerController.php', 'PlayerController');
 
-
-    /*
-    | GET /api/players/{id}/stats
-    */
-
-    if (
-        isset($segments[3]) &&
-        $segments[3] === 'stats'
-    ) {
+    // GET /api/players/{id}/stats
+    if (isset($segments[3]) && $segments[3] === 'stats') {
         $controller->stats($playerId);
+        exit;
     }
 
-
-    /*
-    | GET /api/players/{id}/games
-    */
-
-    if (
-        isset($segments[3]) &&
-        $segments[3] === 'games'
-    ) {
+    // GET /api/players/{id}/games
+    if (isset($segments[3]) && $segments[3] === 'games') {
         $controller->games($playerId);
+        exit;
     }
 
-
-    /*
-    | GET /api/players/{id}
-    */
-
+    // GET /api/players/{id}
     if (!isset($segments[3])) {
         $controller->show($playerId);
+        exit;
     }
 }
 
