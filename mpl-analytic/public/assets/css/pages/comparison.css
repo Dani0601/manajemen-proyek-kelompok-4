@@ -1,0 +1,444 @@
+/* =========================================
+   PLAYER COMPARISON
+   Mobile First
+========================================= */
+
+.player-comparison-page {
+    width: 100%;
+    max-width: 430px;
+    min-height: 100vh;
+    margin: 0 auto;
+    padding: 0 16px 30px;
+
+    background-color: #f8f8f8;
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.comparison-header {
+    height: 64px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+}
+
+.header-back,
+.header-icon {
+    border: none;
+    background: transparent;
+
+    padding: 4px;
+
+    cursor: pointer;
+}
+
+.header-back {
+    font-size: 25px;
+    line-height: 1;
+}
+
+.comparison-title {
+    margin: 0;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    color: #203b68;
+
+    flex: 1;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-icon {
+    font-size: 22px;
+    line-height: 1;
+}
+
+
+/* =========================================
+   PLAYER SELECTOR
+========================================= */
+
+.player-selector {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 66px;
+
+    margin: 12px 22px 16px;
+}
+
+.player-select {
+    height: 52px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 12px;
+
+    background-color: #fff;
+
+    border: 1px solid #ddd;
+    border-radius: 14px;
+
+    box-shadow: 0 3px 4px rgba(0, 0, 0, 0.15);
+}
+
+.player-select select {
+    width: 100%;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    color: #111;
+
+    appearance: auto;
+}
+
+.player-dot {
+    width: 8px;
+    height: 8px;
+
+    flex-shrink: 0;
+
+    margin-right: 8px;
+
+    border-radius: 50%;
+}
+
+.player-dot-blue {
+    background-color: #2874d0;
+}
+
+.player-dot-orange {
+    background-color: #f28c28;
+}
+
+
+/* =========================================
+   PLAYER VS
+========================================= */
+
+.players-versus {
+    position: relative;
+
+    display: grid;
+
+    grid-template-columns: 1fr 38px 1fr;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-bottom: 16px;
+}
+
+.player-card {
+    min-width: 0;
+
+    padding: 5px 8px 8px;
+
+    background-color: #fff;
+
+    border: 1px solid #ddd;
+    border-radius: 14px;
+
+    box-shadow: 0 3px 4px rgba(0, 0, 0, 0.18);
+
+    text-align: center;
+}
+
+.player-hero-image {
+    display: block;
+
+    width: 100%;
+    height: 68px;
+
+    object-fit: cover;
+
+    border-radius: 10px;
+
+    margin-bottom: 5px;
+}
+
+.hero-name {
+    margin: 0;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    color: #111;
+}
+
+.team-name {
+    margin: 2px 0 0;
+
+    font-size: 9px;
+
+    color: #222;
+}
+
+.player-role {
+    margin: 0;
+
+    font-size: 8px;
+
+    color: #222;
+}
+
+.vs-badge {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #fff;
+
+    border: 1px solid #ddd;
+    border-radius: 50%;
+
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+
+    font-size: 13px;
+    font-weight: 700;
+
+    color: #111;
+
+    z-index: 2;
+}
+
+
+/* =========================================
+   SECTION TITLE
+========================================= */
+
+.section-title {
+    margin: 10px 4px 5px;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    color: #203b68;
+}
+
+
+/* =========================================
+   CHART
+========================================= */
+
+.chart-card {
+    width: 100%;
+
+    padding: 4px 8px 8px;
+
+    background-color: #fff;
+
+    border: 1px solid #ddd;
+    border-radius: 14px;
+
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+}
+
+.chart-legend {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    gap: 12px;
+
+    padding-left: 2px;
+
+    font-size: 9px;
+}
+
+.chart-legend > span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.legend-blue,
+.legend-orange {
+    width: 8px;
+    height: 8px;
+
+    display: inline-block;
+}
+
+.legend-blue {
+    background-color: #2874d0;
+}
+
+.legend-orange {
+    background-color: #f28c28;
+}
+
+.radar-container {
+    position: relative;
+
+    width: 100%;
+    height: 130px;
+}
+
+.radar-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+
+/* =========================================
+   STATISTICS
+========================================= */
+
+.stats-section {
+    margin-top: 10px;
+}
+
+.stats-card {
+    width: 100%;
+
+    padding: 0 12px;
+
+    background-color: #fff;
+
+    border: 1px solid #222;
+    border-radius: 14px;
+
+    overflow: hidden;
+}
+
+.stat-row {
+    min-height: 27px;
+
+    display: grid;
+
+    grid-template-columns: 55px 1fr 55px;
+
+    align-items: center;
+
+    border-bottom: 1px solid #ddd;
+}
+
+.stat-row:last-child {
+    border-bottom: none;
+}
+
+.stat-value {
+    font-size: 10px;
+    font-weight: 500;
+}
+
+.stat-value.blue {
+    color: #2874d0;
+}
+
+.stat-value.orange {
+    color: #f28c28;
+
+    text-align: right;
+}
+
+.stat-label {
+    text-align: center;
+
+    font-size: 8px;
+
+    color: #222;
+}
+
+
+/* =========================================
+   WIN RATE
+========================================= */
+
+.winrate-card {
+    width: 100%;
+
+    padding: 8px 12px;
+
+    background-color: #fff;
+
+    border: 1px solid #222;
+    border-radius: 14px;
+}
+
+.winrate-row {
+    min-height: 25px;
+
+    display: grid;
+
+    grid-template-columns: 52px 1fr 43px;
+
+    align-items: center;
+
+    gap: 7px;
+}
+
+.winrate-name {
+    font-size: 9px;
+    font-weight: 600;
+}
+
+.winrate-track {
+    width: 100%;
+    height: 7px;
+
+    overflow: hidden;
+
+    background-color: #ddd;
+
+    border-radius: 10px;
+}
+
+.winrate-fill {
+    height: 100%;
+
+    border-radius: 10px;
+}
+
+.blue-fill {
+    background-color: #2874d0;
+}
+
+.orange-fill {
+    background-color: #f28c28;
+}
+
+.winrate-value {
+    text-align: right;
+
+    font-size: 9px;
+    font-weight: 600;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (min-width: 431px) {
+
+    .player-comparison-page {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+}
