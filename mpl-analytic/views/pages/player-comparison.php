@@ -70,66 +70,67 @@
 
         </header>
 
-        <section class="player-selector">
+    <section class="player-selector">
+
+        <!-- Player A -->
+        <div class="player-select">
+
+            <span class="player-dot player-dot-blue"></span>
+
+            <select id="playerA">
+                <option value="101">
+                    Kairi
+                </option>
+
+                <option value="102">
+                    Albertt
+                </option>
+            </select>
+
+        </div>
+
+
+        <!-- Player B -->
+        <div class="player-select">
+
+            <span class="player-dot player-dot-orange"></span>
+
+            <select id="playerB">
+                <option value="101">
+                    Kairi
+                </option>
+
+                <option value="102">
+                    Albertt
+                </option>
+
+            </select>
+
+        </div>
+
+    </section>
+
+    <section class="players-versus">
 
     <!-- Player A -->
-    <div class="player-select">
-
-        <span class="player-dot player-dot-blue"></span>
-
-        <select id="playerA">
-            <option value="kairi">
-                Kairi
-            </option>
-
-            <option value="sanz">
-                SANZ
-            </option>
-        </select>
-
-    </div>
-
-
-    <!-- Player B -->
-    <div class="player-select">
-
-        <span class="player-dot player-dot-orange"></span>
-
-        <select id="playerB">
-            <option value="albertt">
-                Albertt
-            </option>
-
-            <option value="clayyy">
-                Clayyy
-            </option>
-
-        </select>
-
-    </div>
-
-        </section>
-
-        <section class="players-versus">
-
-    <!-- Player A -->
-    <div class="player-card">
+    <div class="player-card" id="playerCardA">
 
         <img
+            id="playerAHeroImage"
             src="https://placehold.co/140x70"
             alt="Lancelot"
             class="player-hero-image"
         >
 
-        <h2 class="hero-name">
+        <h2 class="hero-name" id="playerAHeroName">
             Lancelot
         </h2>
 
-        <p class="team-name">
+        <p class="team-name" id="playerATeam">
             ONIC Esports
         </p>
 
-        <p class="player-role">
+        <p class="player-role" id="playerARole">
             Jungler
         </p>
 
@@ -143,23 +144,24 @@
 
 
     <!-- Player B -->
-    <div class="player-card">
+    <div class="player-card" id="playerCardB">
 
         <img
+            id="playerBHeroImage"
             src="https://placehold.co/140x70"
             alt="Ling"
             class="player-hero-image"
         >
 
-        <h2 class="hero-name">
+        <h2 class="hero-name" id="playerBHeroName">
             Ling
         </h2>
 
-        <p class="team-name">
+        <p class="team-name" id="playerBTeam">
             ONIC Esports
         </p>
 
-        <p class="player-role">
+        <p class="player-role" id="playerBRole">
             Jungler
         </p>
 
@@ -199,7 +201,7 @@
 
         </section>        
 
-        <section class="stats-section">
+       <section class="stats-section">
 
     <h2 class="section-title">
         Statistik Liga
@@ -209,7 +211,7 @@
 
         <div class="stat-row">
 
-            <span class="stat-value blue">
+            <span class="stat-value blue" id="playerAMatches">
                 48
             </span>
 
@@ -217,7 +219,7 @@
                 Match dimainkan
             </span>
 
-            <span class="stat-value orange">
+            <span class="stat-value orange" id="playerBMatches">
                 45
             </span>
 
@@ -226,7 +228,7 @@
 
         <div class="stat-row">
 
-            <span class="stat-value blue">
+            <span class="stat-value blue" id="playerAKda">
                 5.2
             </span>
 
@@ -234,7 +236,7 @@
                 KDA rata-rata
             </span>
 
-            <span class="stat-value orange">
+            <span class="stat-value orange" id="playerBKda">
                 4.8
             </span>
 
@@ -243,7 +245,7 @@
 
         <div class="stat-row">
 
-            <span class="stat-value blue">
+            <span class="stat-value blue" id="playerAKp">
                 74 %
             </span>
 
@@ -251,7 +253,7 @@
                 Kill Participation
             </span>
 
-            <span class="stat-value orange">
+            <span class="stat-value orange" id="playerBKp">
                 71 %
             </span>
 
@@ -259,9 +261,9 @@
 
     </div>
 
-        </section>
+</section>
 
-        <section class="stats-section">
+       <section class="stats-section">
 
     <h2 class="section-title">
         Statistik Detail
@@ -271,7 +273,7 @@
 
         <div class="stat-row">
 
-            <span class="stat-value blue">
+            <span class="stat-value blue" id="playerAGpm">
                 812
             </span>
 
@@ -279,7 +281,7 @@
                 Gold per menit
             </span>
 
-            <span class="stat-value orange">
+            <span class="stat-value orange" id="playerBGpm">
                 790
             </span>
 
@@ -288,7 +290,7 @@
 
         <div class="stat-row">
 
-            <span class="stat-value blue">
+            <span class="stat-value blue" id="playerADpm">
                 1,240
             </span>
 
@@ -296,7 +298,7 @@
                 Damage per menit
             </span>
 
-            <span class="stat-value orange">
+            <span class="stat-value orange" id="playerBDpm">
                 1,130
             </span>
 
@@ -305,7 +307,7 @@
 
         <div class="stat-row">
 
-            <span class="stat-value blue">
+            <span class="stat-value blue" id="playerAObjectives">
                 31
             </span>
 
@@ -313,7 +315,7 @@
                 Objective dikuasai
             </span>
 
-            <span class="stat-value orange">
+            <span class="stat-value orange" id="playerBObjectives">
                 34
             </span>
 
@@ -321,10 +323,10 @@
 
     </div>
 
-        </section>
+</section>
 
 
-        <section class="stats-section">
+       <section class="stats-section">
 
     <h2 class="section-title">
         Performa (win rate)
@@ -334,18 +336,19 @@
 
         <div class="winrate-row">
 
-            <span class="winrate-name">
+            <span class="winrate-name" id="playerAWinrateName">
                 Kairi
             </span>
 
             <div class="winrate-track">
                 <div
                     class="winrate-fill blue-fill"
+                    id="playerAWinrateBar"
                     style="width: 68.7%;"
                 ></div>
             </div>
 
-            <span class="winrate-value">
+            <span class="winrate-value" id="playerAWinrateValue">
                 68.7 %
             </span>
 
@@ -354,18 +357,19 @@
 
         <div class="winrate-row">
 
-            <span class="winrate-name">
+            <span class="winrate-name" id="playerBWinrateName">
                 Albertt
             </span>
 
             <div class="winrate-track">
                 <div
                     class="winrate-fill orange-fill"
+                    id="playerBWinrateBar"
                     style="width: 64.2%;"
                 ></div>
             </div>
 
-            <span class="winrate-value">
+            <span class="winrate-value" id="playerBWinrateValue">
                 64.2 %
             </span>
 
@@ -373,10 +377,9 @@
 
     </div>
 
-        </section>
+</section>
 
-        <!-- Konten Player Comparison
-        <div class="container"></div> -->
+        
     </main>
 
 
