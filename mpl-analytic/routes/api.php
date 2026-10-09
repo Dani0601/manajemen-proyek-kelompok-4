@@ -3,17 +3,17 @@
 declare(strict_types=1);
 
 // routes/api.php
-$uri = $uri ?? '';
+// $uri = $uri ?? '';
 
-if ($uri === 'api/players/compare') {
-    require_once __DIR__ . '/../app/controllers/PlayerController.php';
+// if ($uri === 'api/players/compare') {
+//     require_once __DIR__ . '/../app/controllers/PlayerController.php';
     
-    $controller = new PlayerController($db); 
-    $controller->compare();
-    exit;
-}
+//     $controller = new PlayerController($db); 
+//     $controller->compare();
+//     exit;
+// }
 
-jsonResponse(null, "Endpoint tidak ditemukan.", 404, ["code" => "ENDPOINT_NOT_FOUND"]);
+// jsonResponse(null, "Endpoint tidak ditemukan.", 404, ["code" => "ENDPOINT_NOT_FOUND"]);
 
 // declare(strict_types=1);
 
@@ -34,12 +34,12 @@ require_once dirname(__DIR__) . '/app/helpers/pagination.php';
 |--------------------------------------------------------------------------
 */
 
-$method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+// $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
-$uri = parse_url(
-    $_SERVER['REQUEST_URI'] ?? '/',
-    PHP_URL_PATH
-);
+// $uri = parse_url(
+//     $_SERVER['REQUEST_URI'] ?? '/',
+//     PHP_URL_PATH
+// );
 
 
 /*
@@ -48,23 +48,31 @@ $uri = parse_url(
 |--------------------------------------------------------------------------
 */
 
-$basePaths = [
-    '/mpl-analytic/public',
-];
+// $basePaths = [
+//     '/mpl-analytic/public',
+// ];
 
-foreach ($basePaths as $basePath) {
-    if (str_starts_with($uri, $basePath)) {
-        $uri = substr($uri, strlen($basePath));
-        break;
-    }
-}
+// foreach ($basePaths as $basePath) {
+//     if (str_starts_with($uri, $basePath)) {
+//         $uri = substr($uri, strlen($basePath));
+//         break;
+//     }
+// }
 
-$uri = trim($uri, '/');
+// $uri = trim($uri, '/');
+
+// $segments = $uri === ''
+//     ? []
+//     : explode('/', $uri);
+
+
+$method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+
+$uri = trim($uri ?? '', '/');
 
 $segments = $uri === ''
     ? []
     : explode('/', $uri);
-
 
 /*
 |--------------------------------------------------------------------------
@@ -101,6 +109,7 @@ if ($method !== 'GET') {
 
 function loadController(string $controllerFile, string $controllerClass): object
 {
+    global $db;
     $path = dirname(__DIR__) . '/app/controllers/' . $controllerFile;
 
     if (!file_exists($path)) {
@@ -133,10 +142,19 @@ function loadController(string $controllerFile, string $controllerClass): object
         );
     }
 
+return new $controllerClass($db);
+
     return new $controllerClass();
 }
 
+if ($uri === 'api/dashboard') {
+    $controller = loadController(
+        'DashboardController.php',
+        'DashboardController'
+    );
 
+    $controller->index();
+}
 /*
 |--------------------------------------------------------------------------
 | META
@@ -220,7 +238,122 @@ if ($uri === 'api/heroes') {
     $controller->index();
 }
 
+if (
+    $method === 'GET' &&
+    $uri === 'api/heroes'
+) {
+    $controller = loadController(
+        'HeroController.php',
+        'HeroController'
+    );
 
+    $controller->index();
+}
+
+if (
+    $method === 'GET' &&
+    preg_match(
+        '#^api/heroes/([0-9]+)/stats$#',
+        $uri,
+        $matches
+    )
+) {
+    $heroId = validatePositiveInteger(
+        $matches[1],
+        'hero_id'
+    );
+
+    $controller = loadController(
+        'HeroController.php',
+        'HeroController'
+    );
+
+    $controller->stats($heroId);
+}
+
+if (
+    $method === 'GET' &&
+    preg_match(
+        '#^api/heroes/([0-9]+)/builds$#',
+        $uri,
+        $matches
+    )
+) {
+    $heroId = validatePositiveInteger(
+        $matches[1],
+        'hero_id'
+    );
+
+    $controller = loadController(
+        'HeroController.php',
+        'HeroController'
+    );
+
+    $controller->builds($heroId);
+}
+
+if (
+    $method === 'GET' &&
+    preg_match(
+        '#^api/heroes/([0-9]+)/counters$#',
+        $uri,
+        $matches
+    )
+) {
+    $heroId = validatePositiveInteger(
+        $matches[1],
+        'hero_id'
+    );
+
+    $controller = loadController(
+        'HeroController.php',
+        'HeroController'
+    );
+
+    $controller->counters($heroId);
+}
+
+if (
+    $method === 'GET' &&
+    preg_match(
+        '#^api/heroes/([0-9]+)/skills$#',
+        $uri,
+        $matches
+    )
+) {
+    $heroId = validatePositiveInteger(
+        $matches[1],
+        'hero_id'
+    );
+
+    $controller = loadController(
+        'HeroController.php',
+        'HeroController'
+    );
+
+    $controller->skills($heroId);
+}
+
+if (
+    $method === 'GET' &&
+    preg_match(
+        '#^api/heroes/([0-9]+)$#',
+        $uri,
+        $matches
+    )
+) {
+    $heroId = validatePositiveInteger(
+        $matches[1],
+        'hero_id'
+    );
+
+    $controller = loadController(
+        'HeroController.php',
+        'HeroController'
+    );
+
+    $controller->show($heroId);
+}
 /*
 | GET /api/heroes/{id}
 | GET /api/heroes/{id}/stats

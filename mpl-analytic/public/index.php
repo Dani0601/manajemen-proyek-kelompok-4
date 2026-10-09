@@ -36,16 +36,22 @@ try {
 }
 
 // 2. Tangkap URL
-if (isset($_GET['url'])) {
-    $uri = trim($_GET['url'], '/');
+$requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+$marker = '/mpl-analytic/public/';
+
+$pos = strpos($requestUri, $marker);
+
+if ($pos !== false) {
+    $uri = substr($requestUri, $pos + strlen($marker));
 } else {
-    $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-    $baseFolder = '/menpro/manajemen-proyek-kelompok-4/mpl-analytic/public';
-    $uri = str_replace($baseFolder, '', $requestUri);
-    $uri = trim($uri, '/');
+    $uri = trim($requestUri, '/');
 }
 
+$uri = trim($uri, '/');
+
 $segments = explode('/', $uri);
+
 
 // 3. Panggil router (variabel $db otomatis tersedia di dalam routes/api.php)
 require_once __DIR__ . '/../routes/api.php';

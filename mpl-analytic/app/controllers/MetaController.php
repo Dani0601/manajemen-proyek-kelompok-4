@@ -3,6 +3,16 @@
 require_once __DIR__ . '/../services/MetaService.php';
 require_once __DIR__ . '/../helpers/Apiresponse.php';
 
+use App\Helpers\ApiResponse;
+
+$users = [
+    ['id' => 1, 'name' => 'Budi'],
+    ['id' => 2, 'name' => 'Siti']
+];
+
+// Mengirimkan data user dengan status 200 OK
+ApiResponse::success($users, 'Data user berhasil diambil');
+
 class MetaController {
     private $metaService;
 

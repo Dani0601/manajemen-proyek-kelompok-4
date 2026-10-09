@@ -30,7 +30,7 @@ class PlayerController {
             // Menangkap parameter dari URL (Contoh: /players/compare?p1=5&p2=12)
             $p1 = isset($_GET['p1']) ? (int)$_GET['p1'] : null;
             $p2 = isset($_GET['p2']) ? (int)$_GET['p2'] : null;
-            $seasonId = isset($_GET['season']) ? (int)$_GET['season'] : 13;
+            $seasonId = isset($_GET['season']) ? (int)$_GET['season'] : 17;
 
             if (!$p1 || !$p2) {
                 jsonResponse(null, "Parameter p1 dan p2 wajib diisi.", 400);

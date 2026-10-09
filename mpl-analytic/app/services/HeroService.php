@@ -1,59 +1,132 @@
 <?php
-// app/services/HeroService.php
-require_once __DIR__ . '/../models/Hero.php';
+require_once dirname(__DIR__) . '/config/database.php';
+require_once dirname(__DIR__) . '/models/Hero.php';
 
-class HeroService {
-    private $heroModel;
+class HeroService
+{
+    private Hero $hero;
 
-    public function __construct($db) {
-        $this->heroModel = new Hero($db);
+    public function __construct()
+    {
+        $db = Database::connect();
+
+        $this->hero = new Hero($db);
     }
 
-    public function getHeroDetail($heroId, $seasonId = 17) {
-        // 1. Ambil Info Dasar
-        $baseInfo = $this->heroModel->getBaseInfo($heroId);
-        if (!$baseInfo) {
-            return null; // Hero tidak ditemukan
+    public function getHeroes(): array
+    {
+        return $this->hero->all();
+    }
+
+    public function getHeroById(int $heroId): ?array
+    {
+        $hero = $this->hero->findById($heroId);
+
+        if ($hero === null) {
+            return null;
         }
 
-        // 2. Ambil Statistik (Win Rate & Pick Rate)
-        $stats = $this->heroModel->getStats($heroId, $seasonId);
+        $detail = $this->hero->getDetail($heroId);
 
-        // 3. Ambil Rekomendasi Build
-        $rawBuild = $this->heroModel->getProBuild($heroId);
-        $buildName = !empty($rawBuild) ? $rawBuild[0]['build_name'] : "Standard Pro Build";
-        
-        // Memformat items dan menambahkan URL ikon secara dinamis
-        $items = array_map(function($item) {
-            // Asumsi penamaan file icon item menggunakan lowercase dengan underscore (contoh: tough_boots.png)
-            $iconName = strtolower(str_replace([' ', '\''], ['_', ''], $item['item_name']));
-            return [
-                "slot_position" => $item['slot_position'],
-                "item_id" => $item['item_id'],
-                "item_name" => $item['item_name'],
-                "icon_url" => "https://cdn.mplanalytic.com/items/" . $iconName . ".png"
-            ];
-        }, $rawBuild);
+        if ($detail !== null) {
+            if (!empty($detail['hero_info_json'])) {
+                $detail['hero_info'] = json_decode(
+                    $detail['hero_info_json'],
+                    true
+                );
+            } else {
+                $detail['hero_info'] = null;
+            }
 
-        // 4. Ambil Aturan Situasional (Counter Items)
-        $situational = $this->heroModel->getSituationalRules($heroId);
+            if (!empty($detail['base_stats_json'])) {
+                $detail['base_stats'] = json_decode(
+                    $detail['base_stats_json'],
+                    true
+                );
+            } else {
+                $detail['base_stats'] = null;
+            }
 
-        // 5. Rangkai menjadi format yang diminta API Contract
+            unset($detail['hero_info_json']);
+            unset($detail['base_stats_json']);
+        }
+
         return [
-            "hero_id" => (int) $baseInfo['hero_id'],
-            "hero_name" => $baseInfo['hero_name'],
-            "primary_role" => $baseInfo['primary_role'],
-            "win_rate" => $stats['win_rate'],
-            "pick_rate" => $stats['pick_rate'],
-            "pro_build" => [
-                "build_name" => $buildName,
-                // Workaround sementara karena emblem & spell belum ada di database
-                "emblem" => "Custom " . $baseInfo['primary_role'] . " Emblem", 
-                "battle_spell" => $baseInfo['primary_role'] === 'Jungler' ? 'Retribution' : 'Flicker',
-                "items" => $items
-            ],
-            "situational_rules" => $situational
+            'hero' => $hero,
+            'detail' => $detail,
+        ];
+    }
+
+    public function getHeroStats(int $heroId): ?array
+    {
+        $hero = $this->hero->findById($heroId);
+
+        if ($hero === null) {
+            return null;
+        }
+
+        return [
+            'hero' => $hero,
+            'stats' => $this->hero->getStats($heroId),
+        ];
+    }
+
+    public function getHeroBuilds(int $heroId): ?array
+    {
+        $hero = $this->hero->findById($heroId);
+
+        if ($hero === null) {
+            return null;
+        }
+
+        return [
+            'hero' => $hero,
+            'items' => $this->hero->getBuildItems($heroId),
+            'emblems' => $this->hero->getBuildEmblems($heroId),
+            'spells' => $this->hero->getBuildSpells($heroId),
+            'talents' => $this->hero->getBuildTalents($heroId),
+            'situational_swaps' => $this->hero->getSituationalSwaps($heroId),
+        ];
+    }
+
+    public function getHeroCounters(int $heroId): ?array
+    {
+        $hero = $this->hero->findById($heroId);
+
+        if ($hero === null) {
+            return null;
+        }
+
+        return [
+            'hero' => $hero,
+            'counters' => $this->hero->getCounters(
+                $heroId,
+                'counter'
+            ),
+            'strong_against' => $this->hero->getCounters(
+                $heroId,
+                'strong_against'
+            ),
+            'synergy' => $this->hero->getCounters(
+                $heroId,
+                'synergy'
+            ),
+        ];
+    }
+
+    public function getHeroSkills(int $heroId): ?array
+    {
+        $hero = $this->hero->findById($heroId);
+
+        if ($hero === null) {
+            return null;
+        }
+
+        return [
+            'hero' => $hero,
+            'skills' => $this->hero->getSkills($heroId),
+            'skill_order' => $this->hero->getSkillOrders($heroId),
         ];
     }
 }
-?>
+
