@@ -1,122 +1,171 @@
+
 <?php
-// app/models/Match.php
+class MatchModel
+{
+    private PDO $db;
 
-class MatchModel {
-    private $db;
-
-    public function __construct($dbConnection) {
-        $this->db =$dbConnection;
+    public function __construct(PDO $dbConnection)
+    {
+        $this->db = $dbConnection;
     }
 
-    /**
-     * 1. Mengambil Informasi Dasar Pertandingan (Match)
-     * Target: Data utama untuk GET /matches/{match_id}
-     */
-    public function getMatchById($matchId) {$sql = "SELECT 
-                    m.match_id, 
-                    m.season_id, 
-                    m.match_date, 
-                    t1.team_id AS team_a_id, 
-                    t1.short_code AS team_a_code, 
-                    m.team_a_score, 
-                    t2.team_id AS team_b_id, 
-                    t2.short_code AS team_b_code, 
-                    m.team_b_score, 
-                    m.winner_team_id 
-                FROM matches m
-                JOIN teams t1 ON m.team_a_id = t1.team_id
-                JOIN teams t2 ON m.team_b_id = t2.team_id
-                WHERE m.match_id = :match_id";
-                
+
+// 1. Mengambil informasi dasar pertandingan.
+// Target: GET /api/matches/{match_id}
+
+    public function getMatchById(string $matchId): ?array
+    {
+        $sql = "
+            SELECT
+                m.match_id,
+                m.season_id,
+                m.week,
+                m.match_date,
+                m.match_time,
+
+                t1.team_id AS team1_id,
+                t1.team_name AS team1_name,
+                m.team1_score,
+
+                t2.team_id AS team2_id,
+                t2.team_name AS team2_name,
+                m.team2_score,
+
+                m.winner_team_id,
+                m.status,
+                m.source
+            FROM matches m
+            INNER JOIN teams t1
+                ON m.team1_id = t1.team_id
+            INNER JOIN teams t2
+                ON m.team2_id = t2.team_id
+            WHERE m.match_id = :match_id
+            LIMIT 1
+        ";
+
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([':match_id' =>$matchId]);
-        
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->execute([
+            ':match_id' => $matchId
+        ]);
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ?: null;
     }
 
-    /**
-     * 2. Mengambil Daftar Game di dalam sebuah Match
-     */
-    public function getGamesByMatchId($matchId) {$sql = "SELECT 
-                    game_id, 
-                    game_number, 
-                    duration_seconds, 
-                    winner_team_id 
-                FROM games 
-                WHERE match_id = :match_id 
-                ORDER BY game_number ASC";
-                
+
+// 2. Mengambil daftar game dalam pertandingan.
+
+    public function getGamesByMatchId(string $matchId): array
+    {
+        $sql = "
+            SELECT
+                game_id,
+                match_id,
+                game_number,
+                team1_id,
+                team2_id,
+                winner_team_id
+            FROM games
+            WHERE match_id = :match_id
+            ORDER BY game_number ASC
+        ";
+
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([':match_id' =>$matchId]);
-        
+        $stmt->execute([
+            ':match_id' => $matchId
+        ]);
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * 3. Mengambil Statistik Player (KDA) per Game
-     * Target: Array `player_stats` pada GET /matches/{match_id}
-     */
-    public function getPlayerStatsByGameId($gameId) {$sql = "SELECT 
-                    p.player_id, 
-                    p.nickname, 
-                    h.hero_name, 
-                    gps.kills, 
-                    gps.deaths, 
-                    gps.assists, 
-                    gps.gold_earned, 
-                    gps.damage_to_heroes AS damage_dealt 
-                FROM game_player_stats gps
-                JOIN players p ON gps.player_id = p.player_id
-                JOIN heroes h ON gps.hero_id = h.hero_id
-                WHERE gps.game_id = :game_id";
-                
+
+// Mengambil statistik pemain dalam satu game.
+
+    public function getPlayerStatsByGameId(string $gameId): array
+    {
+        $sql = "
+            SELECT
+                p.player_id,
+                p.player_name,
+                h.hero_name,
+                gp.kills,
+                gp.deaths,
+                gp.assists,
+                gp.gold,
+                gp.damage,
+                gp.damage_taken,
+                gp.turret_damage
+            FROM game_players gp
+            INNER JOIN players p
+                ON gp.player_id = p.player_id
+            LEFT JOIN heroes h
+                ON gp.hero_id = h.hero_id
+            WHERE gp.game_id = :game_id
+            ORDER BY gp.team_id ASC, gp.player_id ASC
+        ";
+
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([':game_id' =>$gameId]);
-        
+        $stmt->execute([
+            ':game_id' => $gameId
+        ]);
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * 4. Mengambil Timeline Gold per Game
-     * Target: Array `gold_timeline` pada GET /matches/{match_id}
-     */
-    public function getGoldTimelineByGameId($gameId) {
-        // Asumsi tabel game_gold_timeline ada di database Anda
-        $sql = "SELECT 
-                    minute_mark AS minute, 
-                    team_red_gold AS red_gold, 
-                    team_blue_gold AS blue_gold 
-                FROM game_gold_timeline 
-                WHERE game_id = :game_id 
-                ORDER BY minute_mark ASC";
-                
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([':game_id' =>$gameId]);
-        
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Mengambil timeline gold per game.
+
+    public function getGoldTimelineByGameId(string $gameId): array
+    {
+        // $sql = "
+        //     SELECT
+        //         minute_mark AS minute,
+        //         team_red_gold AS red_gold,
+        //         team_blue_gold AS blue_gold
+        //     FROM game_gold_timeline
+        //     WHERE game_id = :game_id
+        //     ORDER BY minute_mark ASC
+        // ";
+
+        // $stmt = $this->db->prepare($sql);
+        // $stmt->execute([
+        //     ':game_id' => $gameId
+        // ]);
+
+        // return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return [];
     }
 
-    /**
-     * 5. Mengambil Riwayat Draft Pick & Ban
-     * Target: GET /matches/{match_id}/drafts
-     */
-    public function getDraftsByMatchId($matchId) {$sql = "SELECT 
-                    g.game_number, 
-                    gd.pick_ban_turn AS turn, 
-                    t.short_code AS team_short_code, 
-                    gd.draft_type, 
-                    h.hero_name 
-                FROM game_drafts gd
-                JOIN games g ON gd.game_id = g.game_id
-                JOIN teams t ON gd.team_id = t.team_id
-                JOIN heroes h ON gd.hero_id = h.hero_id
-                WHERE g.match_id = :match_id 
-                ORDER BY g.game_number ASC, gd.pick_ban_turn ASC";
-                
+// Mengambil draft pick dan ban dalam pertandingan.
+
+    public function getDraftsByMatchId(string $matchId): array
+    {
+        $sql = "
+            SELECT
+                g.game_number,
+                gd.pick_ban_turn AS turn,
+                t.team_name,
+                gd.draft_type,
+                h.hero_name
+            FROM game_drafts gd
+            INNER JOIN games g
+                ON gd.game_id = g.game_id
+            INNER JOIN teams t
+                ON gd.team_id = t.team_id
+            INNER JOIN heroes h
+                ON gd.hero_id = h.hero_id
+            WHERE g.match_id = :match_id
+            ORDER BY
+                g.game_number ASC,
+                gd.pick_ban_turn ASC
+        ";
+
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([':match_id' =>$matchId]);
-        
+        $stmt->execute([
+            ':match_id' => $matchId
+        ]);
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
-?>

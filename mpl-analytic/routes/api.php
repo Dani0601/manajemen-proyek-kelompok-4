@@ -144,7 +144,6 @@ function loadController(string $controllerFile, string $controllerClass): object
 
 return new $controllerClass($db);
 
-    return new $controllerClass();
 }
 
 if ($uri === 'api/dashboard') {
@@ -695,20 +694,29 @@ if (
     | GET /api/matches/{id}/games
     */
 
-    if (
-        isset($segments[3]) &&
-        $segments[3] === 'games'
-    ) {
-        $controller->games($matchId);
-    }
+    // if (
+    //     isset($segments[3]) &&
+    //     $segments[3] === 'games'
+    // ) {
+    //     $controller->games($matchId);
+    // }
 
+
+// GET /api/matches/{id}/drafts
+        if (
+            isset($segments[3]) &&
+            $segments[3] === 'drafts' &&
+            !isset($segments[4])
+        ) {
+            $controller->getDrafts($matchId);
+        }
 
     /*
     | GET /api/matches/{id}
     */
 
     if (!isset($segments[3])) {
-        $controller->show($matchId);
+        $controller->getDetail($matchId);
     }
 }
 
