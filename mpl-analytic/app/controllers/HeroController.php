@@ -1,5 +1,4 @@
 <?php
-
 require_once dirname(__DIR__) . '/services/HeroService.php';
 require_once dirname(__DIR__) . '/helpers/response.php';
 

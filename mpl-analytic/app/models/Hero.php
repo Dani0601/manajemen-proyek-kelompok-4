@@ -1,5 +1,4 @@
 <?php
-
 class Hero
 {
     private PDO $db;
@@ -335,3 +334,4 @@ class Hero
         return $stmt->fetchAll();
     }
 }
+

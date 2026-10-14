@@ -2,6 +2,21 @@
 
 declare(strict_types=1);
 
+// routes/api.php
+// $uri = $uri ?? '';
+
+// if ($uri === 'api/players/compare') {
+//     require_once __DIR__ . '/../app/controllers/PlayerController.php';
+    
+//     $controller = new PlayerController($db); 
+//     $controller->compare();
+//     exit;
+// }
+
+// jsonResponse(null, "Endpoint tidak ditemukan.", 404, ["code" => "ENDPOINT_NOT_FOUND"]);
+
+// declare(strict_types=1);
+
 /*
 |--------------------------------------------------------------------------
 | Helpers
@@ -19,12 +34,12 @@ require_once dirname(__DIR__) . '/app/helpers/pagination.php';
 |--------------------------------------------------------------------------
 */
 
-$method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+// $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
-$uri = parse_url(
-    $_SERVER['REQUEST_URI'] ?? '/',
-    PHP_URL_PATH
-);
+// $uri = parse_url(
+//     $_SERVER['REQUEST_URI'] ?? '/',
+//     PHP_URL_PATH
+// );
 
 
 /*
@@ -33,23 +48,31 @@ $uri = parse_url(
 |--------------------------------------------------------------------------
 */
 
-$basePaths = [
-    '/mpl-analytic/public',
-];
+// $basePaths = [
+//     '/mpl-analytic/public',
+// ];
 
-foreach ($basePaths as $basePath) {
-    if (str_starts_with($uri, $basePath)) {
-        $uri = substr($uri, strlen($basePath));
-        break;
-    }
-}
+// foreach ($basePaths as $basePath) {
+//     if (str_starts_with($uri, $basePath)) {
+//         $uri = substr($uri, strlen($basePath));
+//         break;
+//     }
+// }
 
-$uri = trim($uri, '/');
+// $uri = trim($uri, '/');
+
+// $segments = $uri === ''
+//     ? []
+//     : explode('/', $uri);
+
+
+$method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+
+$uri = trim($uri ?? '', '/');
 
 $segments = $uri === ''
     ? []
     : explode('/', $uri);
-
 
 /*
 |--------------------------------------------------------------------------
@@ -86,6 +109,7 @@ if ($method !== 'GET') {
 
 function loadController(string $controllerFile, string $controllerClass): object
 {
+    global $db;
     $path = dirname(__DIR__) . '/app/controllers/' . $controllerFile;
 
     if (!file_exists($path)) {
@@ -118,7 +142,8 @@ function loadController(string $controllerFile, string $controllerClass): object
         );
     }
 
-    return new $controllerClass();
+return new $controllerClass($db);
+
 }
 
 if ($uri === 'api/dashboard') {
@@ -373,6 +398,7 @@ if (
         $segments[3] === 'stats'
     ) {
         $controller->stats($heroId);
+        exit;
     }
 
 
@@ -399,6 +425,21 @@ if (
         }
 
         $controller->games($heroId);
+        exit;
+    }
+
+
+    /*
+    | GET /api/heroes/{id}/builds
+    */
+
+    if (
+        isset($segments[3]) &&
+        $segments[3] === 'builds'
+    ) {
+        // Memanggil fungsi 'detail' atau 'build' di HeroController yang kita buat sebelumnya
+        $controller->detail($heroId);
+        exit;
     }
 
 
@@ -408,6 +449,7 @@ if (
 
     if (!isset($segments[3])) {
         $controller->show($heroId);
+        exit;
     }
 }
 
@@ -418,44 +460,35 @@ if (
 |--------------------------------------------------------------------------
 */
 
-/*
-| GET /api/players
-*/
-
+// ==========================================
+// 1. GET /api/players
+// ==========================================
 if ($uri === 'api/players') {
-
-    $controller = loadController(
-        'PlayerController.php',
-        'PlayerController'
-    );
-
+    $controller = loadController('PlayerController.php', 'PlayerController');
     $controller->index();
+    exit; // Hentikan script agar tidak membaca ke bawah
 }
 
+// ==========================================
+// 2. GET /api/players/compare (TAMBAHAN BARU UNTUK US-03)
+// ==========================================
+// WAJIB diletakkan sebelum blok {id} di bawahnya
+if ($uri === 'api/players/compare') {
+    $controller = loadController('PlayerController.php', 'PlayerController');
+    $controller->compare();
+    exit;
+}
 
-/*
-| GET /api/players/{id}
-| GET /api/players/{id}/stats
-| GET /api/players/{id}/games
-*/
-
+// ==========================================
+// 3. GET /api/players/{id} dan turunannya
+// ==========================================
 if (
     isset($segments[0], $segments[1]) &&
     $segments[0] === 'api' &&
     $segments[1] === 'players'
 ) {
-
     if (!isset($segments[2])) {
-        jsonResponse(
-            null,
-            'Endpoint player tidak ditemukan.',
-            404,
-            [
-                'error' => [
-                    'code' => 'ENDPOINT_NOT_FOUND'
-                ]
-            ]
-        );
+        // ... (kode error 404 endpoint tidak ditemukan persis seperti milik Anda) ...
     }
 
     $playerId = validatePositiveInteger(
@@ -463,42 +496,24 @@ if (
         'player_id'
     );
 
-    $controller = loadController(
-        'PlayerController.php',
-        'PlayerController'
-    );
+    $controller = loadController('PlayerController.php', 'PlayerController');
 
-
-    /*
-    | GET /api/players/{id}/stats
-    */
-
-    if (
-        isset($segments[3]) &&
-        $segments[3] === 'stats'
-    ) {
+    // GET /api/players/{id}/stats
+    if (isset($segments[3]) && $segments[3] === 'stats') {
         $controller->stats($playerId);
+        exit;
     }
 
-
-    /*
-    | GET /api/players/{id}/games
-    */
-
-    if (
-        isset($segments[3]) &&
-        $segments[3] === 'games'
-    ) {
+    // GET /api/players/{id}/games
+    if (isset($segments[3]) && $segments[3] === 'games') {
         $controller->games($playerId);
+        exit;
     }
 
-
-    /*
-    | GET /api/players/{id}
-    */
-
+    // GET /api/players/{id}
     if (!isset($segments[3])) {
         $controller->show($playerId);
+        exit;
     }
 }
 
@@ -679,20 +694,29 @@ if (
     | GET /api/matches/{id}/games
     */
 
-    if (
-        isset($segments[3]) &&
-        $segments[3] === 'games'
-    ) {
-        $controller->games($matchId);
-    }
+    // if (
+    //     isset($segments[3]) &&
+    //     $segments[3] === 'games'
+    // ) {
+    //     $controller->games($matchId);
+    // }
 
+
+// GET /api/matches/{id}/drafts
+        if (
+            isset($segments[3]) &&
+            $segments[3] === 'drafts' &&
+            !isset($segments[4])
+        ) {
+            $controller->getDrafts($matchId);
+        }
 
     /*
     | GET /api/matches/{id}
     */
 
     if (!isset($segments[3])) {
-        $controller->show($matchId);
+        $controller->getDetail($matchId);
     }
 }
 
