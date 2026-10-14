@@ -2,21 +2,6 @@
 
 declare(strict_types=1);
 
-// routes/api.php
-// $uri = $uri ?? '';
-
-// if ($uri === 'api/players/compare') {
-//     require_once __DIR__ . '/../app/controllers/PlayerController.php';
-    
-//     $controller = new PlayerController($db); 
-//     $controller->compare();
-//     exit;
-// }
-
-// jsonResponse(null, "Endpoint tidak ditemukan.", 404, ["code" => "ENDPOINT_NOT_FOUND"]);
-
-// declare(strict_types=1);
-
 /*
 |--------------------------------------------------------------------------
 | Helpers
@@ -30,49 +15,40 @@ require_once dirname(__DIR__) . '/app/helpers/pagination.php';
 
 /*
 |--------------------------------------------------------------------------
-| Request
+| Request & Base Path
 |--------------------------------------------------------------------------
 */
-
-// $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
-
-// $uri = parse_url(
-//     $_SERVER['REQUEST_URI'] ?? '/',
-//     PHP_URL_PATH
-// );
-
-
-/*
-|--------------------------------------------------------------------------
-| Base Path
-|--------------------------------------------------------------------------
-*/
-
-// $basePaths = [
-//     '/mpl-analytic/public',
-// ];
-
-// foreach ($basePaths as $basePath) {
-//     if (str_starts_with($uri, $basePath)) {
-//         $uri = substr($uri, strlen($basePath));
-//         break;
-//     }
-// }
-
-// $uri = trim($uri, '/');
-
-// $segments = $uri === ''
-//     ? []
-//     : explode('/', $uri);
-
 
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
-$uri = trim($uri ?? '', '/');
+if (!isset($uri)) {
+    $uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
 
-$segments = $uri === ''
-    ? []
-    : explode('/', $uri);
+    $basePaths = [
+        '/manajemen-proyek-kelompok-4/mpl-analytic/public',
+        '/manajemen-proyek-kelompok-4',
+        '/mpl-analytic/public',
+    ];
+
+    $scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? ''));
+    if ($scriptDir !== '/' && $scriptDir !== '' && str_starts_with($uri, $scriptDir)) {
+        $uri = substr($uri, strlen($scriptDir));
+    } else {
+        foreach ($basePaths as $basePath) {
+            if (str_starts_with($uri, $basePath)) {
+                $uri = substr($uri, strlen($basePath));
+                break;
+            }
+        }
+    }
+}
+
+$uri = trim($uri, '/');
+
+if (!isset($segments)) {
+    $segments = $uri === '' ? [] : explode('/', $uri);
+}
+
 
 /*
 |--------------------------------------------------------------------------
@@ -142,9 +118,17 @@ function loadController(string $controllerFile, string $controllerClass): object
         );
     }
 
-return new $controllerClass($db);
+    if (isset($db) && $db instanceof PDO) {
+        try {
+            return new $controllerClass($db);
+        } catch (Throwable) {
+            return new $controllerClass();
+        }
+    }
 
+    return new $controllerClass();
 }
+
 
 if ($uri === 'api/dashboard') {
     $controller = loadController(

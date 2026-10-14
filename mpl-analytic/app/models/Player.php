@@ -12,10 +12,8 @@ class Player {
      * Mengambil Master Data Player untuk dropdown pencarian
      */
     public function getAllPlayers(int $limit = 100, int $offset = 0) {
-        $sql = "SELECT p.player_id, p.player_name, p.real_name, p.primary_role, t.short_code AS team_code
+        $sql = "SELECT p.player_id, p.player_name
                 FROM players p
-                LEFT JOIN team_rosters tr ON p.player_id = tr.player_id
-                LEFT JOIN teams t ON tr.team_id = t.team_id
                 ORDER BY p.player_name ASC
                 LIMIT :limit OFFSET :offset";
                 
