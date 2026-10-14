@@ -34,13 +34,20 @@ $uri = parse_url(
 */
 
 $basePaths = [
+    '/manajemen-proyek-kelompok-4/mpl-analytic/public',
+    '/manajemen-proyek-kelompok-4',
     '/mpl-analytic/public',
 ];
 
-foreach ($basePaths as $basePath) {
-    if (str_starts_with($uri, $basePath)) {
-        $uri = substr($uri, strlen($basePath));
-        break;
+$scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? ''));
+if ($scriptDir !== '/' && $scriptDir !== '' && str_starts_with($uri, $scriptDir)) {
+    $uri = substr($uri, strlen($scriptDir));
+} else {
+    foreach ($basePaths as $basePath) {
+        if (str_starts_with($uri, $basePath)) {
+            $uri = substr($uri, strlen($basePath));
+            break;
+        }
     }
 }
 
@@ -49,6 +56,7 @@ $uri = trim($uri, '/');
 $segments = $uri === ''
     ? []
     : explode('/', $uri);
+
 
 
 /*
