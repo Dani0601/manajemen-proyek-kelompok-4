@@ -1,0 +1,39 @@
+$kind: http-request
+url: "{{baseUrl}}/api/heroes/{{heroId}}"
+method: GET
+headers:
+  Accept: application/json
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("[200] Status code is 200 OK", function () {
+          pm.response.to.have.status(200);
+      });
+      pm.test("[Body] Hero detail has hero_id and name", function () {
+          var json = pm.response.json();
+          pm.expect(json.success).to.be.true;
+          pm.expect(json.data).to.be.an("object");
+          var heroObj = json.data.hero || json.data;
+          pm.expect(heroObj).to.have.property("hero_id");
+          pm.expect(String(heroObj.hero_id)).to.eql(pm.collectionVariables.get("heroId"));
+      });
+      pm.test("[Body] Situational recommendations follow the agreed field names", function () {
+          var json = pm.response.json();
+          pm.expect(json.data).to.have.property("recommendations");
+          pm.expect(json.data.recommendations.items).to.be.an("array");
+          pm.expect(json.data.recommendations.emblems).to.be.an("array");
+          if (json.data.recommendations.items.length > 0) {
+              var item = json.data.recommendations.items[0];
+              pm.expect(item).to.have.property("item_name").that.is.a("string");
+              pm.expect(item).to.have.property("suitability_status").that.is.a("string");
+              pm.expect(item).to.have.property("reason").that.is.a("string");
+          }
+          if (json.data.recommendations.emblems.length > 0) {
+              var emblem = json.data.recommendations.emblems[0];
+              pm.expect(emblem).to.have.property("name").that.is.a("string");
+              pm.expect(emblem).to.have.property("suitability_status").that.is.a("string");
+              pm.expect(emblem).to.have.property("reason").that.is.a("string");
+          }
+      });
+    language: text/javascript
+order: 2000

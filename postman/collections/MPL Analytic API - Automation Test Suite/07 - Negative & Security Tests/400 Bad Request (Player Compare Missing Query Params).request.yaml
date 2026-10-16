@@ -1,0 +1,18 @@
+$kind: http-request
+url: "{{baseUrl}}/api/players/compare"
+method: GET
+headers:
+  Accept: application/json
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("[400] Status code is 400 Bad Request", function () {
+          pm.response.to.have.status(400);
+      });
+      pm.test("[Message] Mentions parameter wajib diisi", function () {
+          var json = pm.response.json();
+          pm.expect(json.success).to.be.false;
+          pm.expect(json.message).to.include("wajib diisi");
+      });
+    language: text/javascript
+order: 5000

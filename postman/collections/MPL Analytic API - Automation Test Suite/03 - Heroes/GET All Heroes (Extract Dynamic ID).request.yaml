@@ -1,0 +1,22 @@
+$kind: http-request
+url: "{{baseUrl}}/api/heroes"
+method: GET
+headers:
+  Accept: application/json
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("[200] Status code is 200 OK", function () {
+          pm.response.to.have.status(200);
+      });
+      pm.test("[Body] Heroes list is array and has items", function () {
+          var json = pm.response.json();
+          pm.expect(json.success).to.be.true;
+          pm.expect(json.data).to.be.an("array");
+          pm.expect(json.data.length).to.be.above(0);
+          if (json.data[0] && json.data[0].hero_id) {
+              pm.collectionVariables.set("heroId", String(json.data[0].hero_id));
+          }
+      });
+    language: text/javascript
+order: 1000

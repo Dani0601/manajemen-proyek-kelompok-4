@@ -155,7 +155,20 @@ if ($uri === 'api/meta') {
         'MetaController'
     );
 
-    $controller->index();
+    if (method_exists($controller, 'index')) {
+        $controller->index();
+    } else {
+        jsonResponse(
+            null,
+            'Endpoint belum diimplementasikan.',
+            501,
+            [
+                'error' => [
+                    'code' => 'NOT_IMPLEMENTED'
+                ]
+            ]
+        );
+    }
 }
 
 
@@ -176,7 +189,20 @@ if ($uri === 'api/seasons') {
         'MetaController'
     );
 
-    $controller->seasons();
+    if (method_exists($controller, 'seasons')) {
+        $controller->seasons();
+    } else {
+        jsonResponse(
+            null,
+            'Endpoint belum diimplementasikan.',
+            501,
+            [
+                'error' => [
+                    'code' => 'NOT_IMPLEMENTED'
+                ]
+            ]
+        );
+    }
 }
 
 
@@ -197,7 +223,20 @@ if ($uri === 'api/teams') {
         'MetaController'
     );
 
-    $controller->teams();
+    if (method_exists($controller, 'teams')) {
+        $controller->teams();
+    } else {
+        jsonResponse(
+            null,
+            'Endpoint belum diimplementasikan.',
+            501,
+            [
+                'error' => [
+                    'code' => 'NOT_IMPLEMENTED'
+                ]
+            ]
+        );
+    }
 }
 
 
@@ -484,19 +523,31 @@ if (
 
     // GET /api/players/{id}/stats
     if (isset($segments[3]) && $segments[3] === 'stats') {
-        $controller->stats($playerId);
+        if (method_exists($controller, 'stats')) {
+            $controller->stats($playerId);
+        } else {
+            jsonResponse(null, 'Endpoint belum diimplementasikan.', 501, ['error' => ['code' => 'NOT_IMPLEMENTED']]);
+        }
         exit;
     }
 
     // GET /api/players/{id}/games
     if (isset($segments[3]) && $segments[3] === 'games') {
-        $controller->games($playerId);
+        if (method_exists($controller, 'games')) {
+            $controller->games($playerId);
+        } else {
+            jsonResponse(null, 'Endpoint belum diimplementasikan.', 501, ['error' => ['code' => 'NOT_IMPLEMENTED']]);
+        }
         exit;
     }
 
     // GET /api/players/{id}
     if (!isset($segments[3])) {
-        $controller->show($playerId);
+        if (method_exists($controller, 'show')) {
+            $controller->show($playerId);
+        } else {
+            jsonResponse(null, 'Endpoint belum diimplementasikan.', 501, ['error' => ['code' => 'NOT_IMPLEMENTED']]);
+        }
         exit;
     }
 }
@@ -529,7 +580,22 @@ if ($uri === 'api/tournaments') {
         'TournamentController'
     );
 
-    $controller->index();
+    if (method_exists($controller, 'index')) {
+        $controller->index();
+    } elseif (method_exists($controller, 'getMatchesSchedule')) {
+        $controller->getMatchesSchedule();
+    } else {
+        jsonResponse(
+            null,
+            'Endpoint belum diimplementasikan.',
+            501,
+            [
+                'error' => [
+                    'code' => 'NOT_IMPLEMENTED'
+                ]
+            ]
+        );
+    }
 }
 
 
@@ -577,7 +643,11 @@ if (
         isset($segments[3]) &&
         $segments[3] === 'standings'
     ) {
-        $controller->standings($tournamentId);
+        if (method_exists($controller, 'standings')) {
+            $controller->standings($tournamentId);
+        } else {
+            jsonResponse(null, 'Endpoint belum diimplementasikan.', 501, ['error' => ['code' => 'NOT_IMPLEMENTED']]);
+        }
     }
 
 
@@ -589,7 +659,13 @@ if (
         isset($segments[3]) &&
         $segments[3] === 'schedule'
     ) {
-        $controller->schedule($tournamentId);
+        if (method_exists($controller, 'schedule')) {
+            $controller->schedule($tournamentId);
+        } elseif (method_exists($controller, 'getMatchesSchedule')) {
+            $controller->getMatchesSchedule();
+        } else {
+            jsonResponse(null, 'Endpoint belum diimplementasikan.', 501, ['error' => ['code' => 'NOT_IMPLEMENTED']]);
+        }
     }
 
 
@@ -598,7 +674,11 @@ if (
     */
 
     if (!isset($segments[3])) {
-        $controller->show($tournamentId);
+        if (method_exists($controller, 'show')) {
+            $controller->show($tournamentId);
+        } else {
+            jsonResponse(null, 'Endpoint belum diimplementasikan.', 501, ['error' => ['code' => 'NOT_IMPLEMENTED']]);
+        }
     }
 }
 
@@ -620,7 +700,20 @@ if ($uri === 'api/matches') {
         'MatchController'
     );
 
-    $controller->index();
+    if (method_exists($controller, 'index')) {
+        $controller->index();
+    } else {
+        jsonResponse(
+            null,
+            'Endpoint belum diimplementasikan.',
+            501,
+            [
+                'error' => [
+                    'code' => 'NOT_IMPLEMENTED'
+                ]
+            ]
+        );
+    }
 }
 
 

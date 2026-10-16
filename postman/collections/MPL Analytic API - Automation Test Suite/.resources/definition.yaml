@@ -1,0 +1,9 @@
+$kind: collection
+description: Automated Testing Suite untuk semua endpoint MPL Analytic API. Mendukung Postman Runner dan Newman CLI dengan validasi schema, response time, status code, dan dynamic variable chaining.
+variables:
+  baseUrl: http://localhost:8000
+  heroId: "87"
+  playerId: "2"
+  player2Id: "23"
+  seasonId: "1"
+  matchId: s17_w01_m01
