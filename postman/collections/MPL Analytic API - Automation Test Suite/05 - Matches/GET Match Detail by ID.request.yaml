@@ -1,0 +1,23 @@
+$kind: http-request
+url: "{{baseUrl}}/api/matches/{{matchId}}"
+method: GET
+headers:
+  Accept: application/json
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("[200] Status code is 200 OK", function () {
+          pm.response.to.have.status(200);
+      });
+      pm.test("[Body] Match detail has teams and score info", function () {
+          var json = pm.response.json();
+          pm.expect(json.success).to.be.true;
+          pm.expect(json.data).to.be.an("object");
+          pm.expect(json.data.match_id).to.eql(pm.collectionVariables.get("matchId"));
+          pm.expect(json.data).to.have.property("team1");
+          pm.expect(json.data).to.have.property("team2");
+          pm.expect(json.data.team1).to.have.property("team_name");
+          pm.expect(json.data.team2).to.have.property("team_name");
+      });
+    language: text/javascript
+order: 1000
