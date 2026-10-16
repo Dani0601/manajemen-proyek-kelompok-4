@@ -15,48 +15,39 @@ require_once dirname(__DIR__) . '/app/helpers/pagination.php';
 
 /*
 |--------------------------------------------------------------------------
-| REQUEST
+| Request & Base Path
 |--------------------------------------------------------------------------
 */
 
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
-$uri = parse_url(
-    $_SERVER['REQUEST_URI'] ?? '/',
-    PHP_URL_PATH
-);
+if (!isset($uri)) {
+    $uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
 
+    $basePaths = [
+        '/manajemen-proyek-kelompok-4/mpl-analytic/public',
+        '/manajemen-proyek-kelompok-4',
+        '/mpl-analytic/public',
+    ];
 
-/*
-|--------------------------------------------------------------------------
-| BASE PATH
-|--------------------------------------------------------------------------
-*/
-
-$basePaths = [
-    '/manajemen-proyek-kelompok-4/mpl-analytic/public',
-    '/manajemen-proyek-kelompok-4',
-    '/mpl-analytic/public',
-];
-
-$scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? ''));
-if ($scriptDir !== '/' && $scriptDir !== '' && str_starts_with($uri, $scriptDir)) {
-    $uri = substr($uri, strlen($scriptDir));
-} else {
-    foreach ($basePaths as $basePath) {
-        if (str_starts_with($uri, $basePath)) {
-            $uri = substr($uri, strlen($basePath));
-            break;
+    $scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? ''));
+    if ($scriptDir !== '/' && $scriptDir !== '' && str_starts_with($uri, $scriptDir)) {
+        $uri = substr($uri, strlen($scriptDir));
+    } else {
+        foreach ($basePaths as $basePath) {
+            if (str_starts_with($uri, $basePath)) {
+                $uri = substr($uri, strlen($basePath));
+                break;
+            }
         }
     }
 }
 
 $uri = trim($uri, '/');
 
-$segments = $uri === ''
-    ? []
-    : explode('/', $uri);
-
+if (!isset($segments)) {
+    $segments = $uri === '' ? [] : explode('/', $uri);
+}
 
 
 /*
@@ -88,14 +79,10 @@ if ($method !== 'GET') {
 |--------------------------------------------------------------------------
 */
 
-function loadController(
-    string $controllerFile,
-    string $controllerClass
-): object {
-
-    $path = dirname(__DIR__)
-        . '/app/controllers/'
-        . $controllerFile;
+function loadController(string $controllerFile, string $controllerClass): object
+{
+    global $db;
+    $path = dirname(__DIR__) . '/app/controllers/' . $controllerFile;
 
     if (!file_exists($path)) {
         jsonResponse(
@@ -127,18 +114,17 @@ function loadController(
         );
     }
 
+    if (isset($db) && $db instanceof PDO) {
+        try {
+            return new $controllerClass($db);
+        } catch (Throwable) {
+            return new $controllerClass();
+        }
+    }
+
     return new $controllerClass();
 }
 
-
-/*
-|--------------------------------------------------------------------------
-| DASHBOARD
-|--------------------------------------------------------------------------
-|
-| GET /api/dashboard
-|
-*/
 
 if ($uri === 'api/dashboard') {
 
@@ -341,8 +327,7 @@ if (
         isset($segments[3]) &&
         $segments[3] === 'skills'
     ) {
-
-        $controller->skills($heroId);
+        $controller->stats($heroId);
         exit;
     }
 
@@ -378,6 +363,20 @@ if (
 
 
     /*
+    | GET /api/heroes/{id}/builds
+    */
+
+    if (
+        isset($segments[3]) &&
+        $segments[3] === 'builds'
+    ) {
+        // Memanggil fungsi 'detail' atau 'build' di HeroController yang kita buat sebelumnya
+        $controller->detail($heroId);
+        exit;
+    }
+
+
+    /*
     |--------------------------------------------------------------------------
     | GET /api/heroes/{id}
     |--------------------------------------------------------------------------
@@ -388,6 +387,7 @@ if (
         $controller->show($heroId);
         exit;
     }
+}
 
 
     /*
@@ -396,65 +396,35 @@ if (
     |--------------------------------------------------------------------------
     */
 
-    jsonResponse(
-        null,
-        'Endpoint hero tidak ditemukan.',
-        404,
-        [
-            'error' => [
-                'code' => 'ENDPOINT_NOT_FOUND',
-            ],
-        ]
-    );
+// ==========================================
+// 1. GET /api/players
+// ==========================================
+if ($uri === 'api/players') {
+    $controller = loadController('PlayerController.php', 'PlayerController');
+    $controller->index();
+    exit; // Hentikan script agar tidak membaca ke bawah
 }
 
-
-/*
-|--------------------------------------------------------------------------
-| PLAYERS
-|--------------------------------------------------------------------------
-|
-| GET /api/players
-| GET /api/players/{id}
-| GET /api/players/{id}/stats
-| GET /api/players/{id}/games
-|
-*/
-
-if (
-    $method === 'GET' &&
-    $uri === 'api/players'
-) {
-
-    $controller = loadController(
-        'PlayerController.php',
-        'PlayerController'
-    );
-
-    $controller->index();
+// ==========================================
+// 2. GET /api/players/compare (TAMBAHAN BARU UNTUK US-03)
+// ==========================================
+// WAJIB diletakkan sebelum blok {id} di bawahnya
+if ($uri === 'api/players/compare') {
+    $controller = loadController('PlayerController.php', 'PlayerController');
+    $controller->compare();
     exit;
 }
 
-
+// ==========================================
+// 3. GET /api/players/{id} dan turunannya
+// ==========================================
 if (
-    $method === 'GET' &&
     isset($segments[0], $segments[1]) &&
     $segments[0] === 'api' &&
     $segments[1] === 'players'
 ) {
-
     if (!isset($segments[2])) {
-
-        jsonResponse(
-            null,
-            'Endpoint player tidak ditemukan.',
-            404,
-            [
-                'error' => [
-                    'code' => 'ENDPOINT_NOT_FOUND',
-                ],
-            ]
-        );
+        // ... (kode error 404 endpoint tidak ditemukan persis seperti milik Anda) ...
     }
 
     $playerId = validatePositiveInteger(
@@ -462,50 +432,21 @@ if (
         'player_id'
     );
 
-    $controller = loadController(
-        'PlayerController.php',
-        'PlayerController'
-    );
+    $controller = loadController('PlayerController.php', 'PlayerController');
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | GET /api/players/{id}/stats
-    |--------------------------------------------------------------------------
-    */
-
-    if (
-        isset($segments[3]) &&
-        $segments[3] === 'stats'
-    ) {
-
+    // GET /api/players/{id}/stats
+    if (isset($segments[3]) && $segments[3] === 'stats') {
         $controller->stats($playerId);
         exit;
     }
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | GET /api/players/{id}/games
-    |--------------------------------------------------------------------------
-    */
-
-    if (
-        isset($segments[3]) &&
-        $segments[3] === 'games'
-    ) {
-
+    // GET /api/players/{id}/games
+    if (isset($segments[3]) && $segments[3] === 'games') {
         $controller->games($playerId);
         exit;
     }
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | GET /api/players/{id}
-    |--------------------------------------------------------------------------
-    */
-
+    // GET /api/players/{id}
     if (!isset($segments[3])) {
 
         $controller->show($playerId);
@@ -746,15 +687,22 @@ if (
     |--------------------------------------------------------------------------
     */
 
-    if (
-        isset($segments[3]) &&
-        $segments[3] === 'games'
-    ) {
+    // if (
+    //     isset($segments[3]) &&
+    //     $segments[3] === 'games'
+    // ) {
+    //     $controller->games($matchId);
+    // }
 
-        $controller->games($matchId);
-        exit;
-    }
 
+// GET /api/matches/{id}/drafts
+        if (
+            isset($segments[3]) &&
+            $segments[3] === 'drafts' &&
+            !isset($segments[4])
+        ) {
+            $controller->getDrafts($matchId);
+        }
 
     /*
     |--------------------------------------------------------------------------
@@ -763,10 +711,9 @@ if (
     */
 
     if (!isset($segments[3])) {
-
-        $controller->show($matchId);
-        exit;
+        $controller->getDetail($matchId);
     }
+}
 
 
     /*
@@ -785,7 +732,7 @@ if (
             ],
         ]
     );
-}
+
 
 
 /*

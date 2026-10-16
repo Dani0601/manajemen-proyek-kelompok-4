@@ -1,5 +1,4 @@
 <?php
-
 require_once dirname(__DIR__) . '/config/database.php';
 require_once dirname(__DIR__) . '/models/Hero.php';
 
@@ -55,6 +54,10 @@ class HeroService
         return [
             'hero' => $hero,
             'detail' => $detail,
+            'recommendations' => [
+                'items' => $this->hero->getSituationalRecommendations($heroId),
+                'emblems' => $this->hero->getEmblemRecommendations($heroId),
+            ],
         ];
     }
 
@@ -130,3 +133,4 @@ class HeroService
         ];
     }
 }
+

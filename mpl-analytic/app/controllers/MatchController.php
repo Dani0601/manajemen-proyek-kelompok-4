@@ -1,92 +1,95 @@
+
 <?php
-
-declare(strict_types=1);
-
-require_once dirname(__DIR__) . '/config/database.php';
-require_once dirname(__DIR__) . '/models/Match.php';
-require_once dirname(__DIR__) . '/models/Game.php';
-require_once dirname(__DIR__) . '/services/MatchService.php';
-require_once dirname(__DIR__) . '/services/GameService.php';
+require_once __DIR__ . '/../services/MatchService.php';
+require_once __DIR__ . '/../helpers/response.php';
 
 class MatchController
 {
-    private MatchService $service;
+    private MatchService $matchService;
 
-    public function __construct()
+    public function __construct(PDO $db)
     {
-        $db = Database::connect();
-
-        $matchModel = new MatchModel($db);
-        $gameModel = new Game($db);
-
-        $gameService = new GameService($gameModel);
-
-        $this->service = new MatchService(
-            $matchModel,
-            $gameService
-        );
+        $this->matchService = new MatchService($db);
     }
 
-    public function index(): void
-    {
-        jsonResponse(
-            [],
-            'Daftar match belum diimplementasikan.',
-            501
-        );
-    }
 
-    public function show(string $matchId): void
-    {
-        try {
-            $data = $this->service->getMatch($matchId);
+    // GET /api/matches/{match_id}
 
-            jsonResponse(
-                $data,
-                'Detail match berhasil diambil.',
-                200
-            );
-        } catch (RuntimeException $e) {
-            $this->handleException($e);
+    public function getDetail(string $matchId): never
+    {
+        // Validasi ID pertandingan
+        if ($matchId === '') {
+            jsonResponse(null, 'ID pertandingan wajib diisi.', 400, [
+                'error' => [
+                    'code' => 'INVALID_MATCH_ID'
+                ]
+            ]);
         }
-    }
 
-    public function games(string $matchId): void
-    {
         try {
-            $data = $this->service->getGames($matchId);
+            $data = $this->matchService->getMatchDetail($matchId);
 
-            jsonResponse(
-                $data,
-                'Daftar game dalam match berhasil diambil.',
-                200
-            );
-        } catch (RuntimeException $e) {
-            $this->handleException($e);
-        }
+            if ($data === null) {
+                jsonResponse(null, 'Detail pertandingan tidak ditemukan.', 404, [
+                    'error' => [
+                        'code' => 'MATCH_NOT_FOUND'
+                    ]
+                ]);
+            }
+
+            jsonResponse($data, 'Detail pertandingan berhasil diambil.',200);
+        } catch (Throwable $e) {
+    error_log(
+        'MatchController::getDetail - '
+        . $e->getMessage()
+    );
+
+    jsonResponse(
+        null,
+        'Terjadi kesalahan pada server.',
+        500,
+        [
+            'error' => [
+                'code' => 'INTERNAL_SERVER_ERROR'
+            ]
+        ]
+    );
+}
     }
 
-    private function handleException(RuntimeException $e): void
+
+    // GET /api/matches/{match_id}/drafts
+
+    public function getDrafts(string $matchId): never
     {
-        switch ($e->getMessage()) {
-            case 'INVALID_MATCH_ID':
-                jsonResponse(
-                    null,
-                    'Match ID tidak valid.',
-                    400
-                );
-                break;
+        if ($matchId === '') {
+            jsonResponse(null, 'ID pertandingan wajib diisi.', 400, [
+                'error' => [
+                    'code' => 'INVALID_MATCH_ID'
+                ]
+            ]);
+        }
 
-            case 'MATCH_NOT_FOUND':
-                jsonResponse(
-                    null,
-                    'Match tidak ditemukan.',
-                    404
-                );
-                break;
+        try {
+            $data = $this->matchService->getMatchDrafts($matchId);
 
-            default:
-                throw $e;
+            if ($data === null) {
+                jsonResponse(null, 'Riwayat draft pertandingan tidak ditemukan.', 404, [
+                    'error' => [
+                        'code' => 'MATCH_NOT_FOUND'
+                    ]
+                ]);
+            }
+
+            jsonResponse($data, 'Riwayat draft pertandingan berhasil diambil.',200);
+        } catch (Throwable $e) {
+            error_log('MatchController::getDrafts - ' . $e->getMessage());
+
+            jsonResponse(null, 'Terjadi kesalahan pada server.', 500, [
+                'error' => [
+                    'code' => 'INTERNAL_SERVER_ERROR'
+                ]
+            ]);
         }
     }
 }
