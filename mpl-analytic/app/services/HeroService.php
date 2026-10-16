@@ -54,6 +54,10 @@ class HeroService
         return [
             'hero' => $hero,
             'detail' => $detail,
+            'recommendations' => [
+                'items' => $this->hero->getSituationalRecommendations($heroId),
+                'emblems' => $this->hero->getEmblemRecommendations($heroId),
+            ],
         ];
     }
 

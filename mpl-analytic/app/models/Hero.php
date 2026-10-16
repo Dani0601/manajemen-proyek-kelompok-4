@@ -275,6 +275,78 @@ class Hero
         return $stmt->fetchAll();
     }
 
+    /** Source-backed situational item rules for this hero. */
+    public function getSituationalRecommendations(int $heroId): array
+    {
+        $sql = "
+            SELECT
+                rule_id,
+                item_name,
+                condition_key,
+                condition_text,
+                share_percent,
+                reason,
+                snapshot_at
+            FROM item_suitability_rules
+            WHERE hero_id = :hero_id AND is_active = 1
+            ORDER BY share_percent DESC, item_name ASC
+        ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':hero_id', $heroId, PDO::PARAM_INT);
+        $stmt->execute();
+        $rows = $stmt->fetchAll();
+
+        foreach ($rows as &$row) {
+            // No enemy-composition input exists in API Contract v1 in this repository.
+            // Keep the status honest: these are situational options, not a confirmed match.
+            $row['suitability_status'] = 'situational';
+            unset($row['rule_id']);
+        }
+        unset($row);
+
+        return $rows;
+    }
+
+    /** Clean emblem names from the source's scraped guide text and preserve source counts. */
+    public function getEmblemRecommendations(int $heroId): array
+    {
+        $sql = "
+            SELECT emblem_name, build_count, total_builds, snapshot_at
+            FROM hero_build_emblems
+            WHERE hero_id = :hero_id
+            ORDER BY build_count DESC, total_builds DESC
+        ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':hero_id', $heroId, PDO::PARAM_INT);
+        $stmt->execute();
+        $rows = $stmt->fetchAll();
+
+        $recommendations = [];
+        foreach ($rows as $row) {
+            $rawName = (string) ($row['emblem_name'] ?? '');
+            if (preg_match('/\bEMBLEM\s+([A-Za-z][A-Za-z -]*)\s*$/i', $rawName, $matches)) {
+                $name = trim($matches[1]);
+            } else {
+                // Keep legitimate source text instead of fabricating a normalized name.
+                $name = trim($rawName);
+            }
+            if ($name === '') {
+                continue;
+            }
+            $recommendations[] = [
+                'name' => $name,
+                'suitability_status' => 'popular_in_build_data',
+                'reason' => 'Emblem ini tercatat pada data build hero; jumlah penggunaan yang tersedia ditampilkan sebagai konteks.',
+                'build_count' => isset($row['build_count']) ? (int) $row['build_count'] : null,
+                'total_builds' => isset($row['total_builds']) ? (int) $row['total_builds'] : null,
+                'snapshot_at' => $row['snapshot_at'] ?? null,
+            ];
+        }
+
+        return $recommendations;
+    }
+
     public function getSkills(int $heroId): array
     {
         $sql = "
