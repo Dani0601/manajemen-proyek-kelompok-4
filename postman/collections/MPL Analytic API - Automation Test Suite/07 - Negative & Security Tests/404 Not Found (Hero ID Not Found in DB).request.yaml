@@ -1,0 +1,18 @@
+$kind: http-request
+url: "{{baseUrl}}/api/heroes/999999"
+method: GET
+headers:
+  Accept: application/json
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("[404] Status code is 404 Not Found", function () {
+          pm.response.to.have.status(404);
+      });
+      pm.test("[Error] Code is HERO_NOT_FOUND", function () {
+          var json = pm.response.json();
+          pm.expect(json.success).to.be.false;
+          pm.expect(json.error.code).to.eql("HERO_NOT_FOUND");
+      });
+    language: text/javascript
+order: 4000
