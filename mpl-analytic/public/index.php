@@ -1,54 +1,50 @@
 <?php
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
+define('BASE_PATH', dirname(__DIR__));
 
-declare(strict_types=1);
+define(
+    'ASSET_BASE',
+    rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? ''), '/') . '/assets'
+);
 
-// CORS Headers
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 
-if (($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') {
-    http_response_code(204);
-    exit;
+$requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+
+$basePath = '/manajemen-proyek-kelompok-4/mpl-analytic/public';
+if (str_starts_with($requestPath, $basePath)) {
+    $requestPath = substr($requestPath, strlen($basePath));
 }
 
-// 1. Inisialisasi Koneksi Database
-try {
-    require_once dirname(__DIR__) . '/app/config/database.php';
-    $db = Database::connect();
-} catch (Throwable $e) {
-    header('Content-Type: application/json; charset=utf-8');
-    echo json_encode([
-        'success' => false,
-        'message' => 'Database Connection Failed: ' . $e->getMessage()
-    ], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
-    exit;
-}
+$requestPath = '/' . trim($requestPath, '/');
 
-// 2. Tangkap URL & Bersihkan Base Path
-$requestUri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+if ($requestPath === '/api' || str_starts_with($requestPath, '/api/')) {
+    require_once BASE_PATH . '/app/config/database.php';
 
-$basePaths = [
-    '/manajemen-proyek-kelompok-4/mpl-analytic/public',
-    '/manajemen-proyek-kelompok-4',
-    '/mpl-analytic/public',
-];
+    try {
+        $db = Database::connect();
+    } catch (Throwable $e) {
+        error_log('Database connection error: ' . $e->getMessage());
 
-$scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? ''));
-if ($scriptDir !== '/' && $scriptDir !== '' && str_starts_with($requestUri, $scriptDir)) {
-    $uri = substr($requestUri, strlen($scriptDir));
-} else {
-    $uri = $requestUri;
-    foreach ($basePaths as $basePath) {
-        if (str_starts_with($uri, $basePath)) {
-            $uri = substr($uri, strlen($basePath));
-            break;
-        }
+        http_response_code(500);
+        header('Content-Type: application/json; charset=utf-8');
+
+        echo json_encode([
+            'success' => false,
+            'message' => 'Koneksi database gagal.',
+            'error' => [
+                'code' => 'DATABASE_CONNECTION_ERROR'
+            ]
+        ]);
+
+        exit;
     }
+
+    require BASE_PATH . '/routes/api.php';
+    exit;
 }
 
-$uri = trim($uri, '/');
-$segments = $uri === '' ? [] : explode('/', $uri);
+require BASE_PATH . '/routes/web.php';
 
-// 3. Panggil router
-require_once dirname(__DIR__) . '/routes/api.php';
+?>

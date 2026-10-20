@@ -1,161 +1,169 @@
+"use strict";
 
 console.log("dashboard.js berhasil dijalankan");
 
 document.addEventListener("DOMContentLoaded", loadDashboard);
 
-async function loadDashboard() {
-  try {
-    const data = await window.ApiClient.getDashboard();
+// URL dasar aset project
+const ASSET_BASE =
+  "/manajemen-proyek-kelompok-4/mpl-analytic/public/assets";
 
-    console.log("Dashboard berhasil dimuat:", data);
+const HERO_PLACEHOLDER = `${ASSET_BASE}/images/hero-placeholder.png`;
 
-    // Ambil elemen HTML
-    const topOverpowered = document.getElementById("topOverpowered");
-    const topMostBanned = document.getElementById("topMostBanned");
-    const matchList = document.getElementById("matchList");
+// Format angka persen
+function formatPercent(value) {
+  if (value === null || value === undefined || value === "") {
+    return "-";
+  }
 
-    // Format angka persen dari API
-    // Nilai API sudah dalam persen, jadi jangan dikali 100.
-    const formatPercent = (value) => {
-      const number = Number(value);
-      return Number.isFinite(number) ? `${number.toFixed(2)}%` : "-";
+  const number = Number(value);
+
+  return Number.isFinite(number)
+    ? `${number.toFixed(2)}%`
+    : "-";
+}
+
+// Cari URL gambar hero dari metadata API
+function attachHeroImages(heroes, heroMeta) {
+  if (!Array.isArray(heroes)) return [];
+
+  return heroes.map((hero) => {
+    const meta = Array.isArray(heroMeta)
+      ? heroMeta.find(
+          (item) =>
+            Number(item.hero_id) === Number(hero.hero_id)
+        )
+      : null;
+
+    return {
+      ...hero,
+      hero_url: hero.hero_url || meta?.hero_url || null
     };
+  });
+}
 
-    // Render kartu hero
-    function renderHeroes(container, heroes, rateKey, prefix) {
-      if (!container) return;
+// Render kartu hero
+function renderHeroes(container, heroes, rateKey, prefix) {
+  if (!container) {
+    console.error("Container hero tidak ditemukan.");
+    return;
+  }
 
-      if (!Array.isArray(heroes) || heroes.length === 0) {
-        container.innerHTML = "<p>Data hero belum tersedia.</p>";
-        return;
-      }
+  if (!Array.isArray(heroes) || heroes.length === 0) {
+    container.innerHTML =
+      '<li class="empty-state">Data hero belum tersedia.</li>';
+    return;
+  }
 
-      container.innerHTML = heroes.slice(0, 5).map((hero, index) => `
-        <div class="hero-card">
-          <div class="hero-image-wrapper">
-            <span class="rank-badge">${index + 1}</span>
-            <img
-              src="${hero.hero_url || "https://placehold.co/70x70"}"
-              alt="${hero.hero_name || "Hero"}"
-              class="hero-image"
-              onerror="this.onerror=null;this.src='https://placehold.co/70x70';"
-            >
-          </div>
-          <div class="hero-name">${hero.hero_name || "-"}</div>
-          <div class="hero-rate">
-            ${prefix} ${formatPercent(hero[rateKey])}
-          </div>
+  container.innerHTML = heroes.slice(0, 5).map((hero, index) => {
+    const imageUrl = hero.hero_url || HERO_PLACEHOLDER;
+    const heroName = hero.hero_name || "Hero";
+    const rate = formatPercent(hero[rateKey]);
+
+    return `
+      <li class="hero-card">
+        <div class="hero-image-wrapper">
+          <span class="rank-badge">${index + 1}</span>
+
+          <img
+            src="${imageUrl}"
+            alt="${heroName}"
+            class="hero-image"
+            loading="lazy"
+            onerror="this.onerror=null;this.src='${HERO_PLACEHOLDER}';"
+          >
         </div>
-      `).join("");
-    }
 
-    // Top 5 berdasarkan win rate
-    const topWR = Array.isArray(data.top_win_rate)
-      ? data.top_win_rate
-      : [];
+        <div class="hero-name">${heroName}</div>
+        <div class="hero-rate">${prefix}: ${rate}</div>
+      </li>
+    `;
+  }).join("");
+}
 
-    renderHeroes(topOverpowered, topWR, "win_rate", "WR");
+// Data logo tim
+const TEAM_LOGOS = {
+  "ONIC":
+    "https://wsrv.nl/?url=https://ik.imagekit.io/nloe8dhf7w/mplid/s14/teams/onic-b-256.png",
 
-    // Fallback daftar ban rate dari hero_meta
-    const metaHeroes = Array.isArray(data.hero_meta)
-      ? data.hero_meta
-      : [];
+  "Dewa United Esports":
+    "https://wsrv.nl/?url=https://ik.imagekit.io/nloe8dhf7w/mplid/s14/teams/dewa-united-500.png",
 
-    const topBR = [...metaHeroes].sort(
-      (a, b) => Number(b.ban_rate || 0) - Number(a.ban_rate || 0)
-    );
+  "RRQ Hoshi":
+    "https://wsrv.nl/?url=https://ik.imagekit.io/nloe8dhf7w/mplid/s14/teams/rrq-500.png",
 
-    renderHeroes(topMostBanned, topBR, "ban_rate", "BR");
+  "Alter Ego":
+    "https://wsrv.nl/?url=https://ik.imagekit.io/nloe8dhf7w/mplid/s14/teams/ae-256.png",
 
-    // Grafik WR dan BR
-    const chartElement = document.getElementById("wrBrChart");
+  "EVOS":
+    "https://wsrv.nl/?url=https://ik.imagekit.io/nloe8dhf7w/mplid/s14/teams/evos-500.png",
 
-    if (chartElement && window.Chart) {
-      const chartLabels = [
-        ...new Set([
-          ...topWR.map(hero => hero.hero_name),
-          ...topBR.slice(0, 5).map(hero => hero.hero_name)
-        ])
-      ];
+  "Bigetron by Vitality":
+    "https://wsrv.nl/?url=https://ik.imagekit.io/nloe8dhf7w/mplid/s14/teams/btr_vit.png",
 
-      if (window.dashboardChart) {
-        window.dashboardChart.destroy();
-      }
+  "Team Liquid ID":
+    "https://wsrv.nl/?url=https://ik.imagekit.io/nloe8dhf7w/mplid/s14/teams/TLID-Primary500x500.png",
 
-      window.dashboardChart = new Chart(chartElement, {
-        type: "bar",
-        data: {
-          labels: chartLabels,
-          datasets: [
-            {
-              label: "Win Rate (WR)",
-              data: chartLabels.map(name => {
-                const hero = topWR.find(h => h.hero_name === name);
-                return hero ? Number(hero.win_rate) : null;
-              }),
-              backgroundColor: "#2874d0"
-            },
-            {
-              label: "Ban Rate (BR)",
-              data: chartLabels.map(name => {
-                const hero = topBR.find(h => h.hero_name === name);
-                return hero ? Number(hero.ban_rate) : null;
-              }),
-              backgroundColor: "#f28c28"
-            }
-          ]
-        },
-        options: {
-          indexAxis: "y",
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            x: {
-              min: 0,
-              max: 100,
-              ticks: {
-                callback: value => `${value}%`
-              }
-            }
-          }
-        }
-      });
-    }
+  "Geek Fam ID":
+    "https://wsrv.nl/?url=https://ik.imagekit.io/nloe8dhf7w/mplid/s14/teams/geek-500.png",
 
-    // Tampilkan jadwal API untuk diperiksa
+  "Natus Vincere":
+    "https://wsrv.nl/?url=https://ik.imagekit.io/nloe8dhf7w/mplid/s14/teams/NAVI-2.png"
+};
 
+function getTeamLogo(teamName) {
+  return TEAM_LOGOS[teamName] || "";
+}
+
+// Render jadwal pertandingan
 function renderMatches(matches) {
-  const matchList = document.getElementById("matchList");
+  const container = document.getElementById("match-schedule");
 
-  if (!matchList) {
-    console.error('Elemen "#matchList" tidak ditemukan di HTML.');
+  if (!container) {
+    console.error('Container "match-schedule" tidak ditemukan.');
     return;
   }
 
   if (!Array.isArray(matches) || matches.length === 0) {
-    matchList.innerHTML = "<p>Belum ada jadwal pertandingan.</p>";
+    container.innerHTML =
+      '<p class="empty-state">Belum ada jadwal pertandingan.</p>';
     return;
   }
 
-  matchList.innerHTML = matches.map((match) => {
+  container.innerHTML = matches.map((match) => {
     const date = match.match_date
-      ? new Date(`${match.match_date}T00:00:00`).toLocaleDateString("id-ID", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric"
-        })
+      ? new Date(`${match.match_date}T00:00:00`).toLocaleDateString(
+          "id-ID",
+          {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+          }
+        )
       : "-";
 
     const time = match.match_time
-      ? match.match_time.slice(0, 5)
+      ? String(match.match_time).slice(0, 5)
       : "-";
 
+    const team1 = match.team1_name || "Tim 1";
+    const team2 = match.team2_name || "Tim 2";
+    const logo1 = getTeamLogo(team1);
+    const logo2 = getTeamLogo(team2);
+
     return `
-      <div class="match-card">
+      <article class="match-card">
         <div class="match-date">${date}</div>
 
         <div class="match-team team-left">
-          <span>${match.team1_name || "Tim 1"}</span>
+          ${
+            logo1
+              ? `<img src="${logo1}" alt="Logo ${team1}"
+                   class="team-logo"
+                   onerror="this.onerror=null;this.style.display='none';">`
+              : ""
+          }
+          <span>${team1}</span>
         </div>
 
         <div class="match-info">
@@ -164,20 +172,181 @@ function renderMatches(matches) {
         </div>
 
         <div class="match-team team-right">
-          <span>${match.team2_name || "Tim 2"}</span>
+          <span>${team2}</span>
+          ${
+            logo2
+              ? `<img src="${logo2}" alt="Logo ${team2}"
+                   class="team-logo"
+                   onerror="this.onerror=null;this.style.display='none';">`
+              : ""
+          }
         </div>
-      </div>
+      </article>
     `;
   }).join("");
 }
 
-// Panggil di dalam loadDashboard(), setelah data API berhasil diterima:
-renderMatches(data.schedule);
+// Render grafik Win Rate dan Ban Rate
+function renderWRBRChart(topWR, topBR) {
+  const canvas = document.getElementById("win-ban-chart");
 
+  if (!canvas) {
+    console.error('Canvas "win-ban-chart" tidak ditemukan.');
+    return;
+  }
 
-    // Belum merender jadwal karena perlu memastikan
-    // nama field tim dan waktu pada objek schedule.
+  if (!window.Chart) {
+    console.error(
+      "Chart.js belum dimuat. Periksa script Chart.js di dashboard.php."
+    );
+    return;
+  }
+
+  const oldChart = Chart.getChart(canvas);
+
+  if (oldChart) {
+    oldChart.destroy();
+  }
+
+  const winRateHeroes = Array.isArray(topWR) ? topWR : [];
+  const banRateHeroes = Array.isArray(topBR) ? topBR : [];
+
+  const chartLabels = [
+    ...new Set([
+      ...winRateHeroes.map((hero) => hero.hero_name),
+      ...banRateHeroes.slice(0, 5).map((hero) => hero.hero_name)
+    ])
+  ];
+
+  window.dashboardChart = new Chart(canvas, {
+    type: "bar",
+
+    data: {
+      labels: chartLabels,
+
+      datasets: [
+        {
+          label: "Win Rate",
+          data: chartLabels.map((name) => {
+            const hero = winRateHeroes.find(
+              (item) => item.hero_name === name
+            );
+
+            return hero ? Number(hero.win_rate) : null;
+          }),
+          backgroundColor: "#2874d0"
+        },
+
+        {
+          label: "Ban Rate",
+          data: chartLabels.map((name) => {
+            const hero = banRateHeroes.find(
+              (item) => item.hero_name === name
+            );
+
+            return hero ? Number(hero.ban_rate) : null;
+          }),
+          backgroundColor: "#f28c28"
+        }
+      ]
+    },
+
+    options: {
+      indexAxis: "y",
+      responsive: true,
+      maintainAspectRatio: false,
+
+      scales: {
+        x: {
+          min: 0,
+          max: 100,
+          ticks: {
+            callback: (value) => `${value}%`
+          }
+        }
+      }
+    }
+  });
+}
+
+// Mengambil data API dan menampilkannya di dashboard
+async function loadDashboard() {
+  try {
+    if (!window.ApiClient ||
+        typeof window.ApiClient.getDashboard !== "function") {
+      throw new Error(
+        "ApiClient belum tersedia. Periksa pemanggilan api-client.js."
+      );
+    }
+
+    const data = await window.ApiClient.getDashboard("dashboard-status");
+
+    console.log("Dashboard berhasil dimuat:", data);
+
+    if (!data || typeof data !== "object") {
+      throw new Error("Format data dashboard tidak valid.");
+    }
+
+    // 1. Top 5 Win Rate
+    const topWR = attachHeroImages(
+      data.top_win_rate,
+      data.hero_meta
+    );
+
+    renderHeroes(
+      document.getElementById("top-win-rate"),
+      topWR,
+      "win_rate",
+      "WR"
+    );
+
+    // 2. Top 5 Ban Rate
+    const metaHeroes = Array.isArray(data.hero_meta)
+      ? data.hero_meta
+      : [];
+
+    const topBR = [...metaHeroes]
+      .sort(
+        (a, b) =>
+          Number(b.ban_rate || 0) - Number(a.ban_rate || 0)
+      )
+      .slice(0, 5);
+
+    renderHeroes(
+      document.getElementById("top-ban-rate"),
+      topBR,
+      "ban_rate",
+      "BR"
+    );
+
+    // 3. Top 5 Pick Rate
+    const topPR = attachHeroImages(
+      data.top_pick_rate,
+      data.hero_meta
+    );
+
+    renderHeroes(
+      document.getElementById("top-pick-rate"),
+      topPR,
+      "pick_rate",
+      "PR"
+    );
+
+    // 4. Grafik Win Rate vs Ban Rate
+    renderWRBRChart(topWR, topBR);
+
+    // 5. Jadwal pertandingan
+    renderMatches(data.schedule);
+
+    console.log("Semua data dashboard selesai diproses.");
   } catch (error) {
     console.error("Gagal memuat dashboard:", error);
+
+    const status = document.getElementById("dashboard-error");
+
+    if (status) {
+      status.textContent =
+        "Data dashboard gagal ditampilkan. Periksa Console.";
+    }
   }
 }

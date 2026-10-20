@@ -3,7 +3,7 @@
   "use strict";
 
   const API_BASE_URL =
-    "http://menpro.test/manajemen-proyek-kelompok-4/mpl-analytic/public/api";
+    "/manajemen-proyek-kelompok-4/mpl-analytic/public/api";
 
   async function request(endpoint) {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -13,11 +13,21 @@
       },
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
+    const contentType = response.headers.get("content-type") || "";
+
+    if (!contentType.includes("application/json")) {
+      throw new Error(
+        `Respons API bukan JSON (HTTP ${response.status}). Periksa endpoint atau error PHP.`
+      );
     }
 
     const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.message || `HTTP ${response.status}`
+      );
+    }
 
     if (result.success === false) {
       throw new Error(result.message || "API request gagal");
