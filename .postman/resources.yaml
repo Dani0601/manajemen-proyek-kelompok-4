@@ -7,6 +7,8 @@ localResources:
     - ../mpl_analytic_postman_collection.json
     - ../mpl-analytic/docs/mpl_analytic_postman_collection.json
 
+# Each entry here maps a local resource to one or more corresponding objects in Postman Cloud
+
 cloudResources:
   collections:
-    ../postman/collections/MPL Analytic API - Automation Test Suite: ecf06088-a27c-44f6-91b3-a8cfb93b842a
+    ../postman/collections/MPL Analytic API - Automation Test Suite: c8f4d58e-9e40-4e85-8275-020d889efe3d

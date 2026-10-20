@@ -1,0 +1,13 @@
+$kind: http-request
+name: GET /api/players/:playerId/games
+url: "{{baseUrl}}/api/players/{{playerId}}/games"
+method: GET
+headers:
+  Accept: application/json
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("[Status] 200 or 404 or 501", function () { pm.expect([200,404,501]).to.include(pm.response.code); });
+      pm.test("[Schema] valid JSON", function () { var j=pm.response.json(); pm.expect(j).to.have.property("success"); });
+    language: text/javascript
+order: 6000

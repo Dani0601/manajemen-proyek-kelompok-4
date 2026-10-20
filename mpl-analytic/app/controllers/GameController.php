@@ -49,8 +49,14 @@ class GameController
 
     public function index(): void
     {
+        $limit = isset($_GET['limit']) ? max(1, (int)$_GET['limit']) : 20;
+        $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $offset = ($page - 1) * $limit;
+
+        $games = $this->service->getGames($limit, $offset);
+
         jsonResponse(
-            [],
+            $games,
             'Daftar game.'
         );
     }

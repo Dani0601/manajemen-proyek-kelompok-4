@@ -32,6 +32,24 @@ class GameService
 
     /*
     |--------------------------------------------------------------------------
+    | GET GAMES
+    |--------------------------------------------------------------------------
+    */
+
+    public function getGames(int $limit = 20, int $offset = 0): array
+    {
+        $games = $this->gameModel->getAll($limit, $offset);
+
+        return array_map(
+            fn(array $game): array =>
+                $this->formatGame($game),
+            $games
+        );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
     | GET FULL GAME
     |--------------------------------------------------------------------------
     */

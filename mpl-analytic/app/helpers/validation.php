@@ -39,7 +39,7 @@ function validatePositiveInteger(
             400,
             [
                 'error' => [
-                    'code' => 'INVALID_VALUE'
+                    'code' => 'INVALID_' . strtoupper($field)
                 ]
             ]
         );

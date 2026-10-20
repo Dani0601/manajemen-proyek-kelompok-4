@@ -39,7 +39,7 @@
     },
     {
       "key": "gameId",
-      "value": "",
+      "value": "s17_w01_m01_g01",
       "type": "string"
     },
     {
@@ -549,7 +549,8 @@
                 "exec": [
                   "pm.test(\"[200] Status 200 OK\", function () { pm.response.to.have.status(200); });",
                   "pm.test(\"[Schema] comparison.player_1 and player_2\", function () { var j=pm.response.json(); pm.expect(j.success).to.be.true; pm.expect(j.data).to.have.property(\"comparison\"); pm.expect(j.data.comparison).to.have.property(\"player_1\"); pm.expect(j.data.comparison).to.have.property(\"player_2\"); });",
-                  "pm.test(\"[Schema] radar stats for player_1\", function () { var j=pm.response.json(); if(j.success&&j.data&&j.data.comparison){var s=j.data.comparison.player_1.stats; if(s){pm.expect(s).to.have.all.keys(\"kill_power\",\"farm_rate\",\"survival\",\"versatility\",\"objective\",\"teamfight\");}} });"
+                  "pm.test(\"[Schema] radar stats for player_1\", function () { var j=pm.response.json(); if(j.success&&j.data&&j.data.comparison){var s=j.data.comparison.player_1.stats; if(s){pm.expect(s).to.have.all.keys(\"kill_power\",\"farm_rate\",\"survival\",\"versatility\",\"objective\",\"teamfight\");}} });",
+                  "pm.test(\"[Schema] league_stats, detail_stats, and performance for player_1\", function () { var j=pm.response.json(); if(j.success&&j.data&&j.data.comparison&&j.data.comparison.player_1){var p=j.data.comparison.player_1; pm.expect(p).to.have.property(\"league_stats\"); pm.expect(p.league_stats).to.have.all.keys(\"match_played\",\"avg_kda\",\"kill_participation\"); pm.expect(p).to.have.property(\"detail_stats\"); pm.expect(p.detail_stats).to.have.all.keys(\"gold_per_minute\",\"damage_per_minute\",\"objective_secured\"); pm.expect(p).to.have.property(\"performance\"); pm.expect(p.performance).to.have.property(\"win_rate\");} });"
                 ],
                 "type": "text/javascript"
               }
