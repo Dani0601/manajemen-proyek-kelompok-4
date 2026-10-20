@@ -25,4 +25,26 @@ class TournamentController {
             ApiResponse::error("Internal Server Error: " . $e->getMessage(), 500);
         }
     }
+
+    public function schedule($tournamentId) {
+        try {
+            $seasonId = (int)$tournamentId;
+            $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
+            $data = $this->tournamentService->getUpcomingMatches($seasonId, $limit);
+            ApiResponse::success($data, "Jadwal pertandingan berhasil dimuat");
+        } catch (Exception $e) {
+            ApiResponse::error("Internal Server Error: " . $e->getMessage(), 500);
+        }
+    }
+
+    public function standings($tournamentId) {
+        try {
+            $seasonId = (int)$tournamentId;
+            $data = $this->tournamentService->getStandings($seasonId);
+            $standings = $data['standings'] ?? $data;
+            ApiResponse::success($standings, "Klasemen turnamen berhasil dimuat");
+        } catch (Exception $e) {
+            ApiResponse::error("Internal Server Error: " . $e->getMessage(), 500);
+        }
+    }
 }

@@ -1,0 +1,14 @@
+$kind: http-request
+name: GET /api/matches/:matchId
+url: "{{baseUrl}}/api/matches/{{matchId}}"
+method: GET
+headers:
+  Accept: application/json
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("[200] Status 200 OK", function () { pm.response.to.have.status(200); });
+      pm.test("[Schema] data.match_id exists", function () { var j=pm.response.json(); pm.expect(j.success).to.be.true; pm.expect(j.data).to.have.property("match_id"); });
+      pm.test("[Schema] team1 and team2 with team_name", function () { var j=pm.response.json(); if(j.success&&j.data){pm.expect(j.data).to.have.property("team1"); pm.expect(j.data).to.have.property("team2"); pm.expect(j.data.team1).to.have.property("team_name"); pm.expect(j.data.team2).to.have.property("team_name");} });
+    language: text/javascript
+order: 2000

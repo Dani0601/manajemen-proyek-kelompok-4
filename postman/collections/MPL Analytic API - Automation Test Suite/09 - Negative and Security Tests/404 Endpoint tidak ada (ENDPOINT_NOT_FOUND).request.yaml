@@ -1,0 +1,12 @@
+$kind: http-request
+url: "{{baseUrl}}/api/endpoint-tidak-ada-99999"
+method: GET
+headers:
+  Accept: application/json
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("[404] Status 404", function () { pm.response.to.have.status(404); });
+      pm.test("[Error] code=ENDPOINT_NOT_FOUND", function () { var j=pm.response.json(); pm.expect(j.success).to.be.false; pm.expect(j.error.code).to.eql("ENDPOINT_NOT_FOUND"); });
+    language: text/javascript
+order: 2000

@@ -18,56 +18,52 @@ class Tournament {
                     m.match_date,
                     t1.team_id AS team_a_id,
                     t1.team_name AS team_a_name,
-                    t1.short_code AS team_a_code,
-                    t1.logo_url AS team_a_logo,
-                    m.team_a_score,
+                    t1.team_code AS team_a_code,
+                    m.team1_score AS team_a_score,
                     t2.team_id AS team_b_id,
                     t2.team_name AS team_b_name,
-                    t2.short_code AS team_b_code,
-                    t2.logo_url AS team_b_logo,
-                    m.team_b_score,
+                    t2.team_code AS team_b_code,
+                    m.team2_score AS team_b_score,
                     m.winner_team_id
                 FROM matches m
-                JOIN teams t1 ON m.team_a_id = t1.team_id
-                JOIN teams t2 ON m.team_b_id = t2.team_id
-                WHERE m.season_id = :season_id
+                JOIN teams t1 ON m.team1_id = t1.team_id
+                JOIN teams t2 ON m.team2_id = t2.team_id
+                JOIN seasons s ON m.season_id = s.season_id
+                WHERE (s.season_id = :season_id OR s.season_number = :season_id_num)
                 ORDER BY m.match_date ASC
                 LIMIT :limit";
 
         $stmt = $this->db->prepare($sql);
-        // Bind parameter limit harus bertipe integer di PDO
-        $stmt->bindValue(':season_id', $seasonId, PDO::PARAM_INT);
-        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':season_id', (int)$seasonId, PDO::PARAM_INT);
+        $stmt->bindValue(':season_id_num', (int)$seasonId, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
         $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
     /**
      * Mengambil data klasemen (Standings) tim berdasarkan musim
      */
     public function getStandingsBySeason($seasonId) {
-        $sql = "SELECT 
-                    t.team_id,
-                    t.team_name,
-                    t.short_code,
-                    t.logo_url,
-                    COUNT(m.match_id) AS played,
-                    SUM(CASE WHEN (m.winner_team_id = t.team_id) THEN 1 ELSE 0 END) AS wins,
-                    SUM(CASE WHEN (m.winner_team_id IS NOT NULL AND m.winner_team_id != t.team_id) THEN 1 ELSE 0 END) AS losses
-                FROM teams t
-                JOIN team_rosters tr ON t.team_id = tr.team_id
-                LEFT JOIN matches m ON (m.team_a_id = t.team_id OR m.team_b_id = t.team_id) AND m.season_id = :season_id
-                WHERE tr.season_id = :season_id_roster
-                GROUP BY t.team_id, t.team_name, t.short_code, t.logo_url
-                ORDER BY wins DESC, losses ASC";
+        $sqlFilePath = __DIR__ . '/../../database/queries/tournament_standings.sql';
+        if (file_exists($sqlFilePath)) {
+            $seasonStmt = $this->db->prepare("SELECT season_id FROM seasons WHERE season_id = :s1 OR season_number = :s2 LIMIT 1");
+            $seasonStmt->execute([':s1' => $seasonId, ':s2' => $seasonId]);
+            $resolvedSeason = $seasonStmt->fetchColumn();
+            $targetSeasonId = $resolvedSeason !== false ? (int)$resolvedSeason : $seasonId;
 
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([
-            ':season_id' => $seasonId,
-            ':season_id_roster' => $seasonId
-        ]);
+            $this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
+            $sql = file_get_contents($sqlFilePath);
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([':season_id' => $targetSeasonId]);
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $result;
+        }
+
+        return [];
     }
 }
 ?>

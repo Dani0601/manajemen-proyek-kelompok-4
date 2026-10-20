@@ -144,21 +144,21 @@ class MatchModel
         $sql = "
             SELECT
                 g.game_number,
-                gd.pick_ban_turn AS turn,
+                ROW_NUMBER() OVER(PARTITION BY g.game_id ORDER BY gp.game_pick_id) AS turn,
                 t.team_name,
-                gd.draft_type,
+                'pick' AS draft_type,
                 h.hero_name
-            FROM game_drafts gd
+            FROM game_picks gp
             INNER JOIN games g
-                ON gd.game_id = g.game_id
+                ON gp.game_id = g.game_id
             INNER JOIN teams t
-                ON gd.team_id = t.team_id
+                ON gp.team_id = t.team_id
             INNER JOIN heroes h
-                ON gd.hero_id = h.hero_id
+                ON gp.hero_id = h.hero_id
             WHERE g.match_id = :match_id
             ORDER BY
                 g.game_number ASC,
-                gd.pick_ban_turn ASC
+                turn ASC
         ";
 
         $stmt = $this->db->prepare($sql);

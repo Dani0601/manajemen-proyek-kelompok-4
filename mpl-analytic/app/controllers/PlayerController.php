@@ -37,6 +37,11 @@ class PlayerController {
                 return;
             }
 
+            if ($p1 === $p2) {
+                jsonResponse(null, "Pemain yang dibandingkan tidak boleh sama.", 400);
+                return;
+            }
+
             $data = $this->playerService->comparePlayers($p1, $p2, $seasonId);
 
             if (!$data) {

@@ -1,0 +1,16 @@
+$kind: http-request
+name: GET /api/players (page=1 limit=10)
+url: "{{baseUrl}}/api/players?page=1&limit=10"
+method: GET
+headers:
+  Accept: application/json
+queryParams:
+  page: "1"
+  limit: "10"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("[200] Status 200 OK", function () { pm.response.to.have.status(200); });
+      pm.test("[Schema] data.length <= 10", function () { var j=pm.response.json(); pm.expect(j.success).to.be.true; pm.expect(j.data.length).to.be.at.most(10); });
+    language: text/javascript
+order: 2000
