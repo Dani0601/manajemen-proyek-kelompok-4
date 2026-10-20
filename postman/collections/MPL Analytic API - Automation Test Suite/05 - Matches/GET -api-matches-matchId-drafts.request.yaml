@@ -1,0 +1,13 @@
+$kind: http-request
+name: GET /api/matches/:matchId/drafts
+url: "{{baseUrl}}/api/matches/{{matchId}}/drafts"
+method: GET
+headers:
+  Accept: application/json
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("[200] Status 200 OK", function () { pm.response.to.have.status(200); });
+      pm.test("[Schema] data not null", function () { var j=pm.response.json(); pm.expect(j.success).to.be.true; pm.expect(j.data).to.not.be.null; });
+    language: text/javascript
+order: 3000

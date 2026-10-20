@@ -15,7 +15,7 @@ class TournamentService {
         // Memetakan struktur data agar bersih untuk Frontend
         $matches = array_map(function($match) {
             return [
-                "match_id" => (int)$match['match_id'],
+                "match_id" => (string)$match['match_id'],
                 "match_date" => $match['match_date'],
                 "team_a" => [
                     "team_id" => (int)$match['team_a_id'],
@@ -38,6 +38,14 @@ class TournamentService {
         return [
             "season" => (int)$seasonId,
             "upcoming_matches" => $matches
+        ];
+    }
+
+    public function getStandings($seasonId = 1) {
+        $rawStandings = $this->tournamentModel->getStandingsBySeason($seasonId);
+        return [
+            "season" => (int)$seasonId,
+            "standings" => $rawStandings
         ];
     }
 }

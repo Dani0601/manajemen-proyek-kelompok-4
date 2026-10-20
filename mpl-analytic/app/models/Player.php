@@ -33,12 +33,18 @@ class Player {
             throw new Exception("File query player_comparison.sql tidak ditemukan.");
         }
 
+        // Resolusi season: jika user mengirimkan season_number (misal 17), cari season_id yang sesuai
+        $seasonStmt = $this->db->prepare("SELECT season_id FROM seasons WHERE season_id = :s1 OR season_number = :s2 LIMIT 1");
+        $seasonStmt->execute([':s1' => $seasonId, ':s2' => $seasonId]);
+        $resolvedSeason = $seasonStmt->fetchColumn();
+        $targetSeasonId = $resolvedSeason !== false ? (int)$resolvedSeason : $seasonId;
+
         $sql = file_get_contents($sqlFilePath);
         $stmt = $this->db->prepare($sql);
         
         // Bind 3 parameter sesuai dengan yang diminta di file SQL
         $stmt->execute([
-            ':season_id' => $seasonId,
+            ':season_id' => $targetSeasonId,
             ':player_a' => $p1,
             ':player_b' => $p2
         ]);
