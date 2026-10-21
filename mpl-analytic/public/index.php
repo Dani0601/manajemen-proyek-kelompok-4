@@ -1,14 +1,28 @@
+
 <?php
 
-declare(strict_types=1);
 
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+define('BASE_PATH', dirname(__DIR__));
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(204);
+define(
+    'ASSET_BASE',
+    rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? ''), '/') . '/assets'
+);
+
+$requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+
+$basePath = '/manajemen-proyek-kelompok-4/mpl-analytic/public';
+if (str_starts_with($requestPath, $basePath)) {
+    $requestPath = substr($requestPath, strlen($basePath));
+}
+
+$requestPath = '/' . trim($requestPath, '/');
+
+if ($requestPath === '/api' || str_starts_with($requestPath, '/api/')) {
+    require BASE_PATH . '/routes/api.php';
     exit;
 }
 
-require_once dirname(__DIR__) . '/routes/api.php';
+require BASE_PATH . '/routes/web.php';
+
+?>

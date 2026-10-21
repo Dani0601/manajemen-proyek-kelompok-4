@@ -1,0 +1,275 @@
+
+/* ========================================
+   PLAYER COMPARISON - BASE
+======================================== */
+
+.pc-page {
+    padding: 24px;
+    color: #192F53;
+    font-family: 'Poppins', sans-serif;
+}
+
+.pc-header {
+    margin-bottom: 24px;
+}
+
+.pc-title {
+    margin: 0 0 8px;
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.pc-description {
+    margin: 0;
+    color: #64748B;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* Judul setiap bagian */
+.pc-selection h2,
+.pc-results h2,
+.pc-stats h2 {
+    margin: 0 0 16px;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+
+
+
+.pc-selection {
+    margin-bottom: 24px;
+    padding: 20px;
+    background: #FFFFFF;
+    border: 1px solid #D9DDE5;
+    border-radius: 12px;
+}
+
+.pc-selection__fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.pc-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.pc-field label {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.pc-field select {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    color: #192F53;
+    background: #FFFFFF;
+    border: 1px solid #D9DDE5;
+    border-radius: 8px;
+    font: inherit;
+}
+
+.pc-field select:focus-visible {
+    outline: 2px solid #3478F6;
+    outline-offset: 2px;
+}
+
+.pc-message {
+    margin: 12px 0 0;
+    color: #B45309;
+    font-size: 13px;
+}
+
+
+
+.pc-results {
+    margin-bottom: 24px;
+}
+
+.pc-player-list {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: stretch;
+    gap: 16px;
+}
+
+.pc-player {
+    min-width: 0;
+    padding: 20px;
+    background: #FFFFFF;
+    border: 1px solid #D9DDE5;
+    border-radius: 12px;
+    overflow-wrap: anywhere;
+}
+
+.pc-player h3 {
+    margin: 0 0 12px;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.pc-player p {
+    margin: 0 0 8px;
+    color: #64748B;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.pc-versus {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    width: 40px;
+    height: 40px;
+    color: #FFFFFF;
+    background: #3478F6;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+/* ========================================
+   STATISTICS
+======================================== */
+
+.pc-stats {
+    margin-bottom: 16px;
+    padding: 20px;
+    background: #FFFFFF;
+    border: 1px solid #D9DDE5;
+    border-radius: 12px;
+}
+
+.pc-stats p {
+    margin: 0;
+    color: #64748B;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.pc-note {
+    color: #64748B;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+/* ========================================
+   RESPONSIVE - MOBILE
+======================================== */
+
+@media (max-width: 767.98px) {
+    .pc-page {
+        padding: 16px;
+    }
+
+    .pc-header {
+        margin-bottom: 20px;
+    }
+
+    .pc-title {
+        font-size: 24px;
+    }
+
+    .pc-selection {
+        padding: 16px;
+    }
+
+    .pc-selection__fields {
+        gap: 10px;
+    }
+
+    .pc-field label {
+        font-size: 12px;
+    }
+
+    .pc-field select {
+        padding: 8px;
+        font-size: 13px;
+    }
+
+    .pc-player-list {
+        gap: 8px;
+    }
+
+    .pc-player {
+        padding: 12px;
+    }
+
+    .pc-player h3 {
+        font-size: 15px;
+    }
+
+    .pc-player p {
+        font-size: 12px;
+    }
+
+    .pc-versus {
+        width: 32px;
+        height: 32px;
+        font-size: 10px;
+    }
+
+    .pc-stats {
+        padding: 16px;
+    }
+}
+
+
+/* Gambar hero di kartu pemain */
+.pc-player__hero {
+    display: block;
+    width: 100%;
+    height: 110px;
+    margin-bottom: 12px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 8px;
+}
+
+/* Logo dan nama tim */
+.pc-player__team {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.pc-player__team-logo {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.pc-player__team span {
+    color: #64748B;
+    font-size: 13px;
+}
+
+/* Ukuran gambar pada layar mobile */
+@media (max-width: 767.98px) {
+    .pc-player__hero {
+        height: 64px;
+        margin-bottom: 8px;
+    }
+
+    .pc-player__team {
+        gap: 4px;
+    }
+
+    .pc-player__team-logo {
+        width: 18px;
+        height: 18px;
+    }
+
+    .pc-player__team span {
+        font-size: 10px;
+    }
+}

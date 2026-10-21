@@ -2,7 +2,7 @@
 $pageTitle = 'Dashboard Analitik | MLBB Guide';
 $pageDescription = 'Statistik meta hero dan jadwal pertandingan MPL.';
 $pageCss = 'dashboard.css';
-// $pageJs = 'dashboard.js';
+$pageJs = 'dashboard.js';
 
 require BASE_PATH . '/views/layouts/header.php';
 require BASE_PATH . '/views/layouts/navbar.php';
@@ -13,38 +13,17 @@ $baseUrl = rtrim(
     '/'
 );
 
-// Data dummy untuk pratinjau UI (mengikuti Figma), BUKAN statistik MPL resmi.
-// Nanti Ali dapat menggantinya dengan data dari API. Pertahankan bentuk
-// array ini ('name', 'image', 'value') agar tampilan dan grafik ikut berubah.
-$topWinRate = [
-    ['name' => 'Miya',    'image' => 'miya.png',    'value' => 62.4],
-    ['name' => 'Fanny',    'image' => 'fanny.png',    'value' => 62.2],
-    ['name' => 'Ling',     'image' => 'ling.png',     'value' => 58.7],
-    ['name' => 'Beatrix',  'image' => 'beatrix.png',  'value' => 56.3],
-    ['name' => 'Lancelot', 'image' => 'lancelot.png', 'value' => 54.8],
-];
+// Data dashboard diisi dari API/backend (Ali). Pertahankan bentuk array ini
+// ('name', 'image', 'value' untuk hero; 'team1', 'image1', 'team2', 'image2',
+// 'time' untuk jadwal) agar tampilan dan grafik ikut berubah. Selama kosong,
+// dashboard.js menampilkan state "data kosong" pada tiap section.
+$topWinRate = [];
 
-$topBanRate = [
-    ['name' => 'Lancelot', 'image' => 'lancelot.png', 'value' => 78.2],
-    ['name' => 'Fanny',    'image' => 'fanny.png',    'value' => 72.8],
-    ['name' => 'Ling',     'image' => 'ling.png',     'value' => 68.9],
-    ['name' => 'Hayabusa', 'image' => 'hayabusa.png', 'value' => 65.4],
-    ['name' => 'Selena',   'image' => 'selena.png',   'value' => 61.7],
-];
+$topBanRate = [];
 
-$topPickRate = [
-    ['name' => 'Lancelot', 'image' => 'lancelot.png', 'value' => 28.4],
-    ['name' => 'Fanny',    'image' => 'fanny.png',    'value' => 28.4],
-    ['name' => 'Ling',     'image' => 'ling.png',     'value' => 28.4],
-    ['name' => 'Hayabusa', 'image' => 'hayabusa.png', 'value' => 28.4],
-    ['name' => 'Selena',   'image' => 'selena.png',   'value' => 28.4],
-];
+$topPickRate = [];
 
-$schedule = [
-    ['team1' => 'RRQ Hoshi',  'image1' => 'rrq.png',      'team2' => 'ONIC Esports',   'image2' => 'onic.png',     'time' => '14:00'],
-    ['team1' => 'EVOS Glory', 'image1' => 'evos.png',     'team2' => 'Bigetron Alpha', 'image2' => 'bigetron.png', 'time' => '16:30'],
-    ['team1' => 'Aura Fire',  'image1' => 'aura.png',     'team2' => 'Geek Fam',       'image2' => 'geek.png',     'time' => '19:00'],
-];
+$schedule = [];
 
 // Panel Top 5 memakai satu struktur yang sama.
 $heroPanels = [
@@ -90,11 +69,11 @@ $chartData = [
 ];
 ?>
 
-<div class="dash">
+<div class="dash" data-asset-base="<?= $assetBase ?>">
 
     <h1 class="visually-hidden">Dashboard Analitik</h1>
 
-    <!-- BANNER: hanya gambar, tanpa teks atau overlay seperti di Figma -->
+    <!-- BANNER: desktop hanya gambar; teks sambutan hanya tampil di mobile (sesuai Figma) -->
     <section class="dash-banner" aria-label="Banner dashboard">
         <img
             class="dash-banner__image"
@@ -103,11 +82,16 @@ $chartData = [
             width="1084"
             height="320"
         >
+
+        <div class="dash-banner__content">
+            <p class="dash-banner__title">Selamat datang<br>di MLBB Guide</p>
+            <p class="dash-banner__text">Temukan hero terbaik, build item,<br>dan strategi untuk menang!</p>
+        </div>
     </section>
 
     <!-- TOP 5 WR, BR, PR -->
     <?php foreach ($heroPanels as $panel): ?>
-        <section class="dash-section" aria-labelledby="<?= $panel['id'] ?>-title">
+        <section class="dash-section" data-dash-section="<?= $panel['id'] ?>" aria-labelledby="<?= $panel['id'] ?>-title">
             <div class="dash-section__header">
                 <h2 id="<?= $panel['id'] ?>-title" class="dash-section__title">
                     <?= htmlspecialchars($panel['title'], ENT_QUOTES, 'UTF-8') ?>
@@ -117,8 +101,10 @@ $chartData = [
                 </a>
             </div>
 
-            <div class="dash-panel">
-                <ol class="dash-heroes" aria-labelledby="<?= $panel['id'] ?>-title">
+            <div class="dash-panel" data-dash-panel>
+                <ol  id="<?= $panel['id'] === 'wr' ? 'top-win-rate' : ($panel['id'] === 'br' ? 'top-ban-rate' : 'top-pick-rate') ?>"
+    class="dash-heroes"
+    aria-labelledby="<?= $panel['id'] ?>-title">
                     <?php foreach ($panel['heroes'] as $index => $hero): ?>
                         <li class="dash-hero">
                             <div class="dash-hero__media">
@@ -140,12 +126,15 @@ $chartData = [
                         </li>
                     <?php endforeach; ?>
                 </ol>
+
+                <!-- Tempat state loading / data kosong / galat (diisi dashboard.js) -->
+                <div class="dash-state-slot" hidden></div>
             </div>
         </section>
     <?php endforeach; ?>
 
     <!-- GRAFIK WR vs BR (Chart.js, data dari PHP di atas) -->
-    <section class="dash-section" aria-labelledby="chart-title">
+    <section class="dash-section" data-dash-section="chart" aria-labelledby="chart-title">
         <div class="dash-section__header">
             <h2 id="chart-title" class="dash-section__title">Perbandingan WR dan BR</h2>
             <a class="dash-section__link" href="<?= htmlspecialchars($baseUrl . '/meta', ENT_QUOTES, 'UTF-8') ?>">
@@ -153,7 +142,7 @@ $chartData = [
             </a>
         </div>
 
-        <div class="dash-panel dash-chart">
+        <div class="dash-panel dash-chart" data-dash-panel>
             <ul class="dash-legend">
                 <li><span class="dash-legend__box dash-legend__box--wr"></span>Overpowered (WR)</li>
                 <li><span class="dash-legend__box dash-legend__box--br"></span>Most Banned (BR)</li>
@@ -171,15 +160,17 @@ $chartData = [
                     Grafik perbandingan Win Rate dan Ban Rate.
                 </canvas>
             </div>
+
+            <div class="dash-state-slot" hidden></div>
         </div>
 
-        <p class="dash-note">
+        <!-- <p class="dash-note">
             Data pada halaman ini masih berupa contoh untuk pratinjau tampilan.
-        </p>
+        </p> -->
     </section>
 
     <!-- JADWAL PERTANDINGAN -->
-    <section class="dash-section" aria-labelledby="schedule-title">
+    <section class="dash-section" data-dash-section="schedule" aria-labelledby="schedule-title">
         <div class="dash-section__header">
             <h2 id="schedule-title" class="dash-section__title">Jadwal Pertandingan</h2>
             <a class="dash-section__link" href="<?= htmlspecialchars($baseUrl . '/tournament', ENT_QUOTES, 'UTF-8') ?>">
@@ -187,7 +178,10 @@ $chartData = [
             </a>
         </div>
 
-        <ul class="dash-panel dash-matches" aria-labelledby="schedule-title">
+        <ul  id="match-schedule"
+    class="dash-panel dash-matches"
+    data-dash-panel
+    aria-labelledby="schedule-title">
             <?php foreach ($schedule as $match): ?>
                 <li class="dash-match">
                     <div class="dash-team dash-team--home">
@@ -218,13 +212,16 @@ $chartData = [
                     </div>
                 </li>
             <?php endforeach; ?>
+
+            <li class="dash-state-slot" hidden></li>
         </ul>
     </section>
 </div>
 
 <!-- Chart.js untuk grafik, bukan gambar statis (versi dipatok) -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-<!-- <script src="/manajemen-proyek-kelompok-4/mpl-analytic/public/assets/js/api-client.js"></script> -->
-<script src="/manajemen-proyek-kelompok-4/mpl-analytic/public/assets/js/pages/dashboard.js"></script>
+
+
+<script src="<?= htmlspecialchars(ASSET_BASE, ENT_QUOTES, 'UTF-8') ?>/js/api-client.js"></script>
 
 <?php require BASE_PATH . '/views/layouts/footer.php'; ?>

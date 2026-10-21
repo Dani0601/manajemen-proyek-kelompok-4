@@ -34,7 +34,7 @@ $uri = parse_url(
 */
 
 $basePaths = [
-    '/mpl-analytic/public',
+    $basePath = '/manajemen-proyek-kelompok-4/mpl-analytic/public',
 ];
 
 foreach ($basePaths as $basePath) {

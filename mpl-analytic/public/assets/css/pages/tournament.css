@@ -1,0 +1,285 @@
+/* =====================================================
+   MPL / TOURNAMENT — mengikuti Figma (mobile + desktop)
+   Nama class tidak diubah; hanya tampilan.
+   ===================================================== */
+
+.tournament-page,
+.tournament-page * {
+    box-sizing: border-box;
+}
+
+.tournament-page {
+    width: 100%;
+    min-width: 0;
+    color: #000;
+    font-family: 'Poppins', Arial, sans-serif;
+}
+
+.tournament-page ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* Banner */
+.tournament-hero {
+    position: relative;
+    height: 320px;
+    margin-bottom: 24px;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #172b4d;
+}
+
+.tournament-hero img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.tournament-hero__content {
+    display: none;
+}
+
+/* Tab: pill putih, statis */
+.tournament-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+    margin-bottom: 12px;
+}
+
+.tournament-tab {
+    min-height: 44px;
+    padding: 6px 12px;
+    border: 0;
+    border-radius: 999px;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(16, 24, 40, 0.22);
+    color: #000;
+    font: 600 14px/1.2 'Poppins', Arial, sans-serif;
+    text-align: center;
+    cursor: default;
+}
+
+/* Kartu pertandingan */
+.match-list {
+    display: grid;
+    gap: 12px;
+}
+
+.match-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 86px minmax(0, 1fr);
+    align-items: center;
+    min-height: 44px;
+    padding: 4px 16px;
+    border: 1px solid #000;
+    border-radius: 12px;
+    background: #fff;
+}
+
+.match-team {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.match-team-left { justify-content: flex-start; }
+.match-team-right { justify-content: flex-end; }
+
+.team-logo {
+    flex: 0 0 auto;
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
+.team-name {
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+}
+
+.match-team-right .team-name { text-align: right; }
+
+.match-score {
+    display: block;
+    width: 100%;
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(16, 24, 40, 0.22);
+    color: #2f6fed;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+}
+
+/* Klasemen */
+.standings-section {
+    width: 100%;
+    margin-top: 16px;
+}
+
+.standings-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 0 0 8px;
+}
+
+.standings-heading h2 {
+    margin: 0;
+    color: #172b4d;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.standings-link {
+    flex: 0 0 auto;
+    color: #2f6fed;
+    font-size: 11px;
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.standings-table-wrapper {
+    min-width: 0;
+    padding: 4px 16px;
+    overflow: hidden;
+    border: 1px solid #000;
+    border-radius: 12px;
+    background: #fff;
+}
+
+.standings-table {
+    width: 100%;
+    margin: 0;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 11px;
+    text-align: center;
+}
+
+.standings-table th,
+.standings-table td {
+    height: 40px;
+    padding: 4px 6px;
+    border-bottom: 1px solid #000;
+    vertical-align: middle;
+}
+
+.standings-table th {
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.standings-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.standings-table th:first-child,
+.standings-team {
+    width: 55%;
+    text-align: left;
+}
+
+.standings-table th:nth-child(2),
+.standings-table th:nth-child(3),
+.standings-table th:nth-child(4) {
+    width: 15%;
+}
+
+.standings-table td:last-child,
+.standings-table th:last-child {
+    text-align: right;
+    font-weight: 700;
+}
+
+.standings-team {
+    font-weight: 400;
+}
+
+.standings-team .team-logo {
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    margin-right: 12px;
+    vertical-align: middle;
+}
+
+.standings-team span {
+    vertical-align: middle;
+}
+
+/* Mobile */
+@media (max-width: 767.98px) {
+    .tournament-hero {
+        height: 130px;
+        margin-bottom: 16px;
+    }
+
+    .tournament-hero::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, rgba(8, 18, 40, 0.65) 0%, rgba(8, 18, 40, 0) 70%);
+    }
+
+    .tournament-hero__content {
+        position: absolute;
+        z-index: 1;
+        left: 12px;
+        bottom: 14px;
+        display: block;
+        color: #fff;
+    }
+
+    .tournament-hero__title {
+        margin: 0;
+        color: #fff;
+        font-size: 15px;
+        font-weight: 700;
+        line-height: 1.2;
+    }
+
+    .tournament-hero__text {
+        margin: 2px 0 0;
+        color: #fff;
+        font-size: 9px;
+    }
+
+    .tournament-tabs {
+        gap: 8px;
+        margin-bottom: 14px;
+    }
+
+    .tournament-tab {
+        padding: 4px;
+        font-size: 11px;
+    }
+
+    .match-card {
+        grid-template-columns: minmax(0, 1fr) 60px minmax(0, 1fr);
+        gap: 8px;
+        min-height: 56px;
+        padding: 8px 12px;
+    }
+
+    .match-team { gap: 8px; }
+    .team-logo { width: 34px; height: 34px; }
+    .team-name { font-size: 10px; }
+
+    .standings-section { margin-top: 24px; }
+    .standings-table-wrapper { padding: 4px 12px; }
+    .standings-table th,
+    .standings-table td { font-size: 10px; padding: 4px; }
+    .standings-team .team-logo { width: 26px; height: 26px; margin-right: 8px; }
+}

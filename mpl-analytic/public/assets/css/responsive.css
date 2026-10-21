@@ -1,0 +1,32 @@
+
+/* =====================================================
+   RESPONSIVE LAYOUT UTILITIES
+   ===================================================== */
+
+.app,
+.app__main,
+.app-content {
+    min-width: 0;
+}
+
+.app-content img {
+    height: auto;
+}
+
+/* Tablet dan desktop */
+@media (min-width: 768px) {
+    .app-topbar {
+        padding-inline: var(--content-gutter);
+    }
+
+    .app-content {
+        padding: 20px var(--content-gutter) 32px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 430px) {
+    .app-content {
+        padding: 12px;
+    }
+}

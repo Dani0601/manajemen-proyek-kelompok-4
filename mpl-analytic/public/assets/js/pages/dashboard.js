@@ -1,465 +1,724 @@
-// ========================================
-// Dashboard Mock Data
-// ========================================
+"use strict";
 
-const mockDashboardData = {
-    status: "success",
-    code: 200,
-    message: "Meta summary fetched successfully",
+console.log("dashboard.js berhasil dijalankan");
 
-    data: {
-        season: 13,
+document.addEventListener("DOMContentLoaded", loadDashboard);
 
-        patch_version: "1.8.66",
+// ==================================================
+// KONFIGURASI
+// ==================================================
 
-        upcoming_match: {
-            match_id: 502,
+const ASSET_BASE =
+  "/manajemen-proyek-kelompok-4/mpl-analytic/public/assets";
 
-            team_a: {
-                name: "Bigetron Alpha",
-                logo: "/images/btr.png"
-            },
+const HERO_PLACEHOLDER =
+  `${ASSET_BASE}/images/hero-placeholder.png`;
 
-            team_b: {
-                name: "ONIC Esports",
-                logo: "/images/onic.png"
-            },
+// ==================================================
+// UTILITAS
+// ==================================================
 
-            scheduled_at: "2026-03-28T15:00:00Z"
-        },
+function formatPercent(value) {
+  if (value === null || value === undefined || value === "") {
+    return "-";
+  }
 
-        top_picked_heroes: [
-            {
-                hero_id: 101,
-                hero_name: "Nolan",
-                primary_role: "Assassin",
-                pick_rate: 68.5,
-                win_rate: 54.2
-            },
+  const number = Number(value);
 
-            {
-                hero_id: 102,
-                hero_name: "Joy",
-                primary_role: "Assassin",
-                pick_rate: 65.2,
-                win_rate: 56.8
-            },
+  return Number.isFinite(number)
+    ? `${number.toFixed(2)}%`
+    : "-";
+}
 
-            {
-                hero_id: 103,
-                hero_name: "Fanny",
-                primary_role: "Assassin",
-                pick_rate: 61.4,
-                win_rate: 62.8
-            },
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[char]);
+}
 
-            {
-                hero_id: 104,
-                hero_name: "Ling",
-                primary_role: "Assassin",
-                pick_rate: 58.7,
-                win_rate: 58.7
-            },
+function setDashboardState(state) {
+  const root = document.getElementById("dashboard");
 
-            {
-                hero_id: 105,
-                hero_name: "Beatrix",
-                primary_role: "Marksman",
-                pick_rate: 55.3,
-                win_rate: 56.3
-            }
-        ],
+  if (root) {
+    root.dataset.state = state;
+  }
+}
 
-        top_banned_heroes: [
-            {
-                hero_id: 201,
-                hero_name: "Lancelot",
-                primary_role: "Assassin",
-                ban_rate: 78.2,
-                win_rate: 54.9
-            },
+function showDashboardError(message) {
+  const content = document.getElementById("dashboard-content");
+  const status = document.getElementById("dashboard-status");
+  const error = document.getElementById("dashboard-error");
 
-            {
-                hero_id: 202,
-                hero_name: "Fanny",
-                primary_role: "Assassin",
-                ban_rate: 72.6,
-                win_rate: 62.8
-            },
+  if (content) {
+    content.hidden = true;
+  }
 
-            {
-                hero_id: 203,
-                hero_name: "Ling",
-                primary_role: "Assassin",
-                ban_rate: 68.9,
-                win_rate: 58.7
-            },
+  if (status) {
+    status.hidden = true;
+  }
 
-            {
-                hero_id: 204,
-                hero_name: "Hayabusa",
-                primary_role: "Assassin",
-                ban_rate: 65.4,
-                win_rate: 55.2
-            },
+  if (error) {
+    error.textContent = message;
+    error.hidden = false;
+  }
 
-            {
-                hero_id: 205,
-                hero_name: "Selena",
-                primary_role: "Assassin",
-                ban_rate: 61.7,
-                win_rate: 57.1
-            }
-        ]
-    }
+  setDashboardState("error");
+}
+
+// ==================================================
+// STATE DATA KOSONG / GALAT PER SECTION
+// Tampilan mengikuti Figma "Dashboard - data kosong".
+// Markup slot sudah ada di dashboard.php (.dash-state-slot),
+// gaya ada di dashboard.css (.dash-empty, is-stated).
+// ==================================================
+
+const STATE_COPY = {
+  empty: {
+    title: "Data belum tersedia",
+    text: "Saat ini belum ada data untuk ditampilkan. Silahkan coba lagi nanti atau jelajahi fitur lainnya."
+  },
+  error: {
+    title: "Data gagal dimuat",
+    text: "Terjadi kendala saat mengambil data. Periksa koneksi internet Anda lalu coba lagi."
+  }
 };
 
+const DASH_SECTIONS = ["wr", "br", "pr", "chart", "schedule"];
 
-// ========================================
-// Ambil Data
-// ========================================
+function getSectionParts(sectionId) {
+  const section = document.querySelector(
+    `[data-dash-section="${sectionId}"]`
+  );
+  const panel = section?.querySelector("[data-dash-panel]");
 
-const pickedHeroes =
-    mockDashboardData.data.top_picked_heroes;
+  if (!section || !panel) {
+    return null;
+  }
 
-const bannedHeroes =
-    mockDashboardData.data.top_banned_heroes;
+  // renderMatches() mengganti isi <ul>, jadi slot dibuat ulang bila hilang.
+  let slot = panel.querySelector(":scope > .dash-state-slot");
 
+  if (!slot) {
+    slot = document.createElement(panel.tagName === "UL" ? "li" : "div");
+    slot.className = "dash-state-slot";
+    slot.hidden = true;
+    panel.appendChild(slot);
+  }
 
-// ========================================
-// Chart Labels
-// ========================================
+  return { section, panel, slot };
+}
 
-const chartLabels = [
-    ...new Set([
-        ...pickedHeroes.map(hero => hero.hero_name),
-        ...bannedHeroes.map(hero => hero.hero_name)
-    ])
-];
+function clearSectionState(sectionId) {
+  const parts = getSectionParts(sectionId);
 
+  if (!parts) {
+    return;
+  }
 
-// ========================================
-// Top 5 Overpowered
-// ========================================
+  parts.panel.classList.remove("is-stated");
+  parts.slot.hidden = true;
+  parts.slot.innerHTML = "";
+  delete parts.section.dataset.state;
+}
 
-const topOverpoweredContainer =
-    document.getElementById("topOverpowered");
+function showSectionState(sectionId, type = "empty") {
+  const parts = getSectionParts(sectionId);
 
-pickedHeroes.forEach((hero, index) => {
+  if (!parts) {
+    return;
+  }
 
-    topOverpoweredContainer.innerHTML += `
-        <div class="hero-card">
+  const copy = STATE_COPY[type] || STATE_COPY.empty;
 
-            <div class="hero-image-wrapper">
+  parts.section.dataset.state = type;
+  parts.panel.classList.add("is-stated");
 
-                <span class="rank-badge">
-                    ${index + 1}
-                </span>
+  parts.slot.innerHTML = `
+    <div class="dash-empty" role="${type === "error" ? "alert" : "status"}">
+      <span class="dash-empty__icon" aria-hidden="true">
+        <img src="${ASSET_BASE}/images/icons/Bar%20Chart.png" alt="">
+      </span>
+      <h3 class="dash-empty__title">${copy.title}</h3>
+      <p class="dash-empty__text">${copy.text}</p>
+      <button type="button" class="dash-empty__button" data-dash-retry>
+        Coba Lagi
+      </button>
+    </div>
+  `;
 
-                <img
-                    src="https://placehold.co/70x70"
-                    alt="${hero.hero_name}"
-                    class="hero-image"
-                >
+  parts.slot.hidden = false;
+}
 
-            </div>
+// Satu tombol "Coba Lagi" untuk semua section: muat ulang seluruh dashboard.
+document.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-dash-retry]");
 
-            <div class="hero-name">
-                ${hero.hero_name}
-            </div>
+  if (!button) {
+    return;
+  }
 
-            <div class="hero-rate">
-                WR ${hero.win_rate}%
-            </div>
-
-        </div>
-    `;
-
+  button.disabled = true;
+  button.textContent = "Memuat...";
+  loadDashboard();
 });
 
+// Hanya hero dengan nilai angka yang valid yang dianggap sebagai data.
+function withValidRate(list, key) {
+  return (Array.isArray(list) ? list : []).filter((item) => {
+    const raw = item?.[key];
+    return raw !== null && raw !== undefined && raw !== "" &&
+      Number.isFinite(Number(raw));
+  });
+}
 
-// ========================================
-// Top 5 Most Banned
-// ========================================
+// ==================================================
+// DATA HERO
+// ==================================================
 
-const topMostBannedContainer =
-    document.getElementById("topMostBanned");
+function attachHeroImages(heroes, heroMeta) {
+  if (!Array.isArray(heroes)) {
+    return [];
+  }
 
-bannedHeroes.forEach((hero, index) => {
+  const metadata = Array.isArray(heroMeta) ? heroMeta : [];
 
-    topMostBannedContainer.innerHTML += `
-        <div class="hero-card">
+  return heroes.map((hero) => {
+    const meta = metadata.find(
+      (item) =>
+        Number(item.hero_id) === Number(hero.hero_id)
+    );
 
-            <div class="hero-image-wrapper">
+    return {
+      ...hero,
+      hero_url: hero.hero_url || meta?.hero_url || null
+    };
+  });
+}
 
-                <span class="rank-badge">
-                    ${index + 1}
-                </span>
+// ==================================================
+// RENDER TOP 5 HERO
+// Class disesuaikan dengan dashboard.css
+// ==================================================
 
-                <img
-                    src="https://placehold.co/70x70"
-                    alt="${hero.hero_name}"
-                    class="hero-image"
-                >
+function renderHeroes(container, heroes, rateKey, prefix) {
+  if (!container) {
+    console.error("Container hero tidak ditemukan.");
+    return;
+  }
 
-            </div>
+  if (!Array.isArray(heroes) || heroes.length === 0) {
+    // State "Data belum tersedia" ditampilkan oleh loadDashboard().
+    container.innerHTML = "";
+    return;
+  }
 
-            <div class="hero-name">
-                ${hero.hero_name}
-            </div>
+  container.innerHTML = heroes.slice(0, 5).map((hero, index) => {
+    const imageUrl = escapeHTML(
+      hero.hero_url || HERO_PLACEHOLDER
+    );
 
-            <div class="hero-rate">
-                BR ${hero.ban_rate}%
-            </div>
+    const heroName = escapeHTML(hero.hero_name || "Hero");
+    const rate = escapeHTML(formatPercent(hero[rateKey]));
+    const safePrefix = escapeHTML(prefix);
 
+    return `
+      <li class="dash-hero">
+        <div class="dash-hero__media">
+          <span class="dash-hero__rank">${index + 1}</span>
+
+          <img
+            src="${imageUrl}"
+            alt="${heroName}"
+            class="dash-hero__image"
+            loading="lazy"
+            onerror="this.onerror=null;this.src='${HERO_PLACEHOLDER}';"
+          >
         </div>
+
+        <div
+          class="dash-hero__name"
+          title="${heroName}"
+        >
+          ${heroName}
+        </div>
+
+        <div class="dash-hero__stat">
+          ${safePrefix}: ${rate}
+        </div>
+      </li>
     `;
+  }).join("");
+}
 
-});
+// ==================================================
+// LOGO TIM
+// ==================================================
+
+const TEAM_LOGOS = {
+  "ONIC":
+    "https://wsrv.nl/?url=https://ik.imagekit.io/nloe8dhf7w/mplid/s14/teams/onic-b-256.png",
+
+  "Dewa United Esports":
+    "https://wsrv.nl/?url=https://ik.imagekit.io/nloe8dhf7w/mplid/s14/teams/dewa-united-500.png",
+
+  "RRQ Hoshi":
+    "https://wsrv.nl/?url=https://ik.imagekit.io/nloe8dhf7w/mplid/s14/teams/rrq-500.png",
+
+  "Alter Ego":
+    "https://wsrv.nl/?url=https://ik.imagekit.io/nloe8dhf7w/mplid/s14/teams/ae-256.png",
+
+  "EVOS":
+    "https://wsrv.nl/?url=https://ik.imagekit.io/nloe8dhf7w/mplid/s14/teams/evos-500.png",
+
+  "Bigetron by Vitality":
+    "https://wsrv.nl/?url=https://ik.imagekit.io/nloe8dhf7w/mplid/s14/teams/btr_vit.png",
+
+  "Team Liquid ID":
+    "https://wsrv.nl/?url=https://ik.imagekit.io/nloe8dhf7w/mplid/s14/teams/TLID-Primary500x500.png",
+
+  "Geek Fam ID":
+    "https://wsrv.nl/?url=https://ik.imagekit.io/nloe8dhf7w/mplid/s14/teams/geek-500.png",
+
+  "Natus Vincere":
+    "https://wsrv.nl/?url=https://ik.imagekit.io/nloe8dhf7w/mplid/s14/teams/NAVI-2.png"
+};
+
+function getTeamLogo(teamName) {
+  return TEAM_LOGOS[teamName] || "";
+}
+
+// ==================================================
+// RENDER JADWAL PERTANDINGAN
+// Class disesuaikan dengan dashboard.css
+// ==================================================
 
 
-// ========================================
-// Jadwal Pertandingan
-// ========================================
+function renderMatches(matches) {
+  const container = document.getElementById("match-schedule");
+  const statusElement = document.getElementById("schedule-status");
 
-const mockMatches = [
-    {
-        home_team: "RRQ Hoshi",
-        home_logo: "/images/rrq.png",
+  if (!container) {
+    console.error('Container "match-schedule" tidak ditemukan.');
+    return;
+  }
 
-        away_team: "ONIC Esports",
-        away_logo: "/images/onic.png",
+  // Tampilkan maksimal 3 pertandingan pertama dari API.
+  const displayedMatches = Array.isArray(matches)
+    ? matches.slice(0, 3)
+    : [];
 
-        time: "14:00"
-    },
+  if (displayedMatches.length === 0) {
+    container.innerHTML = "";
 
-    {
-        home_team: "EVOS Glory",
-        home_logo: "/images/evos.png",
-
-        away_team: "Bigetron Alpha",
-        away_logo: "/images/btr.png",
-
-        time: "16:30"
-    },
-
-    {
-        home_team: "Aura Fire",
-        home_logo: "/images/aura.png",
-
-        away_team: "Geek Fam",
-        away_logo: "/images/geek.png",
-
-        time: "19:00"
+    if (statusElement) {
+      statusElement.textContent = "Belum ada jadwal pertandingan.";
+      statusElement.hidden = false;
     }
-];
 
-const matchList =
-    document.getElementById("matchList");
+    return;
+  }
 
-mockMatches.forEach(match => {
+  container.innerHTML = displayedMatches.map((match) => {
+    const team1 = match.team1_name || "Tim 1";
+    const team2 = match.team2_name || "Tim 2";
 
-    matchList.innerHTML += `
-        <div class="match-row">
+    const safeTeam1 = escapeHTML(team1);
+    const safeTeam2 = escapeHTML(team2);
 
-            <div class="team team-left">
+    const time = match.match_time
+      ? `${String(match.match_time).slice(0, 5)} WIB`
+      : "-";
 
-                <span class="team-name">
-                    ${match.home_team}
-                </span>
+    const safeTime = escapeHTML(time);
 
-                <img
-                    src="https://placehold.co/32x32"
-                    alt="${match.home_team}"
-                    class="team-logo"
-                >
+    const logo1 = getTeamLogo(team1);
+    const logo2 = getTeamLogo(team2);
 
-            </div>
+    const team1Logo = logo1
+      ? `
+        <img
+          src="${escapeHTML(logo1)}"
+          alt="Logo ${safeTeam1}"
+          class="dash-team__logo"
+          loading="lazy"
+          onerror="this.onerror=null;this.style.display='none';"
+        >
+      `
+      : `
+        <span class="dash-avatar" aria-hidden="true">
+          ${escapeHTML(team1.slice(0, 2).toUpperCase())}
+        </span>
+      `;
 
+    const team2Logo = logo2
+      ? `
+        <img
+          src="${escapeHTML(logo2)}"
+          alt="Logo ${safeTeam2}"
+          class="dash-team__logo"
+          loading="lazy"
+          onerror="this.onerror=null;this.style.display='none';"
+        >
+      `
+      : `
+        <span class="dash-avatar" aria-hidden="true">
+          ${escapeHTML(team2.slice(0, 2).toUpperCase())}
+        </span>
+      `;
 
-            <div class="match-info">
-
-                <span class="match-vs">
-                    Vs
-                </span>
-
-                <span class="match-time">
-                    ${match.time}
-                </span>
-
-            </div>
-
-
-            <div class="team team-right">
-
-                <img
-                    src="https://placehold.co/32x32"
-                    alt="${match.away_team}"
-                    class="team-logo"
-                >
-
-                <span class="team-name">
-                    ${match.away_team}
-                </span>
-
-            </div>
-
+    return `
+      <li class="dash-match">
+        <div class="dash-team dash-team--home">
+          ${team1Logo}
+          <span class="dash-team__name">${safeTeam1}</span>
         </div>
+
+        <div class="dash-match__info">
+          <span class="dash-match__vs">VS</span>
+          <span class="dash-match__time">${safeTime}</span>
+        </div>
+
+        <div class="dash-team dash-team--away">
+          ${team2Logo}
+          <span class="dash-team__name">${safeTeam2}</span>
+        </div>
+      </li>
     `;
+  }).join("");
 
-});
+  if (statusElement) {
+    statusElement.hidden = true;
+  }
+}
 
 
-// ========================================
-// Chart.js - WR vs BR
-// ========================================
+// ==================================================
+// GRAFIK WIN RATE DAN BAN RATE
+// ==================================================
 
-const ctx =
-    document.getElementById("wrBrChart");
 
-new Chart(ctx, {
+function renderWRBRChart(topWR, topBR, heroMeta) {
+  const canvas = document.getElementById("win-ban-chart");
 
+  if (!canvas) {
+    console.error('Canvas "win-ban-chart" tidak ditemukan.');
+    return;
+  }
+
+  if (!window.Chart) {
+    console.error("Chart.js belum dimuat.");
+    return;
+  }
+
+  const winRateHeroes = Array.isArray(topWR) ? topWR : [];
+  const banRateHeroes = Array.isArray(topBR) ? topBR : [];
+  const allHeroes = Array.isArray(heroMeta) ? heroMeta : [];
+
+  // Gabungkan nama hero tanpa duplikasi.
+  const heroNames = [
+    ...new Set([
+      ...winRateHeroes.map((hero) => hero.hero_name),
+      ...banRateHeroes.map((hero) => hero.hero_name)
+    ].filter(Boolean))
+  ];
+
+  // Cari data hero berdasarkan nama.
+  function findHero(heroName) {
+    return allHeroes.find(
+      (hero) => hero.hero_name === heroName
+    ) || winRateHeroes.find(
+      (hero) => hero.hero_name === heroName
+    ) || banRateHeroes.find(
+      (hero) => hero.hero_name === heroName
+    );
+  }
+
+  const winRateData = heroNames.map((name) => {
+    const hero = findHero(name);
+    const value = Number(hero?.win_rate);
+
+    return hero && hero.win_rate !== null &&
+      hero.win_rate !== undefined &&
+      hero.win_rate !== "" &&
+      Number.isFinite(value)
+      ? value
+      : null;
+  });
+
+  const banRateData = heroNames.map((name) => {
+    const hero = findHero(name);
+    const value = Number(hero?.ban_rate);
+
+    return hero && hero.ban_rate !== null &&
+      hero.ban_rate !== undefined &&
+      hero.ban_rate !== "" &&
+      Number.isFinite(value)
+      ? value
+      : null;
+  });
+
+  // Hindari grafik bertumpuk jika fungsi dipanggil ulang.
+  const oldChart = Chart.getChart(canvas);
+
+  if (oldChart) {
+    oldChart.destroy();
+  }
+
+  // Tidak ada hero untuk dibandingkan: jangan gambar grafik kosong.
+  if (heroNames.length === 0) {
+    return;
+  }
+
+  window.dashboardChart = new Chart(canvas, {
     type: "bar",
 
     data: {
+      labels: heroNames,
 
-        labels: chartLabels,
-
-        datasets: [
-
-            {
-                label: "Overpowered (WR)",
-
-                data: chartLabels.map(heroName => {
-
-                    const hero = pickedHeroes.find(
-                        item => item.hero_name === heroName
-                    );
-
-                    return hero
-                        ? hero.win_rate
-                        : null;
-
-                }),
-
-                backgroundColor: "#2874d0",
-
-                borderRadius: 3,
-
-                barThickness: 5
-            },
-
-
-            {
-                label: "Most Banned (BR)",
-
-                data: chartLabels.map(heroName => {
-
-                    const hero = bannedHeroes.find(
-                        item => item.hero_name === heroName
-                    );
-
-                    return hero
-                        ? hero.ban_rate
-                        : null;
-
-                }),
-
-                backgroundColor: "#f28c28",
-
-                borderRadius: 3,
-
-                barThickness: 5
-            }
-
-        ]
-
+      datasets: [
+        {
+          label: "Win Rate",
+          data: winRateData,
+          backgroundColor: "#2874d0",
+          borderRadius: 4,
+          barPercentage: 0.8,
+          categoryPercentage: 0.75
+        },
+        {
+          label: "Ban Rate",
+          data: banRateData,
+          backgroundColor: "#f28c28",
+          borderRadius: 4,
+          barPercentage: 0.8,
+          categoryPercentage: 0.75
+        }
+      ]
     },
 
-
     options: {
+      indexAxis: "y",
+      responsive: true,
+      maintainAspectRatio: false,
 
-        indexAxis: "y",
+      interaction: {
+        mode: "index",
+        intersect: false
+      },
 
-        responsive: true,
-
-        maintainAspectRatio: false,
-
-        plugins: {
-
-            legend: {
-                display: false
-            },
-
-            tooltip: {
-
-                enabled: true,
-
-                callbacks: {
-
-                    label: function(context) {
-
-                        return context.dataset.label
-                            + ": "
-                            + context.raw
-                            + "%";
-
-                    }
-
-                }
-
-            }
-
+      plugins: {
+        // Legenda sudah tersedia di HTML (.dash-legend).
+        legend: {
+          display: false
         },
 
+        tooltip: {
+          callbacks: {
+            label(context) {
+              const value = context.raw;
 
-        scales: {
-
-            x: {
-
-                min: 0,
-
-                max: 100,
-
-                ticks: {
-
-                    stepSize: 25,
-
-                    font: {
-                        size: 7
-                    },
-
-                    callback: function(value) {
-                        return value + "%";
-                    }
-
-                },
-
-                grid: {
-                    color: "#dddddd"
-                }
-
-            },
-
-
-            y: {
-
-                ticks: {
-
-                    font: {
-                        size: 7
-                    }
-
-                },
-
-                grid: {
-                    display: false
-                }
-
+              return `${context.dataset.label}: ${
+                value === null ? "-" : `${value.toFixed(2)}%`
+              }`;
             }
-
+          }
         }
+      },
 
+      scales: {
+        x: {
+          min: 0,
+          max: 100,
+
+          ticks: {
+            stepSize: 25,
+            callback(value) {
+              return `${value}%`;
+            }
+          },
+
+          grid: {
+            color: "rgba(0, 0, 0, 0.12)"
+          }
+        },
+
+        y: {
+          ticks: {
+            autoSkip: false
+          },
+
+          grid: {
+            color: "rgba(0, 0, 0, 0.10)"
+          }
+        }
+      }
+    }
+  });
+}
+
+
+// ==================================================
+// MEMUAT DASHBOARD DARI API
+// ==================================================
+
+async function loadDashboard() {
+  const content = document.getElementById("dashboard-content");
+  const status = document.getElementById("dashboard-status");
+  const error = document.getElementById("dashboard-error");
+
+  // Sembunyikan konten sampai proses pemuatan selesai.
+  if (content) {
+    content.hidden = true;
+  }
+
+  if (status) {
+    status.hidden = false;
+    status.textContent = "Memuat statistik dari API...";
+  }
+
+  if (error) {
+    error.hidden = true;
+    error.textContent = "";
+  }
+
+  setDashboardState("loading");
+  DASH_SECTIONS.forEach(clearSectionState);
+
+  try {
+    if (
+      !window.ApiClient ||
+      typeof window.ApiClient.getDashboard !== "function"
+    ) {
+      throw new Error(
+        "ApiClient.getDashboard() tidak tersedia. Periksa api-client.js."
+      );
     }
 
-});
+    // Gunakan endpoint Dashboard, bukan endpoint Tournament.
+    // Simulasi untuk uji tampilan: ?demo=empty (data kosong) / ?demo=error (API gagal)
+    const demo = new URLSearchParams(window.location.search).get("demo");
+
+    if (demo === "error") {
+      throw new Error("Simulasi galat API (?demo=error).");
+    }
+
+    const data = demo === "empty"
+      ? { top_win_rate: [], top_pick_rate: [], hero_meta: [], schedule: [] }
+      : await window.ApiClient.getDashboard();
+
+    console.log("Dashboard berhasil dimuat:", data);
+
+    if (!data || typeof data !== "object") {
+      throw new Error("Format data dashboard tidak valid.");
+    }
+
+    // Metadata seluruh hero dari respons API.
+    const heroMeta = Array.isArray(data.hero_meta)
+      ? data.hero_meta
+      : [];
+
+    // 1. Top 5 Win Rate.
+    const topWR = attachHeroImages(
+      withValidRate(data.top_win_rate, "win_rate"),
+      heroMeta
+    );
+
+    // 2. Top 5 Ban Rate.
+    const topBR = attachHeroImages(
+      withValidRate(heroMeta, "ban_rate")
+        .sort(
+          (a, b) =>
+            Number(b.ban_rate || 0) -
+            Number(a.ban_rate || 0)
+        )
+        .slice(0, 5),
+      heroMeta
+    );
+
+    // 3. Top 5 Pick Rate.
+    const topPR = attachHeroImages(
+      withValidRate(data.top_pick_rate, "pick_rate"),
+      heroMeta
+    );
+
+    console.log("Jumlah Top WR:", topWR.length);
+    console.log("Jumlah Top BR:", topBR.length);
+    console.log("Jumlah Top PR:", topPR.length);
+    console.log(
+      "Jumlah jadwal:",
+      Array.isArray(data.schedule) ? data.schedule.length : 0
+    );
+
+    // Render daftar hero.
+    renderHeroes(
+      document.getElementById("top-win-rate"),
+      topWR,
+      "win_rate",
+      "WR"
+    );
+
+    renderHeroes(
+      document.getElementById("top-ban-rate"),
+      topBR,
+      "ban_rate",
+      "BR"
+    );
+
+    renderHeroes(
+      document.getElementById("top-pick-rate"),
+      topPR,
+      "pick_rate",
+      "PR"
+    );
+
+    // Render grafik.
+    renderWRBRChart(topWR, topBR);
+
+    // Render jadwal dari respons API Dashboard.
+    renderMatches(data.schedule);
+
+    // Section tanpa data menampilkan "Data belum tersedia".
+    const hasMatches =
+      Array.isArray(data.schedule) && data.schedule.length > 0;
+
+    if (topWR.length === 0) showSectionState("wr");
+    if (topBR.length === 0) showSectionState("br");
+    if (topPR.length === 0) showSectionState("pr");
+    if (topWR.length === 0 && topBR.length === 0) {
+      showSectionState("chart");
+    }
+    if (!hasMatches) showSectionState("schedule");
+
+    // Tampilkan konten setelah proses render selesai.
+    if (content) {
+      content.hidden = false;
+    }
+
+    if (status) {
+      status.hidden = true;
+    }
+
+    if (error) {
+      error.hidden = true;
+      error.textContent = "";
+    }
+
+    setDashboardState("loaded");
+
+    console.log("Semua data dashboard selesai diproses.");
+  } catch (err) {
+    console.error("Gagal memuat dashboard:", err);
+
+    // Semua section menampilkan state galat dengan tombol "Coba Lagi".
+    DASH_SECTIONS.forEach((id) => showSectionState(id, "error"));
+
+    showDashboardError(
+      `Data dashboard gagal ditampilkan. ${
+        err?.message || "Periksa Console."
+      }`
+    );
+  }
+}
