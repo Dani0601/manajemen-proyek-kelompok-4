@@ -1,0 +1,12 @@
+$kind: http-request
+url: "{{baseUrl}}/api/players/compare"
+method: GET
+headers:
+  Accept: application/json
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("[400] Status 400", function () { pm.response.to.have.status(400); });
+      pm.test("[Message] menyebut wajib/p1/p2", function () { var j=pm.response.json(); pm.expect(j.success).to.be.false; pm.expect(j.message.toLowerCase()).to.satisfy(function(m){return m.includes("p1")||m.includes("p2")||m.includes("wajib")||m.includes("parameter");}); });
+    language: text/javascript
+order: 5000

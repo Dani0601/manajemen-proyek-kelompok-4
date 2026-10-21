@@ -1,0 +1,12 @@
+$kind: http-request
+url: "{{baseUrl}}/api/dashboard"
+method: POST
+headers:
+  Accept: application/json
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("[405] Status 405", function () { pm.response.to.have.status(405); });
+      pm.test("[Error] success=false, code=METHOD_NOT_ALLOWED", function () { var j=pm.response.json(); pm.expect(j.success).to.be.false; pm.expect(j.error.code).to.eql("METHOD_NOT_ALLOWED"); });
+    language: text/javascript
+order: 1000

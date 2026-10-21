@@ -1,0 +1,15 @@
+$kind: http-request
+name: GET /api/heroes (Extract heroId)
+url: "{{baseUrl}}/api/heroes"
+method: GET
+headers:
+  Accept: application/json
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("[200] Status 200 OK", function () { pm.response.to.have.status(200); });
+      pm.test("[Header] Content-Type JSON", function () { pm.expect(pm.response.headers.get("Content-Type")).to.include("application/json"); });
+      pm.test("[Perf] < 3000ms", function () { pm.expect(pm.response.responseTime).to.be.below(3000); });
+      pm.test("[Schema] heroes array with hero_id", function () { var j=pm.response.json(); pm.expect(j.success).to.be.true; pm.expect(j.data).to.be.an("array"); pm.expect(j.data.length).to.be.above(0); var h=j.data.find(function(x){return x.hero_id===1;})||j.data[0]; pm.expect(h).to.have.property("hero_id"); pm.expect(h).to.have.property("hero_name"); pm.collectionVariables.set("heroId",String(h.hero_id)); });
+    language: text/javascript
+order: 1000

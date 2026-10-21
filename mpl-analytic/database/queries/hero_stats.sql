@@ -10,7 +10,7 @@ HeroPicks AS (
     SELECT 
         gps.hero_id,
         COUNT(gps.stat_id) AS total_picked,
-        SUM(CASE WHEN g.winner_team_id = tr.team_id THEN 1 ELSE 0 END) AS total_wins,
+        SUM(CASE WHEN g.winner_team_id = tr.team_id THEN 1 ELSE 0 END) AS total_wins
     FROM game_player_stats gps
     JOIN games g ON gps.game_id = g.game_id
     JOIN matches m ON g.match_id = m.match_id
@@ -33,7 +33,7 @@ HeroBans AS (
 SELECT 
     h.hero_id,
     h.hero_name,
-    h.primary_role,
+    h.role AS primary_role,
     COALESCE(hp.total_picked, 0) AS total_picked,
     COALESCE(hb.total_banned, 0) AS total_banned,
     

@@ -1,0 +1,667 @@
+openapi: 3.0.3
+info:
+  title: MPL Analytic API
+  version: 1.0.0
+  description: >-
+    OpenAPI specification for the PHP Native MPL Analytic backend.
+    Paths are based on routes/api.php in the supplied project. Some routes
+    point to controllers that are not present in the archive and can return
+    HTTP 501 until those controllers are implemented. The API Contract v1
+    document was not present, so unspecified payload fields are intentionally
+    represented as generic objects rather than invented schemas.
+servers:
+  - url: http://localhost:8000
+    description: Local development server (adjust if the PHP server uses a different base path or port)
+tags:
+  - name: Dashboard
+  - name: Meta
+  - name: Heroes
+  - name: Players
+  - name: Tournaments
+  - name: Matches
+  - name: Games
+  - name: Items
+paths:
+  /api/dashboard:
+    get:
+      tags: [Dashboard]
+      summary: Get dashboard data
+      operationId: getDashboard
+      responses:
+        '200':
+          description: Dashboard data retrieved
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessResponse' }
+        '405': { $ref: '#/components/responses/MethodNotAllowed' }
+        '501': { $ref: '#/components/responses/NotImplemented' }
+  /api/meta:
+    get:
+      tags: [Meta]
+      summary: Get API metadata
+      operationId: getMeta
+      responses:
+        '200':
+          description: Metadata retrieved
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessResponse' }
+        '501': { $ref: '#/components/responses/NotImplemented' }
+  /api/seasons:
+    get:
+      tags: [Meta]
+      summary: List seasons
+      operationId: listSeasons
+      responses:
+        '200':
+          description: Seasons retrieved
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessResponse' }
+        '501': { $ref: '#/components/responses/NotImplemented' }
+  /api/teams:
+    get:
+      tags: [Meta]
+      summary: List teams
+      operationId: listTeams
+      responses:
+        '200':
+          description: Teams retrieved
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessResponse' }
+        '501': { $ref: '#/components/responses/NotImplemented' }
+  /api/heroes:
+    get:
+      tags: [Heroes]
+      summary: List heroes
+      operationId: listHeroes
+      parameters:
+        - name: q
+          in: query
+          required: false
+          description: Search heroes by keyword in name
+          schema: { type: string }
+        - name: role
+          in: query
+          required: false
+          description: Filter heroes by role (tank, fighter, assassin, mage, marksman, support) or comma-separated roles
+          schema: { type: string }
+      responses:
+        '200':
+          description: Hero list retrieved
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/Hero' }
+        '501': { $ref: '#/components/responses/NotImplemented' }
+  /api/heroes/search:
+    get:
+      tags: [Heroes]
+      summary: Search heroes and filter by role
+      operationId: searchHeroes
+      parameters:
+        - name: q
+          in: query
+          required: false
+          description: Search heroes by keyword in name
+          schema: { type: string }
+        - name: role
+          in: query
+          required: false
+          description: Filter heroes by role (tank, fighter, assassin, mage, marksman, support) or comma-separated roles
+          schema: { type: string }
+      responses:
+        '200':
+          description: Search results retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/Hero' }
+        '501': { $ref: '#/components/responses/NotImplemented' }
+  /api/heroes/{hero_id}:
+    parameters:
+      - $ref: '#/components/parameters/HeroId'
+    get:
+      tags: [Heroes]
+      summary: Get hero detail and situational recommendations
+      description: >-
+        The response data includes hero, detail, and recommendations.items and
+        recommendations.emblems. Recommendation fields are documented only
+        where present in the current implementation; status values should be
+        aligned with the team's agreed API Contract v1 before release.
+      operationId: getHeroDetail
+      responses:
+        '200':
+          description: Hero detail retrieved
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          hero: { $ref: '#/components/schemas/Hero' }
+                          detail: { $ref: '#/components/schemas/GenericObject' }
+                          recommendations:
+                            type: object
+                            properties:
+                              items:
+                                type: array
+                                items: { $ref: '#/components/schemas/ItemRecommendation' }
+                              emblems:
+                                type: array
+                                items: { $ref: '#/components/schemas/EmblemRecommendation' }
+        '400': { $ref: '#/components/responses/InvalidId' }
+        '404':
+          description: Hero not found
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+        '501': { $ref: '#/components/responses/NotImplemented' }
+  /api/heroes/{hero_id}/stats:
+    parameters:
+      - $ref: '#/components/parameters/HeroId'
+    get:
+      tags: [Heroes]
+      summary: Get hero statistics
+      operationId: getHeroStats
+      responses:
+        '200':
+          description: Hero statistics retrieved
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessResponse' }
+        '400': { $ref: '#/components/responses/InvalidId' }
+        '404': { $ref: '#/components/responses/HeroNotFound' }
+        '501': { $ref: '#/components/responses/NotImplemented' }
+  /api/heroes/{hero_id}/builds:
+    parameters:
+      - $ref: '#/components/parameters/HeroId'
+    get:
+      tags: [Heroes]
+      summary: Get hero builds and situational swaps
+      operationId: getHeroBuilds
+      responses:
+        '200':
+          description: Hero builds retrieved
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessResponse' }
+        '400': { $ref: '#/components/responses/InvalidId' }
+        '404': { $ref: '#/components/responses/HeroNotFound' }
+        '501': { $ref: '#/components/responses/NotImplemented' }
+  /api/heroes/{hero_id}/counters:
+    parameters:
+      - $ref: '#/components/parameters/HeroId'
+    get:
+      tags: [Heroes]
+      summary: Get hero counters, strong-against relations, and synergy
+      operationId: getHeroCounters
+      responses:
+        '200':
+          description: Hero relations retrieved
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessResponse' }
+        '400': { $ref: '#/components/responses/InvalidId' }
+        '404': { $ref: '#/components/responses/HeroNotFound' }
+        '501': { $ref: '#/components/responses/NotImplemented' }
+  /api/heroes/{hero_id}/skills:
+    parameters:
+      - $ref: '#/components/parameters/HeroId'
+    get:
+      tags: [Heroes]
+      summary: Get hero skills and skill order
+      operationId: getHeroSkills
+      responses:
+        '200':
+          description: Hero skills retrieved
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessResponse' }
+        '400': { $ref: '#/components/responses/InvalidId' }
+        '404': { $ref: '#/components/responses/HeroNotFound' }
+        '501': { $ref: '#/components/responses/NotImplemented' }
+  /api/heroes/{hero_id}/games:
+    parameters:
+      - $ref: '#/components/parameters/HeroId'
+    get:
+      tags: [Heroes]
+      summary: Get games for a hero
+      operationId: getHeroGames
+      description: Route exists, but the current HeroController does not implement games(); it returns 501.
+      responses:
+        '200':
+          description: Hero games retrieved when implemented
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessResponse' }
+        '400': { $ref: '#/components/responses/InvalidId' }
+        '501': { $ref: '#/components/responses/NotImplemented' }
+  /api/players:
+    get:
+      tags: [Players]
+      summary: List players
+      operationId: listPlayers
+      responses:
+        '200':
+          description: Player list retrieved
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessResponse' }
+        '501': { $ref: '#/components/responses/NotImplemented' }
+  /api/players/compare:
+    get:
+      tags: [Players]
+      summary: Compare players
+      operationId: comparePlayers
+      description: Query parameters are not specified here because the controller contract does not define them in the route file.
+      responses:
+        '200':
+          description: Player comparison retrieved
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessResponse' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '501': { $ref: '#/components/responses/NotImplemented' }
+  /api/players/{player_id}:
+    parameters:
+      - $ref: '#/components/parameters/PositiveId'
+    get:
+      tags: [Players]
+      summary: Get player detail
+      operationId: getPlayerDetail
+      responses:
+        '200':
+          description: Player detail retrieved
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessResponse' }
+        '400': { $ref: '#/components/responses/InvalidId' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '501': { $ref: '#/components/responses/NotImplemented' }
+  /api/players/{player_id}/stats:
+    parameters:
+      - $ref: '#/components/parameters/PositiveId'
+    get:
+      tags: [Players]
+      summary: Get player statistics
+      operationId: getPlayerStats
+      responses:
+        '200':
+          description: Player statistics retrieved
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessResponse' }
+        '400': { $ref: '#/components/responses/InvalidId' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '501': { $ref: '#/components/responses/NotImplemented' }
+  /api/players/{player_id}/games:
+    parameters:
+      - $ref: '#/components/parameters/PositiveId'
+    get:
+      tags: [Players]
+      summary: Get games for a player
+      operationId: getPlayerGames
+      responses:
+        '200':
+          description: Player games retrieved
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessResponse' }
+        '400': { $ref: '#/components/responses/InvalidId' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '501': { $ref: '#/components/responses/NotImplemented' }
+  /api/tournaments:
+    get:
+      tags: [Tournaments]
+      summary: List tournaments
+      operationId: listTournaments
+      responses:
+        '200':
+          description: Tournament list retrieved
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessResponse' }
+        '501': { $ref: '#/components/responses/NotImplemented' }
+  /api/tournaments/{tournament_id}:
+    parameters:
+      - $ref: '#/components/parameters/PositiveId'
+    get:
+      tags: [Tournaments]
+      summary: Get tournament detail
+      operationId: getTournamentDetail
+      responses:
+        '200':
+          description: Tournament detail retrieved
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessResponse' }
+        '400': { $ref: '#/components/responses/InvalidId' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '501': { $ref: '#/components/responses/NotImplemented' }
+  /api/tournaments/{tournament_id}/standings:
+    parameters:
+      - $ref: '#/components/parameters/PositiveId'
+    get:
+      tags: [Tournaments]
+      summary: Get tournament standings
+      operationId: getTournamentStandings
+      responses:
+        '200':
+          description: Standings retrieved
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessResponse' }
+        '400': { $ref: '#/components/responses/InvalidId' }
+        '501': { $ref: '#/components/responses/NotImplemented' }
+  /api/tournaments/{tournament_id}/schedule:
+    parameters:
+      - $ref: '#/components/parameters/PositiveId'
+    get:
+      tags: [Tournaments]
+      summary: Get tournament schedule
+      operationId: getTournamentSchedule
+      responses:
+        '200':
+          description: Schedule retrieved
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessResponse' }
+        '400': { $ref: '#/components/responses/InvalidId' }
+        '501': { $ref: '#/components/responses/NotImplemented' }
+  /api/matches:
+    get:
+      tags: [Matches]
+      summary: List matches
+      operationId: listMatches
+      responses:
+        '200':
+          description: Match list retrieved
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessResponse' }
+        '501': { $ref: '#/components/responses/NotImplemented' }
+  /api/matches/{match_id}:
+    parameters:
+      - name: match_id
+        in: path
+        required: true
+        description: Match identifier stored as a string in the current router.
+        schema: { type: string, minLength: 1 }
+    get:
+      tags: [Matches]
+      summary: Get match detail
+      operationId: getMatchDetail
+      responses:
+        '200':
+          description: Match detail retrieved
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessResponse' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '501': { $ref: '#/components/responses/NotImplemented' }
+  /api/matches/{match_id}/drafts:
+    parameters:
+      - name: match_id
+        in: path
+        required: true
+        schema: { type: string, minLength: 1 }
+    get:
+      tags: [Matches]
+      summary: Get match drafts
+      operationId: getMatchDrafts
+      responses:
+        '200':
+          description: Match drafts retrieved
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessResponse' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '501': { $ref: '#/components/responses/NotImplemented' }
+  /api/games:
+    get:
+      tags: [Games]
+      summary: List games
+      operationId: listGames
+      description: Route is present, but GameController.php is absent from the supplied archive and may return 501.
+      responses:
+        '200':
+          description: Game list retrieved when implemented
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessResponse' }
+        '501': { $ref: '#/components/responses/NotImplemented' }
+  /api/games/{game_id}:
+    parameters:
+      - name: game_id
+        in: path
+        required: true
+        description: Game identifier stored as a string in the current router.
+        schema: { type: string, minLength: 1 }
+    get:
+      tags: [Games]
+      summary: Get game detail
+      operationId: getGameDetail
+      responses:
+        '200':
+          description: Game detail retrieved when implemented
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessResponse' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '501': { $ref: '#/components/responses/NotImplemented' }
+  /api/games/{game_id}/players:
+    parameters:
+      - { $ref: '#/components/parameters/GameId' }
+    get:
+      tags: [Games]
+      summary: List players in a game
+      operationId: listGamePlayers
+      responses:
+        '200':
+          description: Game players retrieved when implemented
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessResponse' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '501': { $ref: '#/components/responses/NotImplemented' }
+  /api/games/{game_id}/picks:
+    parameters:
+      - { $ref: '#/components/parameters/GameId' }
+    get:
+      tags: [Games]
+      summary: Get picks for a game
+      operationId: getGamePicks
+      responses:
+        '200':
+          description: Game picks retrieved when implemented
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessResponse' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '501': { $ref: '#/components/responses/NotImplemented' }
+  /api/games/{game_id}/emblems:
+    parameters:
+      - { $ref: '#/components/parameters/GameId' }
+    get:
+      tags: [Games]
+      summary: Get emblems for a game
+      operationId: getGameEmblems
+      responses:
+        '200':
+          description: Game emblems retrieved when implemented
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessResponse' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '501': { $ref: '#/components/responses/NotImplemented' }
+  /api/games/{game_id}/items:
+    parameters:
+      - { $ref: '#/components/parameters/GameId' }
+    get:
+      tags: [Games]
+      summary: Get items for a game
+      operationId: getGameItems
+      responses:
+        '200':
+          description: Game items retrieved when implemented
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessResponse' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '501': { $ref: '#/components/responses/NotImplemented' }
+  /api/items:
+    get:
+      tags: [Items]
+      summary: List items
+      operationId: listItems
+      description: Route is present, but ItemController.php is absent from the supplied archive and may return 501.
+      responses:
+        '200':
+          description: Item list retrieved when implemented
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessResponse' }
+        '501': { $ref: '#/components/responses/NotImplemented' }
+  /api/items/{item_id}:
+    parameters:
+      - $ref: '#/components/parameters/PositiveId'
+    get:
+      tags: [Items]
+      summary: Get item detail
+      operationId: getItemDetail
+      responses:
+        '200':
+          description: Item detail retrieved when implemented
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SuccessResponse' }
+        '400': { $ref: '#/components/responses/InvalidId' }
+        '501': { $ref: '#/components/responses/NotImplemented' }
+components:
+  parameters:
+    HeroId:
+      name: hero_id
+      in: path
+      required: true
+      description: Positive integer hero identifier.
+      schema: { type: integer, minimum: 1 }
+    PositiveId:
+      name: id
+      in: path
+      required: true
+      description: Positive integer identifier; parameter name is descriptive for each path.
+      schema: { type: integer, minimum: 1 }
+    GameId:
+      name: game_id
+      in: path
+      required: true
+      description: Game identifier stored as a string.
+      schema: { type: string, minLength: 1 }
+  responses:
+    MethodNotAllowed:
+      description: HTTP method is not allowed; the current router accepts GET only.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorResponse' }
+    NotImplemented:
+      description: Endpoint/controller method is not implemented.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorResponse' }
+    InvalidId:
+      description: Identifier is invalid or must be a positive integer.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorResponse' }
+    HeroNotFound:
+      description: Hero not found
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorResponse' }
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorResponse' }
+    BadRequest:
+      description: Invalid request or identifier
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorResponse' }
+  schemas:
+    SuccessResponse:
+      type: object
+      required: [success, message, data]
+      properties:
+        success: { type: boolean, example: true }
+        message: { type: string, example: Data berhasil diambil. }
+        data:
+          description: Endpoint-specific payload. Fields are deliberately unspecified unless verified from implementation.
+          nullable: true
+          oneOf:
+            - type: object
+              additionalProperties: true
+            - type: array
+              items: { $ref: '#/components/schemas/GenericObject' }
+    ErrorResponse:
+      type: object
+      required: [success, message, data]
+      properties:
+        success: { type: boolean, example: false }
+        message: { type: string }
+        data: { nullable: true }
+        error:
+          type: object
+          properties:
+            code: { type: string }
+            controller: { type: string }
+    GenericObject:
+      type: object
+      description: Generic object used where the exact response fields are not confirmed in the source code.
+      additionalProperties: true
+    Hero:
+      type: object
+      properties:
+        hero_id: { type: integer, example: 1 }
+        hero_name: { type: string }
+        role: { type: string, example: Fighter, nullable: true }
+        hero_slug: { type: string, nullable: true }
+        hero_url: { type: string, nullable: true }
+        created_at: { type: string, format: date-time, nullable: true }
+        updated_at: { type: string, format: date-time, nullable: true }
+      additionalProperties: true
+    ItemRecommendation:
+      type: object
+      description: Situational item recommendation from source-backed build data; suitability status semantics should be finalized in API Contract v1.
+      properties:
+        item_name: { type: string, nullable: true }
+        suitability_status: { type: string, nullable: true }
+        reason: { type: string, nullable: true }
+      additionalProperties: true
+    EmblemRecommendation:
+      type: object
+      description: Emblem recommendation from source-backed build data; suitability status semantics should be finalized in API Contract v1.
+      properties:
+        name: { type: string, nullable: true }
+        suitability_status: { type: string, nullable: true }
+        reason: { type: string, nullable: true }
+      additionalProperties: true

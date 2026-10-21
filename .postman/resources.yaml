@@ -1,0 +1,14 @@
+# Use this workspace to collaborate
+workspace:
+  id: 47f0484f-52e5-43c7-8646-cebfd6afd2a1
+
+localResources:
+  collections:
+    - ../mpl_analytic_postman_collection.json
+    - ../mpl-analytic/docs/mpl_analytic_postman_collection.json
+
+# Each entry here maps a local resource to one or more corresponding objects in Postman Cloud
+
+cloudResources:
+  collections:
+    ../postman/collections/MPL Analytic API - Automation Test Suite: db972fd8-543e-4790-acd7-cef47272207a

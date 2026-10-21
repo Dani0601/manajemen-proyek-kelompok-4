@@ -1,0 +1,13 @@
+$kind: http-request
+name: GET /api/games/:gameId/players
+url: "{{baseUrl}}/api/games/{{gameId}}/players"
+method: GET
+headers:
+  Accept: application/json
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("[Status] 200 or 404", function () { pm.expect([200,404]).to.include(pm.response.code); });
+      pm.test("[Schema] data is array if 200", function () { var j=pm.response.json(); pm.expect(j).to.have.property("success"); if(pm.response.code===200){pm.expect(j.data).to.be.an("array");} });
+    language: text/javascript
+order: 3000

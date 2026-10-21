@@ -1,5 +1,4 @@
-
-        </main>
+</main>
     </div>
 </div>
 
@@ -18,4 +17,8 @@
 <?php endif; ?>
 
 </body>
+<<<<<<< HEAD
 </html>
+=======
+</html>
+>>>>>>> 638b388fc707f2fa1097759ecb5334e8d2817313

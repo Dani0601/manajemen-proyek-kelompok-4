@@ -1,9 +1,5 @@
 <?php
-
 require_once dirname(__DIR__) . '/app/helpers/response.php';
-
-
-
 
 $path = parse_url(
     $_SERVER['REQUEST_URI'] ?? '/',
@@ -44,4 +40,3 @@ if (file_exists($errorPage)) {
 }
  
 ?>
-

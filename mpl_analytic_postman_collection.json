@@ -1,0 +1,1806 @@
+{
+  "info": {
+    "_postman_id": "7b8f9a2e-4d5c-4e3a-9f1b-mplanalytic2026",
+    "name": "MPL Analytic API - Automation Test Suite",
+    "description": "Automation test untuk semua endpoint MPL Analytic API.\n\nBase URL:\n- Apache/Laragon: http://127.0.0.1/manajemen-proyek-kelompok-4/mpl-analytic/public\n- VirtualHost: http://manajemen-proyek-kelompok-4.test\n- PHP built-in: http://localhost:8000\n\nNewman CLI:\nnpx newman run docs/mpl_analytic_postman_collection.json --env-var baseUrl=http://127.0.0.1/manajemen-proyek-kelompok-4/mpl-analytic/public",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1/manajemen-proyek-kelompok-4/mpl-analytic/public",
+      "description": "Base URL - ganti sesuai environment",
+      "type": "string"
+    },
+    {
+      "key": "heroId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "playerId",
+      "value": "2",
+      "type": "string"
+    },
+    {
+      "key": "player2Id",
+      "value": "23",
+      "type": "string"
+    },
+    {
+      "key": "seasonId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "matchId",
+      "value": "s17_w01_m01",
+      "type": "string"
+    },
+    {
+      "key": "gameId",
+      "value": "s17_w01_m01_g01",
+      "type": "string"
+    },
+    {
+      "key": "itemId",
+      "value": "1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 - Dashboard",
+      "item": [
+        {
+          "name": "GET /api/dashboard",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[200] Status 200 OK\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"[Header] Content-Type JSON\", function () { pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"); });",
+                  "pm.test(\"[Perf] < 3000ms\", function () { pm.expect(pm.response.responseTime).to.be.below(3000); });",
+                  "pm.test(\"[Schema] success, message, data\", function () { var j=pm.response.json(); pm.expect(j).to.have.property(\"success\"); pm.expect(j).to.have.property(\"message\"); pm.expect(j).to.have.property(\"data\"); });",
+                  "pm.test(\"[Schema] data.season.season_id\", function () { var j=pm.response.json(); pm.expect(j.success).to.be.true; pm.expect(j.data).to.have.property(\"season\"); if(j.data.season&&j.data.season.season_id){pm.collectionVariables.set(\"seasonId\",String(j.data.season.season_id));} });",
+                  "pm.test(\"[Schema] data.schedule is array\", function () { var j=pm.response.json(); pm.expect(j.data.schedule).to.be.an(\"array\"); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 - Meta and Master Data",
+      "item": [
+        {
+          "name": "GET /api/meta",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[Status] 200 or 501\", function () { pm.expect([200,501]).to.include(pm.response.code); });",
+                  "pm.test(\"[Header] Content-Type JSON\", function () { pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"); });",
+                  "pm.test(\"[Schema] valid JSON object\", function () { var j=pm.response.json(); pm.expect(j).to.be.an(\"object\"); pm.expect(j).to.have.property(\"success\"); pm.expect(j).to.have.property(\"message\"); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/meta",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "meta"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/seasons",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[Status] 200 or 501\", function () { pm.expect([200,501]).to.include(pm.response.code); });",
+                  "pm.test(\"[Header] Content-Type JSON\", function () { pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"); });",
+                  "pm.test(\"[Schema] data is array if 200\", function () { var j=pm.response.json(); pm.expect(j).to.have.property(\"success\"); if(pm.response.code===200){pm.expect(j.data).to.be.an(\"array\");} });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/seasons",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "seasons"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/teams",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[Status] 200 or 501\", function () { pm.expect([200,501]).to.include(pm.response.code); });",
+                  "pm.test(\"[Header] Content-Type JSON\", function () { pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"); });",
+                  "pm.test(\"[Schema] data is array if 200\", function () { var j=pm.response.json(); pm.expect(j).to.have.property(\"success\"); if(pm.response.code===200){pm.expect(j.data).to.be.an(\"array\");} });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/teams",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "teams"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 - Heroes",
+      "item": [
+        {
+          "name": "GET /api/heroes (Extract heroId)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[200] Status 200 OK\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"[Header] Content-Type JSON\", function () { pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"); });",
+                  "pm.test(\"[Perf] < 3000ms\", function () { pm.expect(pm.response.responseTime).to.be.below(3000); });",
+                  "pm.test(\"[Schema] heroes array with hero_id\", function () { var j=pm.response.json(); pm.expect(j.success).to.be.true; pm.expect(j.data).to.be.an(\"array\"); pm.expect(j.data.length).to.be.above(0); var h=j.data.find(function(x){return x.hero_id===1;})||j.data[0]; pm.expect(h).to.have.property(\"hero_id\"); pm.expect(h).to.have.property(\"hero_name\"); pm.collectionVariables.set(\"heroId\",String(h.hero_id)); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/heroes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "heroes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/heroes/:heroId",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[200] Status 200 OK\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"[Schema] hero_id matches var\", function () { var j=pm.response.json(); pm.expect(j.success).to.be.true; var h=j.data.hero||j.data; pm.expect(h).to.have.property(\"hero_id\"); pm.expect(String(h.hero_id)).to.eql(pm.collectionVariables.get(\"heroId\")); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/heroes/{{heroId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "heroes",
+                "{{heroId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/heroes/:heroId/stats",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[200] Status 200 OK\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"[Schema] data not null with stats\", function () { var j=pm.response.json(); pm.expect(j.success).to.be.true; pm.expect(j.data).to.not.be.null; });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/heroes/{{heroId}}/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "heroes",
+                "{{heroId}}",
+                "stats"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/heroes/:heroId/builds",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[200] Status 200 OK\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"[Schema] data not null\", function () { var j=pm.response.json(); pm.expect(j.success).to.be.true; pm.expect(j.data).to.not.be.null; });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/heroes/{{heroId}}/builds",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "heroes",
+                "{{heroId}}",
+                "builds"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/heroes/:heroId/counters",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[200] Status 200 OK\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"[Schema] data not null\", function () { var j=pm.response.json(); pm.expect(j.success).to.be.true; pm.expect(j.data).to.not.be.null; });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/heroes/{{heroId}}/counters",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "heroes",
+                "{{heroId}}",
+                "counters"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/heroes/:heroId/skills",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[200] Status 200 OK\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"[Schema] data not null\", function () { var j=pm.response.json(); pm.expect(j.success).to.be.true; pm.expect(j.data).to.not.be.null; });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/heroes/{{heroId}}/skills",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "heroes",
+                "{{heroId}}",
+                "skills"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/heroes/:heroId/games",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[Status] 200 or 501\", function () { pm.expect([200,501]).to.include(pm.response.code); });",
+                  "pm.test(\"[Schema] valid JSON\", function () { var j=pm.response.json(); pm.expect(j).to.have.property(\"success\"); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/heroes/{{heroId}}/games",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "heroes",
+                "{{heroId}}",
+                "games"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/heroes/search (Search by name)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[200] Status 200 OK\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"[Header] Content-Type JSON\", function () { pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"); });",
+                  "pm.test(\"[Schema] data array\", function () { var j=pm.response.json(); pm.expect(j.success).to.be.true; pm.expect(j.data).to.be.an(\"array\"); });",
+                  "pm.test(\"[Data] results match keyword\", function () { var j=pm.response.json(); pm.expect(j.data.length).to.be.above(0); j.data.forEach(function(h) { pm.expect(h.hero_name.toLowerCase()).to.include(\"dyr\"); }); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/heroes/search?q=dyr",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "heroes",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "dyr"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/heroes/search (Filter by role)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[200] Status 200 OK\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"[Header] Content-Type JSON\", function () { pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"); });",
+                  "pm.test(\"[Schema] data array\", function () { var j=pm.response.json(); pm.expect(j.success).to.be.true; pm.expect(j.data).to.be.an(\"array\"); });",
+                  "pm.test(\"[Data] results match role\", function () { var j=pm.response.json(); pm.expect(j.data.length).to.be.above(0); j.data.forEach(function(h) { pm.expect(h.role.toLowerCase()).to.eql(\"mage\"); }); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/heroes/search?role=mage",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "heroes",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "role",
+                  "value": "mage"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/heroes/search (Search and filter by role)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[200] Status 200 OK\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"[Header] Content-Type JSON\", function () { pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"); });",
+                  "pm.test(\"[Schema] data array\", function () { var j=pm.response.json(); pm.expect(j.success).to.be.true; pm.expect(j.data).to.be.an(\"array\"); });",
+                  "pm.test(\"[Data] results match both keyword and role\", function () { var j=pm.response.json(); pm.expect(j.data.length).to.be.above(0); j.data.forEach(function(h) { pm.expect(h.hero_name.toLowerCase()).to.include(\"a\"); pm.expect(h.role.toLowerCase()).to.eql(\"fighter\"); }); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/heroes/search?q=a&role=fighter",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "heroes",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "a"
+                },
+                {
+                  "key": "role",
+                  "value": "fighter"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 - Players",
+      "item": [
+        {
+          "name": "GET /api/players (Extract playerId)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[200] Status 200 OK\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"[Header] Content-Type JSON\", function () { pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"); });",
+                  "pm.test(\"[Schema] players array\", function () { var j=pm.response.json(); pm.expect(j.success).to.be.true; pm.expect(j.data).to.be.an(\"array\"); pm.expect(j.data.length).to.be.above(0); pm.expect(j.data[0]).to.have.property(\"player_id\"); pm.collectionVariables.set(\"playerId\",String(j.data[0].player_id)); if(j.data.length>1){pm.collectionVariables.set(\"player2Id\",String(j.data[1].player_id));} });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/players",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "players"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/players (page=1 limit=10)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[200] Status 200 OK\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"[Schema] data.length <= 10\", function () { var j=pm.response.json(); pm.expect(j.success).to.be.true; pm.expect(j.data.length).to.be.at.most(10); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/players?page=1&limit=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "players"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/players/compare (US-03)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[200] Status 200 OK\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"[Schema] comparison.player_1 and player_2\", function () { var j=pm.response.json(); pm.expect(j.success).to.be.true; pm.expect(j.data).to.have.property(\"comparison\"); pm.expect(j.data.comparison).to.have.property(\"player_1\"); pm.expect(j.data.comparison).to.have.property(\"player_2\"); });",
+                  "pm.test(\"[Schema] radar stats for player_1\", function () { var j=pm.response.json(); if(j.success&&j.data&&j.data.comparison){var s=j.data.comparison.player_1.stats; if(s){pm.expect(s).to.have.all.keys(\"kill_power\",\"farm_rate\",\"survival\",\"versatility\",\"objective\",\"teamfight\");}} });",
+                  "pm.test(\"[Schema] league_stats, detail_stats, and performance for player_1\", function () { var j=pm.response.json(); if(j.success&&j.data&&j.data.comparison&&j.data.comparison.player_1){var p=j.data.comparison.player_1; pm.expect(p).to.have.property(\"league_stats\"); pm.expect(p.league_stats).to.have.all.keys(\"match_played\",\"avg_kda\",\"kill_participation\"); pm.expect(p).to.have.property(\"detail_stats\"); pm.expect(p.detail_stats).to.have.all.keys(\"gold_per_minute\",\"damage_per_minute\",\"objective_secured\"); pm.expect(p).to.have.property(\"performance\"); pm.expect(p.performance).to.have.property(\"win_rate\");} });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/players/compare?p1={{playerId}}&p2={{player2Id}}&season={{seasonId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "players",
+                "compare"
+              ],
+              "query": [
+                {
+                  "key": "p1",
+                  "value": "{{playerId}}"
+                },
+                {
+                  "key": "p2",
+                  "value": "{{player2Id}}"
+                },
+                {
+                  "key": "season",
+                  "value": "{{seasonId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/players/:playerId",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[Status] 200 or 404 or 501\", function () { pm.expect([200,404,501]).to.include(pm.response.code); });",
+                  "pm.test(\"[Schema] valid JSON\", function () { var j=pm.response.json(); pm.expect(j).to.have.property(\"success\"); pm.expect(j).to.have.property(\"message\"); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/players/{{playerId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "players",
+                "{{playerId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/players/:playerId/stats",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[Status] 200 or 404 or 501\", function () { pm.expect([200,404,501]).to.include(pm.response.code); });",
+                  "pm.test(\"[Schema] valid JSON\", function () { var j=pm.response.json(); pm.expect(j).to.have.property(\"success\"); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/players/{{playerId}}/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "players",
+                "{{playerId}}",
+                "stats"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/players/:playerId/games",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[Status] 200 or 404 or 501\", function () { pm.expect([200,404,501]).to.include(pm.response.code); });",
+                  "pm.test(\"[Schema] valid JSON\", function () { var j=pm.response.json(); pm.expect(j).to.have.property(\"success\"); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/players/{{playerId}}/games",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "players",
+                "{{playerId}}",
+                "games"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 - Matches",
+      "item": [
+        {
+          "name": "GET /api/matches (Extract matchId)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[Status] 200 or 501\", function () { pm.expect([200,501]).to.include(pm.response.code); });",
+                  "pm.test(\"[Header] Content-Type JSON\", function () { pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"); });",
+                  "pm.test(\"[Schema] valid JSON + extract matchId\", function () { var j=pm.response.json(); pm.expect(j).to.have.property(\"success\"); if(j.success&&j.data){var d=Array.isArray(j.data)?j.data:[j.data]; if(d.length>0&&d[0].match_id){pm.collectionVariables.set(\"matchId\",String(d[0].match_id));} } });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/matches",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "matches"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/matches/:matchId",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[200] Status 200 OK\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"[Schema] data.match_id exists\", function () { var j=pm.response.json(); pm.expect(j.success).to.be.true; pm.expect(j.data).to.have.property(\"match_id\"); });",
+                  "pm.test(\"[Schema] team1 and team2 with team_name\", function () { var j=pm.response.json(); if(j.success&&j.data){pm.expect(j.data).to.have.property(\"team1\"); pm.expect(j.data).to.have.property(\"team2\"); pm.expect(j.data.team1).to.have.property(\"team_name\"); pm.expect(j.data.team2).to.have.property(\"team_name\");} });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/matches/{{matchId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "matches",
+                "{{matchId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/matches/:matchId/drafts",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[200] Status 200 OK\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"[Schema] data not null\", function () { var j=pm.response.json(); pm.expect(j.success).to.be.true; pm.expect(j.data).to.not.be.null; });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/matches/{{matchId}}/drafts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "matches",
+                "{{matchId}}",
+                "drafts"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 - Tournaments",
+      "item": [
+        {
+          "name": "GET /api/tournaments",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[Status] 200 or 501\", function () { pm.expect([200,501]).to.include(pm.response.code); });",
+                  "pm.test(\"[Header] Content-Type JSON\", function () { pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"); });",
+                  "pm.test(\"[Schema] valid JSON\", function () { var j=pm.response.json(); pm.expect(j).to.have.property(\"success\"); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tournaments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tournaments"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/tournaments/:seasonId",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[Status] 200 or 404 or 501\", function () { pm.expect([200,404,501]).to.include(pm.response.code); });",
+                  "pm.test(\"[Schema] valid JSON\", function () { var j=pm.response.json(); pm.expect(j).to.have.property(\"success\"); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tournaments/{{seasonId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tournaments",
+                "{{seasonId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/tournaments/:seasonId/standings",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[Status] 200 or 501\", function () { pm.expect([200,501]).to.include(pm.response.code); });",
+                  "pm.test(\"[Schema] data is array if 200\", function () { var j=pm.response.json(); pm.expect(j).to.have.property(\"success\"); if(pm.response.code===200){pm.expect(j.data).to.be.an(\"array\");} });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tournaments/{{seasonId}}/standings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tournaments",
+                "{{seasonId}}",
+                "standings"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/tournaments/:seasonId/schedule",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[Status] 200 or 501\", function () { pm.expect([200,501]).to.include(pm.response.code); });",
+                  "pm.test(\"[Schema] valid JSON\", function () { var j=pm.response.json(); pm.expect(j).to.have.property(\"success\"); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tournaments/{{seasonId}}/schedule",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tournaments",
+                "{{seasonId}}",
+                "schedule"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 - Games",
+      "item": [
+        {
+          "name": "GET /api/games (Extract gameId)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[Status] 200 or 501\", function () { pm.expect([200,501]).to.include(pm.response.code); });",
+                  "pm.test(\"[Header] Content-Type JSON\", function () { pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"); });",
+                  "pm.test(\"[Schema] valid JSON + extract gameId\", function () { var j=pm.response.json(); pm.expect(j).to.have.property(\"success\"); if(j.success&&j.data){var d=Array.isArray(j.data)?j.data:[j.data]; if(d.length>0){var gid=d[0].game_id||d[0].id; if(gid){pm.collectionVariables.set(\"gameId\",String(gid));}}} });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/games",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "games"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/games/:gameId",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[Status] 200 or 404\", function () { pm.expect([200,404]).to.include(pm.response.code); });",
+                  "pm.test(\"[Schema] valid JSON\", function () { var j=pm.response.json(); pm.expect(j).to.have.property(\"success\"); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/games/{{gameId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "games",
+                "{{gameId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/games/:gameId/players",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[Status] 200 or 404\", function () { pm.expect([200,404]).to.include(pm.response.code); });",
+                  "pm.test(\"[Schema] data is array if 200\", function () { var j=pm.response.json(); pm.expect(j).to.have.property(\"success\"); if(pm.response.code===200){pm.expect(j.data).to.be.an(\"array\");} });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/games/{{gameId}}/players",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "games",
+                "{{gameId}}",
+                "players"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/games/:gameId/picks",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[Status] 200 or 404\", function () { pm.expect([200,404]).to.include(pm.response.code); });",
+                  "pm.test(\"[Schema] valid JSON\", function () { var j=pm.response.json(); pm.expect(j).to.have.property(\"success\"); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/games/{{gameId}}/picks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "games",
+                "{{gameId}}",
+                "picks"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/games/:gameId/emblems",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[Status] 200 or 404\", function () { pm.expect([200,404]).to.include(pm.response.code); });",
+                  "pm.test(\"[Schema] valid JSON\", function () { var j=pm.response.json(); pm.expect(j).to.have.property(\"success\"); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/games/{{gameId}}/emblems",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "games",
+                "{{gameId}}",
+                "emblems"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/games/:gameId/items",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[Status] 200 or 404\", function () { pm.expect([200,404]).to.include(pm.response.code); });",
+                  "pm.test(\"[Schema] valid JSON\", function () { var j=pm.response.json(); pm.expect(j).to.have.property(\"success\"); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/games/{{gameId}}/items",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "games",
+                "{{gameId}}",
+                "items"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "08 - Items",
+      "item": [
+        {
+          "name": "GET /api/items (Extract itemId)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[Status] 200 or 501\", function () { pm.expect([200,501]).to.include(pm.response.code); });",
+                  "pm.test(\"[Header] Content-Type JSON\", function () { pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"); });",
+                  "pm.test(\"[Schema] valid JSON + extract itemId\", function () { var j=pm.response.json(); pm.expect(j).to.have.property(\"success\"); if(j.success&&j.data&&Array.isArray(j.data)&&j.data.length>0){var iid=j.data[0].item_id||j.data[0].id; if(iid){pm.collectionVariables.set(\"itemId\",String(iid));}} });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/items",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "items"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/items/:itemId",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[Status] 200 or 404 or 501\", function () { pm.expect([200,404,501]).to.include(pm.response.code); });",
+                  "pm.test(\"[Schema] valid JSON\", function () { var j=pm.response.json(); pm.expect(j).to.have.property(\"success\"); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/items/{{itemId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "items",
+                "{{itemId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "09 - Negative and Security Tests",
+      "item": [
+        {
+          "name": "405 POST ke GET endpoint (METHOD_NOT_ALLOWED)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[405] Status 405\", function () { pm.response.to.have.status(405); });",
+                  "pm.test(\"[Error] success=false, code=METHOD_NOT_ALLOWED\", function () { var j=pm.response.json(); pm.expect(j.success).to.be.false; pm.expect(j.error.code).to.eql(\"METHOD_NOT_ALLOWED\"); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard"
+              ]
+            }
+          }
+        },
+        {
+          "name": "404 Endpoint tidak ada (ENDPOINT_NOT_FOUND)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[404] Status 404\", function () { pm.response.to.have.status(404); });",
+                  "pm.test(\"[Error] code=ENDPOINT_NOT_FOUND\", function () { var j=pm.response.json(); pm.expect(j.success).to.be.false; pm.expect(j.error.code).to.eql(\"ENDPOINT_NOT_FOUND\"); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/endpoint-tidak-ada-99999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "endpoint-tidak-ada-99999"
+              ]
+            }
+          }
+        },
+        {
+          "name": "400 Hero ID negatif (INVALID_HERO_ID)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[400] Status 400\", function () { pm.response.to.have.status(400); });",
+                  "pm.test(\"[Error] code=INVALID_HERO_ID\", function () { var j=pm.response.json(); pm.expect(j.success).to.be.false; pm.expect(j.error.code).to.eql(\"INVALID_HERO_ID\"); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/heroes/-99",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "heroes",
+                "-99"
+              ]
+            }
+          }
+        },
+        {
+          "name": "404 Hero tidak ada (HERO_NOT_FOUND)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[404] Status 404\", function () { pm.response.to.have.status(404); });",
+                  "pm.test(\"[Error] code=HERO_NOT_FOUND\", function () { var j=pm.response.json(); pm.expect(j.success).to.be.false; pm.expect(j.error.code).to.eql(\"HERO_NOT_FOUND\"); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/heroes/999999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "heroes",
+                "999999"
+              ]
+            }
+          }
+        },
+        {
+          "name": "400 Player compare tanpa params",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[400] Status 400\", function () { pm.response.to.have.status(400); });",
+                  "pm.test(\"[Message] menyebut wajib/p1/p2\", function () { var j=pm.response.json(); pm.expect(j.success).to.be.false; pm.expect(j.message.toLowerCase()).to.satisfy(function(m){return m.includes(\"p1\")||m.includes(\"p2\")||m.includes(\"wajib\")||m.includes(\"parameter\");}); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/players/compare",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "players",
+                "compare"
+              ]
+            }
+          }
+        },
+        {
+          "name": "404 Match tidak ada (MATCH_NOT_FOUND)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[404] Status 404\", function () { pm.response.to.have.status(404); });",
+                  "pm.test(\"[Error] code=MATCH_NOT_FOUND\", function () { var j=pm.response.json(); pm.expect(j.success).to.be.false; pm.expect(j.error.code).to.eql(\"MATCH_NOT_FOUND\"); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/matches/match-tidak-ada-9999999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "matches",
+                "match-tidak-ada-9999999"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 - Games",
+      "item": [
+        {
+          "name": "GET /api/games/:gameId",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('[Status] 200 or 404 or 501', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 404, 501]);",
+                  "});",
+                  "pm.test('[Schema] valid JSON', function () {",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "if (pm.response.code === 200) {",
+                  "    pm.test('[Data] memiliki game_id', function () {",
+                  "        var json = pm.response.json();",
+                  "        pm.expect(json.data).to.have.property('game_id');",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/games/{{gameId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "games", "{{gameId}}"]
+            }
+          }
+        },
+        {
+          "name": "GET /api/games/:gameId/players",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('[Status] 200 or 501', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 501]);",
+                  "});",
+                  "pm.test('[Schema] valid JSON', function () {",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "if (pm.response.code === 200) {",
+                  "    pm.test('[Data] is array', function () {",
+                  "        var json = pm.response.json();",
+                  "        pm.expect(json.data).to.be.an('array');",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/games/{{gameId}}/players",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "games", "{{gameId}}", "players"]
+            }
+          }
+        },
+        {
+          "name": "GET /api/games/:gameId/picks",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('[Status] 200 or 501', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 501]);",
+                  "});",
+                  "pm.test('[Schema] valid JSON', function () {",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "if (pm.response.code === 200) {",
+                  "    pm.test('[Data] is array', function () {",
+                  "        var json = pm.response.json();",
+                  "        pm.expect(json.data).to.be.an('array');",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/games/{{gameId}}/picks",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "games", "{{gameId}}", "picks"]
+            }
+          }
+        },
+        {
+          "name": "GET /api/games/:gameId/emblems",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('[Status] 200 or 501', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 501]);",
+                  "});",
+                  "pm.test('[Schema] valid JSON', function () {",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "if (pm.response.code === 200) {",
+                  "    pm.test('[Data] is array', function () {",
+                  "        var json = pm.response.json();",
+                  "        pm.expect(json.data).to.be.an('array');",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/games/{{gameId}}/emblems",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "games", "{{gameId}}", "emblems"]
+            }
+          }
+        },
+        {
+          "name": "GET /api/games/:gameId/items",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('[Status] 200 or 501', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 501]);",
+                  "});",
+                  "pm.test('[Schema] valid JSON', function () {",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "if (pm.response.code === 200) {",
+                  "    pm.test('[Data] is array', function () {",
+                  "        var json = pm.response.json();",
+                  "        pm.expect(json.data).to.be.an('array');",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/games/{{gameId}}/items",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "games", "{{gameId}}", "items"]
+            }
+          }
+        },
+        {
+          "name": "GET /api/games/:gameId - Not Found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('[Status] 404 or 501', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([404, 501]);",
+                  "});",
+                  "pm.test('[Schema] valid JSON', function () {",
+                  "    pm.response.to.be.json;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/games/game-tidak-ada-9999",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "games", "game-tidak-ada-9999"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

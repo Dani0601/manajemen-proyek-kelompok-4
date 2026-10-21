@@ -1,5 +1,4 @@
 <?php
-
 require_once dirname(__DIR__) . '/config/database.php';
 require_once dirname(__DIR__) . '/models/Hero.php';
 
@@ -7,9 +6,9 @@ class HeroService
 {
     private Hero $hero;
 
-    public function __construct()
+    public function __construct(?PDO $db = null)
     {
-        $db = Database::connect();
+        $db = $db ?? Database::connect();
 
         $this->hero = new Hero($db);
     }
@@ -55,6 +54,10 @@ class HeroService
         return [
             'hero' => $hero,
             'detail' => $detail,
+            'recommendations' => [
+                'items' => $this->hero->getSituationalRecommendations($heroId),
+                'emblems' => $this->hero->getEmblemRecommendations($heroId),
+            ],
         ];
     }
 
@@ -129,4 +132,13 @@ class HeroService
             'skill_order' => $this->hero->getSkillOrders($heroId),
         ];
     }
+
+    /**
+     * Search hero by name keyword, optionally filter by role.
+     */
+    public function searchHeroes(string $query = '', string $role = ''): array
+    {
+        return $this->hero->search($query, $role);
+    }
 }
+

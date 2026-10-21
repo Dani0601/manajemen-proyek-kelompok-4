@@ -1,6 +1,12 @@
-RewriteEngine On
-
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-
-RewriteRule ^ index.php [QSA,L]
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Hentikan proses jika yang diakses adalah file asli yang benar-benar ada (seperti gambar/CSS)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    
+    # Hentikan proses jika yang diakses adalah folder asli yang benar-benar ada
+    RewriteCond %{REQUEST_FILENAME} !-d
+    
+    # Jika bukan file atau folder, arahkan semuanya ke index.php
+    RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>
