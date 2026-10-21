@@ -40,7 +40,14 @@
     return request("/dashboard");
   }
 
+  async function getTournamentSchedule(seasonId = 1) {
+    return request(
+      `/tournaments/${encodeURIComponent(seasonId)}/schedule`
+    );
+  }
+
   window.ApiClient = {
     getDashboard,
+    getTournamentSchedule
   };
 })();
