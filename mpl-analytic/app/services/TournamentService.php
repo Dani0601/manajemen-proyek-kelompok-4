@@ -9,7 +9,7 @@ class TournamentService {
         $this->tournamentModel = new Tournament($db);
     }
 
-    public function getUpcomingMatches($seasonId = 13, $limit = 3) {
+    public function getUpcomingMatches($seasonId = 13, ?int $limit = null) {
         $rawMatches = $this->tournamentModel->getMatchesBySeason($seasonId, $limit);
 
         // Memetakan struktur data agar bersih untuk Frontend
@@ -47,6 +47,18 @@ class TournamentService {
             "season" => (int)$seasonId,
             "standings" => $rawStandings
         ];
+    }
+
+    public function getAllTournaments(): array {
+        return $this->tournamentModel->getAllSeasons();
+    }
+
+    public function getTournamentById(int $seasonId): ?array {
+        $season = $this->tournamentModel->getSeasonById($seasonId);
+        if (!$season) {
+            return null;
+        }
+        return $season;
     }
 }
 ?>

@@ -6,9 +6,9 @@ class HeroService
 {
     private Hero $hero;
 
-    public function __construct()
+    public function __construct(?PDO $db = null)
     {
-        $db = Database::connect();
+        $db = $db ?? Database::connect();
 
         $this->hero = new Hero($db);
     }
@@ -131,6 +131,14 @@ class HeroService
             'skills' => $this->hero->getSkills($heroId),
             'skill_order' => $this->hero->getSkillOrders($heroId),
         ];
+    }
+
+    /**
+     * Search hero by name keyword, optionally filter by role.
+     */
+    public function searchHeroes(string $query = '', string $role = ''): array
+    {
+        return $this->hero->search($query, $role);
     }
 }
 

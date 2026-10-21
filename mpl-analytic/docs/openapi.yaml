@@ -76,9 +76,50 @@ paths:
       tags: [Heroes]
       summary: List heroes
       operationId: listHeroes
+      parameters:
+        - name: q
+          in: query
+          required: false
+          description: Search heroes by keyword in name
+          schema: { type: string }
+        - name: role
+          in: query
+          required: false
+          description: Filter heroes by role (tank, fighter, assassin, mage, marksman, support) or comma-separated roles
+          schema: { type: string }
       responses:
         '200':
           description: Hero list retrieved
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/Hero' }
+        '501': { $ref: '#/components/responses/NotImplemented' }
+  /api/heroes/search:
+    get:
+      tags: [Heroes]
+      summary: Search heroes and filter by role
+      operationId: searchHeroes
+      parameters:
+        - name: q
+          in: query
+          required: false
+          description: Search heroes by keyword in name
+          schema: { type: string }
+        - name: role
+          in: query
+          required: false
+          description: Filter heroes by role (tank, fighter, assassin, mage, marksman, support) or comma-separated roles
+          schema: { type: string }
+      responses:
+        '200':
+          description: Search results retrieved successfully
           content:
             application/json:
               schema:
@@ -602,6 +643,7 @@ components:
       properties:
         hero_id: { type: integer, example: 1 }
         hero_name: { type: string }
+        role: { type: string, example: Fighter, nullable: true }
         hero_slug: { type: string, nullable: true }
         hero_url: { type: string, nullable: true }
         created_at: { type: string, format: date-time, nullable: true }

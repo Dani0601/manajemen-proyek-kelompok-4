@@ -121,5 +121,34 @@ class PlayerService
             ]
         ];
     }
+    public function getPlayerById(int $playerId): ?array {
+        return $this->playerModel->findById($playerId);
+    }
+
+    public function getPlayerStats(int $playerId): ?array {
+        $player = $this->playerModel->findById($playerId);
+        if (!$player) {
+            return null;
+        }
+
+        $stats = $this->playerModel->getPlayerStats($playerId);
+        return [
+            'player' => $player,
+            'stats'  => $stats,
+        ];
+    }
+
+    public function getPlayerGames(int $playerId): ?array {
+        $player = $this->playerModel->findById($playerId);
+        if (!$player) {
+            return null;
+        }
+
+        $games = $this->playerModel->getPlayerGames($playerId);
+        return [
+            'player' => $player,
+            'games'  => $games,
+        ];
+    }
 }
 ?>
