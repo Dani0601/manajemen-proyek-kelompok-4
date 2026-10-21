@@ -11,7 +11,9 @@ class Tournament {
     /**
      * Mengambil daftar jadwal pertandingan (Upcoming/Recent Matches)
      */
-    public function getMatchesBySeason($seasonId, $limit = 5) {
+    public function getMatchesBySeason($seasonId, ?int $limit = null) {
+        $limitClause = ($limit !== null && $limit > 0) ? "LIMIT :limit" : "";
+
         $sql = "SELECT 
                     m.match_id,
                     m.season_id,
@@ -31,12 +33,14 @@ class Tournament {
                 JOIN seasons s ON m.season_id = s.season_id
                 WHERE (s.season_id = :season_id OR s.season_number = :season_id_num)
                 ORDER BY m.match_date ASC
-                LIMIT :limit";
+                {$limitClause}";
 
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':season_id', (int)$seasonId, PDO::PARAM_INT);
         $stmt->bindValue(':season_id_num', (int)$seasonId, PDO::PARAM_INT);
-        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+        if ($limit !== null && $limit > 0) {
+            $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+        }
         $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -64,6 +68,48 @@ class Tournament {
         }
 
         return [];
+    }
+
+    /**
+     * Mengambil semua data seasons sebagai daftar tournament
+     */
+    public function getAllSeasons(): array {
+        $sql = "SELECT 
+                    season_id,
+                    CONCAT(COALESCE(league, 'MPL'), ' Season ', season_number) AS season_name,
+                    season_number,
+                    league,
+                    start_date,
+                    end_date
+                FROM seasons
+                ORDER BY season_number DESC";
+
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Mengambil data season berdasarkan ID
+     */
+    public function getSeasonById(int $seasonId): ?array {
+        $sql = "SELECT 
+                    s.season_id,
+                    CONCAT(COALESCE(s.league, 'MPL'), ' Season ', s.season_number) AS season_name,
+                    s.season_number,
+                    s.league,
+                    s.start_date,
+                    s.end_date
+                FROM seasons s
+                WHERE s.season_id = :season_id OR s.season_number = :season_num
+                LIMIT 1";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':season_id', $seasonId, PDO::PARAM_INT);
+        $stmt->bindValue(':season_num', $seasonId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ?: null;
     }
 }
 ?>

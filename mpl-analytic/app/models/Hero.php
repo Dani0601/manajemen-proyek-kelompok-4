@@ -14,6 +14,7 @@ class Hero
             SELECT
                 hero_id,
                 hero_name,
+                role,
                 hero_slug,
                 hero_url,
                 created_at,
@@ -33,6 +34,7 @@ class Hero
             SELECT
                 hero_id,
                 hero_name,
+                role,
                 hero_slug,
                 hero_url,
                 created_at,
@@ -405,5 +407,69 @@ class Hero
 
         return $stmt->fetchAll();
     }
-}
 
+    /**
+     * Search heroes by name keyword and/or filter by role.
+     * Supports single role ('mage') or comma-separated roles ('mage,support').
+     */
+    public function search(string $query = '', string $role = ''): array
+    {
+        $query = trim($query);
+        $role  = trim($role);
+
+        $hasQuery = $query !== '';
+        $hasRole  = $role !== '';
+
+        if (!$hasQuery && !$hasRole) {
+            return $this->all();
+        }
+
+        $conditions = [];
+        $params     = [];
+
+        if ($hasQuery) {
+            $conditions[] = 'h.hero_name LIKE :query';
+            $params[':query'] = '%' . $query . '%';
+        }
+
+        if ($hasRole) {
+            $roles = array_values(array_filter(array_map('trim', explode(',', strtolower($role)))));
+            if (count($roles) === 1) {
+                $conditions[] = 'LOWER(h.role) = :role';
+                $params[':role'] = $roles[0];
+            } elseif (count($roles) > 1) {
+                $placeholders = [];
+                foreach ($roles as $idx => $r) {
+                    $ph = ':role_' . $idx;
+                    $placeholders[] = $ph;
+                    $params[$ph] = $r;
+                }
+                $conditions[] = 'LOWER(h.role) IN (' . implode(', ', $placeholders) . ')';
+            }
+        }
+
+        $whereClause = 'WHERE ' . implode(' AND ', $conditions);
+
+        $sql = "
+            SELECT
+                h.hero_id,
+                h.hero_name,
+                h.role,
+                h.hero_slug,
+                h.hero_url,
+                h.created_at,
+                h.updated_at
+            FROM heroes h
+            {$whereClause}
+            ORDER BY h.hero_name ASC
+        ";
+
+        $stmt = $this->db->prepare($sql);
+        foreach ($params as $key => $val) {
+            $stmt->bindValue($key, $val, PDO::PARAM_STR);
+        }
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+}

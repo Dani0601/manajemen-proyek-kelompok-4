@@ -267,6 +267,35 @@ if (
 }
 
 
+/*
+|--------------------------------------------------------------------------
+| GET /api/heroes/search  (search & filter by role)
+|--------------------------------------------------------------------------
+|
+| Query params:
+|   - q     : keyword pencarian nama hero
+|   - role  : filter berdasarkan role (tank, fighter, assassin, mage, marksman, support)
+|
+*/
+
+if (
+    $method === 'GET' &&
+    isset($segments[0], $segments[1], $segments[2]) &&
+    $segments[0] === 'api' &&
+    $segments[1] === 'heroes' &&
+    $segments[2] === 'search'
+) {
+
+    $controller = loadController(
+        'HeroController.php',
+        'HeroController'
+    );
+
+    $controller->search();
+    exit;
+}
+
+
 if (
     $method === 'GET' &&
     isset($segments[0], $segments[1]) &&
@@ -363,7 +392,7 @@ if (
         isset($segments[3]) &&
         $segments[3] === 'skills'
     ) {
-        $controller->stats($heroId);
+        $controller->skills($heroId);
         exit;
     }
 

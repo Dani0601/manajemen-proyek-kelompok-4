@@ -6,13 +6,25 @@ class HeroController
 {
     private HeroService $service;
 
-    public function __construct()
+    public function __construct(?PDO $db = null)
     {
-        $this->service = new HeroService();
+        $this->service = new HeroService($db);
     }
 
     public function index(): never
     {
+        $query = isset($_GET['q']) ? trim($_GET['q']) : '';
+        $role  = isset($_GET['role']) ? trim($_GET['role']) : '';
+
+        if ($query !== '' || $role !== '') {
+            $data = $this->service->searchHeroes($query, $role);
+
+            jsonResponse(
+                $data,
+                'Hasil pencarian hero berhasil diambil.'
+            );
+        }
+
         $data = $this->service->getHeroes();
 
         jsonResponse(
@@ -133,6 +145,23 @@ class HeroController
         jsonResponse(
             $data,
             'Data skill hero berhasil diambil.'
+        );
+    }
+
+    /**
+     * GET /api/heroes/search?q=keyword&role=mage
+     * Search hero by name and filter by role
+     */
+    public function search(): never
+    {
+        $query = isset($_GET['q']) ? trim($_GET['q']) : '';
+        $role  = isset($_GET['role']) ? trim(strtolower($_GET['role'])) : '';
+
+        $data = $this->service->searchHeroes($query, $role);
+
+        jsonResponse(
+            $data,
+            'Hasil pencarian hero berhasil diambil.'
         );
     }
 }

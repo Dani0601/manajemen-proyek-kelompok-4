@@ -16,5 +16,5 @@ variables:
   player2Id: "23"
   seasonId: "1"
   matchId: s17_w01_m01
-  gameId: ""
+  gameId: s17_w01_m01_g01
   itemId: "1"
