@@ -1,444 +1,539 @@
-/* =========================================
-   PLAYER COMPARISON
-   Mobile First
-========================================= */
 
-.player-comparison-page {
-    width: 100%;
-    max-width: 430px;
-    min-height: 100vh;
-    margin: 0 auto;
-    padding: 0 16px 30px;
+/* =====================================================
+   PERBANDINGAN PEMAIN
+   Semua selector diawali .pc agar tidak bentrok dengan halaman lain.
+   Mobile-first; tata letak desktop mulai di >= 768px.
+   ===================================================== */
 
-    background-color: #f8f8f8;
-}
-
-
-/* =========================================
-   HEADER
-========================================= */
-
-.comparison-header {
-    height: 64px;
+.pc {
+    /* Warna seri data (token tim UI). Hanya dipakai di halaman ini. */
+    --pc-blue: #3478F6;
+    --pc-orange: #F28C28;
+    --pc-line: var(--color-navy);
+    --pc-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    --pc-radius: 12px;
 
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    gap: 16px;
+}
 
+.pc-result {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.pc-result[hidden],
+.pc-status[hidden] {
+    display: none;
+}
+
+.pc-result.is-loading {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* ---------- Header halaman (mobile) ---------- */
+
+.pc-header {
+    display: flex;
+    align-items: center;
     gap: 12px;
 }
 
-.header-back,
-.header-icon {
-    border: none;
-    background: transparent;
-
-    padding: 4px;
-
-    cursor: pointer;
+.pc-header__back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin-left: -8px;
+    color: var(--color-navy);
 }
 
-.header-back {
-    font-size: 25px;
-    line-height: 1;
-}
-
-.comparison-title {
+.pc-header__title {
     margin: 0;
-
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 700;
-
-    color: #203b68;
-
-    flex: 1;
+    line-height: 1.3;
 }
 
-.header-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+/* ---------- Pemilih pemain ---------- */
 
-.header-icon {
-    font-size: 22px;
-    line-height: 1;
-}
-
-
-/* =========================================
-   PLAYER SELECTOR
-========================================= */
-
-.player-selector {
+.pc-picker {
     display: grid;
-
-    grid-template-columns: 1fr 1fr;
-
-    gap: 66px;
-
-    margin: 12px 22px 16px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
 }
 
-.player-select {
-    height: 52px;
-
-    display: flex;
-    align-items: center;
-
-    padding: 0 12px;
-
-    background-color: #fff;
-
-    border: 1px solid #ddd;
-    border-radius: 14px;
-
-    box-shadow: 0 3px 4px rgba(0, 0, 0, 0.15);
+.pc-select {
+    position: relative;
+    height: 44px;
 }
 
-.player-select select {
+.pc-select__control {
     width: 100%;
+    height: 100%;
+    padding: 0 32px;
 
-    border: none;
-    outline: none;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    color: var(--color-navy);
+    background-color: var(--color-white);
+    box-shadow: var(--pc-shadow);
 
-    background: transparent;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    text-align: center;
+    text-align-last: center;
+    text-overflow: ellipsis;
 
+    font-family: inherit;
     font-size: 14px;
     font-weight: 600;
-
-    color: #111;
-
-    appearance: auto;
 }
 
-.player-dot {
-    width: 8px;
-    height: 8px;
+.pc-select__control:focus-visible {
+    outline: 3px solid var(--color-blue);
+    outline-offset: 2px;
+}
 
-    flex-shrink: 0;
+.pc-select__dot,
+.pc-select__chevron {
+    position: absolute;
+    top: 50%;
+    pointer-events: none;
+    transform: translateY(-50%);
+}
 
-    margin-right: 8px;
-
+.pc-select__dot {
+    left: 12px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
 }
 
-.player-dot-blue {
-    background-color: #2874d0;
+.pc-select--a .pc-select__dot { background-color: var(--pc-blue); }
+.pc-select--b .pc-select__dot { background-color: var(--pc-orange); }
+
+.pc-select__chevron {
+    right: 10px;
+    color: var(--color-navy);
 }
 
-.player-dot-orange {
-    background-color: #f28c28;
+/* ---------- Status ---------- */
+
+.pc-status {
+    margin: 0;
+    padding: 10px 14px;
+    border: 1px solid #F3C99C;
+    border-radius: 8px;
+    color: #8A4B0F;
+    background-color: #FFF4E6;
+    font-size: 14px;
 }
 
+/* ---------- Kartu pemain + Vs ---------- */
 
-/* =========================================
-   PLAYER VS
-========================================= */
-
-.players-versus {
+.pc-cards {
     position: relative;
-
     display: grid;
-
-    grid-template-columns: 1fr 38px 1fr;
-
-    align-items: center;
-
-    gap: 8px;
-
-    margin-bottom: 16px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px;
 }
 
-.player-card {
+.pc-player {
+    display: grid;
+    gap: 8px;
     min-width: 0;
+    padding: 12px;
 
-    padding: 5px 8px 8px;
+    border-radius: var(--pc-radius);
+    background-color: var(--color-white);
+    box-shadow: var(--pc-shadow);
+}
 
-    background-color: #fff;
+.pc-player__image {
+    display: block;
+    width: 100%;
+    aspect-ratio: 2 / 1;
+    border-radius: 8px;
+    object-fit: cover;
+}
 
-    border: 1px solid #ddd;
-    border-radius: 14px;
-
-    box-shadow: 0 3px 4px rgba(0, 0, 0, 0.18);
-
+.pc-player__info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
     text-align: center;
 }
 
-.player-hero-image {
-    display: block;
-
-    width: 100%;
-    height: 68px;
-
-    object-fit: cover;
-
-    border-radius: 10px;
-
-    margin-bottom: 5px;
-}
-
-.hero-name {
+.pc-player__name {
     margin: 0;
-
-    font-size: 14px;
-    font-weight: 700;
-
-    color: #111;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.25;
 }
 
-.team-name {
-    margin: 2px 0 0;
-
-    font-size: 9px;
-
-    color: #222;
+.pc-player__team {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    text-align: left;
 }
 
-.player-role {
-    margin: 0;
-
-    font-size: 8px;
-
-    color: #222;
+.pc-team__logo {
+    flex: 0 0 auto;
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
 }
 
-.vs-badge {
-    width: 34px;
-    height: 34px;
+.pc-team__text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    color: var(--color-navy);
+    font-size: 12px;
+    line-height: 1.3;
+}
+
+.pc-vs {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 1;
 
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 36px;
+    height: 36px;
 
-    background-color: #fff;
-
-    border: 1px solid #ddd;
+    border: 1px solid var(--color-border);
     border-radius: 50%;
+    color: var(--color-navy);
+    background-color: var(--color-white);
+    box-shadow: var(--pc-shadow);
+    transform: translate(-50%, -50%);
 
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
-
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 700;
-
-    color: #111;
-
-    z-index: 2;
 }
 
-
-/* =========================================
-   SECTION TITLE
-========================================= */
-
-.section-title {
-    margin: 10px 4px 5px;
-
-    font-size: 15px;
-    font-weight: 700;
-
-    color: #203b68;
-}
-
-
-/* =========================================
-   CHART
-========================================= */
-
-.chart-card {
-    width: 100%;
-
-    padding: 4px 8px 8px;
-
-    background-color: #fff;
-
-    border: 1px solid #ddd;
-    border-radius: 14px;
-
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
-}
-
-.chart-legend {
+/* Cadangan jika gambar belum tersedia */
+.pc-avatar {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
+    color: var(--color-white);
+    background-color: var(--color-navy);
+    font-weight: 600;
+}
 
-    gap: 12px;
+.pc-player__image.pc-avatar {
+    font-size: 28px;
+}
 
-    padding-left: 2px;
-
+.pc-team__logo.pc-avatar {
+    border-radius: 50%;
     font-size: 9px;
 }
 
-.chart-legend > span {
+/* ---------- Section ---------- */
+
+.pc-section__title {
+    margin: 0 0 8px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.pc-panel {
+    padding: 12px;
+    border-radius: var(--pc-radius);
+    background-color: var(--color-white);
+    box-shadow: var(--pc-shadow);
+}
+
+/* ---------- Radar ---------- */
+
+.pc-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 20px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.pc-legend li {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
 }
 
-.legend-blue,
-.legend-orange {
-    width: 8px;
-    height: 8px;
-
-    display: inline-block;
+.pc-legend__box {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
 }
 
-.legend-blue {
-    background-color: #2874d0;
-}
+.pc-legend__box--a { background-color: var(--pc-blue); }
+.pc-legend__box--b { background-color: var(--pc-orange); }
 
-.legend-orange {
-    background-color: #f28c28;
-}
-
-.radar-container {
+.pc-radar__canvas {
     position: relative;
-
     width: 100%;
-    height: 130px;
+    height: 300px;
 }
 
-.radar-container canvas {
-    width: 100% !important;
-    height: 100% !important;
-}
+/* ---------- Tabel statistik ---------- */
 
-
-/* =========================================
-   STATISTICS
-========================================= */
-
-.stats-section {
-    margin-top: 10px;
-}
-
-.stats-card {
-    width: 100%;
-
-    padding: 0 12px;
-
-    background-color: #fff;
-
-    border: 1px solid #222;
-    border-radius: 14px;
-
+.pc-table {
     overflow: hidden;
+    border: 1px solid var(--pc-line);
+    border-radius: var(--pc-radius);
+    background-color: var(--color-white);
 }
 
-.stat-row {
-    min-height: 27px;
-
+.pc-row {
+    position: relative;
     display: grid;
-
-    grid-template-columns: 55px 1fr 55px;
-
+    grid-template-columns: 39.5% 44.5% minmax(0, 1fr);
     align-items: center;
-
-    border-bottom: 1px solid #ddd;
+    min-height: 40px;
 }
 
-.stat-row:last-child {
-    border-bottom: none;
+/* Garis pemisah tidak menyentuh tepi kotak, seperti di Figma */
+.pc-row:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: 4%;
+    bottom: 0;
+    left: 4%;
+    height: 1px;
+    background-color: var(--pc-line);
 }
 
-.stat-value {
-    font-size: 10px;
+.pc-row__a,
+.pc-row__b {
+    font-size: 14px;
     font-weight: 500;
 }
 
-.stat-value.blue {
-    color: #2874d0;
+.pc-row__a {
+    padding-left: 15%;
+    color: var(--pc-blue);
 }
 
-.stat-value.orange {
-    color: #f28c28;
-
-    text-align: right;
+.pc-row__b {
+    color: var(--pc-orange);
 }
 
-.stat-label {
-    text-align: center;
-
-    font-size: 8px;
-
-    color: #222;
+.pc-row__label {
+    min-width: 0;
+    font-size: 12px;
+    line-height: 1.3;
 }
 
-
-/* =========================================
-   WIN RATE
-========================================= */
-
-.winrate-card {
-    width: 100%;
-
-    padding: 8px 12px;
-
-    background-color: #fff;
-
-    border: 1px solid #222;
-    border-radius: 14px;
+/* Performa (win rate): nama | bar | persen */
+.pc-table--perf {
+    padding: 6px 0;
 }
 
-.winrate-row {
-    min-height: 25px;
-
-    display: grid;
-
-    grid-template-columns: 52px 1fr 43px;
-
-    align-items: center;
-
-    gap: 7px;
+.pc-table--perf .pc-row {
+    grid-template-columns: 24% minmax(0, 1fr) 18%;
+    column-gap: 3%;
+    min-height: 36px;
+    padding-inline: 4%;
 }
 
-.winrate-name {
-    font-size: 9px;
-    font-weight: 600;
+.pc-table--perf .pc-row::after {
+    content: none;
 }
 
-.winrate-track {
-    width: 100%;
-    height: 7px;
-
+.pc-perf__name {
     overflow: hidden;
-
-    background-color: #ddd;
-
-    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.winrate-fill {
+.pc-bar {
+    height: 8px;
+    overflow: hidden;
+    border-radius: 999px;
+    background-color: #D9D9D9;
+}
+
+.pc-bar__fill {
+    display: block;
     height: 100%;
-
-    border-radius: 10px;
+    border-radius: 999px;
 }
 
-.blue-fill {
-    background-color: #2874d0;
+.pc-bar__fill--a { background-color: var(--pc-blue); }
+.pc-bar__fill--b { background-color: var(--pc-orange); }
+
+.pc-perf__value {
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
 }
 
-.orange-fill {
-    background-color: #f28c28;
+.pc-note {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: 12px;
 }
 
-.winrate-value {
-    text-align: right;
+/* =====================================================
+   TABLET / DESKTOP (>= 768px)
+   ===================================================== */
 
-    font-size: 9px;
-    font-weight: 600;
-}
-
-
-/* =========================================
-   RESPONSIVE
-========================================= */
-
-@media (min-width: 431px) {
-
-    .player-comparison-page {
-        padding-left: 20px;
-        padding-right: 20px;
+@media (min-width: 768px) {
+    .pc {
+        gap: 24px;
     }
 
+    .pc-result {
+        gap: 24px;
+    }
+
+    /* Di desktop judul halaman hanya untuk pembaca layar (Figma: judul ada di sidebar) */
+    .pc-header {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+    }
+
+    .pc-picker {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .pc-select {
+        width: clamp(200px, 24%, 300px);
+        height: 48px;
+    }
+
+    .pc-select__control {
+        font-size: 16px;
+    }
+
+    .pc-select__dot {
+        left: 16px;
+        width: 14px;
+        height: 14px;
+        border-radius: 3px;
+    }
+
+    .pc-cards {
+        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+        align-items: center;
+        gap: 16px;
+    }
+
+    .pc-player {
+        grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+        align-items: center;
+        gap: 16px;
+        padding: 12px;
+    }
+
+    .pc-player__name {
+        font-size: 20px;
+    }
+
+    .pc-team__logo {
+        width: 32px;
+        height: 32px;
+    }
+
+    .pc-team__text {
+        font-size: 14px;
+    }
+
+    .pc-vs {
+        position: static;
+        width: 80px;
+        height: 32px;
+        border-radius: 999px;
+        transform: none;
+        box-shadow: none;
+    }
+
+    .pc-section__title {
+        margin-bottom: 12px;
+        font-size: 20px;
+    }
+
+    .pc-panel {
+        padding: 16px 20px;
+    }
+
+    .pc-legend li {
+        font-size: 14px;
+    }
+
+    .pc-radar__canvas {
+        height: 340px;
+    }
+
+    .pc-row {
+        min-height: 44px;
+    }
+
+    .pc-row__a,
+    .pc-row__b {
+        font-size: 16px;
+    }
+
+    .pc-row__label {
+        font-size: 14px;
+    }
+
+    .pc-table--perf .pc-row {
+        min-height: 40px;
+    }
+
+    .pc-perf__name {
+        font-size: 16px;
+    }
+
+    .pc-perf__value {
+        font-size: 14px;
+    }
+
+    .pc-note {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 360px) {
+    .pc-cards {
+        gap: 24px;
+    }
+
+    .pc-player {
+        padding: 10px;
+    }
+
+    .pc-radar__canvas {
+        height: 280px;
+    }
 }

@@ -101,13 +101,21 @@ $navItems = [
                     Cari hero
                 </label>
 
+<<<<<<< HEAD
+                <!-- <input
+=======
                 <input
+>>>>>>> 638b388fc707f2fa1097759ecb5334e8d2817313
                     id="global-search"
                     type="search"
                     name="q"
                     placeholder="Cari hero..."
                     autocomplete="off"
+<<<<<<< HEAD
+                > -->
+=======
                 >
+>>>>>>> 638b388fc707f2fa1097759ecb5334e8d2817313
             </form>
 
             <button
@@ -130,9 +138,24 @@ $navItems = [
             aria-labelledby="mobile-menu-title"
         >
             <div class="offcanvas-header">
+<<<<<<< HEAD
+                        <a
+                    href="<?= htmlspecialchars($baseUrl . '/', ENT_QUOTES, 'UTF-8') ?>"
+                    class="app-sidebar__brand"
+                    aria-label="MLBB Guide - Dashboard"
+                >
+                    <img
+                        src="<?= htmlspecialchars(ASSET_BASE, ENT_QUOTES, 'UTF-8') ?>/images/brand/logo.png"
+                        alt=""
+                        class="app-sidebar__logo"
+                    >
+                    <span>MLBB GUIDE</span>
+                </a>
+=======
                 <h2 class="offcanvas-title" id="mobile-menu-title">
                     Menu Navigasi
                 </h2>
+>>>>>>> 638b388fc707f2fa1097759ecb5334e8d2817313
 
                 <button
                     type="button"
@@ -170,4 +193,8 @@ $navItems = [
         </div>
 
         <!-- Konten halaman dimulai setelah navbar -->
+<<<<<<< HEAD
         <main id="page-content" class="app-content">
+=======
+        <main id="page-content" class="app-content">
+>>>>>>> 638b388fc707f2fa1097759ecb5334e8d2817313

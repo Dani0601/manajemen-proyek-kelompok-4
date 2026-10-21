@@ -69,6 +69,18 @@ class DashboardService
             5
         );
 
+        
+/*
+|--------------------------------------------------------------------------
+| 4. Ambil Top 5 Ban Rate
+|--------------------------------------------------------------------------
+*/
+
+$topBanRate = $this->dashboard->getTopBanRate(
+    $seasonId,
+    5
+);
+
 
         /*
         |--------------------------------------------------------------------------
@@ -107,24 +119,26 @@ class DashboardService
         */
 
         return [
-            'season' => [
-                'season_id' => (int) $season['season_id'],
-                'league' => $season['league'],
-                'season_number' => (int) $season['season_number'],
-                'phase' => $season['phase'],
-                'start_date' => $season['start_date'],
-                'end_date' => $season['end_date'],
-            ],
+    'season' => [
+        'season_id' => (int) $season['season_id'],
+        'league' => $season['league'],
+        'season_number' => (int) $season['season_number'],
+        'phase' => $season['phase'],
+        'start_date' => $season['start_date'],
+        'end_date' => $season['end_date'],
+    ],
 
-            'last_week' => $lastWeek,
+    'last_week' => $lastWeek,
 
-            'top_pick_rate' => $topPickRate,
+    'top_pick_rate' => $topPickRate,
 
-            'top_win_rate' => $topWinRate,
+    'top_win_rate' => $topWinRate,
 
-            'hero_meta' => $heroMeta,
+    'top_ban_rate' => $topBanRate,
 
-            'schedule' => $schedule,
-        ];
+    'hero_meta' => $heroMeta,
+
+    'schedule' => $schedule,
+];
     }
 }
