@@ -9,7 +9,9 @@ document.addEventListener("DOMContentLoaded", loadDashboard);
 // ==================================================
 
 const ASSET_BASE =
-  "/manajemen-proyek-kelompok-4/mpl-analytic/public/assets";
+  (window.APP_CONFIG && window.APP_CONFIG.assetBase)
+    ? window.APP_CONFIG.assetBase
+    : "/assets";
 
 const HERO_PLACEHOLDER =
   `${ASSET_BASE}/images/hero-placeholder.png`;

@@ -6,10 +6,26 @@ $path = parse_url(
     PHP_URL_PATH
 ) ?: '/';
 
-$basePath = '/manajemen-proyek-kelompok-4/mpl-analytic/public';
+// Deteksi script directory secara dinamis
+$scriptDir = defined('BASE_URL') ? BASE_URL : rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '')), '/');
+if ($scriptDir === '.') {
+    $scriptDir = '';
+}
 
-if (str_starts_with($path, $basePath)) {
-    $path = substr($path, strlen($basePath));
+if ($scriptDir !== '' && str_starts_with($path, $scriptDir)) {
+    $path = substr($path, strlen($scriptDir));
+} else {
+    $fallbackBases = [
+        '/manajemen-proyek-kelompok-4/mpl-analytic/public',
+        '/manajemen-proyek-kelompok-4',
+        '/mpl-analytic/public',
+    ];
+    foreach ($fallbackBases as $fb) {
+        if (str_starts_with($path, $fb)) {
+            $path = substr($path, strlen($fb));
+            break;
+        }
+    }
 }
 
 $path = '/' . trim($path, '/');

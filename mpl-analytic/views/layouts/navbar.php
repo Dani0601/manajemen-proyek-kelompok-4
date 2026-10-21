@@ -1,5 +1,5 @@
 <?php
-$baseUrl = rtrim(
+$baseUrl = defined('BASE_URL') ? BASE_URL : rtrim(
     str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '')),
     '/'
 );
@@ -10,10 +10,20 @@ if ($baseUrl === '.') {
 
 $currentPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
 
-$basePath = '/manajemen-proyek-kelompok-4/mpl-analytic/public';
-
-if (str_starts_with($currentPath, $basePath)) {
-    $currentPath = substr($currentPath, strlen($basePath));
+if ($baseUrl !== '' && str_starts_with($currentPath, $baseUrl)) {
+    $currentPath = substr($currentPath, strlen($baseUrl));
+} else {
+    $fallbackBases = [
+        '/manajemen-proyek-kelompok-4/mpl-analytic/public',
+        '/manajemen-proyek-kelompok-4',
+        '/mpl-analytic/public',
+    ];
+    foreach ($fallbackBases as $fb) {
+        if (str_starts_with($currentPath, $fb)) {
+            $currentPath = substr($currentPath, strlen($fb));
+            break;
+        }
+    }
 }
 
 $currentPath = '/' . trim($currentPath, '/');
@@ -101,21 +111,13 @@ $navItems = [
                     Cari hero
                 </label>
 
-<<<<<<< HEAD
-                <!-- <input
-=======
                 <input
->>>>>>> 638b388fc707f2fa1097759ecb5334e8d2817313
                     id="global-search"
                     type="search"
                     name="q"
                     placeholder="Cari hero..."
                     autocomplete="off"
-<<<<<<< HEAD
-                > -->
-=======
                 >
->>>>>>> 638b388fc707f2fa1097759ecb5334e8d2817313
             </form>
 
             <button
@@ -138,24 +140,9 @@ $navItems = [
             aria-labelledby="mobile-menu-title"
         >
             <div class="offcanvas-header">
-<<<<<<< HEAD
-                        <a
-                    href="<?= htmlspecialchars($baseUrl . '/', ENT_QUOTES, 'UTF-8') ?>"
-                    class="app-sidebar__brand"
-                    aria-label="MLBB Guide - Dashboard"
-                >
-                    <img
-                        src="<?= htmlspecialchars(ASSET_BASE, ENT_QUOTES, 'UTF-8') ?>/images/brand/logo.png"
-                        alt=""
-                        class="app-sidebar__logo"
-                    >
-                    <span>MLBB GUIDE</span>
-                </a>
-=======
                 <h2 class="offcanvas-title" id="mobile-menu-title">
                     Menu Navigasi
                 </h2>
->>>>>>> 638b388fc707f2fa1097759ecb5334e8d2817313
 
                 <button
                     type="button"
@@ -193,8 +180,4 @@ $navItems = [
         </div>
 
         <!-- Konten halaman dimulai setelah navbar -->
-<<<<<<< HEAD
         <main id="page-content" class="app-content">
-=======
-        <main id="page-content" class="app-content">
->>>>>>> 638b388fc707f2fa1097759ecb5334e8d2817313

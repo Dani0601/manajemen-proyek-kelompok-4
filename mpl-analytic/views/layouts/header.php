@@ -58,9 +58,13 @@ $pageCss = $pageCss ?? '';
             href="<?= htmlspecialchars(ASSET_BASE, ENT_QUOTES, 'UTF-8') ?>/css/pages/<?= htmlspecialchars($pageCss, ENT_QUOTES, 'UTF-8') ?>"
         >
     <?php endif; ?>
+
+    <script>
+        window.APP_CONFIG = {
+            baseUrl: <?= json_encode(defined('BASE_URL') ? BASE_URL : '') ?>,
+            assetBase: <?= json_encode(defined('ASSET_BASE') ? ASSET_BASE : '') ?>,
+            apiBase: <?= json_encode((defined('BASE_URL') ? BASE_URL : '') . '/api') ?>
+        };
+    </script>
 </head>
-<<<<<<< HEAD
 <body>
-=======
-<body>
->>>>>>> 638b388fc707f2fa1097759ecb5334e8d2817313

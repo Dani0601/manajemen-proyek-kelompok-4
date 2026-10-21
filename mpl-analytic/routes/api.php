@@ -30,8 +30,8 @@ if (!isset($uri)) {
         '/mpl-analytic/public',
     ];
 
-    $scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? ''));
-    if ($scriptDir !== '/' && $scriptDir !== '' && str_starts_with($uri, $scriptDir)) {
+    $scriptDir = defined('BASE_URL') ? BASE_URL : rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '')), '/');
+    if ($scriptDir !== '/' && $scriptDir !== '' && $scriptDir !== '.' && str_starts_with($uri, $scriptDir)) {
         $uri = substr($uri, strlen($scriptDir));
     } else {
         foreach ($basePaths as $basePath) {

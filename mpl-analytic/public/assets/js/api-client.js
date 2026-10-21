@@ -2,7 +2,9 @@
   "use strict";
 
   const API_BASE_URL =
-    "/manajemen-proyek-kelompok-4/mpl-analytic/public/api";
+    (window.APP_CONFIG && window.APP_CONFIG.apiBase)
+      ? window.APP_CONFIG.apiBase
+      : "/api";
 
   async function request(endpoint) {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {

@@ -1,6 +1,10 @@
 <?php
 
-require_once dirname(__DIR__) . '/models/Dashboard.php';
+if (file_exists(dirname(__DIR__) . '/models/Dashboard.php')) {
+    require_once dirname(__DIR__) . '/models/Dashboard.php';
+} else {
+    require_once dirname(__DIR__) . '/models/dashboard.php';
+}
 
 class DashboardService
 {
