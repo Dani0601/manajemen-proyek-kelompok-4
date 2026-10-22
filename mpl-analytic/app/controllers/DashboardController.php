@@ -14,7 +14,11 @@ class DashboardController
 
     public function index(): never
     {
-        $data = $this->service->getDashboard();
+        $seasonId = isset($_GET['season']) && is_numeric($_GET['season'])
+            ? (int) $_GET['season']
+            : null;
+
+        $data = $this->service->getDashboard($seasonId);
 
         if ($data === null) {
             jsonResponse(

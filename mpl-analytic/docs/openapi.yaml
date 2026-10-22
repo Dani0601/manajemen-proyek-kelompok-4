@@ -736,7 +736,7 @@ paths:
       - name: match_id
         in: path
         required: true
-        description: ID Unik Match (cth: s17_w01_m01)
+        description: "ID Unik Match (cth: s17_w01_m01)"
         schema: { type: string, minLength: 1 }
     get:
       tags: [Matches]

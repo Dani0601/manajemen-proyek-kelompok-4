@@ -18,15 +18,17 @@ class DashboardService
     /**
      * Mengambil seluruh data yang dibutuhkan dashboard.
      */
-    public function getDashboard(): ?array
+    public function getDashboard(?int $targetSeasonId = null): ?array
     {
         /*
         |--------------------------------------------------------------------------
-        | 1. Ambil season terbaru
+        | 1. Ambil season (berdasarkan ID atau season terbaru)
         |--------------------------------------------------------------------------
         */
 
-        $season = $this->dashboard->getCurrentSeason();
+        $season = $targetSeasonId !== null
+            ? $this->dashboard->getSeasonById($targetSeasonId)
+            : $this->dashboard->getCurrentSeason();
 
         if ($season === null) {
             return null;
