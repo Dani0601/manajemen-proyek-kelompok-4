@@ -1,0 +1,23 @@
+$kind: http-request
+name: GET /api/games/:gameId
+url: "{{baseUrl}}/api/games/{{gameId}}"
+method: GET
+headers:
+  Accept: application/json
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('[Status] 200 or 404 or 501', function () {
+          pm.expect(pm.response.code).to.be.oneOf([200, 404, 501]);
+      });
+      pm.test('[Schema] valid JSON', function () {
+          pm.response.to.be.json;
+      });
+      if (pm.response.code === 200) {
+          pm.test('[Data] memiliki game_id', function () {
+              var json = pm.response.json();
+              pm.expect(json.data).to.have.property('game_id');
+          });
+      }
+    language: text/javascript
+order: 1000

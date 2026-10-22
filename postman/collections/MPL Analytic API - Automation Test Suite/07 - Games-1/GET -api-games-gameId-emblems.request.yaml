@@ -1,0 +1,23 @@
+$kind: http-request
+name: GET /api/games/:gameId/emblems
+url: "{{baseUrl}}/api/games/{{gameId}}/emblems"
+method: GET
+headers:
+  Accept: application/json
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('[Status] 200 or 501', function () {
+          pm.expect(pm.response.code).to.be.oneOf([200, 501]);
+      });
+      pm.test('[Schema] valid JSON', function () {
+          pm.response.to.be.json;
+      });
+      if (pm.response.code === 200) {
+          pm.test('[Data] is array', function () {
+              var json = pm.response.json();
+              pm.expect(json.data).to.be.an('array');
+          });
+      }
+    language: text/javascript
+order: 4000
