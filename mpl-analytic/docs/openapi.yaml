@@ -1,95 +1,235 @@
 openapi: 3.0.3
 info:
   title: MPL Analytic API
-  version: 1.0.0
+  version: 1.1.0
   description: >-
-    OpenAPI specification for the PHP Native MPL Analytic backend.
-    Paths are based on routes/api.php in the supplied project. Some routes
-    point to controllers that are not present in the archive and can return
-    HTTP 501 until those controllers are implemented. The API Contract v1
-    document was not present, so unspecified payload fields are intentionally
-    represented as generic objects rather than invented schemas.
+    Spesifikasi OpenAPI komprehensif untuk backend RESTful MPL Analytic berbasis PHP Native.
+    Dilengkapi dengan skema payload lengkap, query parameters, serta contoh respon JSON (examples)
+    sesuai implementasi aktif controller dan test suite Postman.
 servers:
   - url: http://localhost:8000
-    description: Local development server (adjust if the PHP server uses a different base path or port)
+    description: PHP Built-in Server (Local Development)
+  - url: http://127.0.0.1/manajemen-proyek-kelompok-4/mpl-analytic/public
+    description: Apache / Laragon Server
 tags:
   - name: Dashboard
+    description: Ringkasan musim aktif, performa hero, dan jadwal pekan terakhir
   - name: Meta
+    description: Master data kompetisi, musim, dan tim
   - name: Heroes
+    description: Statistik, build, counters, dan analisis hero
   - name: Players
+    description: Profil pemain, komparasi head-to-head, dan riwayat match pemain
   - name: Tournaments
+    description: Data musim turnamen, jadwal match, dan klasemen (standings)
   - name: Matches
+    description: Detail pertandingan, draft pick & ban per match
   - name: Games
+    description: Rincian game individual, statistik pemain, pick, item, dan emblem
   - name: Items
+    description: Master data item peralatan dalam game
+
 paths:
   /api/dashboard:
     get:
       tags: [Dashboard]
-      summary: Get dashboard data
+      summary: Mendapatkan ringkasan statistik dashboard
       operationId: getDashboard
       responses:
         '200':
-          description: Dashboard data retrieved
+          description: Data dashboard berhasil diambil
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-        '405': { $ref: '#/components/responses/MethodNotAllowed' }
-        '501': { $ref: '#/components/responses/NotImplemented' }
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/DashboardData'
+              examples:
+                DashboardSuccess:
+                  value:
+                    success: true
+                    message: Data dashboard berhasil diambil.
+                    data:
+                      season:
+                        season_id: 1
+                        league: MPL Indonesia
+                        season_number: 17
+                        phase: Regular Season
+                        start_date: '2026-03-01'
+                        end_date: '2026-05-30'
+                        format: Double Round Robin, Bo3
+                        source: official_mpl
+                      last_week: 8
+                      top_pick_rate:
+                        - hero_id: 12
+                          hero_name: Claude
+                          role: Marksman
+                          total_picks: 45
+                          pick_rate: 62.5
+                      top_win_rate:
+                        - hero_id: 34
+                          hero_name: Grock
+                          role: Tank
+                          total_games: 28
+                          win_rate: 71.4
+                      top_ban_rate:
+                        - hero_id: 88
+                          hero_name: Joy
+                          role: Assassin
+                          total_bans: 50
+                          ban_rate: 69.4
+                      schedule:
+                        - schedule_id: s17_w08_m01
+                          season_id: 1
+                          week: 8
+                          date: '2026-05-15'
+                          time: '15:00'
+                          team1: RRQ Hoshi
+                          team2: ONIC
+                          score_team1: 2
+                          score_team2: 1
+                          status: completed
+                          winner: RRQ Hoshi
+        '404':
+          description: Musim tidak ditemukan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Season tidak ditemukan.
+                data: null
+                error:
+                  code: SEASON_NOT_FOUND
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+
   /api/meta:
     get:
       tags: [Meta]
-      summary: Get API metadata
+      summary: Mendapatkan ringkasan meta / top hero musim
       operationId: getMeta
+      parameters:
+        - name: season
+          in: query
+          required: false
+          description: ID musim (default 13 atau musim terbaru)
+          schema:
+            type: integer
+            default: 17
       responses:
         '200':
-          description: Metadata retrieved
+          description: Ringkasan meta berhasil diambil
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-        '501': { $ref: '#/components/responses/NotImplemented' }
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                message: Berjaya mengambil ringkasan papan pemuka Top 5 Hero
+                data:
+                  top_overpowered_heroes:
+                    - hero_id: 12
+                      hero_name: Claude
+                      win_rate: 68.5
+                  top_most_banned_heroes:
+                    - hero_id: 88
+                      hero_name: Joy
+                      ban_rate: 75.0
+        '404':
+          description: Data tidak ditemukan untuk musim yang dipilih
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
   /api/seasons:
     get:
       tags: [Meta]
-      summary: List seasons
+      summary: Mendapatkan daftar semua musim (seasons)
       operationId: listSeasons
       responses:
         '200':
-          description: Seasons retrieved
+          description: Daftar musim berhasil diambil
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-        '501': { $ref: '#/components/responses/NotImplemented' }
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Season'
+              example:
+                success: true
+                message: Data seasons berhasil diambil.
+                data:
+                  - season_id: 1
+                    league: MPL Indonesia
+                    season_number: 17
+                    phase: Regular Season
+                    start_date: '2026-03-01'
+                    end_date: '2026-05-30'
+
   /api/teams:
     get:
       tags: [Meta]
-      summary: List teams
+      summary: Mendapatkan daftar tim peserta
       operationId: listTeams
       responses:
         '200':
-          description: Teams retrieved
+          description: Daftar tim berhasil diambil
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-        '501': { $ref: '#/components/responses/NotImplemented' }
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Team'
+              example:
+                success: true
+                message: Data teams berhasil diambil.
+                data:
+                  - team_id: 1
+                    team_name: RRQ Hoshi
+                    team_code: RRQ
+                    logo_url: https://id-mpl.com/assets/teams/rrq.png
+                  - team_id: 2
+                    team_name: ONIC
+                    team_code: ONIC
+                    logo_url: https://id-mpl.com/assets/teams/onic.png
+
   /api/heroes:
     get:
       tags: [Heroes]
-      summary: List heroes
+      summary: Menampilkan daftar seluruh hero atau filter pencarian
       operationId: listHeroes
       parameters:
         - name: q
           in: query
           required: false
-          description: Search heroes by keyword in name
-          schema: { type: string }
+          description: Kata kunci nama hero
+          schema:
+            type: string
         - name: role
           in: query
           required: false
-          description: Filter heroes by role (tank, fighter, assassin, mage, marksman, support) or comma-separated roles
-          schema: { type: string }
+          description: Filter berdasarkan peran (Tank, Fighter, Assassin, Mage, Marksman, Support)
+          schema:
+            type: string
       responses:
         '200':
-          description: Hero list retrieved
+          description: Daftar hero berhasil diambil
           content:
             application/json:
               schema:
@@ -99,325 +239,543 @@ paths:
                     properties:
                       data:
                         type: array
-                        items: { $ref: '#/components/schemas/Hero' }
-        '501': { $ref: '#/components/responses/NotImplemented' }
-  /api/heroes/search:
-    get:
-      tags: [Heroes]
-      summary: Search heroes and filter by role
-      operationId: searchHeroes
-      parameters:
-        - name: q
-          in: query
-          required: false
-          description: Search heroes by keyword in name
-          schema: { type: string }
-        - name: role
-          in: query
-          required: false
-          description: Filter heroes by role (tank, fighter, assassin, mage, marksman, support) or comma-separated roles
-          schema: { type: string }
-      responses:
-        '200':
-          description: Search results retrieved successfully
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/SuccessResponse'
-                  - type: object
-                    properties:
-                      data:
-                        type: array
-                        items: { $ref: '#/components/schemas/Hero' }
-        '501': { $ref: '#/components/responses/NotImplemented' }
+                        items:
+                          $ref: '#/components/schemas/Hero'
+              example:
+                success: true
+                message: Data hero berhasil diambil.
+                data:
+                  - hero_id: 1
+                    hero_name: Miya
+                    role: Marksman
+                    hero_slug: miya
+                  - hero_id: 2
+                    hero_name: Balmond
+                    role: Fighter
+                    hero_slug: balmond
+
   /api/heroes/{hero_id}:
     parameters:
       - $ref: '#/components/parameters/HeroId'
     get:
       tags: [Heroes]
-      summary: Get hero detail and situational recommendations
-      description: >-
-        The response data includes hero, detail, and recommendations.items and
-        recommendations.emblems. Recommendation fields are documented only
-        where present in the current implementation; status values should be
-        aligned with the team's agreed API Contract v1 before release.
+      summary: Detail spesifik hero beserta rekomendasi build dan emblem
       operationId: getHeroDetail
       responses:
         '200':
-          description: Hero detail retrieved
+          description: Detail hero berhasil diambil
           content:
             application/json:
               schema:
-                allOf:
-                  - $ref: '#/components/schemas/SuccessResponse'
-                  - type: object
-                    properties:
-                      data:
-                        type: object
-                        properties:
-                          hero: { $ref: '#/components/schemas/Hero' }
-                          detail: { $ref: '#/components/schemas/GenericObject' }
-                          recommendations:
-                            type: object
-                            properties:
-                              items:
-                                type: array
-                                items: { $ref: '#/components/schemas/ItemRecommendation' }
-                              emblems:
-                                type: array
-                                items: { $ref: '#/components/schemas/EmblemRecommendation' }
-        '400': { $ref: '#/components/responses/InvalidId' }
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                message: Detail hero berhasil diambil.
+                data:
+                  hero:
+                    hero_id: 1
+                    hero_name: Miya
+                    role: Marksman
+                    hero_slug: miya
+                  detail:
+                    specialty: Reap/Damage
+                    lane: Gold Lane
+                  recommendations:
+                    items:
+                      - item_name: Swift Boots
+                        suitability_status: core
+                        reason: Meningkatkan attack speed di fase laning
+                      - item_name: Berserker's Fury
+                        suitability_status: core
+                        reason: Meningkatkan critical damage secara masif
+                    emblems:
+                      - name: Marksman Emblem
+                        suitability_status: core
+                        reason: Sinergi dengan atribut basic attack
         '404':
-          description: Hero not found
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/ErrorResponse' }
-        '501': { $ref: '#/components/responses/NotImplemented' }
+          $ref: '#/components/responses/HeroNotFound'
+
   /api/heroes/{hero_id}/stats:
     parameters:
       - $ref: '#/components/parameters/HeroId'
     get:
       tags: [Heroes]
-      summary: Get hero statistics
+      summary: Statistik performa kompetitif hero di turnamen
       operationId: getHeroStats
       responses:
         '200':
-          description: Hero statistics retrieved
+          description: Statistik hero berhasil diambil
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-        '400': { $ref: '#/components/responses/InvalidId' }
-        '404': { $ref: '#/components/responses/HeroNotFound' }
-        '501': { $ref: '#/components/responses/NotImplemented' }
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                message: Statistik hero berhasil diambil.
+                data:
+                  hero_id: 1
+                  hero_name: Miya
+                  total_games: 15
+                  wins: 9
+                  losses: 6
+                  win_rate: 60.0
+                  pick_count: 15
+                  ban_count: 5
+        '404':
+          $ref: '#/components/responses/HeroNotFound'
+
   /api/heroes/{hero_id}/builds:
     parameters:
       - $ref: '#/components/parameters/HeroId'
     get:
       tags: [Heroes]
-      summary: Get hero builds and situational swaps
+      summary: Susunan item build dan pertukaran situasional (situational swaps)
       operationId: getHeroBuilds
       responses:
         '200':
-          description: Hero builds retrieved
+          description: Build hero berhasil diambil
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-        '400': { $ref: '#/components/responses/InvalidId' }
-        '404': { $ref: '#/components/responses/HeroNotFound' }
-        '501': { $ref: '#/components/responses/NotImplemented' }
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                message: Build hero berhasil diambil.
+                data:
+                  core_build:
+                    - Swift Boots
+                    - Haas's Claws
+                    - Berserker's Fury
+                    - Malefic Roar
+                  situational_items:
+                    - item_name: Wind of Nature
+                      condition: Melawan physical burst assassins
+                    - item_name: Rose Gold Meteor
+                      condition: Melawan burst magic damage
+        '404':
+          $ref: '#/components/responses/HeroNotFound'
+
   /api/heroes/{hero_id}/counters:
     parameters:
       - $ref: '#/components/parameters/HeroId'
     get:
       tags: [Heroes]
-      summary: Get hero counters, strong-against relations, and synergy
+      summary: Relasi counter, hero yang di-counter, dan sinergi
       operationId: getHeroCounters
       responses:
         '200':
-          description: Hero relations retrieved
+          description: Relasi counter hero berhasil diambil
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-        '400': { $ref: '#/components/responses/InvalidId' }
-        '404': { $ref: '#/components/responses/HeroNotFound' }
-        '501': { $ref: '#/components/responses/NotImplemented' }
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                message: Data counter hero berhasil diambil.
+                data:
+                  countered_by:
+                    - hero_id: 15
+                      hero_name: Natalia
+                      threat_level: High
+                  strong_against:
+                    - hero_id: 22
+                      hero_name: Layla
+                      advantage_level: High
+                  synergies:
+                    - hero_id: 5
+                      hero_name: Tigreal
+                      synergy_note: Crowd control area mempermudah damage bebas
+        '404':
+          $ref: '#/components/responses/HeroNotFound'
+
   /api/heroes/{hero_id}/skills:
     parameters:
       - $ref: '#/components/parameters/HeroId'
     get:
       tags: [Heroes]
-      summary: Get hero skills and skill order
+      summary: Daftar skill hero dan urutan prioritas naik level
       operationId: getHeroSkills
       responses:
         '200':
-          description: Hero skills retrieved
+          description: Skill hero berhasil diambil
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-        '400': { $ref: '#/components/responses/InvalidId' }
-        '404': { $ref: '#/components/responses/HeroNotFound' }
-        '501': { $ref: '#/components/responses/NotImplemented' }
-  /api/heroes/{hero_id}/games:
-    parameters:
-      - $ref: '#/components/parameters/HeroId'
-    get:
-      tags: [Heroes]
-      summary: Get games for a hero
-      operationId: getHeroGames
-      description: Route exists, but the current HeroController does not implement games(); it returns 501.
-      responses:
-        '200':
-          description: Hero games retrieved when implemented
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-        '400': { $ref: '#/components/responses/InvalidId' }
-        '501': { $ref: '#/components/responses/NotImplemented' }
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                message: Skill hero berhasil diambil.
+                data:
+                  passive:
+                    name: Moon Blessing
+                    description: Meningkatkan Attack Speed setiap basic attack mengenai target.
+                  skills:
+                    - skill_number: 1
+                      name: Moon Arrow
+                      priority: Max First
+                    - skill_number: 2
+                      name: Arrow of Eclipse
+                      priority: Secondary
+                    - skill_number: 3
+                      name: Hidden Moonlight
+                      priority: Max when available
+        '404':
+          $ref: '#/components/responses/HeroNotFound'
+
   /api/players:
     get:
       tags: [Players]
-      summary: List players
+      summary: Mendapatkan daftar semua pemain kompetitif
       operationId: listPlayers
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema: { type: integer, default: 1 }
+        - name: limit
+          in: query
+          required: false
+          schema: { type: integer, default: 50 }
       responses:
         '200':
-          description: Player list retrieved
+          description: Master data player berhasil diambil
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-        '501': { $ref: '#/components/responses/NotImplemented' }
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                message: Master data player berhasil diambil
+                data:
+                  - player_id: 2
+                    player_name: Skylar
+                    team_id: 1
+                    team_name: RRQ Hoshi
+                    role: Goldlaner
+                  - player_id: 23
+                    player_name: CW
+                    team_id: 2
+                    team_name: ONIC
+                    role: Goldlaner
+
   /api/players/compare:
     get:
       tags: [Players]
-      summary: Compare players
+      summary: Komparasi head-to-head statistik performa 2 pemain
       operationId: comparePlayers
-      description: Query parameters are not specified here because the controller contract does not define them in the route file.
+      parameters:
+        - name: p1
+          in: query
+          required: true
+          description: ID Pemain Pertama
+          schema: { type: integer, example: 2 }
+        - name: p2
+          in: query
+          required: true
+          description: ID Pemain Kedua
+          schema: { type: integer, example: 23 }
+        - name: season
+          in: query
+          required: false
+          description: ID Musim turnamen
+          schema: { type: integer, default: 17 }
       responses:
         '200':
-          description: Player comparison retrieved
+          description: Data komparasi pemain berhasil dimuat
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-        '400': { $ref: '#/components/responses/BadRequest' }
-        '501': { $ref: '#/components/responses/NotImplemented' }
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                message: Data komparasi pemain berhasil dimuat
+                data:
+                  player1:
+                    player_id: 2
+                    player_name: Skylar
+                    team_name: RRQ Hoshi
+                    role: Goldlaner
+                    total_games: 32
+                    kda: 4.8
+                    win_rate: 65.6
+                    avg_gold_per_min: 780
+                  player2:
+                    player_id: 23
+                    player_name: CW
+                    team_name: ONIC
+                    role: Goldlaner
+                    total_games: 30
+                    kda: 5.1
+                    win_rate: 70.0
+                    avg_gold_per_min: 810
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
   /api/players/{player_id}:
     parameters:
       - $ref: '#/components/parameters/PositiveId'
     get:
       tags: [Players]
-      summary: Get player detail
+      summary: Detail profil pemain
       operationId: getPlayerDetail
       responses:
         '200':
-          description: Player detail retrieved
+          description: Detail pemain berhasil diambil
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-        '400': { $ref: '#/components/responses/InvalidId' }
-        '404': { $ref: '#/components/responses/NotFound' }
-        '501': { $ref: '#/components/responses/NotImplemented' }
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                message: Detail pemain berhasil diambil.
+                data:
+                  player_id: 2
+                  player_name: Skylar
+                  team_id: 1
+                  team_name: RRQ Hoshi
+                  role: Goldlaner
+                  photo_url: https://id-mpl.com/assets/players/skylar.png
+        '404':
+          $ref: '#/components/responses/NotFound'
+
   /api/players/{player_id}/stats:
     parameters:
       - $ref: '#/components/parameters/PositiveId'
     get:
       tags: [Players]
-      summary: Get player statistics
+      summary: Statistik akumulasi performa pemain
       operationId: getPlayerStats
       responses:
         '200':
-          description: Player statistics retrieved
+          description: Statistik pemain berhasil diambil
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-        '400': { $ref: '#/components/responses/InvalidId' }
-        '404': { $ref: '#/components/responses/NotFound' }
-        '501': { $ref: '#/components/responses/NotImplemented' }
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                message: Statistik pemain berhasil diambil.
+                data:
+                  player_id: 2
+                  total_games: 32
+                  kills: 140
+                  deaths: 45
+                  assists: 160
+                  kda: 6.67
+                  win_rate: 65.6
+                  signature_heroes:
+                    - hero_name: Claude
+                      games: 12
+                      win_rate: 75.0
+        '404':
+          $ref: '#/components/responses/NotFound'
+
   /api/players/{player_id}/games:
     parameters:
       - $ref: '#/components/parameters/PositiveId'
     get:
       tags: [Players]
-      summary: Get games for a player
+      summary: Riwayat partisipasi pertandingan/game seorang pemain
       operationId: getPlayerGames
       responses:
         '200':
-          description: Player games retrieved
+          description: Riwayat game pemain berhasil diambil
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-        '400': { $ref: '#/components/responses/InvalidId' }
-        '404': { $ref: '#/components/responses/NotFound' }
-        '501': { $ref: '#/components/responses/NotImplemented' }
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                message: Riwayat game pemain berhasil diambil.
+                data:
+                  - game_id: s17_w01_m01_g01
+                    hero_id: 12
+                    hero_name: Claude
+                    kills: 6
+                    deaths: 1
+                    assists: 8
+                    result: WIN
+        '404':
+          $ref: '#/components/responses/NotFound'
+
   /api/tournaments:
     get:
       tags: [Tournaments]
-      summary: List tournaments
+      summary: Daftar turnamen / musim MPL
       operationId: listTournaments
       responses:
         '200':
-          description: Tournament list retrieved
+          description: Data tournament berhasil diambil
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-        '501': { $ref: '#/components/responses/NotImplemented' }
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                message: Data tournament berhasil diambil.
+                data:
+                  - season_id: 1
+                    season_number: 17
+                    league: MPL Indonesia
+                    phase: Regular Season
+
   /api/tournaments/{tournament_id}:
     parameters:
       - $ref: '#/components/parameters/PositiveId'
     get:
       tags: [Tournaments]
-      summary: Get tournament detail
+      summary: Detail spesifik turnamen
       operationId: getTournamentDetail
       responses:
         '200':
-          description: Tournament detail retrieved
+          description: Detail tournament berhasil diambil
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-        '400': { $ref: '#/components/responses/InvalidId' }
-        '404': { $ref: '#/components/responses/NotFound' }
-        '501': { $ref: '#/components/responses/NotImplemented' }
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                message: Detail tournament berhasil diambil.
+                data:
+                  season_id: 1
+                  season_number: 17
+                  league: MPL Indonesia
+                  start_date: '2026-03-01'
+                  end_date: '2026-05-30'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
   /api/tournaments/{tournament_id}/standings:
     parameters:
       - $ref: '#/components/parameters/PositiveId'
     get:
       tags: [Tournaments]
-      summary: Get tournament standings
+      summary: Klasemen tim pada turnamen
       operationId: getTournamentStandings
       responses:
         '200':
           description: Standings retrieved
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-        '400': { $ref: '#/components/responses/InvalidId' }
-        '501': { $ref: '#/components/responses/NotImplemented' }
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                message: Klasemen tournament berhasil diambil.
+                data:
+                  standings:
+                    - rank: 1
+                      team_name: RRQ Hoshi
+                      match_wins: 11
+                      match_losses: 3
+                      game_rate: 73.3
+                      net_points: 15
+                    - rank: 2
+                      team_name: ONIC
+                      match_wins: 10
+                      match_losses: 4
+                      game_rate: 68.0
+                      net_points: 12
+        '404':
+          $ref: '#/components/responses/NotFound'
+
   /api/tournaments/{tournament_id}/schedule:
     parameters:
       - $ref: '#/components/parameters/PositiveId'
     get:
       tags: [Tournaments]
-      summary: Get tournament schedule
+      summary: Jadwal lengkap turnamen
       operationId: getTournamentSchedule
       responses:
         '200':
-          description: Schedule retrieved
+          description: Jadwal turnamen berhasil diambil
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-        '400': { $ref: '#/components/responses/InvalidId' }
-        '501': { $ref: '#/components/responses/NotImplemented' }
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                message: Jadwal tournament berhasil diambil.
+                data:
+                  - match_id: s17_w01_m01
+                    week: 1
+                    date: '2026-03-06'
+                    time: '15:15'
+                    team1: Alter Ego
+                    team2: EVOS
+                    status: completed
+
   /api/matches:
     get:
       tags: [Matches]
-      summary: List matches
+      summary: Mendapatkan daftar seluruh pertandingan
       operationId: listMatches
       responses:
         '200':
-          description: Match list retrieved
+          description: Daftar match berhasil diambil
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-        '501': { $ref: '#/components/responses/NotImplemented' }
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                message: Data match berhasil diambil.
+                data:
+                  - match_id: s17_w01_m01
+                    season_id: 1
+                    week: 1
+                    team1: Alter Ego
+                    team2: EVOS
+                    score_team1: 2
+                    score_team2: 0
+
   /api/matches/{match_id}:
     parameters:
       - name: match_id
         in: path
         required: true
-        description: Match identifier stored as a string in the current router.
+        description: "ID Unik Match (cth: s17_w01_m01)"
         schema: { type: string, minLength: 1 }
     get:
       tags: [Matches]
-      summary: Get match detail
+      summary: Detail pertandingan beserta list game didalamnya
       operationId: getMatchDetail
       responses:
         '200':
-          description: Match detail retrieved
+          description: Detail pertandingan berhasil diambil
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-        '400': { $ref: '#/components/responses/BadRequest' }
-        '404': { $ref: '#/components/responses/NotFound' }
-        '501': { $ref: '#/components/responses/NotImplemented' }
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                message: Detail pertandingan berhasil diambil.
+                data:
+                  match_id: s17_w01_m01
+                  season: 17
+                  week: 1
+                  team1: Alter Ego
+                  team2: EVOS
+                  score1: 2
+                  score2: 0
+                  winner: Alter Ego
+                  status: completed
+                  games:
+                    - game_id: s17_w01_m01_g01
+                      game_number: 1
+                      duration: '14:25'
+                      winner: Alter Ego
+                    - game_id: s17_w01_m01_g02
+                      game_number: 2
+                      duration: '18:10'
+                      winner: Alter Ego
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
   /api/matches/{match_id}/drafts:
     parameters:
       - name: match_id
@@ -426,187 +784,339 @@ paths:
         schema: { type: string, minLength: 1 }
     get:
       tags: [Matches]
-      summary: Get match drafts
+      summary: Ringkasan draft hero (pick dan ban) di seluruh game pada match tersebut
       operationId: getMatchDrafts
       responses:
         '200':
-          description: Match drafts retrieved
+          description: Draft pertandingan berhasil diambil
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-        '400': { $ref: '#/components/responses/BadRequest' }
-        '501': { $ref: '#/components/responses/NotImplemented' }
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                message: Draft pertandingan berhasil diambil.
+                data:
+                  match_id: s17_w01_m01
+                  games_draft:
+                    - game_number: 1
+                      bans:
+                        team1: [Fanny, Joy, Mathilda]
+                        team2: [Nolan, Harith, Tigreal]
+                      picks:
+                        team1: [Claude, Grock, Valentina, Fredrinn, Arlott]
+                        team2: [Karrie, Khufra, Novaria, Baxia, Terizla]
+
   /api/games:
     get:
       tags: [Games]
-      summary: List games
+      summary: Mendapatkan daftar game individual
       operationId: listGames
-      description: Route is present, but GameController.php is absent from the supplied archive and may return 501.
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema: { type: integer, default: 1 }
+        - name: limit
+          in: query
+          required: false
+          schema: { type: integer, default: 20 }
       responses:
         '200':
-          description: Game list retrieved when implemented
+          description: Daftar game berhasil diambil
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-        '501': { $ref: '#/components/responses/NotImplemented' }
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                message: Daftar game.
+                data:
+                  - game_id: s17_w01_m01_g01
+                    match_id: s17_w01_m01
+                    game_number: 1
+                    winner_team_id: 1
+                    duration_seconds: 865
+
   /api/games/{game_id}:
     parameters:
-      - name: game_id
-        in: path
-        required: true
-        description: Game identifier stored as a string in the current router.
-        schema: { type: string, minLength: 1 }
+      - $ref: '#/components/parameters/GameId'
     get:
       tags: [Games]
-      summary: Get game detail
+      summary: Detail spesifik 1 game
       operationId: getGameDetail
       responses:
         '200':
-          description: Game detail retrieved when implemented
+          description: Detail game berhasil diambil
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-        '400': { $ref: '#/components/responses/BadRequest' }
-        '501': { $ref: '#/components/responses/NotImplemented' }
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                message: Detail game.
+                data:
+                  game_id: s17_w01_m01_g01
+                  match_id: s17_w01_m01
+                  game_number: 1
+                  duration: '14:25'
+                  total_kills_blue: 16
+                  total_kills_red: 9
+                  lord_kills_blue: 2
+                  lord_kills_red: 0
+        '404':
+          $ref: '#/components/responses/NotFound'
+
   /api/games/{game_id}/players:
     parameters:
-      - { $ref: '#/components/parameters/GameId' }
+      - $ref: '#/components/parameters/GameId'
     get:
       tags: [Games]
-      summary: List players in a game
+      summary: Data statistik performa individual 10 pemain di dalam game
       operationId: listGamePlayers
       responses:
         '200':
-          description: Game players retrieved when implemented
+          description: Statistik pemain dalam game berhasil diambil
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-        '400': { $ref: '#/components/responses/BadRequest' }
-        '501': { $ref: '#/components/responses/NotImplemented' }
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                message: Pemain dalam game.
+                data:
+                  - player_id: 2
+                    player_name: Skylar
+                    hero_id: 12
+                    hero_name: Claude
+                    team_side: blue
+                    kills: 7
+                    deaths: 1
+                    assists: 5
+                    gold: 12450
+                    damage_dealt: 78500
+
   /api/games/{game_id}/picks:
     parameters:
-      - { $ref: '#/components/parameters/GameId' }
+      - $ref: '#/components/parameters/GameId'
     get:
       tags: [Games]
-      summary: Get picks for a game
+      summary: Urutan draft pick dan ban hero dalam 1 game
       operationId: getGamePicks
       responses:
         '200':
-          description: Game picks retrieved when implemented
+          description: Pick and ban game berhasil diambil
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-        '400': { $ref: '#/components/responses/BadRequest' }
-        '501': { $ref: '#/components/responses/NotImplemented' }
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                message: Pick hero game.
+                data:
+                  - pick_id: 1
+                    hero_id: 12
+                    hero_name: Claude
+                    pick_order: 1
+                    team_side: blue
+                    is_ban: false
+
   /api/games/{game_id}/emblems:
     parameters:
-      - { $ref: '#/components/parameters/GameId' }
+      - $ref: '#/components/parameters/GameId'
     get:
       tags: [Games]
-      summary: Get emblems for a game
+      summary: Set emblem dan talent yang digunakan pemain pada game tersebut
       operationId: getGameEmblems
       responses:
         '200':
-          description: Game emblems retrieved when implemented
+          description: Emblem game berhasil diambil
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-        '400': { $ref: '#/components/responses/BadRequest' }
-        '501': { $ref: '#/components/responses/NotImplemented' }
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                message: Emblem dalam game.
+                data:
+                  - player_id: 2
+                    emblem_name: Marksman
+                    tier1_talent: Swift
+                    tier2_talent: Weapons Master
+                    tier3_talent: Quantum Charge
+
   /api/games/{game_id}/items:
     parameters:
-      - { $ref: '#/components/parameters/GameId' }
+      - $ref: '#/components/parameters/GameId'
     get:
       tags: [Games]
-      summary: Get items for a game
+      summary: Rincian item build yang dibeli seluruh pemain pada akhir game
       operationId: getGameItems
       responses:
         '200':
-          description: Game items retrieved when implemented
+          description: Item game berhasil diambil
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-        '400': { $ref: '#/components/responses/BadRequest' }
-        '501': { $ref: '#/components/responses/NotImplemented' }
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                message: Item dalam game.
+                data:
+                  - player_id: 2
+                    items:
+                      - Swift Boots
+                      - Demon Hunter Sword
+                      - Golden Staff
+                      - Corrosion Scythe
+                      - Wind of Nature
+                      - Immortality
+
   /api/items:
     get:
       tags: [Items]
-      summary: List items
+      summary: List seluruh master item game
       operationId: listItems
-      description: Route is present, but ItemController.php is absent from the supplied archive and may return 501.
       responses:
         '200':
-          description: Item list retrieved when implemented
+          description: Daftar item berhasil diambil
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-        '501': { $ref: '#/components/responses/NotImplemented' }
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                message: Daftar item berhasil diambil.
+                data:
+                  - item_id: 1
+                    item_name: Blade of Despair
+                    category: Attack
+                    tier: 3
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+
   /api/items/{item_id}:
     parameters:
       - $ref: '#/components/parameters/PositiveId'
     get:
       tags: [Items]
-      summary: Get item detail
+      summary: Detail spesifik 1 item perlengkapan
       operationId: getItemDetail
       responses:
         '200':
-          description: Item detail retrieved when implemented
+          description: Detail item berhasil diambil
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-        '400': { $ref: '#/components/responses/InvalidId' }
-        '501': { $ref: '#/components/responses/NotImplemented' }
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                message: Detail item berhasil diambil.
+                data:
+                  item_id: 1
+                  item_name: Blade of Despair
+                  category: Attack
+                  cost: 3010
+                  attributes:
+                    physical_attack: 160
+                    movement_spd: '5%'
+        '501':
+          $ref: '#/components/responses/NotImplemented'
+
 components:
   parameters:
     HeroId:
       name: hero_id
       in: path
       required: true
-      description: Positive integer hero identifier.
-      schema: { type: integer, minimum: 1 }
+      description: ID hero (integer positif)
+      schema: { type: integer, minimum: 1, example: 1 }
     PositiveId:
       name: id
       in: path
       required: true
-      description: Positive integer identifier; parameter name is descriptive for each path.
-      schema: { type: integer, minimum: 1 }
+      description: ID numerik entitas
+      schema: { type: integer, minimum: 1, example: 2 }
     GameId:
       name: game_id
       in: path
       required: true
-      description: Game identifier stored as a string.
-      schema: { type: string, minLength: 1 }
+      description: ID string unik game (cth s17_w01_m01_g01)
+      schema: { type: string, minLength: 1, example: s17_w01_m01_g01 }
+
   responses:
     MethodNotAllowed:
-      description: HTTP method is not allowed; the current router accepts GET only.
+      description: HTTP method tidak diizinkan (Hanya GET didukung).
       content:
         application/json:
           schema: { $ref: '#/components/schemas/ErrorResponse' }
+          example:
+            success: false
+            message: Method tidak diizinkan.
+            data: null
+            error:
+              code: METHOD_NOT_ALLOWED
+
     NotImplemented:
-      description: Endpoint/controller method is not implemented.
+      description: Endpoint belum diimplementasikan.
       content:
         application/json:
           schema: { $ref: '#/components/schemas/ErrorResponse' }
+          example:
+            success: false
+            message: Endpoint belum diimplementasikan.
+            data: null
+            error:
+              code: NOT_IMPLEMENTED
+
     InvalidId:
-      description: Identifier is invalid or must be a positive integer.
+      description: Identifier tidak valid atau bukan integer positif.
       content:
         application/json:
           schema: { $ref: '#/components/schemas/ErrorResponse' }
+          example:
+            success: false
+            message: ID tidak valid.
+            data: null
+            error:
+              code: INVALID_ID
+
     HeroNotFound:
-      description: Hero not found
+      description: Hero tidak ditemukan.
       content:
         application/json:
           schema: { $ref: '#/components/schemas/ErrorResponse' }
+          example:
+            success: false
+            message: Hero tidak ditemukan.
+            data: null
+            error:
+              code: HERO_NOT_FOUND
+
     NotFound:
-      description: Resource not found
+      description: Data tidak ditemukan.
       content:
         application/json:
           schema: { $ref: '#/components/schemas/ErrorResponse' }
+          example:
+            success: false
+            message: Data tidak ditemukan.
+            data: null
+            error:
+              code: NOT_FOUND
+
     BadRequest:
-      description: Invalid request or identifier
+      description: Permintaan tidak valid atau parameter kurang.
       content:
         application/json:
           schema: { $ref: '#/components/schemas/ErrorResponse' }
+          example:
+            success: false
+            message: Parameter wajib diisi.
+            data: null
+            error:
+              code: BAD_REQUEST
+
   schemas:
     SuccessResponse:
       type: object
@@ -615,53 +1125,55 @@ components:
         success: { type: boolean, example: true }
         message: { type: string, example: Data berhasil diambil. }
         data:
-          description: Endpoint-specific payload. Fields are deliberately unspecified unless verified from implementation.
           nullable: true
-          oneOf:
-            - type: object
-              additionalProperties: true
-            - type: array
-              items: { $ref: '#/components/schemas/GenericObject' }
+          description: Payload data hasil respon
+
     ErrorResponse:
       type: object
       required: [success, message, data]
       properties:
         success: { type: boolean, example: false }
-        message: { type: string }
-        data: { nullable: true }
+        message: { type: string, example: Terjadi kesalahan. }
+        data: { nullable: true, example: null }
         error:
           type: object
           properties:
-            code: { type: string }
-            controller: { type: string }
-    GenericObject:
+            code: { type: string, example: ERROR_CODE }
+            detail: { type: string }
+
+    DashboardData:
       type: object
-      description: Generic object used where the exact response fields are not confirmed in the source code.
-      additionalProperties: true
+      properties:
+        season: { $ref: '#/components/schemas/Season' }
+        last_week: { type: integer, example: 8 }
+        top_pick_rate: { type: array, items: { type: object } }
+        top_win_rate: { type: array, items: { type: object } }
+        top_ban_rate: { type: array, items: { type: object } }
+        schedule: { type: array, items: { type: object } }
+
+    Season:
+      type: object
+      properties:
+        season_id: { type: integer, example: 1 }
+        league: { type: string, example: MPL Indonesia }
+        season_number: { type: integer, example: 17 }
+        phase: { type: string, example: Regular Season }
+        start_date: { type: string, format: date, example: '2026-03-01' }
+        end_date: { type: string, format: date, example: '2026-05-30' }
+        format: { type: string, example: Double Round Robin, Bo3 }
+
+    Team:
+      type: object
+      properties:
+        team_id: { type: integer, example: 1 }
+        team_name: { type: string, example: RRQ Hoshi }
+        team_code: { type: string, example: RRQ }
+        logo_url: { type: string, nullable: true }
+
     Hero:
       type: object
       properties:
         hero_id: { type: integer, example: 1 }
-        hero_name: { type: string }
-        role: { type: string, example: Fighter, nullable: true }
-        hero_slug: { type: string, nullable: true }
-        hero_url: { type: string, nullable: true }
-        created_at: { type: string, format: date-time, nullable: true }
-        updated_at: { type: string, format: date-time, nullable: true }
-      additionalProperties: true
-    ItemRecommendation:
-      type: object
-      description: Situational item recommendation from source-backed build data; suitability status semantics should be finalized in API Contract v1.
-      properties:
-        item_name: { type: string, nullable: true }
-        suitability_status: { type: string, nullable: true }
-        reason: { type: string, nullable: true }
-      additionalProperties: true
-    EmblemRecommendation:
-      type: object
-      description: Emblem recommendation from source-backed build data; suitability status semantics should be finalized in API Contract v1.
-      properties:
-        name: { type: string, nullable: true }
-        suitability_status: { type: string, nullable: true }
-        reason: { type: string, nullable: true }
-      additionalProperties: true
+        hero_name: { type: string, example: Miya }
+        role: { type: string, example: Marksman }
+        hero_slug: { type: string, example: miya }

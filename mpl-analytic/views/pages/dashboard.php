@@ -8,10 +8,13 @@ require BASE_PATH . '/views/layouts/header.php';
 require BASE_PATH . '/views/layouts/navbar.php';
 
 $assetBase = htmlspecialchars(ASSET_BASE, ENT_QUOTES, 'UTF-8');
-$baseUrl = rtrim(
+$baseUrl = defined('BASE_URL') ? BASE_URL : rtrim(
     str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '')),
     '/'
 );
+if ($baseUrl === '.') {
+    $baseUrl = '';
+}
 
 // Data dashboard diisi dari API/backend (Ali). Pertahankan bentuk array ini
 // ('name', 'image', 'value' untuk hero; 'team1', 'image1', 'team2', 'image2',

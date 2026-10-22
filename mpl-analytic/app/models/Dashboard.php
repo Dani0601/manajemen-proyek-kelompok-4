@@ -41,7 +41,31 @@ class Dashboard
         $stmt = $this->db->query($sql);
 
         $season = $stmt->fetch();
+        return $season ?: null;
+    }
 
+    public function getSeasonById(int $seasonId): ?array
+    {
+        $sql = "
+            SELECT
+                season_id,
+                league,
+                season_number,
+                phase,
+                start_date,
+                end_date,
+                format,
+                source
+            FROM seasons
+            WHERE season_id = :season_id
+            LIMIT 1
+        ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':season_id', $seasonId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $season = $stmt->fetch();
         return $season ?: null;
     }
 

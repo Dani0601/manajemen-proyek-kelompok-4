@@ -12,11 +12,20 @@ class Database
 
         $env = self::loadEnv();
 
-        $host = $env['DB_HOST'] ?? '127.0.0.1';
-        $port = $env['DB_PORT'] ?? '3306';
-        $name = $env['DB_NAME'] ?? 'mpl_analytic';
-        $user = $env['DB_USER'] ?? 'root';
-        $pass = $env['DB_PASS'] ?? '';
+        $host = trim($env['DB_HOST'] ?? '127.0.0.1');
+        $port = trim($env['DB_PORT'] ?? '3306');
+        $name = trim($env['DB_NAME'] ?? $env['DB_DATABASE'] ?? 'mpl_analytic');
+        $user = trim($env['DB_USER'] ?? $env['DB_USERNAME'] ?? 'root');
+        $pass = trim($env['DB_PASS'] ?? $env['DB_PASSWORD'] ?? '');
+
+        // Jika host mengandung format host:port (misal sqlxxx.infinityfree.com:3306)
+        if (str_contains($host, ':')) {
+            [$hostOnly, $customPort] = explode(':', $host, 2);
+            $host = $hostOnly;
+            if (!empty($customPort)) {
+                $port = $customPort;
+            }
+        }
 
         $dsn = "mysql:host={$host};port={$port};dbname={$name};charset=utf8mb4";
 
@@ -28,6 +37,7 @@ class Database
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES => false,
+                PDO::ATTR_TIMEOUT => 7,
             ]
         );
 
@@ -36,9 +46,22 @@ class Database
 
     private static function loadEnv(): array
     {
-        $envPath = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . '.env';
+        $possiblePaths = [
+            dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . '.env',
+            dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . '.env',
+            rtrim($_SERVER['DOCUMENT_ROOT'] ?? '', '/\\') . DIRECTORY_SEPARATOR . '.env',
+            rtrim($_SERVER['DOCUMENT_ROOT'] ?? '', '/\\') . DIRECTORY_SEPARATOR . 'mpl-analytic' . DIRECTORY_SEPARATOR . '.env',
+        ];
 
-        if (!file_exists($envPath)) {
+        $envPath = null;
+        foreach ($possiblePaths as $p) {
+            if ($p !== '' && file_exists($p)) {
+                $envPath = $p;
+                break;
+            }
+        }
+
+        if ($envPath === null) {
             return [];
         }
 

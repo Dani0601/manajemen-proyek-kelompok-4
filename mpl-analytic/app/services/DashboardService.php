@@ -1,6 +1,10 @@
 <?php
 
-require_once dirname(__DIR__) . '/models/Dashboard.php';
+if (file_exists(dirname(__DIR__) . '/models/Dashboard.php')) {
+    require_once dirname(__DIR__) . '/models/Dashboard.php';
+} else {
+    require_once dirname(__DIR__) . '/models/dashboard.php';
+}
 
 class DashboardService
 {
@@ -14,15 +18,17 @@ class DashboardService
     /**
      * Mengambil seluruh data yang dibutuhkan dashboard.
      */
-    public function getDashboard(): ?array
+    public function getDashboard(?int $targetSeasonId = null): ?array
     {
         /*
         |--------------------------------------------------------------------------
-        | 1. Ambil season terbaru
+        | 1. Ambil season (berdasarkan ID atau season terbaru)
         |--------------------------------------------------------------------------
         */
 
-        $season = $this->dashboard->getCurrentSeason();
+        $season = $targetSeasonId !== null
+            ? $this->dashboard->getSeasonById($targetSeasonId)
+            : $this->dashboard->getCurrentSeason();
 
         if ($season === null) {
             return null;
