@@ -79,17 +79,19 @@ class HeroService
     {
         $hero = $this->hero->findById($heroId);
 
+        // Null hanya jika hero benar-benar tidak ditemukan di database.
+        // Jika hero ada tetapi belum memiliki data build, kembalikan array kosong.
         if ($hero === null) {
             return null;
         }
 
         return [
-            'hero' => $hero,
-            'items' => $this->hero->getBuildItems($heroId),
-            'emblems' => $this->hero->getBuildEmblems($heroId),
-            'spells' => $this->hero->getBuildSpells($heroId),
-            'talents' => $this->hero->getBuildTalents($heroId),
-            'situational_swaps' => $this->hero->getSituationalSwaps($heroId),
+            'hero'             => $hero,
+            'items'            => $this->hero->getBuildItems($heroId) ?? [],
+            'emblems'          => $this->hero->getBuildEmblems($heroId) ?? [],
+            'spells'           => $this->hero->getBuildSpells($heroId) ?? [],
+            'talents'          => $this->hero->getBuildTalents($heroId) ?? [],
+            'situational_swaps' => $this->hero->getSituationalSwaps($heroId) ?? [],
         ];
     }
 

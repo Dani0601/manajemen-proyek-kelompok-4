@@ -1,0 +1,24 @@
+$kind: http-request
+name: GET /api/dashboard (Season Kosong / Tanpa Pertandingan)
+url: "{{baseUrl}}/api/dashboard?season=99"
+method: GET
+headers:
+  Accept: application/json
+queryParams:
+  season: "99"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("[200] Status 200 OK (Bukan 500 walau data match kosong)", function () { pm.response.to.have.status(200); });
+      pm.test("[Schema] success true", function () { var j=pm.response.json(); pm.expect(j.success).to.be.true; });
+      pm.test("[Fallback Array Kosong] Semua list pertandingan dan statistik adalah array kosong []", function () {
+          var j = pm.response.json();
+          pm.expect(j.data.last_week).to.be.null;
+          pm.expect(j.data.schedule).to.be.an("array").that.is.empty;
+          pm.expect(j.data.top_pick_rate).to.be.an("array").that.is.empty;
+          pm.expect(j.data.top_win_rate).to.be.an("array").that.is.empty;
+          pm.expect(j.data.top_ban_rate).to.be.an("array").that.is.empty;
+          pm.expect(j.data.hero_meta).to.be.an("array").that.is.empty;
+      });
+    language: text/javascript
+order: 2000
