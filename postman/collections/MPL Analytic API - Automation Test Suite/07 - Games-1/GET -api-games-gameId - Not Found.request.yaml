@@ -1,0 +1,17 @@
+$kind: http-request
+name: GET /api/games/:gameId - Not Found
+url: "{{baseUrl}}/api/games/game-tidak-ada-9999"
+method: GET
+headers:
+  Accept: application/json
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('[Status] 404 or 501', function () {
+          pm.expect(pm.response.code).to.be.oneOf([404, 501]);
+      });
+      pm.test('[Schema] valid JSON', function () {
+          pm.response.to.be.json;
+      });
+    language: text/javascript
+order: 6000

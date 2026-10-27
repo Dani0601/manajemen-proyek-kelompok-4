@@ -1,54 +1,68 @@
 openapi: 3.0.3
 info:
   title: MPL Analytic API
-  version: 1.1.0
-  description: >-
-    Spesifikasi OpenAPI komprehensif untuk backend RESTful MPL Analytic berbasis PHP Native.
-    Dilengkapi dengan skema payload lengkap, query parameters, serta contoh respon JSON (examples)
-    sesuai implementasi aktif controller dan test suite Postman.
-servers:
-  - url: http://localhost:8000
-    description: PHP Built-in Server (Local Development)
-  - url: http://127.0.0.1/manajemen-proyek-kelompok-4/mpl-analytic/public
-    description: Apache / Laragon Server
-tags:
-  - name: Dashboard
-    description: Ringkasan musim aktif, performa hero, dan jadwal pekan terakhir
-  - name: Meta
-    description: Master data kompetisi, musim, dan tim
-  - name: Heroes
-    description: Statistik, build, counters, dan analisis hero
-  - name: Players
-    description: Profil pemain, komparasi head-to-head, dan riwayat match pemain
-  - name: Tournaments
-    description: Data musim turnamen, jadwal match, dan klasemen (standings)
-  - name: Matches
-    description: Detail pertandingan, draft pick & ban per match
-  - name: Games
-    description: Rincian game individual, statistik pemain, pick, item, dan emblem
-  - name: Items
-    description: Master data item peralatan dalam game
+  version: 1.2.0
+  description: 'Spesifikasi OpenAPI komprehensif untuk backend RESTful MPL Analytic
+    berbasis PHP Native.
 
+    Dilengkapi dengan semua endpoint aktif dan rute sistem, semua kondisi error lengkap
+    (400 Bad Request, 404 Not Found, 405 Method Not Allowed, 501 Not Implemented,
+    500 Server Error), serta contoh respon payload data riil (examples).'
+servers:
+- url: http://127.0.0.1/manajemen-proyek-kelompok-4/mpl-analytic/public
+  description: Apache / Laragon Server (Development Utama)
+- url: http://localhost:8000
+  description: PHP Built-in Server (Local Development)
+- url: http://manajemen-proyek-kelompok-4.test
+  description: Laragon VirtualHost
+tags:
+- name: Dashboard
+  description: Ringkasan statistik musim aktif, hero top win/pick/ban rate, dan jadwal
+    pertandingan
+- name: Meta
+  description: Master data kompetisi, season, tim, dan ringkasan meta hero overpower
+    & banned
+- name: Heroes
+  description: Katalog hero, pencarian nama & filter role, detail hero, statistik,
+    build, counter, skill, dan game
+- name: Players
+  description: Master pemain, komparasi head-to-head 2 pemain (US-03), profil detail,
+    statistik, dan riwayat game
+- name: Tournaments
+  description: Daftar turnamen/musim, detail musim, klasemen tim (standings), dan
+    jadwal match
+- name: Matches
+  description: Detail statistik pertandingan dan riwayat draft pick & ban per match
+- name: Games
+  description: Rincian game individual, statistik pemain, pick hero, item build, dan
+    talent emblem
+- name: Items
+  description: Master data item peralatan dalam game dan atribut spesifik
 paths:
   /api/dashboard:
     get:
-      tags: [Dashboard]
-      summary: Mendapatkan ringkasan statistik dashboard
+      tags:
+      - Dashboard
+      summary: Ringkasan statistik dashboard kompetisi dan hero
       operationId: getDashboard
+      parameters:
+      - name: season
+        in: query
+        required: false
+        description: 'Filter berdasarkan ID Season (default: season aktif terbaru)'
+        schema:
+          type: integer
+          example: 1
       responses:
         '200':
-          description: Data dashboard berhasil diambil
+          description: Data dashboard berhasil diambil.
           content:
             application/json:
               schema:
-                allOf:
-                  - $ref: '#/components/schemas/SuccessResponse'
-                  - type: object
-                    properties:
-                      data:
-                        $ref: '#/components/schemas/DashboardData'
+                $ref: '#/components/schemas/SuccessResponse'
               examples:
-                DashboardSuccess:
+                ActiveSeason:
+                  summary: Musim aktif berisi data pertandingan
                   value:
                     success: true
                     message: Data dashboard berhasil diambil.
@@ -61,40 +75,54 @@ paths:
                         start_date: '2026-03-01'
                         end_date: '2026-05-30'
                         format: Double Round Robin, Bo3
-                        source: official_mpl
                       last_week: 8
                       top_pick_rate:
-                        - hero_id: 12
-                          hero_name: Claude
-                          role: Marksman
-                          total_picks: 45
-                          pick_rate: 62.5
+                      - hero_id: 12
+                        hero_name: Claude
+                        role: Marksman
+                        total_picks: 45
+                        pick_rate: 62.5
                       top_win_rate:
-                        - hero_id: 34
-                          hero_name: Grock
-                          role: Tank
-                          total_games: 28
-                          win_rate: 71.4
+                      - hero_id: 34
+                        hero_name: Grock
+                        role: Tank
+                        total_games: 28
+                        win_rate: 71.4
                       top_ban_rate:
-                        - hero_id: 88
-                          hero_name: Joy
-                          role: Assassin
-                          total_bans: 50
-                          ban_rate: 69.4
+                      - hero_id: 88
+                        hero_name: Joy
+                        role: Assassin
+                        total_bans: 50
+                        ban_rate: 69.4
                       schedule:
-                        - schedule_id: s17_w08_m01
-                          season_id: 1
-                          week: 8
-                          date: '2026-05-15'
-                          time: '15:00'
-                          team1: RRQ Hoshi
-                          team2: ONIC
-                          score_team1: 2
-                          score_team2: 1
-                          status: completed
-                          winner: RRQ Hoshi
+                      - schedule_id: s17_w08_m01
+                        season_id: 1
+                        week: 8
+                        date: '2026-05-15'
+                        time: '15:00'
+                        team1: RRQ Hoshi
+                        team2: ONIC
+                        score_team1: 2
+                        score_team2: 1
+                        status: completed
+                        winner: RRQ Hoshi
+                EmptySeason:
+                  summary: Musim kosong belum ada pertandingan
+                  value:
+                    success: true
+                    message: Data dashboard berhasil diambil.
+                    data:
+                      season:
+                        season_id: 99
+                        season_number: 99
+                      last_week: null
+                      top_pick_rate: []
+                      top_win_rate: []
+                      top_ban_rate: []
+                      hero_meta: []
+                      schedule: []
         '404':
-          description: Musim tidak ditemukan
+          description: Season tidak ditemukan.
           content:
             application/json:
               schema:
@@ -106,164 +134,298 @@ paths:
                 error:
                   code: SEASON_NOT_FOUND
         '405':
-          $ref: '#/components/responses/MethodNotAllowed'
-
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
   /api/meta:
     get:
-      tags: [Meta]
-      summary: Mendapatkan ringkasan meta / top hero musim
-      operationId: getMeta
+      tags:
+      - Meta
+      summary: Ringkasan meta Top 5 Hero Overpowered & Most Banned
+      operationId: getMetaSummary
       parameters:
-        - name: season
-          in: query
-          required: false
-          description: ID musim (default 13 atau musim terbaru)
-          schema:
-            type: integer
-            default: 17
+      - name: season
+        in: query
+        required: false
+        description: 'ID season yang ingin dianalisis (default: 17)'
+        schema:
+          type: integer
+          example: 17
       responses:
         '200':
-          description: Ringkasan meta berhasil diambil
+          description: Ringkasan statistik meta hero berhasil diambil.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuccessResponse'
               example:
                 success: true
-                message: Berjaya mengambil ringkasan papan pemuka Top 5 Hero
+                message: Berhasil mengambil ringkasan dashboard Top 5 Hero.
                 data:
+                  season: 17
                   top_overpowered_heroes:
-                    - hero_id: 12
-                      hero_name: Claude
-                      win_rate: 68.5
+                  - hero_id: 12
+                    hero_name: Claude
+                    hero_icon_url: https://cdn.mplanalytic.com/heroes/claude.png
+                    win_rate: 68.5
+                    pick_rate: 45.0
+                    ban_rate: 30.0
                   top_most_banned_heroes:
-                    - hero_id: 88
-                      hero_name: Joy
-                      ban_rate: 75.0
+                  - hero_id: 88
+                    hero_name: Joy
+                    hero_icon_url: https://cdn.mplanalytic.com/heroes/joy.png
+                    win_rate: 55.0
+                    pick_rate: 20.0
+                    ban_rate: 75.0
         '404':
-          description: Data tidak ditemukan untuk musim yang dipilih
+          description: Data statistik tidak ditemukan untuk season yang diminta.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-
-  /api/seasons:
-    get:
-      tags: [Meta]
-      summary: Mendapatkan daftar semua musim (seasons)
-      operationId: listSeasons
-      responses:
-        '200':
-          description: Daftar musim berhasil diambil
+              example:
+                success: false
+                message: Tidak ada data statistik yang ditemukan untuk season ini.
+                data: null
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
           content:
             application/json:
               schema:
-                allOf:
-                  - $ref: '#/components/schemas/SuccessResponse'
-                  - type: object
-                    properties:
-                      data:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/Season'
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
+        '501':
+          description: Fitur/Endpoint belum diimplementasikan di backend.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Endpoint belum diimplementasikan.
+                data: null
+                error:
+                  code: NOT_IMPLEMENTED
+  /api/seasons:
+    get:
+      tags:
+      - Meta
+      summary: Master data seluruh musim turnamen (seasons)
+      operationId: listSeasons
+      responses:
+        '200':
+          description: Daftar musim berhasil diambil.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
               example:
                 success: true
                 message: Data seasons berhasil diambil.
                 data:
-                  - season_id: 1
-                    league: MPL Indonesia
-                    season_number: 17
-                    phase: Regular Season
-                    start_date: '2026-03-01'
-                    end_date: '2026-05-30'
-
-  /api/teams:
-    get:
-      tags: [Meta]
-      summary: Mendapatkan daftar tim peserta
-      operationId: listTeams
-      responses:
-        '200':
-          description: Daftar tim berhasil diambil
+                - season_id: 1
+                  league: MPL Indonesia
+                  season_number: 17
+                  phase: Regular Season
+                  start_date: '2026-03-01'
+                  end_date: '2026-05-30'
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
           content:
             application/json:
               schema:
-                allOf:
-                  - $ref: '#/components/schemas/SuccessResponse'
-                  - type: object
-                    properties:
-                      data:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/Team'
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
+        '501':
+          description: Fitur/Endpoint belum diimplementasikan di backend.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Endpoint belum diimplementasikan.
+                data: null
+                error:
+                  code: NOT_IMPLEMENTED
+  /api/teams:
+    get:
+      tags:
+      - Meta
+      summary: Master data tim peserta kompetisi
+      operationId: listTeams
+      responses:
+        '200':
+          description: Daftar tim berhasil diambil.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
               example:
                 success: true
                 message: Data teams berhasil diambil.
                 data:
-                  - team_id: 1
-                    team_name: RRQ Hoshi
-                    team_code: RRQ
-                    logo_url: https://id-mpl.com/assets/teams/rrq.png
-                  - team_id: 2
-                    team_name: ONIC
-                    team_code: ONIC
-                    logo_url: https://id-mpl.com/assets/teams/onic.png
-
-  /api/heroes:
-    get:
-      tags: [Heroes]
-      summary: Menampilkan daftar seluruh hero atau filter pencarian
-      operationId: listHeroes
-      parameters:
-        - name: q
-          in: query
-          required: false
-          description: Kata kunci nama hero
-          schema:
-            type: string
-        - name: role
-          in: query
-          required: false
-          description: Filter berdasarkan peran (Tank, Fighter, Assassin, Mage, Marksman, Support)
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Daftar hero berhasil diambil
+                - team_id: 1
+                  team_name: RRQ Hoshi
+                  team_code: RRQ
+                  logo_url: https://id-mpl.com/assets/teams/rrq.png
+                - team_id: 2
+                  team_name: ONIC
+                  team_code: ONIC
+                  logo_url: https://id-mpl.com/assets/teams/onic.png
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
           content:
             application/json:
               schema:
-                allOf:
-                  - $ref: '#/components/schemas/SuccessResponse'
-                  - type: object
-                    properties:
-                      data:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/Hero'
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
+        '501':
+          description: Fitur/Endpoint belum diimplementasikan di backend.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Endpoint belum diimplementasikan.
+                data: null
+                error:
+                  code: NOT_IMPLEMENTED
+  /api/heroes:
+    get:
+      tags:
+      - Heroes
+      summary: Daftar semua hero atau pencarian umum
+      operationId: listHeroes
+      parameters:
+      - name: q
+        in: query
+        required: false
+        description: Keyword pencarian nama hero
+        schema:
+          type: string
+          example: Miya
+      - name: role
+        in: query
+        required: false
+        description: Filter role hero
+        schema:
+          type: string
+          example: Marksman
+      responses:
+        '200':
+          description: Data hero berhasil diambil.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
               example:
                 success: true
                 message: Data hero berhasil diambil.
                 data:
-                  - hero_id: 1
-                    hero_name: Miya
-                    role: Marksman
-                    hero_slug: miya
-                  - hero_id: 2
-                    hero_name: Balmond
-                    role: Fighter
-                    hero_slug: balmond
-
-  /api/heroes/{hero_id}:
-    parameters:
-      - $ref: '#/components/parameters/HeroId'
+                - hero_id: 1
+                  hero_name: Miya
+                  role: Marksman
+                  hero_slug: miya
+                - hero_id: 2
+                  hero_name: Balmond
+                  role: Fighter
+                  hero_slug: balmond
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
+  /api/heroes/search:
     get:
-      tags: [Heroes]
-      summary: Detail spesifik hero beserta rekomendasi build dan emblem
-      operationId: getHeroDetail
+      tags:
+      - Heroes
+      summary: Pencarian hero khusus berdasarkan nama dan role
+      operationId: searchHeroes
+      parameters:
+      - name: q
+        in: query
+        required: false
+        description: Keyword nama hero
+        schema:
+          type: string
+          example: Miya
+      - name: role
+        in: query
+        required: false
+        description: Filter role hero
+        schema:
+          type: string
+          example: Marksman
       responses:
         '200':
-          description: Detail hero berhasil diambil
+          description: Hasil pencarian hero berhasil diambil.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                message: Hasil pencarian hero berhasil diambil.
+                data:
+                - hero_id: 1
+                  hero_name: Miya
+                  role: Marksman
+                  hero_slug: miya
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
+  /api/heroes/{hero_id}:
+    get:
+      tags:
+      - Heroes
+      summary: Detail spesifik satu hero
+      operationId: getHeroDetail
+      parameters:
+      - $ref: '#/components/parameters/HeroId'
+      responses:
+        '200':
+          description: Detail hero berhasil diambil.
           content:
             application/json:
               schema:
@@ -272,39 +434,81 @@ paths:
                 success: true
                 message: Detail hero berhasil diambil.
                 data:
-                  hero:
-                    hero_id: 1
-                    hero_name: Miya
-                    role: Marksman
-                    hero_slug: miya
-                  detail:
-                    specialty: Reap/Damage
-                    lane: Gold Lane
-                  recommendations:
-                    items:
-                      - item_name: Swift Boots
-                        suitability_status: core
-                        reason: Meningkatkan attack speed di fase laning
-                      - item_name: Berserker's Fury
-                        suitability_status: core
-                        reason: Meningkatkan critical damage secara masif
-                    emblems:
-                      - name: Marksman Emblem
-                        suitability_status: core
-                        reason: Sinergi dengan atribut basic attack
+                  hero_id: 1
+                  hero_name: Miya
+                  role: Marksman
+                  specialty: Reap/Damage
+                  hero_slug: miya
+                  created_at: '2026-01-01 00:00:00'
+        '400':
+          description: Validasi parameter hero_id gagal (bukan angka positif).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                InvalidInteger:
+                  summary: hero_id bukan tipe integer
+                  value:
+                    success: false
+                    message: hero_id harus berupa angka.
+                    data: null
+                    error:
+                      code: INVALID_INTEGER
+                InvalidHERO_ID:
+                  summary: hero_id bernilai 0 atau negatif
+                  value:
+                    success: false
+                    message: hero_id harus lebih besar dari 0.
+                    data: null
+                    error:
+                      code: INVALID_HERO_ID
         '404':
-          $ref: '#/components/responses/HeroNotFound'
-
+          description: Hero atau sub-endpoint tidak ditemukan.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                HeroNotFound:
+                  summary: Hero tidak ditemukan di database
+                  value:
+                    success: false
+                    message: Hero tidak ditemukan.
+                    data: null
+                    error:
+                      code: HERO_NOT_FOUND
+                EndpointNotFound:
+                  summary: Sub-endpoint Hero tidak terdaftar
+                  value:
+                    success: false
+                    message: Endpoint hero tidak ditemukan.
+                    data: null
+                    error:
+                      code: ENDPOINT_NOT_FOUND
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
   /api/heroes/{hero_id}/stats:
-    parameters:
-      - $ref: '#/components/parameters/HeroId'
     get:
-      tags: [Heroes]
-      summary: Statistik performa kompetitif hero di turnamen
+      tags:
+      - Heroes
+      summary: Statistik performa kompetitif hero (win/pick/ban rate)
       operationId: getHeroStats
+      parameters:
+      - $ref: '#/components/parameters/HeroId'
       responses:
         '200':
-          description: Statistik hero berhasil diambil
+          description: Statistik hero berhasil diambil.
           content:
             application/json:
               schema:
@@ -315,25 +519,70 @@ paths:
                 data:
                   hero_id: 1
                   hero_name: Miya
-                  total_games: 15
+                  total_matches: 15
                   wins: 9
                   losses: 6
                   win_rate: 60.0
-                  pick_count: 15
-                  ban_count: 5
+                  pick_rate: 18.5
+                  ban_rate: 5.0
+        '400':
+          description: Validasi parameter hero_id gagal (bukan angka positif).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                InvalidInteger:
+                  summary: hero_id bukan tipe integer
+                  value:
+                    success: false
+                    message: hero_id harus berupa angka.
+                    data: null
+                    error:
+                      code: INVALID_INTEGER
+                InvalidHERO_ID:
+                  summary: hero_id bernilai 0 atau negatif
+                  value:
+                    success: false
+                    message: hero_id harus lebih besar dari 0.
+                    data: null
+                    error:
+                      code: INVALID_HERO_ID
         '404':
-          $ref: '#/components/responses/HeroNotFound'
-
+          description: Hero tidak ditemukan.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Hero tidak ditemukan.
+                data: null
+                error:
+                  code: HERO_NOT_FOUND
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
   /api/heroes/{hero_id}/builds:
-    parameters:
-      - $ref: '#/components/parameters/HeroId'
     get:
-      tags: [Heroes]
-      summary: Susunan item build dan pertukaran situasional (situational swaps)
+      tags:
+      - Heroes
+      summary: Rekomendasi build perlengkapan, emblem, dan battle spell hero
       operationId: getHeroBuilds
+      parameters:
+      - $ref: '#/components/parameters/HeroId'
       responses:
         '200':
-          description: Build hero berhasil diambil
+          description: Build hero berhasil diambil.
           content:
             application/json:
               schema:
@@ -342,29 +591,80 @@ paths:
                 success: true
                 message: Build hero berhasil diambil.
                 data:
-                  core_build:
-                    - Swift Boots
-                    - Haas's Claws
-                    - Berserker's Fury
-                    - Malefic Roar
-                  situational_items:
-                    - item_name: Wind of Nature
-                      condition: Melawan physical burst assassins
-                    - item_name: Rose Gold Meteor
-                      condition: Melawan burst magic damage
+                  hero_id: 1
+                  items:
+                  - item_id: 10
+                    item_name: Swift Boots
+                    slot: 1
+                  - item_id: 25
+                    item_name: Haas's Claws
+                    slot: 2
+                  - item_id: 30
+                    item_name: Berserker's Fury
+                    slot: 3
+                  emblems:
+                  - emblem_name: Marksman
+                    talent: Fatal
+                  spells:
+                  - spell_name: Flicker
+        '400':
+          description: Validasi parameter hero_id gagal (bukan angka positif).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                InvalidInteger:
+                  summary: hero_id bukan tipe integer
+                  value:
+                    success: false
+                    message: hero_id harus berupa angka.
+                    data: null
+                    error:
+                      code: INVALID_INTEGER
+                InvalidHERO_ID:
+                  summary: hero_id bernilai 0 atau negatif
+                  value:
+                    success: false
+                    message: hero_id harus lebih besar dari 0.
+                    data: null
+                    error:
+                      code: INVALID_HERO_ID
         '404':
-          $ref: '#/components/responses/HeroNotFound'
-
+          description: Hero tidak ditemukan.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Hero tidak ditemukan.
+                data: null
+                error:
+                  code: HERO_NOT_FOUND
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
   /api/heroes/{hero_id}/counters:
-    parameters:
-      - $ref: '#/components/parameters/HeroId'
     get:
-      tags: [Heroes]
-      summary: Relasi counter, hero yang di-counter, dan sinergi
+      tags:
+      - Heroes
+      summary: Analisis counter lawan dan hero sinergi rekan satu tim
       operationId: getHeroCounters
+      parameters:
+      - $ref: '#/components/parameters/HeroId'
       responses:
         '200':
-          description: Relasi counter hero berhasil diambil
+          description: Data counter hero berhasil diambil.
           content:
             application/json:
               schema:
@@ -373,72 +673,237 @@ paths:
                 success: true
                 message: Data counter hero berhasil diambil.
                 data:
+                  hero_id: 1
                   countered_by:
-                    - hero_id: 15
-                      hero_name: Natalia
-                      threat_level: High
-                  strong_against:
-                    - hero_id: 22
-                      hero_name: Layla
-                      advantage_level: High
-                  synergies:
-                    - hero_id: 5
-                      hero_name: Tigreal
-                      synergy_note: Crowd control area mempermudah damage bebas
+                  - hero_id: 45
+                    hero_name: Khufra
+                    win_rate_against: 35.5
+                    reason: Bouncing Ball cancel dash/escape
+                  synergy_with:
+                  - hero_id: 34
+                    hero_name: Grock
+                    synergy_win_rate: 72.0
+        '400':
+          description: Validasi parameter hero_id gagal (bukan angka positif).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                InvalidInteger:
+                  summary: hero_id bukan tipe integer
+                  value:
+                    success: false
+                    message: hero_id harus berupa angka.
+                    data: null
+                    error:
+                      code: INVALID_INTEGER
+                InvalidHERO_ID:
+                  summary: hero_id bernilai 0 atau negatif
+                  value:
+                    success: false
+                    message: hero_id harus lebih besar dari 0.
+                    data: null
+                    error:
+                      code: INVALID_HERO_ID
         '404':
-          $ref: '#/components/responses/HeroNotFound'
-
+          description: Hero tidak ditemukan.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Hero tidak ditemukan.
+                data: null
+                error:
+                  code: HERO_NOT_FOUND
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
   /api/heroes/{hero_id}/skills:
-    parameters:
-      - $ref: '#/components/parameters/HeroId'
     get:
-      tags: [Heroes]
-      summary: Daftar skill hero dan urutan prioritas naik level
+      tags:
+      - Heroes
+      summary: Daftar skill pasif dan aktif hero
       operationId: getHeroSkills
+      parameters:
+      - $ref: '#/components/parameters/HeroId'
       responses:
         '200':
-          description: Skill hero berhasil diambil
+          description: Data skill hero berhasil diambil.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuccessResponse'
               example:
                 success: true
-                message: Skill hero berhasil diambil.
+                message: Data skill hero berhasil diambil.
                 data:
-                  passive:
-                    name: Moon Blessing
-                    description: Meningkatkan Attack Speed setiap basic attack mengenai target.
-                  skills:
-                    - skill_number: 1
-                      name: Moon Arrow
-                      priority: Max First
-                    - skill_number: 2
-                      name: Arrow of Eclipse
-                      priority: Secondary
-                    - skill_number: 3
-                      name: Hidden Moonlight
-                      priority: Max when available
+                - skill_id: 101
+                  skill_name: Moon Blessing
+                  type: Passive
+                  description: Meningkatkan movement speed saat basic attack.
+                - skill_id: 102
+                  skill_name: Moon Arrow
+                  type: Skill 1
+                  description: Menembakkan anak panah tambahan ke target lain.
+                - skill_id: 104
+                  skill_name: Hidden Moonlight
+                  type: Ultimate
+                  description: Menghilangkan diri dan meningkatkan attack speed.
+        '400':
+          description: Validasi parameter hero_id gagal (bukan angka positif).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                InvalidInteger:
+                  summary: hero_id bukan tipe integer
+                  value:
+                    success: false
+                    message: hero_id harus berupa angka.
+                    data: null
+                    error:
+                      code: INVALID_INTEGER
+                InvalidHERO_ID:
+                  summary: hero_id bernilai 0 atau negatif
+                  value:
+                    success: false
+                    message: hero_id harus lebih besar dari 0.
+                    data: null
+                    error:
+                      code: INVALID_HERO_ID
         '404':
-          $ref: '#/components/responses/HeroNotFound'
-
-  /api/players:
+          description: Hero tidak ditemukan.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Hero tidak ditemukan.
+                data: null
+                error:
+                  code: HERO_NOT_FOUND
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
+  /api/heroes/{hero_id}/games:
     get:
-      tags: [Players]
-      summary: Mendapatkan daftar semua pemain kompetitif
-      operationId: listPlayers
+      tags:
+      - Heroes
+      summary: Riwayat pertandingan game yang melibatkan hero tersebut
+      operationId: getHeroGames
       parameters:
-        - name: page
-          in: query
-          required: false
-          schema: { type: integer, default: 1 }
-        - name: limit
-          in: query
-          required: false
-          schema: { type: integer, default: 50 }
+      - $ref: '#/components/parameters/HeroId'
       responses:
         '200':
-          description: Master data player berhasil diambil
+          description: Riwayat game hero berhasil diambil.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                message: Riwayat game hero berhasil diambil.
+                data:
+                - game_id: s17_w01_m01_g01
+                  player_name: Skylar
+                  result: WIN
+                  kills: 7
+                  deaths: 2
+                  assists: 5
+        '400':
+          description: Validasi parameter hero_id gagal (bukan angka positif).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                InvalidInteger:
+                  summary: hero_id bukan tipe integer
+                  value:
+                    success: false
+                    message: hero_id harus berupa angka.
+                    data: null
+                    error:
+                      code: INVALID_INTEGER
+                InvalidHERO_ID:
+                  summary: hero_id bernilai 0 atau negatif
+                  value:
+                    success: false
+                    message: hero_id harus lebih besar dari 0.
+                    data: null
+                    error:
+                      code: INVALID_HERO_ID
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
+        '501':
+          description: Fitur/Endpoint belum diimplementasikan di backend.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Endpoint belum diimplementasikan.
+                data: null
+                error:
+                  code: NOT_IMPLEMENTED
+  /api/players:
+    get:
+      tags:
+      - Players
+      summary: Master daftar pemain profesional dan paginasi
+      operationId: listPlayers
+      parameters:
+      - name: page
+        in: query
+        required: false
+        description: Nomor halaman
+        schema:
+          type: integer
+          default: 1
+      - name: limit
+        in: query
+        required: false
+        description: Batas data per halaman
+        schema:
+          type: integer
+          default: 50
+      responses:
+        '200':
+          description: Master data player berhasil diambil.
           content:
             application/json:
               schema:
@@ -447,41 +912,61 @@ paths:
                 success: true
                 message: Master data player berhasil diambil
                 data:
-                  - player_id: 2
-                    player_name: Skylar
-                    team_id: 1
-                    team_name: RRQ Hoshi
-                    role: Goldlaner
-                  - player_id: 23
-                    player_name: CW
-                    team_id: 2
-                    team_name: ONIC
-                    role: Goldlaner
-
+                - player_id: 2
+                  player_name: Skylar
+                  team_id: 1
+                  team_name: RRQ Hoshi
+                  role: Goldlaner
+                  photo_url: https://id-mpl.com/assets/players/skylar.png
+                - player_id: 23
+                  player_name: CW
+                  team_id: 2
+                  team_name: ONIC
+                  role: Goldlaner
+                  photo_url: https://id-mpl.com/assets/players/cw.png
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
   /api/players/compare:
     get:
-      tags: [Players]
-      summary: Komparasi head-to-head statistik performa 2 pemain
+      tags:
+      - Players
+      summary: Komparasi performa head-to-head 2 pemain pada musim tertentu (US-03)
       operationId: comparePlayers
       parameters:
-        - name: p1
-          in: query
-          required: true
-          description: ID Pemain Pertama
-          schema: { type: integer, example: 2 }
-        - name: p2
-          in: query
-          required: true
-          description: ID Pemain Kedua
-          schema: { type: integer, example: 23 }
-        - name: season
-          in: query
-          required: false
-          description: ID Musim turnamen
-          schema: { type: integer, default: 17 }
+      - name: p1
+        in: query
+        required: true
+        description: ID Pemain 1
+        schema:
+          type: integer
+          example: 2
+      - name: p2
+        in: query
+        required: true
+        description: ID Pemain 2
+        schema:
+          type: integer
+          example: 23
+      - name: season
+        in: query
+        required: false
+        description: 'ID Season turnamen (default: 17)'
+        schema:
+          type: integer
+          default: 17
       responses:
         '200':
-          description: Data komparasi pemain berhasil dimuat
+          description: Data komparasi pemain berhasil dimuat.
           content:
             application/json:
               schema:
@@ -490,39 +975,78 @@ paths:
                 success: true
                 message: Data komparasi pemain berhasil dimuat
                 data:
-                  player1:
+                  season: 17
+                  player_1:
                     player_id: 2
                     player_name: Skylar
                     team_name: RRQ Hoshi
                     role: Goldlaner
                     total_games: 32
-                    kda: 4.8
                     win_rate: 65.6
+                    kda: 6.67
                     avg_gold_per_min: 780
-                  player2:
+                  player_2:
                     player_id: 23
                     player_name: CW
                     team_name: ONIC
                     role: Goldlaner
                     total_games: 30
-                    kda: 5.1
                     win_rate: 70.0
+                    kda: 5.1
                     avg_gold_per_min: 810
         '400':
-          $ref: '#/components/responses/BadRequest'
+          description: Validasi parameter p1 atau p2 gagal.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                MissingParams:
+                  summary: Parameter p1 atau p2 tidak disertakan
+                  value:
+                    success: false
+                    message: Parameter p1 dan p2 wajib diisi.
+                    data: null
+                SamePlayer:
+                  summary: Pemain yang dibandingkan adalah ID yang sama
+                  value:
+                    success: false
+                    message: Pemain yang dibandingkan tidak boleh sama.
+                    data: null
         '404':
-          $ref: '#/components/responses/NotFound'
-
+          description: Data pemain tidak ditemukan pada musim yang dipilih.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Data salah satu atau kedua pemain tidak ditemukan pada Season
+                  17.
+                data: null
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
   /api/players/{player_id}:
-    parameters:
-      - $ref: '#/components/parameters/PositiveId'
     get:
-      tags: [Players]
-      summary: Detail profil pemain
+      tags:
+      - Players
+      summary: Detail profil dan identitas pemain
       operationId: getPlayerDetail
+      parameters:
+      - $ref: '#/components/parameters/PlayerId'
       responses:
         '200':
-          description: Detail pemain berhasil diambil
+          description: Detail pemain berhasil diambil.
           content:
             application/json:
               schema:
@@ -537,19 +1061,75 @@ paths:
                   team_name: RRQ Hoshi
                   role: Goldlaner
                   photo_url: https://id-mpl.com/assets/players/skylar.png
+        '400':
+          description: Validasi parameter player_id gagal (bukan angka positif).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                InvalidInteger:
+                  summary: player_id bukan tipe integer
+                  value:
+                    success: false
+                    message: player_id harus berupa angka.
+                    data: null
+                    error:
+                      code: INVALID_INTEGER
+                InvalidPLAYER_ID:
+                  summary: player_id bernilai 0 atau negatif
+                  value:
+                    success: false
+                    message: player_id harus lebih besar dari 0.
+                    data: null
+                    error:
+                      code: INVALID_PLAYER_ID
         '404':
-          $ref: '#/components/responses/NotFound'
-
+          description: Pemain atau sub-endpoint tidak ditemukan.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                PemainNotFound:
+                  summary: Pemain tidak ditemukan di database
+                  value:
+                    success: false
+                    message: Pemain tidak ditemukan.
+                    data: null
+                    error:
+                      code: PLAYER_NOT_FOUND
+                EndpointNotFound:
+                  summary: Sub-endpoint Pemain tidak terdaftar
+                  value:
+                    success: false
+                    message: Endpoint pemain tidak ditemukan.
+                    data: null
+                    error:
+                      code: ENDPOINT_NOT_FOUND
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
   /api/players/{player_id}/stats:
-    parameters:
-      - $ref: '#/components/parameters/PositiveId'
     get:
-      tags: [Players]
+      tags:
+      - Players
       summary: Statistik akumulasi performa pemain
       operationId: getPlayerStats
+      parameters:
+      - $ref: '#/components/parameters/PlayerId'
       responses:
         '200':
-          description: Statistik pemain berhasil diambil
+          description: Statistik pemain berhasil diambil.
           content:
             application/json:
               schema:
@@ -566,22 +1146,68 @@ paths:
                   kda: 6.67
                   win_rate: 65.6
                   signature_heroes:
-                    - hero_name: Claude
-                      games: 12
-                      win_rate: 75.0
+                  - hero_id: 12
+                    hero_name: Claude
+                    games: 12
+                    win_rate: 75.0
+        '400':
+          description: Validasi parameter player_id gagal (bukan angka positif).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                InvalidInteger:
+                  summary: player_id bukan tipe integer
+                  value:
+                    success: false
+                    message: player_id harus berupa angka.
+                    data: null
+                    error:
+                      code: INVALID_INTEGER
+                InvalidPLAYER_ID:
+                  summary: player_id bernilai 0 atau negatif
+                  value:
+                    success: false
+                    message: player_id harus lebih besar dari 0.
+                    data: null
+                    error:
+                      code: INVALID_PLAYER_ID
         '404':
-          $ref: '#/components/responses/NotFound'
-
+          description: Pemain tidak ditemukan.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Pemain tidak ditemukan.
+                data: null
+                error:
+                  code: PLAYER_NOT_FOUND
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
   /api/players/{player_id}/games:
-    parameters:
-      - $ref: '#/components/parameters/PositiveId'
     get:
-      tags: [Players]
-      summary: Riwayat partisipasi pertandingan/game seorang pemain
+      tags:
+      - Players
+      summary: Riwayat partisipasi game oleh pemain
       operationId: getPlayerGames
+      parameters:
+      - $ref: '#/components/parameters/PlayerId'
       responses:
         '200':
-          description: Riwayat game pemain berhasil diambil
+          description: Riwayat game pemain berhasil diambil.
           content:
             application/json:
               schema:
@@ -590,24 +1216,69 @@ paths:
                 success: true
                 message: Riwayat game pemain berhasil diambil.
                 data:
-                  - game_id: s17_w01_m01_g01
-                    hero_id: 12
-                    hero_name: Claude
-                    kills: 6
-                    deaths: 1
-                    assists: 8
-                    result: WIN
+                - game_id: s17_w01_m01_g01
+                  hero_id: 12
+                  hero_name: Claude
+                  kills: 6
+                  deaths: 1
+                  assists: 8
+                  result: WIN
+        '400':
+          description: Validasi parameter player_id gagal (bukan angka positif).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                InvalidInteger:
+                  summary: player_id bukan tipe integer
+                  value:
+                    success: false
+                    message: player_id harus berupa angka.
+                    data: null
+                    error:
+                      code: INVALID_INTEGER
+                InvalidPLAYER_ID:
+                  summary: player_id bernilai 0 atau negatif
+                  value:
+                    success: false
+                    message: player_id harus lebih besar dari 0.
+                    data: null
+                    error:
+                      code: INVALID_PLAYER_ID
         '404':
-          $ref: '#/components/responses/NotFound'
-
+          description: Pemain tidak ditemukan.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Pemain tidak ditemukan.
+                data: null
+                error:
+                  code: PLAYER_NOT_FOUND
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
   /api/tournaments:
     get:
-      tags: [Tournaments]
-      summary: Daftar turnamen / musim MPL
+      tags:
+      - Tournaments
+      summary: Daftar seluruh musim/turnamen
       operationId: listTournaments
       responses:
         '200':
-          description: Data tournament berhasil diambil
+          description: Data tournament berhasil diambil.
           content:
             application/json:
               schema:
@@ -616,21 +1287,33 @@ paths:
                 success: true
                 message: Data tournament berhasil diambil.
                 data:
-                  - season_id: 1
-                    season_number: 17
-                    league: MPL Indonesia
-                    phase: Regular Season
-
+                - season_id: 1
+                  season_number: 17
+                  league: MPL Indonesia
+                  phase: Regular Season
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
   /api/tournaments/{tournament_id}:
-    parameters:
-      - $ref: '#/components/parameters/PositiveId'
     get:
-      tags: [Tournaments]
-      summary: Detail spesifik turnamen
+      tags:
+      - Tournaments
+      summary: Detail spesifik satu turnamen/musim
       operationId: getTournamentDetail
+      parameters:
+      - $ref: '#/components/parameters/TournamentId'
       responses:
         '200':
-          description: Detail tournament berhasil diambil
+          description: Detail tournament berhasil diambil.
           content:
             application/json:
               schema:
@@ -644,107 +1327,261 @@ paths:
                   league: MPL Indonesia
                   start_date: '2026-03-01'
                   end_date: '2026-05-30'
+        '400':
+          description: Validasi parameter tournament_id gagal (bukan angka positif).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                InvalidInteger:
+                  summary: tournament_id bukan tipe integer
+                  value:
+                    success: false
+                    message: tournament_id harus berupa angka.
+                    data: null
+                    error:
+                      code: INVALID_INTEGER
+                InvalidTOURNAMENT_ID:
+                  summary: tournament_id bernilai 0 atau negatif
+                  value:
+                    success: false
+                    message: tournament_id harus lebih besar dari 0.
+                    data: null
+                    error:
+                      code: INVALID_TOURNAMENT_ID
         '404':
-          $ref: '#/components/responses/NotFound'
-
+          description: Tournament atau sub-endpoint tidak ditemukan.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                TournamentNotFound:
+                  summary: Tournament tidak ditemukan di database
+                  value:
+                    success: false
+                    message: Tournament tidak ditemukan.
+                    data: null
+                    error:
+                      code: TOURNAMENT_NOT_FOUND
+                EndpointNotFound:
+                  summary: Sub-endpoint Tournament tidak terdaftar
+                  value:
+                    success: false
+                    message: Endpoint tournament tidak ditemukan.
+                    data: null
+                    error:
+                      code: ENDPOINT_NOT_FOUND
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
   /api/tournaments/{tournament_id}/standings:
-    parameters:
-      - $ref: '#/components/parameters/PositiveId'
     get:
-      tags: [Tournaments]
-      summary: Klasemen tim pada turnamen
+      tags:
+      - Tournaments
+      summary: Klasemen (standings) tim turnamen
       operationId: getTournamentStandings
+      parameters:
+      - $ref: '#/components/parameters/TournamentId'
       responses:
         '200':
-          description: Standings retrieved
+          description: Klasemen turnamen berhasil dimuat.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuccessResponse'
               example:
                 success: true
-                message: Klasemen tournament berhasil diambil.
+                message: Klasemen turnamen berhasil dimuat.
                 data:
-                  standings:
-                    - rank: 1
-                      team_name: RRQ Hoshi
-                      match_wins: 11
-                      match_losses: 3
-                      game_rate: 73.3
-                      net_points: 15
-                    - rank: 2
-                      team_name: ONIC
-                      match_wins: 10
-                      match_losses: 4
-                      game_rate: 68.0
-                      net_points: 12
-        '404':
-          $ref: '#/components/responses/NotFound'
-
+                - rank: 1
+                  team_id: 1
+                  team_name: RRQ Hoshi
+                  match_won: 12
+                  match_lost: 2
+                  game_won: 25
+                  game_lost: 8
+                  net_score: 17
+                  points: 12
+                - rank: 2
+                  team_id: 2
+                  team_name: ONIC
+                  match_won: 11
+                  match_lost: 3
+                  game_won: 24
+                  game_lost: 10
+                  net_score: 14
+                  points: 11
+        '400':
+          description: Validasi parameter tournament_id gagal (bukan angka positif).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                InvalidInteger:
+                  summary: tournament_id bukan tipe integer
+                  value:
+                    success: false
+                    message: tournament_id harus berupa angka.
+                    data: null
+                    error:
+                      code: INVALID_INTEGER
+                InvalidTOURNAMENT_ID:
+                  summary: tournament_id bernilai 0 atau negatif
+                  value:
+                    success: false
+                    message: tournament_id harus lebih besar dari 0.
+                    data: null
+                    error:
+                      code: INVALID_TOURNAMENT_ID
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
   /api/tournaments/{tournament_id}/schedule:
-    parameters:
-      - $ref: '#/components/parameters/PositiveId'
     get:
-      tags: [Tournaments]
-      summary: Jadwal lengkap turnamen
+      tags:
+      - Tournaments
+      summary: Jadwal pertandingan turnamen
       operationId: getTournamentSchedule
+      parameters:
+      - $ref: '#/components/parameters/TournamentId'
+      - name: limit
+        in: query
+        required: false
+        description: Batas jumlah jadwal pertandingan
+        schema:
+          type: integer
+          example: 5
       responses:
         '200':
-          description: Jadwal turnamen berhasil diambil
+          description: Jadwal pertandingan berhasil dimuat.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuccessResponse'
               example:
                 success: true
-                message: Jadwal tournament berhasil diambil.
+                message: Jadwal pertandingan berhasil dimuat.
                 data:
-                  - match_id: s17_w01_m01
-                    week: 1
-                    date: '2026-03-06'
-                    time: '15:15'
-                    team1: Alter Ego
-                    team2: EVOS
-                    status: completed
-
+                - schedule_id: s17_w08_m01
+                  season_id: 1
+                  week: 8
+                  date: '2026-05-15'
+                  time: '15:00'
+                  team1: RRQ Hoshi
+                  team2: ONIC
+                  status: upcoming
+        '400':
+          description: Validasi parameter tournament_id gagal (bukan angka positif).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                InvalidInteger:
+                  summary: tournament_id bukan tipe integer
+                  value:
+                    success: false
+                    message: tournament_id harus berupa angka.
+                    data: null
+                    error:
+                      code: INVALID_INTEGER
+                InvalidTOURNAMENT_ID:
+                  summary: tournament_id bernilai 0 atau negatif
+                  value:
+                    success: false
+                    message: tournament_id harus lebih besar dari 0.
+                    data: null
+                    error:
+                      code: INVALID_TOURNAMENT_ID
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
   /api/matches:
     get:
-      tags: [Matches]
-      summary: Mendapatkan daftar seluruh pertandingan
+      tags:
+      - Matches
+      summary: Master daftar pertandingan kompetisi
       operationId: listMatches
       responses:
         '200':
-          description: Daftar match berhasil diambil
+          description: Daftar pertandingan berhasil diambil.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuccessResponse'
               example:
                 success: true
-                message: Data match berhasil diambil.
+                message: Daftar pertandingan berhasil diambil.
                 data:
-                  - match_id: s17_w01_m01
-                    season_id: 1
-                    week: 1
-                    team1: Alter Ego
-                    team2: EVOS
-                    score_team1: 2
-                    score_team2: 0
-
+                - match_id: s17_w01_m01
+                  season_id: 1
+                  week: 1
+                  status: completed
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
+        '501':
+          description: Fitur/Endpoint belum diimplementasikan di backend.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Endpoint belum diimplementasikan.
+                data: null
+                error:
+                  code: NOT_IMPLEMENTED
   /api/matches/{match_id}:
-    parameters:
-      - name: match_id
-        in: path
-        required: true
-        description: "ID Unik Match (cth: s17_w01_m01)"
-        schema: { type: string, minLength: 1 }
     get:
-      tags: [Matches]
-      summary: Detail pertandingan beserta list game didalamnya
+      tags:
+      - Matches
+      summary: Detail pertandingan spesifik
       operationId: getMatchDetail
+      parameters:
+      - $ref: '#/components/parameters/MatchId'
       responses:
         '200':
-          description: Detail pertandingan berhasil diambil
+          description: Detail pertandingan berhasil diambil.
           content:
             application/json:
               schema:
@@ -754,76 +1591,152 @@ paths:
                 message: Detail pertandingan berhasil diambil.
                 data:
                   match_id: s17_w01_m01
-                  season: 17
-                  week: 1
-                  team1: Alter Ego
-                  team2: EVOS
-                  score1: 2
-                  score2: 0
-                  winner: Alter Ego
-                  status: completed
-                  games:
-                    - game_id: s17_w01_m01_g01
-                      game_number: 1
-                      duration: '14:25'
-                      winner: Alter Ego
-                    - game_id: s17_w01_m01_g02
-                      game_number: 2
-                      duration: '18:10'
-                      winner: Alter Ego
+                  team1:
+                    team_id: 1
+                    team_name: RRQ Hoshi
+                    score: 2
+                  team2:
+                    team_id: 2
+                    team_name: ONIC
+                    score: 1
+                  winner: RRQ Hoshi
+                  date: '2026-03-05'
         '400':
-          $ref: '#/components/responses/BadRequest'
+          description: ID pertandingan tidak valid / kosong.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: match_id wajib diisi.
+                data: null
+                error:
+                  code: INVALID_MATCH_ID
         '404':
-          $ref: '#/components/responses/NotFound'
-
+          description: Match atau sub-endpoint tidak ditemukan.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                MatchNotFound:
+                  summary: Match tidak ditemukan di database
+                  value:
+                    success: false
+                    message: Match tidak ditemukan.
+                    data: null
+                    error:
+                      code: MATCH_NOT_FOUND
+                EndpointNotFound:
+                  summary: Sub-endpoint Match tidak terdaftar
+                  value:
+                    success: false
+                    message: Endpoint match tidak ditemukan.
+                    data: null
+                    error:
+                      code: ENDPOINT_NOT_FOUND
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
+        '500':
+          description: Terjadi kesalahan pada server saat memproses detail match.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Terjadi kesalahan pada server.
+                data: null
+                error:
+                  code: INTERNAL_SERVER_ERROR
   /api/matches/{match_id}/drafts:
-    parameters:
-      - name: match_id
-        in: path
-        required: true
-        schema: { type: string, minLength: 1 }
     get:
-      tags: [Matches]
-      summary: Ringkasan draft hero (pick dan ban) di seluruh game pada match tersebut
+      tags:
+      - Matches
+      summary: Riwayat draft pick dan ban pada pertandingan
       operationId: getMatchDrafts
+      parameters:
+      - $ref: '#/components/parameters/MatchId'
       responses:
         '200':
-          description: Draft pertandingan berhasil diambil
+          description: Riwayat draft pertandingan berhasil diambil.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuccessResponse'
               example:
                 success: true
-                message: Draft pertandingan berhasil diambil.
+                message: Riwayat draft pertandingan berhasil diambil.
                 data:
-                  match_id: s17_w01_m01
-                  games_draft:
-                    - game_number: 1
-                      bans:
-                        team1: [Fanny, Joy, Mathilda]
-                        team2: [Nolan, Harith, Tigreal]
-                      picks:
-                        team1: [Claude, Grock, Valentina, Fredrinn, Arlott]
-                        team2: [Karrie, Khufra, Novaria, Baxia, Terizla]
-
+                - game_number: 1
+                  draft_type: BAN
+                  hero_id: 88
+                  hero_name: Joy
+                  team: RRQ Hoshi
+                - game_number: 1
+                  draft_type: PICK
+                  hero_id: 12
+                  hero_name: Claude
+                  team: RRQ Hoshi
+        '404':
+          description: Riwayat draft pertandingan tidak ditemukan.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Riwayat draft pertandingan tidak ditemukan.
+                data: null
+                error:
+                  code: MATCH_NOT_FOUND
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
   /api/games:
     get:
-      tags: [Games]
-      summary: Mendapatkan daftar game individual
+      tags:
+      - Games
+      summary: Daftar game kompetisi
       operationId: listGames
       parameters:
-        - name: page
-          in: query
-          required: false
-          schema: { type: integer, default: 1 }
-        - name: limit
-          in: query
-          required: false
-          schema: { type: integer, default: 20 }
+      - name: page
+        in: query
+        required: false
+        description: Nomor halaman
+        schema:
+          type: integer
+          default: 1
+      - name: limit
+        in: query
+        required: false
+        description: Batas data
+        schema:
+          type: integer
+          default: 20
       responses:
         '200':
-          description: Daftar game berhasil diambil
+          description: Daftar game berhasil diambil.
           content:
             application/json:
               schema:
@@ -832,179 +1745,352 @@ paths:
                 success: true
                 message: Daftar game.
                 data:
-                  - game_id: s17_w01_m01_g01
-                    match_id: s17_w01_m01
-                    game_number: 1
-                    winner_team_id: 1
-                    duration_seconds: 865
-
+                - game_id: s17_w01_m01_g01
+                  match_id: s17_w01_m01
+                  game_number: 1
+                  duration: 980
+                  winner_team_id: 1
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
   /api/games/{game_id}:
-    parameters:
-      - $ref: '#/components/parameters/GameId'
     get:
-      tags: [Games]
-      summary: Detail spesifik 1 game
+      tags:
+      - Games
+      summary: Detail komprehensif satu game
       operationId: getGameDetail
+      parameters:
+      - $ref: '#/components/parameters/GameId'
       responses:
         '200':
-          description: Detail game berhasil diambil
+          description: Detail game berhasil diambil.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuccessResponse'
               example:
                 success: true
-                message: Detail game.
+                message: Detail game berhasil diambil.
                 data:
                   game_id: s17_w01_m01_g01
                   match_id: s17_w01_m01
                   game_number: 1
-                  duration: '14:25'
-                  total_kills_blue: 16
-                  total_kills_red: 9
-                  lord_kills_blue: 2
-                  lord_kills_red: 0
+                  duration_seconds: 980
+                  winner_team_id: 1
+                  first_blood_team_id: 1
+                  first_turtle_team_id: 2
+                  first_lord_team_id: 1
+        '400':
+          description: ID game wajib diisi / kosong.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: game_id wajib diisi.
+                data: null
+                error:
+                  code: INVALID_GAME_ID
         '404':
-          $ref: '#/components/responses/NotFound'
-
+          description: Game atau sub-endpoint tidak ditemukan.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                GameNotFound:
+                  summary: Game tidak ditemukan di database
+                  value:
+                    success: false
+                    message: Game tidak ditemukan.
+                    data: null
+                    error:
+                      code: GAME_NOT_FOUND
+                EndpointNotFound:
+                  summary: Sub-endpoint Game tidak terdaftar
+                  value:
+                    success: false
+                    message: Endpoint game tidak ditemukan.
+                    data: null
+                    error:
+                      code: ENDPOINT_NOT_FOUND
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
   /api/games/{game_id}/players:
-    parameters:
-      - $ref: '#/components/parameters/GameId'
     get:
-      tags: [Games]
-      summary: Data statistik performa individual 10 pemain di dalam game
-      operationId: listGamePlayers
+      tags:
+      - Games
+      summary: Daftar pemain dan statistik individual dalam game
+      operationId: getGamePlayers
+      parameters:
+      - $ref: '#/components/parameters/GameId'
       responses:
         '200':
-          description: Statistik pemain dalam game berhasil diambil
+          description: Data player game berhasil diambil.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuccessResponse'
               example:
                 success: true
-                message: Pemain dalam game.
+                message: Data player game berhasil diambil.
                 data:
-                  - player_id: 2
-                    player_name: Skylar
-                    hero_id: 12
-                    hero_name: Claude
-                    team_side: blue
-                    kills: 7
-                    deaths: 1
-                    assists: 5
-                    gold: 12450
-                    damage_dealt: 78500
-
+                - player_id: 2
+                  player_name: Skylar
+                  hero_id: 12
+                  hero_name: Claude
+                  kills: 8
+                  deaths: 1
+                  assists: 6
+                  gold: 12500
+                  mvp: true
+        '404':
+          description: Game tidak ditemukan.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Game tidak ditemukan.
+                data: null
+                error:
+                  code: GAME_NOT_FOUND
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
   /api/games/{game_id}/picks:
-    parameters:
-      - $ref: '#/components/parameters/GameId'
     get:
-      tags: [Games]
-      summary: Urutan draft pick dan ban hero dalam 1 game
+      tags:
+      - Games
+      summary: Data pemilihan (picks) hero pada game
       operationId: getGamePicks
+      parameters:
+      - $ref: '#/components/parameters/GameId'
       responses:
         '200':
-          description: Pick and ban game berhasil diambil
+          description: Data pick game berhasil diambil.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuccessResponse'
               example:
                 success: true
-                message: Pick hero game.
+                message: Data pick game berhasil diambil.
                 data:
-                  - pick_id: 1
-                    hero_id: 12
-                    hero_name: Claude
-                    pick_order: 1
-                    team_side: blue
-                    is_ban: false
-
+                - pick_order: 1
+                  team_id: 1
+                  hero_id: 12
+                  hero_name: Claude
+                  role: Marksman
+        '404':
+          description: Game tidak ditemukan.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Game tidak ditemukan.
+                data: null
+                error:
+                  code: GAME_NOT_FOUND
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
   /api/games/{game_id}/emblems:
-    parameters:
-      - $ref: '#/components/parameters/GameId'
     get:
-      tags: [Games]
-      summary: Set emblem dan talent yang digunakan pemain pada game tersebut
+      tags:
+      - Games
+      summary: Data emblem dan talent yang digunakan pemain pada game
       operationId: getGameEmblems
-      responses:
-        '200':
-          description: Emblem game berhasil diambil
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SuccessResponse'
-              example:
-                success: true
-                message: Emblem dalam game.
-                data:
-                  - player_id: 2
-                    emblem_name: Marksman
-                    tier1_talent: Swift
-                    tier2_talent: Weapons Master
-                    tier3_talent: Quantum Charge
-
-  /api/games/{game_id}/items:
-    parameters:
+      parameters:
       - $ref: '#/components/parameters/GameId'
-    get:
-      tags: [Games]
-      summary: Rincian item build yang dibeli seluruh pemain pada akhir game
-      operationId: getGameItems
       responses:
         '200':
-          description: Item game berhasil diambil
+          description: Data emblem game berhasil diambil.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuccessResponse'
               example:
                 success: true
-                message: Item dalam game.
+                message: Data emblem game berhasil diambil.
                 data:
-                  - player_id: 2
-                    items:
-                      - Swift Boots
-                      - Demon Hunter Sword
-                      - Golden Staff
-                      - Corrosion Scythe
-                      - Wind of Nature
-                      - Immortality
-
+                - player_id: 2
+                  player_name: Skylar
+                  emblem_name: Custom Marksman Emblem
+                  talents:
+                  - Fatal
+                  - Weapon Master
+                  - Quantum Charge
+        '404':
+          description: Game tidak ditemukan.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Game tidak ditemukan.
+                data: null
+                error:
+                  code: GAME_NOT_FOUND
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
+  /api/games/{game_id}/items:
+    get:
+      tags:
+      - Games
+      summary: Data perlengkapan/item build pemain dalam game
+      operationId: getGameItems
+      parameters:
+      - $ref: '#/components/parameters/GameId'
+      responses:
+        '200':
+          description: Data item game berhasil diambil.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                message: Data item game berhasil diambil.
+                data:
+                - player_id: 2
+                  items:
+                  - slot: 1
+                    item_name: Swift Boots
+                  - slot: 2
+                    item_name: Demon Hunter Sword
+        '404':
+          description: Game tidak ditemukan.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Game tidak ditemukan.
+                data: null
+                error:
+                  code: GAME_NOT_FOUND
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
   /api/items:
     get:
-      tags: [Items]
-      summary: List seluruh master item game
+      tags:
+      - Items
+      summary: Master data seluruh item perlengkapan game
       operationId: listItems
       responses:
         '200':
-          description: Daftar item berhasil diambil
+          description: Master data item berhasil diambil.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuccessResponse'
               example:
                 success: true
-                message: Daftar item berhasil diambil.
+                message: Master data item berhasil diambil.
                 data:
-                  - item_id: 1
-                    item_name: Blade of Despair
-                    category: Attack
-                    tier: 3
+                - item_id: 1
+                  item_name: Blade of Despair
+                  category: Attack
+                  cost: 3010
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
         '501':
-          $ref: '#/components/responses/NotImplemented'
-
+          description: Fitur/Endpoint belum diimplementasikan di backend.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Endpoint belum diimplementasikan.
+                data: null
+                error:
+                  code: NOT_IMPLEMENTED
   /api/items/{item_id}:
-    parameters:
-      - $ref: '#/components/parameters/PositiveId'
     get:
-      tags: [Items]
-      summary: Detail spesifik 1 item perlengkapan
+      tags:
+      - Items
+      summary: Detail spesifik satu item perlengkapan
       operationId: getItemDetail
+      parameters:
+      - $ref: '#/components/parameters/ItemId'
       responses:
         '200':
-          description: Detail item berhasil diambil
+          description: Detail item berhasil diambil.
           content:
             application/json:
               schema:
@@ -1019,161 +2105,269 @@ paths:
                   cost: 3010
                   attributes:
                     physical_attack: 160
-                    movement_spd: '5%'
+                    movement_spd: 5%
+        '400':
+          description: Validasi parameter item_id gagal (bukan angka positif).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                InvalidInteger:
+                  summary: item_id bukan tipe integer
+                  value:
+                    success: false
+                    message: item_id harus berupa angka.
+                    data: null
+                    error:
+                      code: INVALID_INTEGER
+                InvalidITEM_ID:
+                  summary: item_id bernilai 0 atau negatif
+                  value:
+                    success: false
+                    message: item_id harus lebih besar dari 0.
+                    data: null
+                    error:
+                      code: INVALID_ITEM_ID
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
         '501':
-          $ref: '#/components/responses/NotImplemented'
-
+          description: Fitur/Endpoint belum diimplementasikan di backend.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Endpoint belum diimplementasikan.
+                data: null
+                error:
+                  code: NOT_IMPLEMENTED
 components:
   parameters:
     HeroId:
       name: hero_id
       in: path
       required: true
-      description: ID hero (integer positif)
-      schema: { type: integer, minimum: 1, example: 1 }
-    PositiveId:
-      name: id
+      description: ID unik hero (integer positif)
+      schema:
+        type: integer
+        minimum: 1
+        example: 1
+    PlayerId:
+      name: player_id
       in: path
       required: true
-      description: ID numerik entitas
-      schema: { type: integer, minimum: 1, example: 2 }
+      description: ID unik pemain (integer positif)
+      schema:
+        type: integer
+        minimum: 1
+        example: 2
+    TournamentId:
+      name: tournament_id
+      in: path
+      required: true
+      description: ID unik turnamen / season (integer positif)
+      schema:
+        type: integer
+        minimum: 1
+        example: 1
+    MatchId:
+      name: match_id
+      in: path
+      required: true
+      description: ID unik match pertandingan (string)
+      schema:
+        type: string
+        example: s17_w01_m01
     GameId:
       name: game_id
       in: path
       required: true
-      description: ID string unik game (cth s17_w01_m01_g01)
-      schema: { type: string, minLength: 1, example: s17_w01_m01_g01 }
-
-  responses:
-    MethodNotAllowed:
-      description: HTTP method tidak diizinkan (Hanya GET didukung).
-      content:
-        application/json:
-          schema: { $ref: '#/components/schemas/ErrorResponse' }
-          example:
-            success: false
-            message: Method tidak diizinkan.
-            data: null
-            error:
-              code: METHOD_NOT_ALLOWED
-
-    NotImplemented:
-      description: Endpoint belum diimplementasikan.
-      content:
-        application/json:
-          schema: { $ref: '#/components/schemas/ErrorResponse' }
-          example:
-            success: false
-            message: Endpoint belum diimplementasikan.
-            data: null
-            error:
-              code: NOT_IMPLEMENTED
-
-    InvalidId:
-      description: Identifier tidak valid atau bukan integer positif.
-      content:
-        application/json:
-          schema: { $ref: '#/components/schemas/ErrorResponse' }
-          example:
-            success: false
-            message: ID tidak valid.
-            data: null
-            error:
-              code: INVALID_ID
-
-    HeroNotFound:
-      description: Hero tidak ditemukan.
-      content:
-        application/json:
-          schema: { $ref: '#/components/schemas/ErrorResponse' }
-          example:
-            success: false
-            message: Hero tidak ditemukan.
-            data: null
-            error:
-              code: HERO_NOT_FOUND
-
-    NotFound:
-      description: Data tidak ditemukan.
-      content:
-        application/json:
-          schema: { $ref: '#/components/schemas/ErrorResponse' }
-          example:
-            success: false
-            message: Data tidak ditemukan.
-            data: null
-            error:
-              code: NOT_FOUND
-
-    BadRequest:
-      description: Permintaan tidak valid atau parameter kurang.
-      content:
-        application/json:
-          schema: { $ref: '#/components/schemas/ErrorResponse' }
-          example:
-            success: false
-            message: Parameter wajib diisi.
-            data: null
-            error:
-              code: BAD_REQUEST
-
+      description: ID unik game pertandingan (string)
+      schema:
+        type: string
+        example: s17_w01_m01_g01
+    ItemId:
+      name: item_id
+      in: path
+      required: true
+      description: ID unik item perlengkapan (integer positif)
+      schema:
+        type: integer
+        minimum: 1
+        example: 1
   schemas:
     SuccessResponse:
       type: object
-      required: [success, message, data]
+      required:
+      - success
+      - message
+      - data
       properties:
-        success: { type: boolean, example: true }
-        message: { type: string, example: Data berhasil diambil. }
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Data berhasil diambil.
         data:
           nullable: true
-          description: Payload data hasil respon
-
+          description: Payload respon
     ErrorResponse:
       type: object
-      required: [success, message, data]
+      required:
+      - success
+      - message
+      - data
       properties:
-        success: { type: boolean, example: false }
-        message: { type: string, example: Terjadi kesalahan. }
-        data: { nullable: true, example: null }
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: Terjadi kesalahan.
+        data:
+          nullable: true
+          example: null
         error:
           type: object
           properties:
-            code: { type: string, example: ERROR_CODE }
-            detail: { type: string }
-
+            code:
+              type: string
+              example: ERROR_CODE
+            detail:
+              type: string
     DashboardData:
       type: object
       properties:
-        season: { $ref: '#/components/schemas/Season' }
-        last_week: { type: integer, example: 8 }
-        top_pick_rate: { type: array, items: { type: object } }
-        top_win_rate: { type: array, items: { type: object } }
-        top_ban_rate: { type: array, items: { type: object } }
-        schedule: { type: array, items: { type: object } }
-
+        season:
+          $ref: '#/components/schemas/Season'
+        last_week:
+          type: integer
+          example: 8
+        top_pick_rate:
+          type: array
+          items:
+            type: object
+        top_win_rate:
+          type: array
+          items:
+            type: object
+        top_ban_rate:
+          type: array
+          items:
+            type: object
+        schedule:
+          type: array
+          items:
+            type: object
     Season:
       type: object
       properties:
-        season_id: { type: integer, example: 1 }
-        league: { type: string, example: MPL Indonesia }
-        season_number: { type: integer, example: 17 }
-        phase: { type: string, example: Regular Season }
-        start_date: { type: string, format: date, example: '2026-03-01' }
-        end_date: { type: string, format: date, example: '2026-05-30' }
-        format: { type: string, example: Double Round Robin, Bo3 }
-
+        season_id:
+          type: integer
+          example: 1
+        league:
+          type: string
+          example: MPL Indonesia
+        season_number:
+          type: integer
+          example: 17
+        phase:
+          type: string
+          example: Regular Season
+        start_date:
+          type: string
+          format: date
+          example: '2026-03-01'
+        end_date:
+          type: string
+          format: date
+          example: '2026-05-30'
+        format:
+          type: string
+          example: Double Round Robin, Bo3
     Team:
       type: object
       properties:
-        team_id: { type: integer, example: 1 }
-        team_name: { type: string, example: RRQ Hoshi }
-        team_code: { type: string, example: RRQ }
-        logo_url: { type: string, nullable: true }
-
+        team_id:
+          type: integer
+          example: 1
+        team_name:
+          type: string
+          example: RRQ Hoshi
+        team_code:
+          type: string
+          example: RRQ
+        logo_url:
+          type: string
+          nullable: true
+          example: https://id-mpl.com/assets/teams/rrq.png
     Hero:
       type: object
       properties:
-        hero_id: { type: integer, example: 1 }
-        hero_name: { type: string, example: Miya }
-        role: { type: string, example: Marksman }
-        hero_slug: { type: string, example: miya }
+        hero_id:
+          type: integer
+          example: 1
+        hero_name:
+          type: string
+          example: Miya
+        role:
+          type: string
+          example: Marksman
+        hero_slug:
+          type: string
+          example: miya
+    Player:
+      type: object
+      properties:
+        player_id:
+          type: integer
+          example: 2
+        player_name:
+          type: string
+          example: Skylar
+        team_id:
+          type: integer
+          example: 1
+        team_name:
+          type: string
+          example: RRQ Hoshi
+        role:
+          type: string
+          example: Goldlaner
+        photo_url:
+          type: string
+          nullable: true
+          example: https://id-mpl.com/assets/players/skylar.png
+    Item:
+      type: object
+      properties:
+        item_id:
+          type: integer
+          example: 1
+        item_name:
+          type: string
+          example: Blade of Despair
+        category:
+          type: string
+          example: Attack
+        cost:
+          type: integer
+          example: 3010
+        attributes:
+          type: object
+          example:
+            physical_attack: 160
+            movement_spd: 5%
