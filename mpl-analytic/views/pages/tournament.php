@@ -263,7 +263,6 @@ $activeTab = 'hasil';
 </div>
 
 <script src="<?= $assetBase ?>/js/api-client.js"></script>
-<script src="<?= $assetBase ?>/js/match-results.js"></script>
-<script src="<?= $assetBase ?>/js/tournament.js"></script>
+<script src="<?= $assetBase ?>/js/pages/match-results.js"></script>
 
 <?php require BASE_PATH . '/views/layouts/footer.php'; ?>

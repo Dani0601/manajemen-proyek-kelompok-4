@@ -215,38 +215,23 @@
       return;
     }
 
-    // Hanya tampilkan pertandingan yang memiliki kedua skor.
-    // Skor 0 tetap dianggap valid.
-    const completedMatches = matches.filter((match) => {
-      const scoreA = match.teamA?.score;
-      const scoreB = match.teamB?.score;
+    // Hanya tampilkan pertandingan yang sudah selesai (punya pemenang).
+    // Skor tidak dipakai sebagai penanda, karena backend mengubah skor
+    // pertandingan yang belum dimainkan menjadi 0.
+    // Urutan: pertandingan terbaru di atas.
+    const completedMatches = matches
+      .filter((match) => match.winnerTeamId != null)
+      .sort((a, b) => {
+        const timeA = new Date(a.matchDate).getTime() || 0;
+        const timeB = new Date(b.matchDate).getTime() || 0;
 
-      return (
-        scoreA !== null &&
-        scoreA !== undefined &&
-        scoreB !== null &&
-        scoreB !== undefined &&
-        scoreA !== '' &&
-        scoreB !== '' &&
-        Number.isFinite(Number(scoreA)) &&
-        Number.isFinite(Number(scoreB))
-      );
-    });
-
-    console.log(
-      '[Tournament] Jumlah data pertandingan:',
-      matches.length
-    );
-
-    console.log(
-      '[Tournament] Jumlah pertandingan dengan skor:',
-      completedMatches.length
-    );
+        return timeB - timeA;
+      });
 
     if (completedMatches.length === 0) {
       showResultsMessage(
-        'Belum ada hasil pertandingan',
-        'Hasil pertandingan yang memiliki skor belum tersedia.'
+        'Data belum tersedia',
+        'Hasil pertandingan belum tersedia saat ini.'
       );
       return;
     }
@@ -255,7 +240,6 @@
       .map(renderMatch)
       .join('');
 
-    console.log('[Tournament] Hasil pertandingan berhasil ditampilkan.');
   }
 
   // =========================================================
