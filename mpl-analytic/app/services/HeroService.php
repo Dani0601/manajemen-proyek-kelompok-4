@@ -51,14 +51,14 @@ class HeroService
             unset($detail['base_stats_json']);
         }
 
-        return [
+        return array_merge($hero, [
             'hero' => $hero,
             'detail' => $detail,
             'recommendations' => [
                 'items' => $this->hero->getSituationalRecommendations($heroId),
                 'emblems' => $this->hero->getEmblemRecommendations($heroId),
             ],
-        ];
+        ]);
     }
 
     public function getHeroStats(int $heroId): ?array
