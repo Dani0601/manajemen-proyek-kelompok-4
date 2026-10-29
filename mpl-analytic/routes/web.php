@@ -34,7 +34,8 @@ $routes = [
     '/' => BASE_PATH . '/views/pages/home.php',
     '/dashboard' => BASE_PATH . '/views/pages/dashboard.php',
     '/meta' => BASE_PATH . '/views/pages/meta.php',
-    '/hero' => BASE_PATH . '/views/pages/hero-detail.php',
+    '/hero' => BASE_PATH . '/views/pages/hero.php',
+    '/hero-detail' => BASE_PATH . '/views/pages/hero-detail.php',
     '/tournament' => BASE_PATH . '/views/pages/tournament.php',
     '/player-comparison' =>
         BASE_PATH . '/views/pages/player-comparison.php',

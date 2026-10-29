@@ -1,12 +1,26 @@
 /**
  * Halaman Perbandingan Pemain.
  *
- * Alur: getPlayerOptions() -> isi dropdown -> getPlayerComparison(idA, idB)
- *       -> render kartu pemain, radar, statistik, dan win rate.
+ * Alur: getPlayerOptions() -> isi dropdown tim + pemain -> getPlayerComparison(idA, idB)
+ *       -> render foto pemain, radar, statistik, dan win rate.
  *
  * Hanya DUA fungsi di bagian "SUMBER DATA" yang perlu diganti FE2 saat API
- * siap. Semua fungsi render di bawahnya hanya membaca bentuk data yang sama
- * dan tidak mengetahui dari mana data berasal.
+ * siap. Semua kode di bawahnya hanya membaca bentuk data yang sama dan tidak
+ * mengetahui dari mana data berasal.
+ *
+ * State yang ditangani halaman ini:
+ *   loading     skeleton (pemilih awal, kartu kosong, radar, tabel) + "Memuat perbandingan"
+ *   kosong      per section: Statistik Liga / Statistik Detail (league / detail bernilai null)
+ *               seluruh halaman: getPlayerComparison menolak dengan error.kind = 'empty'
+ *   galat       getPlayerComparison / getPlayerOptions menolak (error lain) + tombol "Coba Lagi"
+ *   validasi    pemain yang sama dipilih di A dan B -> pesan merah, hasil terakhir dipertahankan
+ *
+ * Pratinjau state untuk QA desain (tanpa mengubah data), hapus bila tidak diperlukan:
+ *   /player-comparison?state=loading      loading tanpa akhir
+ *   /player-comparison?state=empty        Statistik Liga kosong
+ *   /player-comparison?state=nodata       seluruh perbandingan kosong
+ *   /player-comparison?state=error        galat memuat + Coba Lagi
+ *   /player-comparison?state=validation   pemain sama di A dan B
  */
 (function () {
     'use strict';
@@ -18,8 +32,21 @@
     }
 
     var ASSET_BASE = root.getAttribute('data-asset-base') || '';
-    var COLOR_A = '#3478F6';
-    var COLOR_B = '#F28C28';
+
+    // Warna diambil dari token CSS (.pc di comparison.css) agar satu sumber.
+    var rootStyles = window.getComputedStyle(root);
+
+    function token(name, fallback) {
+        var value = rootStyles.getPropertyValue(name).trim();
+
+        return value || fallback;
+    }
+
+    var COLOR_A = token('--pc-blue', '#2F6FED');
+    var COLOR_B = token('--pc-orange', '#F28C28');
+    // Huruf oranye memakai varian lebih gelap agar kontrasnya >= 4.5:1.
+    var TEXT_A = token('--pc-blue-text', COLOR_A);
+    var TEXT_B = token('--pc-orange-text', '#B85C00');
 
     // Urutan sumbu mengikuti Figma (searah jarum jam dari kiri atas).
     var AXES = [
@@ -37,69 +64,130 @@
     var formatPercentInt = function (value) { return Math.round(value) + ' %'; };
     var formatPercentDecimal = function (value) { return Number(value).toFixed(1) + ' %'; };
 
-    var LEAGUE_ROWS = [
-        { label: 'Match dimainkan', get: function (p) { return p.league.matches; }, format: formatInt },
-        { label: 'KDA rata-rata', get: function (p) { return p.league.kdaAverage; }, format: formatDecimal },
-        { label: 'Kill Participation', get: function (p) { return p.league.killParticipation; }, format: formatPercentInt }
-    ];
+    // Tabel perbandingan. Bila p[key] kosong (null/undefined) pada salah satu
+    // pemain, section tampil sebagai "Data belum tersedia".
+    var LEAGUE_TABLE = {
+        key: 'league',
+        emptyText: 'Statistik liga belum tersedia untuk pilihan pemain ini',
+        rows: [
+            { label: 'Match dimainkan', get: function (p) { return p.league.matches; }, format: formatInt },
+            { label: 'KDA rata-rata', get: function (p) { return p.league.kdaAverage; }, format: formatDecimal },
+            { label: 'Kill Participation', get: function (p) { return p.league.killParticipation; }, format: formatPercentInt }
+        ]
+    };
 
-    var DETAIL_ROWS = [
-        { label: 'Gold per menit', get: function (p) { return p.detail.goldPerMinute; }, format: formatInt },
-        { label: 'Damage per menit', get: function (p) { return p.detail.damagePerMinute; }, format: formatThousands },
-        { label: 'Objective dikuasai', get: function (p) { return p.detail.objectiveControl; }, format: formatInt }
-    ];
+    var DETAIL_TABLE = {
+        key: 'detail',
+        emptyText: 'Statistik detail belum tersedia untuk pilihan pemain ini',
+        rows: [
+            { label: 'Gold per menit', get: function (p) { return p.detail.goldPerMinute; }, format: formatInt },
+            { label: 'Damage per menit', get: function (p) { return p.detail.damagePerMinute; }, format: formatThousands },
+            { label: 'Objective dikuasai', get: function (p) { return p.detail.objectiveControl; }, format: formatInt }
+        ]
+    };
 
     /* ==================================================================
      * SUMBER DATA (DUMMY)
      * Data contoh untuk pratinjau UI, BUKAN statistik MPL resmi.
-     * Nilai radar adalah angka contoh. Ganti dua fungsi di bawah dengan
-     * fetch ke API (FE2); jangan ubah fungsi render.
+     * Ganti dua fungsi di bawah dengan fetch ke API (FE2); jangan ubah kode
+     * di luar blok ini. Set USING_DUMMY = false agar catatan "data contoh"
+     * di halaman ikut hilang.
      *
-     * Bentuk data pemain:
-     * { id, name, team, teamLogo, role, hero, image,
-     *   radar:  { killPower, farmRate, objective, survival, teamfight, versatility },
-     *   league: { matches, kdaAverage, killParticipation },
-     *   detail: { goldPerMinute, damagePerMinute, objectiveControl },
-     *   winRate }
+     * getPlayerOptions()  -> Promise<Array<Opsi>>   semua pemain + tim-nya
+     *   Opsi = { id, name, teamId, team, teamLogo, role }
+     *   teamId/team dipakai untuk dropdown tim. Bila tidak ada pemain yang
+     *   punya teamId, dropdown tim disembunyikan dan dropdown pemain memuat
+     *   semua pemain.
+     *
+     * getPlayerComparison(idA, idB) -> Promise<{ a: Pemain, b: Pemain }>
+     *   Pemain = { id, name, team, teamLogo, role, photo,
+     *     radar:  { killPower, farmRate, objective, survival, teamfight, versatility },  // 0-100
+     *     league: { matches, kdaAverage, killParticipation } | null,
+     *     detail: { goldPerMinute, damagePerMinute, objectiveControl } | null,
+     *     winRate }                                                                        // 0-100
+     *   teamLogo / photo: nama file (images/teams/, images/players/) ATAU URL penuh.
+     *   Kosong -> kartu menampilkan inisial + nama.
+     *
+     * Penolakan promise:
+     *   Error dengan  error.kind = 'empty'  -> "Data belum tersedia" satu halaman
+     *                                          (mis. respons 404 data pemain)
+     *   Error lain                          -> "Data gagal dimuat" + Coba Lagi
      * ================================================================== */
+    var USING_DUMMY = true;
+    var DUMMY_DELAY_MS = 700;
+
     var DUMMY_PLAYERS = [
         {
-            id: 101, name: 'Kairi', team: 'ONIC Esports', teamLogo: 'onic.png',
-            role: 'Jungler', hero: 'Lancelot', image: 'kairi.png',
+            id: 101, name: 'Kairi', teamId: 4, team: 'ONIC Esports', teamLogo: 'onic.png',
+            role: 'Jungler', photo: 'kairi.png',
             radar: { killPower: 84.2, farmRate: 62.7, objective: 55.0, survival: 58.5, teamfight: 82.0, versatility: 71.3 },
             league: { matches: 48, kdaAverage: 5.2, killParticipation: 74 },
             detail: { goldPerMinute: 812, damagePerMinute: 1240, objectiveControl: 31 },
             winRate: 68.7
         },
         {
-            id: 102, name: 'Albertt', team: 'ONIC Esports', teamLogo: 'onic.png',
-            role: 'Jungler', hero: 'Ling', image: 'albertt.png',
+            id: 102, name: 'Albertt', teamId: 2, team: 'Evos Glory', teamLogo: 'evos.png',
+            role: 'Jungler', photo: 'albertt.png',
             radar: { killPower: 66.4, farmRate: 51.9, objective: 49.5, survival: 63.8, teamfight: 74.6, versatility: 58.2 },
             league: { matches: 45, kdaAverage: 4.8, killParticipation: 71 },
             detail: { goldPerMinute: 790, damagePerMinute: 1130, objectiveControl: 34 },
             winRate: 64.2
         },
         {
-            id: 103, name: 'Pemain C', team: 'Tim Contoh', teamLogo: 'contoh.png',
-            role: 'Gold Laner', hero: 'Beatrix', image: 'pemain-c.png',
+            id: 103, name: 'Lutfi', teamId: 2, team: 'Evos Glory', teamLogo: 'evos.png',
+            role: 'Gold Laner', photo: '',
             radar: { killPower: 72.0, farmRate: 80.4, objective: 40.2, survival: 55.1, teamfight: 61.7, versatility: 66.0 },
             league: { matches: 40, kdaAverage: 4.1, killParticipation: 66 },
             detail: { goldPerMinute: 905, damagePerMinute: 1310, objectiveControl: 18 },
             winRate: 58.3
         },
         {
-            id: 104, name: 'Pemain D', team: 'Tim Contoh', teamLogo: 'contoh.png',
-            role: 'EXP Laner', hero: 'Fanny', image: 'pemain-d.png',
+            id: 104, name: 'Sanz', teamId: 4, team: 'ONIC Esports', teamLogo: 'onic.png',
+            role: 'EXP Laner', photo: '',
             radar: { killPower: 77.5, farmRate: 59.0, objective: 61.4, survival: 48.9, teamfight: 69.2, versatility: 52.8 },
             league: { matches: 36, kdaAverage: 3.9, killParticipation: 69 },
             detail: { goldPerMinute: 760, damagePerMinute: 1180, objectiveControl: 26 },
             winRate: 55.0
+        },
+        {
+            id: 105, name: 'Kiboy', teamId: 4, team: 'ONIC Esports', teamLogo: 'onic.png',
+            role: 'Roamer', photo: '',
+            radar: { killPower: 48.3, farmRate: 40.1, objective: 70.2, survival: 72.5, teamfight: 78.9, versatility: 64.4 },
+            league: { matches: 44, kdaAverage: 3.6, killParticipation: 78 },
+            detail: { goldPerMinute: 610, damagePerMinute: 820, objectiveControl: 29 },
+            winRate: 61.4
+        },
+        {
+            id: 106, name: 'Pemain C', teamId: 1, team: 'RRQ Hoshi', teamLogo: 'rrq.png',
+            role: 'Mid Laner', photo: '',
+            radar: { killPower: 69.8, farmRate: 70.2, objective: 52.6, survival: 60.3, teamfight: 66.4, versatility: 74.1 },
+            league: { matches: 38, kdaAverage: 4.4, killParticipation: 68 },
+            detail: { goldPerMinute: 842, damagePerMinute: 1275, objectiveControl: 22 },
+            winRate: 57.9
+        },
+        {
+            // Contoh pemain tanpa statistik liga/detail, untuk melihat state "Data belum tersedia".
+            id: 107, name: 'Pemain D', teamId: 3, team: 'Aura Fire', teamLogo: 'aura-fire.png',
+            role: 'Gold Laner', photo: '',
+            radar: { killPower: 58.0, farmRate: 66.5, objective: 45.9, survival: 52.2, teamfight: 63.0, versatility: 49.7 },
+            league: null,
+            detail: null,
+            winRate: 51.2
         }
     ];
 
+    function delay(value) {
+        return new Promise(function (resolve) {
+            window.setTimeout(function () { resolve(value); }, DUMMY_DELAY_MS);
+        });
+    }
+
     function getPlayerOptions() {
-        return Promise.resolve(DUMMY_PLAYERS.map(function (player) {
-            return { id: player.id, name: player.name, team: player.team };
+        return delay(DUMMY_PLAYERS.map(function (player) {
+            return {
+                id: player.id, name: player.name, teamId: player.teamId,
+                team: player.team, teamLogo: player.teamLogo, role: player.role
+            };
         }));
     }
 
@@ -111,15 +199,60 @@
         var b = find(idB);
 
         if (!a || !b) {
-            return Promise.reject(new Error('Pemain tidak ditemukan'));
+            var missing = new Error('Pemain tidak ditemukan');
+            missing.kind = 'empty';
+
+            return Promise.reject(missing);
         }
 
-        return Promise.resolve({ a: a, b: b });
+        return delay({ a: a, b: b });
+    }
+
+    /* ==================================================================
+     * Pratinjau state (QA desain). Membungkus getPlayerComparison dari luar,
+     * jadi tetap berfungsi setelah FE2 mengganti sumber data.
+     * ================================================================== */
+    var PREVIEW = (function () {
+        try {
+            return new URLSearchParams(window.location.search).get('state');
+        } catch (error) {
+            return null;
+        }
+    }());
+
+    function fetchComparison(idA, idB) {
+        if (PREVIEW === 'loading') {
+            return new Promise(function () {});
+        }
+
+        if (PREVIEW === 'error') {
+            return delay(null).then(function () { throw new Error('Pratinjau galat'); });
+        }
+
+        if (PREVIEW === 'nodata') {
+            return delay(null).then(function () {
+                var none = new Error('Pratinjau data kosong');
+                none.kind = 'empty';
+                throw none;
+            });
+        }
+
+        return getPlayerComparison(idA, idB).then(function (data) {
+            if (PREVIEW === 'empty') {
+                data = { a: Object.assign({}, data.a, { league: null }), b: Object.assign({}, data.b, { league: null }) };
+            }
+
+            return data;
+        });
     }
 
     /* ==================================================================
      * Helper DOM
      * ================================================================== */
+    function byId(id) {
+        return document.getElementById(id);
+    }
+
     function el(tag, className, text) {
         var node = document.createElement(tag);
 
@@ -142,59 +275,101 @@
         return letters.toUpperCase();
     }
 
-    /** Gambar dengan avatar inisial sebagai cadangan jika file belum ada. */
-    function imageOrAvatar(folder, file, alt, className, fallbackText) {
-        var avatar = function () {
-            var node = el('span', className + ' pc-avatar', fallbackText);
-            node.setAttribute('role', 'img');
-            node.setAttribute('aria-label', alt || 'Gambar belum tersedia');
-            return node;
-        };
+    /** Nama file -> URL aset; URL penuh (http/https atau diawali /) dipakai apa adanya. */
+    function assetUrl(folder, file) {
+        if (!file) {
+            return '';
+        }
 
-        var img = el('img', className);
-        img.src = ASSET_BASE + '/images/' + folder + '/' + encodeURIComponent(file);
-        img.alt = alt;
-        img.loading = 'lazy';
-        img.addEventListener('error', function () {
-            if (img.parentNode) {
-                img.parentNode.replaceChild(avatar(), img);
-            }
-        }, { once: true });
+        if (/^(https?:)?\/\//.test(file) || file.charAt(0) === '/') {
+            return file;
+        }
 
-        return img;
+        return ASSET_BASE + '/images/' + folder + '/' + encodeURIComponent(file);
     }
 
     /* ==================================================================
      * Render
      * ================================================================== */
-    function renderPlayerCard(container, player) {
-        container.textContent = '';
-        container.setAttribute('aria-label', player.name + ', ' + player.hero);
 
-        container.appendChild(imageOrAvatar(
-            'players', player.image, player.hero, 'pc-player__image',
-            player.hero.charAt(0).toUpperCase()
-        ));
+    /** Kartu pemain = foto saja (Figma). Tanpa foto: inisial + nama. */
+    function playerFallback(player) {
+        var box = el('div', 'pc-card__fallback');
 
-        var info = el('div', 'pc-player__info');
-        info.appendChild(el('h3', 'pc-player__name', player.hero));
+        box.appendChild(el('span', 'pc-card__initials', initials(player.name)));
+        box.appendChild(el('span', 'pc-card__name', player.name));
 
-        var team = el('div', 'pc-player__team');
-        team.appendChild(imageOrAvatar('teams', player.teamLogo, '', 'pc-team__logo', initials(player.team)));
+        if (player.team) {
+            box.appendChild(el('span', 'pc-card__team', player.team));
+        }
 
-        var text = el('div', 'pc-team__text');
-        text.appendChild(el('span', '', player.team));
-        text.appendChild(el('span', '', player.role));
-        team.appendChild(text);
-
-        info.appendChild(team);
-        container.appendChild(info);
+        return box;
     }
 
-    function renderRows(container, rows, a, b) {
+    function playerPhoto(player) {
+        var url = assetUrl('players', player.photo);
+
+        if (!url) {
+            return playerFallback(player);
+        }
+
+        var img = el('img', 'pc-card__image');
+
+        img.alt = 'Foto ' + player.name + (player.team ? ', ' + player.team : '');
+        img.decoding = 'async';
+        img.addEventListener('error', function () {
+            if (img.parentNode) {
+                img.parentNode.replaceChild(playerFallback(player), img);
+            }
+        }, { once: true });
+        img.src = url;
+
+        return img;
+    }
+
+    function renderPlayerCard(container, player) {
+        container.textContent = '';
+        container.setAttribute('aria-label',
+            [player.name, player.team, player.role].filter(Boolean).join(', '));
+        container.appendChild(playerPhoto(player));
+    }
+
+    var EMPTY_ICONS = {
+        empty: '<svg viewBox="0 0 48 48" fill="none" focusable="false"><circle cx="24" cy="24" r="24" fill="currentColor"/>'
+            + '<path d="M16 32V24M24 32V16M32 32V21" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg>',
+        error: '<svg viewBox="0 0 48 48" fill="none" focusable="false"><circle cx="24" cy="24" r="24" fill="currentColor"/>'
+            + '<path d="M24 14v13" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="24" cy="34" r="2.6" fill="#fff"/></svg>'
+    };
+
+    /** Isi state kosong/galat: ikon, judul, penjelasan, tombol "Coba Lagi". */
+    function buildEmpty(kind, title, text, onRetry) {
+        var box = el('div', 'pc-empty pc-empty--' + kind);
+        var icon = el('span', 'pc-empty__icon');
+        var button = el('button', 'pc-empty__button', 'Coba Lagi');
+
+        icon.setAttribute('aria-hidden', 'true');
+        icon.innerHTML = EMPTY_ICONS[kind]; // string statis di atas, bukan data pengguna
+
+        button.type = 'button';
+        button.addEventListener('click', onRetry);
+
+        box.appendChild(icon);
+        box.appendChild(el('p', 'pc-empty__title', title));
+        box.appendChild(el('p', 'pc-empty__text', text));
+        box.appendChild(button);
+
+        return box;
+    }
+
+    function renderTable(container, def, a, b) {
         container.textContent = '';
 
-        rows.forEach(function (row) {
+        if (!a[def.key] || !b[def.key]) {
+            container.appendChild(buildEmpty('empty', 'Data belum tersedia', def.emptyText, update));
+            return;
+        }
+
+        def.rows.forEach(function (row) {
             var valueA = row.format(row.get(a));
             var valueB = row.format(row.get(b));
             var item = el('div', 'pc-row');
@@ -317,11 +492,11 @@
                 ctx.fillText(axis.label, nameLeft, nameY);
 
                 ctx.font = '500 ' + (compact ? 9.5 : 10.5) + 'px Poppins, sans-serif';
-                ctx.fillStyle = COLOR_A;
+                ctx.fillStyle = TEXT_A;
                 ctx.fillText(valueA, valuesLeft, valuesY);
                 ctx.fillStyle = '#64748B';
                 ctx.fillText(separator, valuesLeft + widthA, valuesY);
-                ctx.fillStyle = COLOR_B;
+                ctx.fillStyle = TEXT_B;
                 ctx.fillText(valueB, valuesLeft + widthA + widthSep, valuesY);
             });
 
@@ -348,7 +523,7 @@
     }
 
     function buildRadar() {
-        var canvas = document.getElementById('pc-radar-chart');
+        var canvas = byId('pc-radar-chart');
 
         if (!canvas || !radarData) {
             return;
@@ -418,7 +593,7 @@
     function renderRadar(a, b) {
         radarData = { a: a, b: b };
 
-        document.getElementById('pc-radar-chart').setAttribute('aria-label',
+        byId('pc-radar-chart').setAttribute('aria-label',
             'Grafik radar ' + a.name + ' dan ' + b.name + ' pada enam sumbu: ' +
             AXES.map(function (axis) { return axis.label; }).join(', '));
 
@@ -445,125 +620,366 @@
     }
 
     /* ==================================================================
-     * Pilihan pemain, validasi, dan alur utama
+     * Elemen halaman dan tampilan (view)
      * ================================================================== */
-    var selectA = document.getElementById('pc-player-a');
-    var selectB = document.getElementById('pc-player-b');
-    var statusEl = document.getElementById('pc-status');
-    var resultEl = document.getElementById('pc-result');
-    var requestId = 0;
+    var lineupEl = byId('pc-lineup');
+    var cardsEl = byId('pc-cards');
+    var statusEl = byId('pc-status');
+    var liveEl = byId('pc-live');
+    var alertEl = byId('pc-alert');
+    var noticeEl = byId('pc-notice');
+    var skeletonEl = byId('pc-skeleton');
+    var resultEl = byId('pc-result');
+    var noteEl = byId('pc-note');
 
-    function setStatus(message) {
-        if (message) {
-            statusEl.textContent = message;
-            statusEl.hidden = false;
-        } else {
-            statusEl.textContent = '';
-            statusEl.hidden = true;
+    // Sisi A (kiri, biru) dan B (kanan, oranye): tim, pemain, logo tim, kartu foto.
+    var sides = ['a', 'b'].map(function (key) {
+        var team = byId('pc-team-' + key);
+
+        return {
+            key: key,
+            team: team,
+            player: byId('pc-player-' + key),
+            logo: team.parentNode.querySelector('.pc-select__logo'),
+            card: byId('pc-card-' + key)
+        };
+    });
+
+    var players = [];     // opsi dari getPlayerOptions()
+    var teams = [];       // diturunkan dari players
+    var hasTeams = false;
+    var shown = null;     // pasangan terakhir yang berhasil ditampilkan
+    var firstLoad = true; // true sampai muatan pertama selesai (pemilih tampil sebagai skeleton)
+    var requestId = 0;
+    var previewDone = false;
+
+    function announce(message) {
+        liveEl.textContent = message;
+    }
+
+    /**
+     * Satu pintu untuk menampilkan bagian halaman:
+     *   'loading'  skeleton + kartu kosong
+     *   'result'   kartu foto + hasil perbandingan
+     *   'keep'     pertahankan hasil terakhir bila ada (validasi, pilihan belum lengkap);
+     *              `message` opsional tampil sebagai pesan netral di atasnya
+     *   'notice'   data kosong / galat satu halaman
+     */
+    function setView(name, message) {
+        var loading = name === 'loading';
+        var showResult = name === 'result' || (name === 'keep' && Boolean(shown));
+
+        skeletonEl.hidden = !loading;
+        cardsEl.hidden = !(loading || showResult);
+        cardsEl.classList.toggle('is-loading', loading);
+        resultEl.hidden = !showResult;
+        noticeEl.hidden = name !== 'notice';
+        statusEl.hidden = !message;
+        statusEl.textContent = message || '';
+    }
+
+    function showStatus(message) {
+        setView('keep', message);
+    }
+
+    function showNotice(kind, title, text, onRetry) {
+        noticeEl.textContent = '';
+        noticeEl.appendChild(buildEmpty(kind, title, text, onRetry));
+        noticeEl.setAttribute('role', kind === 'error' ? 'alert' : 'status');
+        setView('notice');
+    }
+
+    /** Pesan validasi pemain sama; kedua pemilih pemain ditandai tidak valid. */
+    function setValidation(on) {
+        alertEl.hidden = !on;
+
+        sides.forEach(function (side) {
+            if (on) {
+                side.player.setAttribute('aria-invalid', 'true');
+                side.player.setAttribute('aria-describedby', 'pc-alert');
+            } else {
+                side.player.removeAttribute('aria-invalid');
+                side.player.removeAttribute('aria-describedby');
+            }
+        });
+    }
+
+    /** Muatan pertama selesai: pemilih berhenti tampil sebagai skeleton. */
+    function settle() {
+        if (!firstLoad) {
+            return;
+        }
+
+        firstLoad = false;
+        setSelectsLoading(false);
+    }
+
+    function setSelectsLoading(on) {
+        lineupEl.classList.toggle('is-skeleton', on);
+
+        sides.forEach(function (side) {
+            side.team.disabled = on;
+            side.player.disabled = on;
+        });
+    }
+
+    /* ==================================================================
+     * Pemilih tim + pemain
+     * ================================================================== */
+    function findPlayer(id) {
+        return players.filter(function (player) { return String(player.id) === String(id); })[0] || null;
+    }
+
+    function findTeam(id) {
+        return teams.filter(function (team) { return team.id === String(id); })[0] || null;
+    }
+
+    function deriveTeams() {
+        var seen = {};
+
+        teams = [];
+
+        players.forEach(function (player) {
+            if (player.teamId === undefined || player.teamId === null || player.teamId === '') {
+                return;
+            }
+
+            var key = String(player.teamId);
+
+            if (seen[key]) {
+                if (!seen[key].logo && player.teamLogo) {
+                    seen[key].logo = player.teamLogo;
+                }
+                return;
+            }
+
+            seen[key] = { id: key, name: player.team || ('Tim ' + key), logo: player.teamLogo || '' };
+            teams.push(seen[key]);
+        });
+
+        teams.sort(function (x, y) { return x.name.localeCompare(y.name); });
+        hasTeams = teams.length > 0;
+    }
+
+    function addOption(select, value, text) {
+        var option = document.createElement('option');
+
+        option.value = value;
+        option.textContent = text;
+        select.appendChild(option);
+    }
+
+    function fillTeams(side) {
+        side.team.textContent = '';
+        addOption(side.team, '', 'Pilih tim');
+
+        teams.forEach(function (team) {
+            addOption(side.team, team.id, team.name);
+        });
+
+        // Tanpa data tim, dropdown tim disembunyikan dan semua pemain tampil di dropdown pemain.
+        side.team.parentNode.hidden = !hasTeams;
+    }
+
+    /** Dropdown pemain berisi pemain dari tim yang dipilih (atau semua pemain bila tim belum dipilih). */
+    function fillPlayers(side) {
+        var keep = side.player.value;
+        var teamId = hasTeams ? side.team.value : '';
+        var list = teamId
+            ? players.filter(function (player) { return String(player.teamId) === teamId; })
+            : players;
+
+        side.player.textContent = '';
+        addOption(side.player, '', side.key === 'a' ? 'Pemain A' : 'Pemain B');
+
+        list.forEach(function (player) {
+            addOption(side.player, String(player.id), player.name);
+        });
+
+        var stillListed = list.some(function (player) { return String(player.id) === keep; });
+
+        side.player.value = stillListed ? keep : '';
+    }
+
+    function setLogo(side) {
+        var team = findTeam(side.team.value);
+        var url = team ? assetUrl('teams', team.logo) : '';
+
+        if (!url) {
+            side.logo.hidden = true;
+            side.logo.removeAttribute('src');
+            return;
+        }
+
+        side.logo.onerror = function () { side.logo.hidden = true; };
+        side.logo.src = url;
+        side.logo.hidden = false;
+    }
+
+    /** Memilih pemain otomatis menyelaraskan dropdown tim dengan tim pemain itu. */
+    function syncTeamFromPlayer(side) {
+        var player = findPlayer(side.player.value);
+
+        if (!hasTeams || !player || player.teamId === undefined || player.teamId === null) {
+            return;
+        }
+
+        if (String(player.teamId) !== side.team.value) {
+            side.team.value = String(player.teamId);
+            fillPlayers(side);
+            setLogo(side);
         }
     }
 
-    function showResult(visible) {
-        resultEl.hidden = !visible;
+    function selectPlayer(side, player) {
+        if (hasTeams && player.teamId !== undefined && player.teamId !== null) {
+            side.team.value = String(player.teamId);
+        }
+
+        fillPlayers(side);
+        side.player.value = String(player.id);
+        setLogo(side);
     }
 
-    /** Pemain yang dipilih di satu dropdown dinonaktifkan di dropdown lainnya. */
-    function syncDisabledOptions() {
-        [[selectA, selectB], [selectB, selectA]].forEach(function (pair) {
-            var own = pair[0];
-            var other = pair[1];
-
-            Array.prototype.forEach.call(own.options, function (option) {
-                option.disabled = option.value !== '' && option.value === other.value;
-            });
-        });
-    }
-
-    function fillSelect(select, options) {
-        options.forEach(function (player) {
-            var option = document.createElement('option');
-            option.value = String(player.id);
-            option.textContent = player.name;
-            select.appendChild(option);
-        });
-    }
-
+    /* ==================================================================
+     * Alur utama
+     * ================================================================== */
     function update() {
-        syncDisabledOptions();
+        var valueA = sides[0].player.value;
+        var valueB = sides[1].player.value;
+        var current = ++requestId; // membatalkan permintaan yang masih berjalan
 
-        var valueA = selectA.value;
-        var valueB = selectB.value;
+        setValidation(false);
 
         if (!valueA || !valueB) {
-            setStatus('Silakan pilih kedua pemain.');
-            showResult(false);
+            settle();
+            showStatus('Silakan pilih kedua pemain.');
             return;
         }
 
+        // Pemain sama: tampilkan pesan, hasil terakhir dipertahankan (Figma).
         if (valueA === valueB) {
-            setStatus('Pilih dua pemain yang berbeda untuk dibandingkan.');
-            showResult(false);
+            settle();
+            setView('keep');
+            setValidation(true);
             return;
         }
 
-        var current = ++requestId;
+        setView('loading');
+        announce('Memuat perbandingan');
 
-        setStatus('');
-        resultEl.classList.add('is-loading');
-        resultEl.setAttribute('aria-busy', 'true');
-
-        getPlayerComparison(Number(valueA), Number(valueB)).then(function (data) {
+        fetchComparison(Number(valueA), Number(valueB)).then(function (data) {
             if (current !== requestId) {
                 return;
             }
 
-            renderPlayerCard(document.getElementById('pc-card-a'), data.a);
-            renderPlayerCard(document.getElementById('pc-card-b'), data.b);
+            shown = data;
 
-            document.getElementById('pc-legend-a').textContent = data.a.name;
-            document.getElementById('pc-legend-b').textContent = data.b.name;
+            renderPlayerCard(sides[0].card, data.a);
+            renderPlayerCard(sides[1].card, data.b);
 
-            renderRows(document.getElementById('pc-league'), LEAGUE_ROWS, data.a, data.b);
-            renderRows(document.getElementById('pc-detail'), DETAIL_ROWS, data.a, data.b);
-            renderPerformance(document.getElementById('pc-perf'), data.a, data.b);
+            byId('pc-legend-a').textContent = data.a.name;
+            byId('pc-legend-b').textContent = data.b.name;
 
-            showResult(true);
+            renderTable(byId('pc-league'), LEAGUE_TABLE, data.a, data.b);
+            renderTable(byId('pc-detail'), DETAIL_TABLE, data.a, data.b);
+            renderPerformance(byId('pc-perf'), data.a, data.b);
+
+            setView('result');
             renderRadar(data.a, data.b);
-        }).catch(function () {
-            if (current === requestId) {
-                setStatus('Data perbandingan belum dapat dimuat. Silakan coba lagi.');
-                showResult(false);
+            announce('Perbandingan ' + data.a.name + ' dan ' + data.b.name + ' sudah dimuat');
+            settle();
+
+            if (PREVIEW === 'validation' && !previewDone) {
+                previewDone = true;
+                selectPlayer(sides[1], findPlayer(sides[0].player.value));
+                update();
             }
-        }).then(function () {
-            if (current === requestId) {
-                resultEl.classList.remove('is-loading');
-                resultEl.removeAttribute('aria-busy');
+        }).catch(function (error) {
+            if (current !== requestId) {
+                return;
+            }
+
+            shown = null;
+            announce('');
+            settle();
+
+            if (error && error.kind === 'empty') {
+                showNotice('empty', 'Data belum tersedia',
+                    'Perbandingan belum tersedia untuk pilihan pemain ini.', update);
+            } else {
+                if (window.console && console.error) {
+                    console.error(error);
+                }
+
+                showNotice('error', 'Data gagal dimuat',
+                    'Perbandingan belum dapat dimuat. Periksa koneksi lalu coba lagi.', update);
             }
         });
     }
 
-    selectA.addEventListener('change', update);
-    selectB.addEventListener('change', update);
+    function boot() {
+        firstLoad = true;
+        shown = null;
+        setValidation(false);
+        setSelectsLoading(true);
+        setView('loading');
+        announce('Memuat perbandingan');
 
-    setStatus('Memuat daftar pemain...');
+        getPlayerOptions().then(function (options) {
+            players = options || [];
 
-    getPlayerOptions().then(function (options) {
-        if (!options.length) {
-            setStatus('Belum ada data pemain.');
-            return;
-        }
+            if (!players.length) {
+                settle();
+                showNotice('empty', 'Data belum tersedia', 'Belum ada data pemain.', boot);
+                return;
+            }
 
-        fillSelect(selectA, options);
-        fillSelect(selectB, options);
+            deriveTeams();
 
-        // Pilihan awal seperti di Figma: dua pemain pertama.
-        if (options.length > 1) {
-            selectA.value = String(options[0].id);
-            selectB.value = String(options[1].id);
-        }
+            sides.forEach(function (side) {
+                fillTeams(side);
+                fillPlayers(side);
+                setLogo(side);
+            });
 
-        update();
-    }).catch(function () {
-        setStatus('Daftar pemain belum dapat dimuat. Silakan coba lagi.');
+            // Pilihan awal seperti di Figma: dua pemain pertama.
+            if (players.length > 1) {
+                selectPlayer(sides[0], players[0]);
+                selectPlayer(sides[1], players[1]);
+            }
+
+            update();
+        }).catch(function (error) {
+            if (window.console && console.error) {
+                console.error(error);
+            }
+
+            settle();
+            showNotice('error', 'Data gagal dimuat',
+                'Daftar pemain belum dapat dimuat. Periksa koneksi lalu coba lagi.', boot);
+        });
+    }
+
+    sides.forEach(function (side) {
+        side.team.addEventListener('change', function () {
+            fillPlayers(side);
+            setLogo(side);
+            update();
+        });
+
+        side.player.addEventListener('change', function () {
+            syncTeamFromPlayer(side);
+            update();
+        });
     });
+
+    byId('pc-alert-close').addEventListener('click', function () {
+        alertEl.hidden = true;
+        sides[1].player.focus();
+    });
+
+    noteEl.hidden = !USING_DUMMY;
+
+    boot();
 }());

@@ -2,6 +2,7 @@
  * Detail Hero — FE1 (tampilan) + titik sambung untuk FE2 (API).
  *
  * KONTRAK UNTUK FE2: docs/hero-detail-kontrak.md
+ *  0) Alamat: /hero-detail?id=<hero_id> (tanpa id + API aktif => "Hero belum dipilih").
  *  1) Tambahkan  ApiClient.getHeroDetail(heroId)  di api-client.js.
  *     Jika ada, halaman memakainya otomatis; jika tidak, memakai data contoh.
  *  2) Petakan respons backend -> bentuk kontrak HANYA di fungsi normalizeHeroDetail().
@@ -32,45 +33,76 @@
      * Gambar null -> tampil avatar inisial. Pasang URL/berkas aset di sini
      * atau (lebih baik) dari API: items/, emblems/, heroes/ di assets/images.
      * ================================================================== */
-    var DUMMY = {
-        hero: { hero_id: 1, hero_name: 'Hero Contoh', banner_url: null },
-        build: {
-            items: [
-                { slot: 1, name: 'Arcane Boots', image_url: null },
-                { slot: 2, name: 'Warrior Boots', image_url: null },
-                { slot: 3, name: 'Bloodlust Axe', image_url: null },
-                { slot: 4, name: 'Swift Boots', image_url: null },
-                { slot: 5, name: 'Guardian Helmet', image_url: null },
-                { slot: 6, name: 'Antique Cuirass', image_url: null }
-            ],
-            emblem: {
-                name: 'Fighter emblem', image_url: null,
-                talents: [{ name: 'Talent 1', image_url: null }, { name: 'Talent 2', image_url: null }, { name: 'Talent 3', image_url: null }]
-            },
-            battle_spell: { name: 'Sprint', image_url: null }
-        },
-        skills: [
-            { type: 'passive', name: 'Pasif', image_url: null },
-            { type: 'skill1', name: 'Skill 1', image_url: null },
-            { type: 'skill2', name: 'Skill 2', image_url: null },
-            { type: 'ultimate', name: 'Ultimate', image_url: null }
+  
+var DUMMY = {
+    hero: {
+        hero_id: 1,
+        hero_name: 'Hero Contoh',
+        banner_url: 'banner-detail-hero.png'
+    },
+
+    build: {
+        items: [
+            { slot: 1, name: 'Arcane Boots', image_url: 'arcane-boots.png' },
+            { slot: 2, name: 'Warrior Boots', image_url: 'warrior-boots.png' },
+            { slot: 3, name: 'Bloodlust Axe', image_url: 'bloodlust-axe.png' },
+            { slot: 4, name: 'Swift Boots', image_url: 'swift-boots.png' },
+            { slot: 5, name: 'Guardian Helmet', image_url: 'guardian-helmet.png' },
+            { slot: 6, name: 'Antique Cuirass', image_url: 'antique-cuirass.png' }
         ],
-        ratings: { offense: 7, durability: 3, control_effects: 1, difficulty: 4 },
-        stats: { win_rate: 59.97, pick_rate: 18.6, ban_rate: 39.26 },
-        counters: {
-            favorable: [
-                { hero_id: 2, hero_name: 'Tigreal', hero_url: null, win_rate: 58.4 },
-                { hero_id: 3, hero_name: 'Khufra', hero_url: null, win_rate: 56.9 },
-                { hero_id: 4, hero_name: 'Johnson', hero_url: null, win_rate: 55.2 }
-            ],
-            unfavorable: [
-                { hero_id: 5, hero_name: 'Hayabusa', hero_url: null, win_rate: 49.1 },
-                { hero_id: 6, hero_name: 'Natalia', hero_url: null, win_rate: 47.8 },
-                { hero_id: 7, hero_name: 'Lancelot', hero_url: null, win_rate: 46.3 }
+
+        emblem: {
+            name: 'Fighter emblem',
+            image_url: 'emblem-fighter.png',
+            talents: [
+                { name: 'Talent 1', image_url: 'talent-1.png' },
+                { name: 'Talent 2', image_url: 'talent-2.png' },
+                { name: 'Talent 3', image_url: 'talent-3.png' }
             ]
         },
-        situational_note: 'Gunakan item defense seperti Athena\u2019s Shield atau Blade Armor saat melawan hero dengan magic damage atau physical burst.'
-    };
+
+        battle_spell: {
+            name: 'Sprint',
+            image_url: 'spell-sprint.png'
+        }
+    },
+
+    skills: [
+        { type: 'passive', name: 'Pasif', image_url: 'pasif.png' },
+        { type: 'skill1', name: 'Skill 1', image_url: 'skill1.png' },
+        { type: 'skill2', name: 'Skill 2', image_url: 'skill2.png' },
+        { type: 'ultimate', name: 'Ultimate', image_url: 'ultimate.png' }
+    ],
+
+    ratings: {
+        offense: 7,
+        durability: 3,
+        control_effects: 1,
+        difficulty: 4
+    },
+
+    stats: {
+        win_rate: 59.97,
+        pick_rate: 18.6,
+        ban_rate: 39.26
+    },
+
+    counters: {
+        favorable: [
+            { hero_id: 2, hero_name: 'Tigreal', hero_url: 'tigreal.png', win_rate: 58.4 },
+            { hero_id: 3, hero_name: 'Khufra', hero_url: 'khufra.png', win_rate: 56.9 },
+            { hero_id: 4, hero_name: 'Johnson', hero_url: 'johnson.png', win_rate: 55.2 }
+        ],
+        unfavorable: [
+            { hero_id: 5, hero_name: 'Hayabusa', hero_url: 'hayabusa.png', win_rate: 49.1 },
+            { hero_id: 6, hero_name: 'Natalia', hero_url: 'natalia.png', win_rate: 47.8 },
+            { hero_id: 7, hero_name: 'Lancelot', hero_url: 'lancelot.png', win_rate: 46.3 }
+        ]
+    },
+
+    situational_note: 'Gunakan item defense sesuai tipe damage lawan.'
+};
+
 
     /* ==================================================================
      * TITIK SAMBUNG FE2 — hanya dua fungsi ini yang perlu disentuh.
@@ -453,7 +485,24 @@
         $('hd-dummy-note').hidden = !(d === DUMMY);
     }
 
+    function apiReady() {
+        return !!(window.ApiClient && typeof window.ApiClient.getHeroDetail === 'function');
+    }
+
+    /** Halaman dibuka tanpa ?id= (mis. lewat menu Hero): minta pengguna memilih hero dari Dashboard. */
+    function showNoHero() {
+        root.classList.add('hd--no-hero');
+        $('hd-no-hero').hidden = false;
+    }
+
     function load() {
+        // Dengan API aktif, id wajib ada. Tanpa API, data contoh tetap tampil untuk pratinjau.
+        if (HERO_ID <= 0 && apiReady()) {
+            showNoHero();
+
+            return Promise.resolve();
+        }
+
         setAll('loading');
 
         return fetchHeroDetail(HERO_ID).then(render).catch(function () {
@@ -461,10 +510,11 @@
         });
     }
 
-    // Pratinjau QA tanpa API: ?state=loading | empty | error | no-build
+    // Pratinjau QA tanpa API: ?state=loading | empty | error | no-build | no-hero
     function preview() {
         var state = new URLSearchParams(window.location.search).get('state');
 
+        if (state === 'no-hero') { showNoHero(); return true; }
         if (state === 'loading') { setAll('loading'); return true; }
         if (state === 'empty' || state === 'error') { setAll(state); return true; }
         if (state === 'no-build') {

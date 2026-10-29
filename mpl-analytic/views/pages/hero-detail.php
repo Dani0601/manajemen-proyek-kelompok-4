@@ -14,6 +14,7 @@ $heroId = (int) ($_GET['id'] ?? 0);
  * KONTRAK UNTUK FE2 (Ali): lihat docs/hero-detail-kontrak.md
  * - Data diberikan ke HeroDetail.render(data) di hero-detail.js
  * - Id pada elemen di bawah ini TIDAK boleh diubah (dipakai JS)
+ * - Alamat halaman: /hero-detail?id=<hero_id> (BUKAN /hero; /hero dicadangkan untuk daftar hero)
  * - Hero id dibaca dari ?id= dan tersedia di data-hero-id
  */
 ?>
@@ -121,7 +122,17 @@ $heroId = (int) ($_GET['id'] ?? 0);
         </div>
     </section>
 
-    <p class="hd-note-dummy" id="hd-dummy-note" hidden></p>
+    <!-- Tampil jika halaman dibuka tanpa ?id= (mis. dari menu Hero) -->
+    <section id="hd-no-hero" class="hd-empty" hidden aria-labelledby="hd-no-hero-title">
+        <span class="hd-empty__icon" aria-hidden="true">
+            <img src="<?= $assetBase ?>/images/icons/Bar%20Chart.png" alt="" width="24" height="24">
+        </span>
+        <h2 id="hd-no-hero-title" class="hd-empty__title">Hero belum dipilih</h2>
+        <p class="hd-empty__text">Pilih salah satu hero dari Dashboard untuk melihat detail build, skill, dan statistiknya.</p>
+        <a class="hd-empty__button" href="<?= htmlspecialchars($baseUrl . '/dashboard', ENT_QUOTES, 'UTF-8') ?>">Ke Dashboard</a>
+    </section>
+
+    <p class="hd-note-dummy" id="hd-dummy-note" hidden>Data pada halaman ini masih berupa contoh untuk pratinjau tampilan.</p>
     <p id="hd-page-loading" class="visually-hidden" role="status" aria-live="polite"></p>
 </div>
 
