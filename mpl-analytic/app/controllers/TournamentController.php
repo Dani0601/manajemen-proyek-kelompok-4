@@ -77,7 +77,8 @@ class TournamentController {
             $seasonId = $tournamentId;
             $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : null;
             $data = $this->tournamentService->getUpcomingMatches($seasonId, $limit);
-            jsonResponse($data, 'Jadwal pertandingan berhasil dimuat.');
+            $schedule = $data['upcoming_matches'] ?? (is_array($data) ? $data : []);
+            jsonResponse($schedule, 'Jadwal pertandingan berhasil dimuat.');
         } catch (Exception $e) {
             jsonResponse(null, 'Internal Server Error: ' . $e->getMessage(), 500, [
                 'error' => ['code' => 'INTERNAL_ERROR']

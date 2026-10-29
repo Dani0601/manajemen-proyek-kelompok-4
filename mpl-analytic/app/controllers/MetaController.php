@@ -1,9 +1,7 @@
 <?php
 // app/controllers/MetaController.php
 require_once __DIR__ . '/../services/MetaService.php';
-require_once __DIR__ . '/../helpers/Apiresponse.php';
-
-use App\Helpers\ApiResponse;
+require_once __DIR__ . '/../helpers/response.php';
 
 class MetaController {
     private $metaService;
@@ -12,24 +10,43 @@ class MetaController {
         $this->metaService = new MetaService($db);
     }
 
-    public function getDashboardSummary() {
+    /**
+     * GET /api/meta
+     * Mengembalikan ringkasan meta hero top 5 overpowered dan paling banyak dibanned
+     */
+    public function index() {
         try {
-            // Ambil parameter musim dari URL, tetapkan 13 sebagai lalai (default)
-            $seasonId = isset($_GET['season']) ? (int)$_GET['season'] : 13;
-            
+            // Ambil parameter musim dari URL, gunakan 17 sebagai nilai default
+            $seasonId = isset($_GET['season']) ? (int)$_GET['season'] : 17;
+
             $data = $this->metaService->getTopHeroesSummary($seasonId);
-            
+
             if (empty($data['top_overpowered_heroes']) && empty($data['top_most_banned_heroes'])) {
-                ApiResponse::error("Tiada data statistik dijumpai untuk musim ini.", 404);
-                return;
+                jsonResponse(
+                    null,
+                    'Tidak ada data statistik yang ditemukan untuk musim ini.',
+                    404,
+                    ['error' => ['code' => 'META_DATA_NOT_FOUND']]
+                );
             }
 
-            // Hantar maklum balas berjaya
-            ApiResponse::success($data, "Berjaya mengambil ringkasan papan pemuka Top 5 Hero");
-            
+            jsonResponse($data, 'Data meta hero berhasil diambil.');
+
         } catch (Exception $e) {
-            ApiResponse::error("Ralat Pelayan Dalaman: " . $e->getMessage(), 500);
+            jsonResponse(
+                null,
+                'Terjadi kesalahan pada server: ' . $e->getMessage(),
+                500,
+                ['error' => ['code' => 'INTERNAL_SERVER_ERROR']]
+            );
         }
+    }
+
+    /**
+     * Alias backward-compat untuk getDashboardSummary
+     */
+    public function getDashboardSummary() {
+        $this->index();
     }
 }
 ?>
