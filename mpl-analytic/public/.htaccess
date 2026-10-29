@@ -9,4 +9,4 @@
     
     # Jika bukan file atau folder, arahkan semuanya ke index.php
     RewriteRule ^(.*)$ index.php [QSA,L]
-</IfModule>
+</IfModule>

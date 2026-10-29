@@ -113,11 +113,16 @@ class PlayerService
             ];
         };
 
+        $player1Data = $formatPlayerData($statsP1);
+        $player2Data = $formatPlayerData($statsP2);
+
         return [
             "season" => (int)$seasonId,
+            "player_1" => $player1Data,
+            "player_2" => $player2Data,
             "comparison" => [
-                "player_1" => $formatPlayerData($statsP1),
-                "player_2" => $formatPlayerData($statsP2)
+                "player_1" => $player1Data,
+                "player_2" => $player2Data
             ]
         ];
     }

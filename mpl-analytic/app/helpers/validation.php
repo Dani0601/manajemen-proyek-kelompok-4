@@ -17,7 +17,7 @@ function validatePositiveInteger(
         );
     }
 
-    if (!filter_var($value, FILTER_VALIDATE_INT)) {
+    if (filter_var($value, FILTER_VALIDATE_INT) === false) {
         jsonResponse(
             null,
             "{$field} harus berupa angka.",
