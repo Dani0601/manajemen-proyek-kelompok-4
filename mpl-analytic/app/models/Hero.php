@@ -219,6 +219,7 @@ class Hero
             SELECT
                 hero_build_spell_id,
                 spell_name,
+                spell_icon_url,
                 share_percent,
                 build_count,
                 snapshot_at
@@ -357,6 +358,7 @@ class Hero
                 skill_position,
                 skill_type,
                 skill_name,
+                skill_icon_url,
                 description,
                 tags_json,
                 snapshot_at
