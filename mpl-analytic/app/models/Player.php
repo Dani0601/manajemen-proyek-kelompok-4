@@ -12,7 +12,27 @@ class Player {
      * Mengambil Master Data Player untuk dropdown pencarian
      */
     public function getAllPlayers(int $limit = 100, int $offset = 0) {
-        $sql = "SELECT p.player_id, p.player_name
+        $sql = "SELECT 
+                    p.player_id, 
+                    p.player_name,
+                    (
+                        SELECT t.team_id
+                        FROM game_players gp
+                        JOIN teams t ON gp.team_id = t.team_id
+                        WHERE gp.player_id = p.player_id
+                        GROUP BY gp.team_id, t.team_name
+                        ORDER BY COUNT(*) DESC
+                        LIMIT 1
+                    ) AS team_id,
+                    (
+                        SELECT t.team_name
+                        FROM game_players gp
+                        JOIN teams t ON gp.team_id = t.team_id
+                        WHERE gp.player_id = p.player_id
+                        GROUP BY gp.team_id, t.team_name
+                        ORDER BY COUNT(*) DESC
+                        LIMIT 1
+                    ) AS team_name
                 FROM players p
                 ORDER BY p.player_name ASC
                 LIMIT :limit OFFSET :offset";
@@ -22,7 +42,13 @@ class Player {
         $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
         $stmt->execute();
         
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($rows as &$row) {
+            if (isset($row['team_id']) && $row['team_id'] !== null) {
+                $row['team_id'] = (int)$row['team_id'];
+            }
+        }
+        return $rows;
     }
 
    // Update di app/models/Player.php
@@ -56,7 +82,27 @@ class Player {
      * Mencari player berdasarkan player_id
      */
     public function findById(int $playerId): ?array {
-        $sql = "SELECT p.player_id, p.player_name
+        $sql = "SELECT 
+                    p.player_id, 
+                    p.player_name,
+                    (
+                        SELECT t.team_id
+                        FROM game_players gp
+                        JOIN teams t ON gp.team_id = t.team_id
+                        WHERE gp.player_id = p.player_id
+                        GROUP BY gp.team_id, t.team_name
+                        ORDER BY COUNT(*) DESC
+                        LIMIT 1
+                    ) AS team_id,
+                    (
+                        SELECT t.team_name
+                        FROM game_players gp
+                        JOIN teams t ON gp.team_id = t.team_id
+                        WHERE gp.player_id = p.player_id
+                        GROUP BY gp.team_id, t.team_name
+                        ORDER BY COUNT(*) DESC
+                        LIMIT 1
+                    ) AS team_name
                 FROM players p
                 WHERE p.player_id = :player_id
                 LIMIT 1";
@@ -66,6 +112,9 @@ class Player {
         $stmt->execute();
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($result && isset($result['team_id']) && $result['team_id'] !== null) {
+            $result['team_id'] = (int)$result['team_id'];
+        }
         return $result ?: null;
     }
 
@@ -109,6 +158,7 @@ class Player {
                     gp.hero_id,
                     h.hero_name,
                     gp.team_id,
+                    t.team_name,
                     gp.kills,
                     gp.deaths,
                     gp.assists,
@@ -121,6 +171,7 @@ class Player {
                 JOIN games g ON gp.game_id = g.game_id
                 JOIN matches m ON g.match_id = m.match_id
                 LEFT JOIN heroes h ON gp.hero_id = h.hero_id
+                LEFT JOIN teams t ON gp.team_id = t.team_id
                 WHERE gp.player_id = :player_id
                 ORDER BY m.match_date DESC, g.game_number ASC
                 LIMIT 50";

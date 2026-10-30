@@ -606,7 +606,11 @@ paths:
                   - emblem_name: Marksman
                     talent: Fatal
                   spells:
-                  - spell_name: Flicker
+                  - hero_build_spell_id: 309
+                    spell_name: Flicker
+                    spell_icon_url: https://static.wikia.nocookie.net/mobile-legends/images/1/1e/Flicker.png/revision/latest?cb=20210818154536
+                    share_percent: '28.0000'
+                    build_count: 32
         '400':
           description: Validasi parameter hero_id gagal (bukan angka positif).
           content:
@@ -749,18 +753,57 @@ paths:
                 success: true
                 message: Data skill hero berhasil diambil.
                 data:
-                - skill_id: 101
-                  skill_name: Moon Blessing
-                  type: Passive
-                  description: Meningkatkan movement speed saat basic attack.
-                - skill_id: 102
-                  skill_name: Moon Arrow
-                  type: Skill 1
-                  description: Menembakkan anak panah tambahan ke target lain.
-                - skill_id: 104
-                  skill_name: Hidden Moonlight
-                  type: Ultimate
-                  description: Menghilangkan diri dan meningkatkan attack speed.
+                  hero:
+                    hero_id: 1
+                    hero_name: Dyrroth
+                    role: Fighter
+                    hero_slug: dyrroth
+                    hero_url: https://mlbb-image.scoregg.com/hero_h/85.png
+                    created_at: '2026-10-06 14:52:46'
+                    updated_at: '2026-10-20 16:17:32'
+                  skills:
+                  - hero_skill_id: 953
+                    skill_position: 1
+                    skill_type: Passive
+                    skill_name: Wrath of the Abyss
+                    skill_icon_url: https://static.wikia.nocookie.net/mobile-legends/images/f/ff/Abysm_Strike.png
+                    description: When Dyrroth's Rage reaches 50%, he will enhance Burst Strike and Spectre Step.
+                    tags:
+                    - Heal
+                    - Buff
+                    - Damage
+                    snapshot_at: '2026-10-06 13:09:27'
+                  - hero_skill_id: 954
+                    skill_position: 2
+                    skill_type: Skill 1
+                    skill_name: Burst Strike
+                    skill_icon_url: https://static.wikia.nocookie.net/mobile-legends/images/3/3f/Abysm_Strike_%28HUNTER%C3%97HUNTER%29.png
+                    description: Dyrroth releases a burst strike in a designated direction.
+                    tags:
+                    - Slow
+                    - Damage
+                    snapshot_at: '2026-10-06 13:09:27'
+                  - hero_skill_id: 955
+                    skill_position: 3
+                    skill_type: Skill 2
+                    skill_name: Spectre Step
+                    skill_icon_url: https://static.wikia.nocookie.net/mobile-legends/images/6/69/Abysm_Strike_%28KOF%29.png
+                    description: Dyrroth dashes in the designated direction.
+                    tags:
+                    - Blink
+                    - Debuff
+                    snapshot_at: '2026-10-06 13:09:27'
+                  - hero_skill_id: 956
+                    skill_position: 4
+                    skill_type: Ultimate
+                    skill_name: Abysm Strike
+                    skill_icon_url: https://static.wikia.nocookie.net/mobile-legends/images/0/0f/Abysm_Strike_%28Street_Fighter%29.png
+                    description: Dyrroth charges and strikes, dealing physical damage.
+                    tags:
+                    - Burst
+                    - Slow
+                    snapshot_at: '2026-10-06 13:09:27'
+                  skill_order: []
         '400':
           description: Validasi parameter hero_id gagal (bukan angka positif).
           content:
@@ -912,18 +955,14 @@ paths:
                 success: true
                 message: Master data player berhasil diambil
                 data:
-                - player_id: 2
-                  player_name: Skylar
-                  team_id: 1
-                  team_name: RRQ Hoshi
-                  role: Goldlaner
-                  photo_url: https://id-mpl.com/assets/players/skylar.png
                 - player_id: 23
-                  player_name: CW
-                  team_id: 2
-                  team_name: ONIC
-                  role: Goldlaner
-                  photo_url: https://id-mpl.com/assets/players/cw.png
+                  player_name: ABOYY
+                  team_id: 6
+                  team_name: Geek Fam ID
+                - player_id: 2
+                  player_name: ALBERTTT
+                  team_id: 1
+                  team_name: EVOS
         '405':
           description: Method HTTP tidak diizinkan (hanya GET didukung).
           content:
@@ -1056,11 +1095,9 @@ paths:
                 message: Detail pemain berhasil diambil.
                 data:
                   player_id: 2
-                  player_name: Skylar
+                  player_name: ALBERTTT
                   team_id: 1
-                  team_name: RRQ Hoshi
-                  role: Goldlaner
-                  photo_url: https://id-mpl.com/assets/players/skylar.png
+                  team_name: EVOS
         '400':
           description: Validasi parameter player_id gagal (bukan angka positif).
           content:
@@ -1138,18 +1175,23 @@ paths:
                 success: true
                 message: Statistik pemain berhasil diambil.
                 data:
-                  player_id: 2
-                  total_games: 32
-                  kills: 140
-                  deaths: 45
-                  assists: 160
-                  kda: 6.67
-                  win_rate: 65.6
-                  signature_heroes:
-                  - hero_id: 12
-                    hero_name: Claude
-                    games: 12
-                    win_rate: 75.0
+                  player:
+                    player_id: 2
+                    player_name: ALBERTTT
+                    team_id: 1
+                    team_name: EVOS
+                  stats:
+                    player_id: 2
+                    total_games: 21
+                    total_kills: '90'
+                    total_deaths: '37'
+                    total_assists: '63'
+                    avg_kills: '4.29'
+                    avg_deaths: '1.76'
+                    avg_assists: '3.00'
+                    avg_kda: '4.14'
+                    avg_gold_per_game: '14111'
+                    avg_damage_per_game: '50255'
         '400':
           description: Validasi parameter player_id gagal (bukan angka positif).
           content:
@@ -1216,13 +1258,25 @@ paths:
                 success: true
                 message: Riwayat game pemain berhasil diambil.
                 data:
-                - game_id: s17_w01_m01_g01
-                  hero_id: 12
-                  hero_name: Claude
-                  kills: 6
-                  deaths: 1
-                  assists: 8
-                  result: WIN
+                  player:
+                    player_id: 2
+                    player_name: ALBERTTT
+                    team_id: 1
+                    team_name: EVOS
+                  games:
+                  - game_id: s18_w07_m54_g01
+                    hero_id: 2
+                    hero_name: Paquito
+                    team_id: 1
+                    team_name: EVOS
+                    kills: 5
+                    deaths: 2
+                    assists: 3
+                    gold_earned: '10273.000'
+                    hero_damage: '58105.000'
+                    match_id: s18_w07_m54
+                    game_number: 1
+                    match_date: '2026-10-04'
         '400':
           description: Validasi parameter player_id gagal (bukan angka positif).
           content:
@@ -2371,3 +2425,64 @@ components:
           example:
             physical_attack: 160
             movement_spd: 5%
+    HeroSkill:
+      type: object
+      properties:
+        hero_skill_id:
+          type: integer
+          example: 953
+        skill_position:
+          type: integer
+          example: 1
+        skill_type:
+          type: string
+          example: Passive
+        skill_name:
+          type: string
+          example: Wrath of the Abyss
+        skill_icon_url:
+          type: string
+          format: uri
+          nullable: true
+          example: https://static.wikia.nocookie.net/mobile-legends/images/f/ff/Abysm_Strike.png
+        description:
+          type: string
+          example: When Dyrroth's Rage reaches 50%, he will enhance Burst Strike and Spectre Step.
+        tags:
+          type: array
+          items:
+            type: string
+          example:
+          - Heal
+          - Buff
+          - Damage
+        snapshot_at:
+          type: string
+          format: date-time
+          example: '2026-10-06 13:09:27'
+    HeroBuildSpell:
+      type: object
+      properties:
+        hero_build_spell_id:
+          type: integer
+          example: 309
+        spell_name:
+          type: string
+          example: Flicker
+        spell_icon_url:
+          type: string
+          format: uri
+          nullable: true
+          example: https://static.wikia.nocookie.net/mobile-legends/images/1/1e/Flicker.png/revision/latest?cb=20210818154536
+        share_percent:
+          type: string
+          example: '28.0000'
+        build_count:
+          type: integer
+          nullable: true
+          example: 32
+        snapshot_at:
+          type: string
+          format: date-time
+          example: '2026-10-06 13:09:27'
+
