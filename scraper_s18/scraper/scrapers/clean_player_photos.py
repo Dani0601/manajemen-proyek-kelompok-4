@@ -43,10 +43,11 @@ if path.exists():
         )
         row["player_photo_url"] = photo
         
-        # Ensure hero image is direct PNG
+        # Ensure hero image is valid URL
+        from clean_hero_images import get_hero_avatar
         h_name = row.get("hero") or ""
         h_slug = re.sub(r"[^a-zA-Z0-9]+", "-", h_name.lower()).strip("-")
-        row["hero_image_url"] = f"https://akmweb.youngjoygame.com/web/svnres/img/mlbb/hero_h/{h_slug}.png"
+        row["hero_image_url"] = get_hero_avatar(h_name, h_slug)
         
     with open(path, "w", encoding="utf-8") as f:
         json.dump(players, f, indent=2, ensure_ascii=False)

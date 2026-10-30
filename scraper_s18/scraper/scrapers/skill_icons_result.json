@@ -1,0 +1,1018 @@
+{
+  "aulus": {
+    "status": "updated",
+    "count": 3,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/8/8e/Aulus%2C_Charge%21.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/8/84/Cleaving_Axe.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/7/75/Fighting_Spirit.png"
+    ]
+  },
+  "belerick": {
+    "status": "updated",
+    "count": 3,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/a/af/Ancient_Seed.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/b/b2/Deadly_Thorns.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/a/af/Grand_Lord_Lava.png"
+    ]
+  },
+  "change": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/4/4c/Chang%27e_Lunar_Magic.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/6/6f/Chang%27e_Moonglow_Troupe.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/e/e7/Crescent_Moon.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/c/c5/Crescent_Moon_%28Sanrio%29.png"
+    ]
+  },
+  "chou": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/0/00/Am_I_Scary.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/1/13/Be_happy%21.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/7/75/Chou_%28Ken_Masters%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/d/d4/Chou_Lethal_Nexus_Map_Background_Story.png"
+    ]
+  },
+  "cici": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/2/2e/Buoyant_Bounce.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/3/38/Cici_P.ACE_Cici.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/c/c0/Coming_Soon.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/0/06/Curtain_Call.png"
+    ]
+  },
+  "claude": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/8/8f/Art_of_Thievery.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/6/6d/Art_of_Thievery_%28PRIME%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/c/c2/Art_of_Thievery_%28Sanrio%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/5/51/Battle_Mirror_Image.png"
+    ]
+  },
+  "clint": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/6/6d/Azure_Blade.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/2/27/Biubiubiu~.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/0/0c/Blazing_Duet.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/a/a1/Blind_Smoke.png"
+    ]
+  },
+  "cyclops": {
+    "status": "updated",
+    "count": 1,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/2/2b/Cyclops_SpongeBob.png"
+    ]
+  },
+  "diggie": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/4/4b/Auto_Alarm_Bomb.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/5/51/Diggie_Lethal_Nexus_Map_Background_Story.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/f/f6/Diggie_Outlaw_sprite.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/5/53/Disdain.png"
+    ]
+  },
+  "dyrroth": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/f/ff/Abysm_Strike.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/3/3f/Abysm_Strike_%28HUNTER%C3%97HUNTER%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/6/69/Abysm_Strike_%28KOF%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/0/0f/Abysm_Strike_%28Street_Fighter%29.png"
+    ]
+  },
+  "edith": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/3/38/Divine_Retribution.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/6/64/Earth_Shatter.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/2/28/Edith_%28Verdant_Knight%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/8/89/Edith_story.png"
+    ]
+  },
+  "esmeralda": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/4/4e/Easy_Peasy.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/d/dd/Esmeralda_Stellar_Muse.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/8/89/Falling_Starmoon.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/5/58/Frostmoon_Shield.png"
+    ]
+  },
+  "estes": {
+    "status": "updated",
+    "count": 2,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/d/db/Blessing_of_Moon_Goddess.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/2/2f/Domain_of_Moon_Goddess.png"
+    ]
+  },
+  "eudora": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/d/d7/Ball_Lightning.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/4/4c/Eudora_Atomic_Pop.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/a/ab/Eudora_Christmas_Carnival.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/2/2f/Eudora_Cosmic_Voyage.png"
+    ]
+  },
+  "fanny": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/1/18/2024_MY_HERO_WINNER.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/a/ab/Air_Superiority.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/4/42/Air_Superiority_%28Attack_on_Titan%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/8/8e/Air_Superiority_%28Legend%29.png"
+    ]
+  },
+  "faramis": {
+    "status": "updated",
+    "count": 3,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/b/b2/Deadly_Thorns.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/1/14/Ghost_Bursters.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/a/af/Grand_Lord_Lava.png"
+    ]
+  },
+  "floryn": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/2/28/Bloom.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/5/52/Bloom_%28SEASONS%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/e/ed/Bloom_%28Sanrio%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/e/ee/Dew.png"
+    ]
+  },
+  "franco": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/1/15/An_Eye_for_An_Eye.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/0/0d/Bloody_Hunt.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/a/ae/Bloody_Hunt_%28Legend%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/1/1e/Flicker.png"
+    ]
+  },
+  "fredrinn": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/9/97/Appraiser%27s_Wrath.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/2/27/Appraiser%27s_Wrath_%28Neobeasts%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/9/96/Brave_Assault.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/9/93/Brave_Assault_%28Neobeasts%29.png"
+    ]
+  },
+  "freya": {
+    "status": "updated",
+    "count": 2,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/c/c5/Freya_%282018-2020%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/c/c6/Freya_%282020-present%29.png"
+    ]
+  },
+  "gatotkaca": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/4/4e/Avatar_of_the_Guardian.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/c/ce/Be_Patient.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/d/d4/Blast_Iron_Fist.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/8/8f/Gatotkaca_%28Solar_Spark%29.png"
+    ]
+  },
+  "gloo": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/3/33/Arrival.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/1/13/Awesome.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/1/1e/Flicker.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/7/7e/For_Real%3F%21.png"
+    ]
+  },
+  "gord": {
+    "status": "updated",
+    "count": 3,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/b/b3/Blood_Floods.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/1/1e/Gord_%28Christmas_Carnival%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/9/95/Gord_Imperator_Stellaris.png"
+    ]
+  },
+  "granger": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/b/b0/Capriccio.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/2/28/Capriccio_%28Legend%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/c/c2/Capriccio_%28PRIME%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/0/04/Capriccio_%28The_Exorcists%29.png"
+    ]
+  },
+  "grock": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/e/eb/Bastion_of_Stone.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/f/fd/Earthen_Rampart.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/c/ce/Fist_Break.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/3/3c/Grock_Wasteland_Maniac.png"
+    ]
+  },
+  "guinevere": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/9/96/Brave_Assault.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/6/64/Earth_Shatter.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/8/89/Energy_Wave.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/e/e5/Energy_Wave_%28KOF%29.png"
+    ]
+  },
+  "gusion": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/6/64/Aamon_Lesley_Gusion_age.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/5/56/Dagger_Specialist.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/1/19/Dagger_Specialist_%28KOF%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/4/4f/Dagger_Specialist_%28Legend%29.png"
+    ]
+  },
+  "hanabi": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/b/bc/Forbidden_Jutsu_Higanbana.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/c/c3/Forbidden_Jutsu_Higanbana_%28Soul_Vessels%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/4/4e/Hanabi_Chic_Glamour.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/d/db/Hanabi_Neonscape_Icon.png"
+    ]
+  },
+  "hanzo": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/d/d0/Ame_no_Habakiri.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/d/d0/Ame_no_Habakiri.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/6/6a/Forbidden_Ninjutsu_Black_Mist.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/6/6d/Forbidden_Ninjutsu_Soul_Snatch.png"
+    ]
+  },
+  "harith": {
+    "status": "updated",
+    "count": 3,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/6/6e/Chrono_Dash.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/f/f7/Chrono_Dash_%28HUNTER%C3%97HUNTER%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/e/e1/HUNTER%C3%97HUNTER_Skin_Tag.png"
+    ]
+  },
+  "harley": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/5/52/Deadly_Magic.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/5/51/Harley-Lesley_buff.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/0/0a/HarleyCrying.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/f/f9/Harley_%28Dreaming_Koi%29.png"
+    ]
+  },
+  "hayabusa": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/4/4c/Bouncing_Ball.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/2/20/Double_11_Skin_Tag.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/3/30/Hanzo_Hayabusa_Yu_Zhong_height_from_official_discord.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/6/6c/Hayabusa_We%27re_Done..png"
+    ]
+  },
+  "helcurt": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/b/b3/Dark_Night_Falls.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/7/7a/Deadly_Stinger.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/e/ef/Deadly_Stinger_2.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/d/dd/Deadly_Stinger_3.png"
+    ]
+  },
+  "hilda": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/f/f8/Art_of_Hunting.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/4/4a/Art_of_Hunting_2.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/0/0a/Art_of_Hunting_3.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/a/a5/Blessing_of_Wilderness.png"
+    ]
+  },
+  "hirara": {
+    "status": "updated",
+    "count": 1,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/6/69/Falling_Maple.png"
+    ]
+  },
+  "hylos": {
+    "status": "updated",
+    "count": 1,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/f/fa/Glorious_Pathway.png"
+    ]
+  },
+  "irithel": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/8/8c/Force_of_the_Queen.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/5/53/Force_of_the_Queen_%28Ducati%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/6/63/Heavy_Crossbow.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/5/50/Heavy_Crossbow_%28Ducati%29.png"
+    ]
+  },
+  "ixia": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/c/ce/Dual_Beam.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/2/2f/Dual_Beam_%28Barrage%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/1/1d/Dual_Beam_%28Metro_Zero%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/0/0a/Full_Barrage.png"
+    ]
+  },
+  "jawhead": {
+    "status": "updated",
+    "count": 2,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/c/c4/Ejector.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/0/0c/Ejector_2.png"
+    ]
+  },
+  "johnson": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/2/2f/Autobots%2C_roll_out%21.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/8/8f/Automata_Icon.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/9/94/Brake.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/3/3a/Brake_%28Legend%29.png"
+    ]
+  },
+  "joy": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/9/9b/Everything-about-Joy-1.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/e/ec/Everything-about-Joy-2.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/d/d2/Ha%2C_Electrifying_Beats%21.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/3/3f/Ha%2C_Electrifying_Beats%21_2.png"
+    ]
+  },
+  "julian": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/a/ae/Chain.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/5/58/Chain_%28HUNTER%C3%97HUNTER%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/4/44/Chain_%28Jujutsu_Kaisen%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/6/69/Chain_%28Naruto%29.png"
+    ]
+  },
+  "kadita": {
+    "status": "updated",
+    "count": 2,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/6/6d/Breath_of_the_Ocean.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/b/b3/Happy_Independence_Day.png"
+    ]
+  },
+  "kagura": {
+    "status": "updated",
+    "count": 1,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/1/1e/Flicker.png"
+    ]
+  },
+  "kaja": {
+    "status": "updated",
+    "count": 1,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/2/2b/Divine_Binding.png"
+    ]
+  },
+  "kalea": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/1/1d/555%2C_Songkran_Time%21.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/4/4c/Bleh%21.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/4/4c/Bouncing_Ball.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/3/3f/Demonic_Force.png"
+    ]
+  },
+  "karina": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/9/9d/Dance_of_Blades.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/6/6d/Dance_of_Blades_%28KOF%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/6/6e/Dance_of_Death.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/8/8b/Dance_of_Death_%28KOF%29.png"
+    ]
+  },
+  "karrie": {
+    "status": "skipped",
+    "icons": []
+  },
+  "khaleed": {
+    "status": "updated",
+    "count": 2,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/e/ed/Blade_of_the_Heptaseas.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/e/ee/Desert_Tornado.png"
+    ]
+  },
+  "khufra": {
+    "status": "updated",
+    "count": 1,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/4/4c/Bouncing_Ball.png"
+    ]
+  },
+  "kimmy": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/8/85/Aerial_Dominance.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/7/7b/Aerial_Dominance_%28Star_Wars%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/a/a1/Anti-Grav_Thruster.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/8/83/Anti-Grav_Thruster_%28Star_Wars%29.png"
+    ]
+  },
+  "lancelot": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/e/e8/Flawless.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/1/1e/Flicker.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/1/16/Guiding_Wind.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/d/de/Hero104713.png"
+    ]
+  },
+  "lapu-lapu": {
+    "status": "skipped",
+    "icons": []
+  },
+  "layla": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/6/6e/10_Year_Together.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/1/1f/Ahaha.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/9/91/Breacher_Icon.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/5/5c/Carry_Me_to_the_End.png"
+    ]
+  },
+  "leomord": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/0/07/Byeee%21.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/f/f0/Decimation_Assault.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/7/7c/Diavel_V4_Rider.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/2/26/Gallop_to_Victory.png"
+    ]
+  },
+  "lesley": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/6/64/Aamon_Lesley_Gusion_age.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/6/62/All_Eyes_on_Me.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/0/0f/Distressed.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/5/51/Harley-Lesley_buff.png"
+    ]
+  },
+  "ling": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/2/2e/515_Ling.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/6/68/Cloud_Walker.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/f/f7/Cloud_Walker_%28Kung_Fu_Panda%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/c/c9/Cloud_Walker_%28Neobeast%29.png"
+    ]
+  },
+  "lolita": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/e/e6/Demonic_Grip.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/d/da/Guardian%27s_Reflection.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/d/dd/Guardian_Reflection_2.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/f/f0/Happy_New_Year%21.png"
+    ]
+  },
+  "lukas": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/7/78/Aceunyil%27s_word_about_lukas%27s_inspiration.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/f/ff/Delicious.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/c/c5/Eternal_Guard.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/5/5e/Flash_Combo.png"
+    ]
+  },
+  "lunox": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/1/15/Arcane_Boots.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/e/e2/Chaos_Assault.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/d/db/Chaos_Assault_%28Legend%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/0/02/Cosmic_Fission.png"
+    ]
+  },
+  "luo-yi": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/b/bb/%28-D%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/9/92/Dispersion.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/4/40/Dispersion_%28Yin%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/7/74/Diversion.png"
+    ]
+  },
+  "lylia": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/9/9c/Angry_Gloom.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/3/34/Angry_Gloom_%28Neobeasts%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/9/94/Black_Shoes.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/9/9c/Black_Shoes_%28Neobeasts%29.png"
+    ]
+  },
+  "marcel": {
+    "status": "updated",
+    "count": 3,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/c/c4/Ejector.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/a/a2/Framed_Moment.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/9/9c/Golden_Hour.png"
+    ]
+  },
+  "martis": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/4/4f/Asura%27s_Wrath.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/9/9e/Asura%27s_Wrath_%28Attack_on_Titan%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/b/be/Asura_Aura.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/c/c0/Asura_Aura_%28Attack_on_Titan%29.png"
+    ]
+  },
+  "masha": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/8/83/Bring_it_on%21.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/6/62/Claw_Strike.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/c/ce/Claw_Strike_%28KOF%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/f/f5/Feral.png"
+    ]
+  },
+  "mathilda": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/7/72/Ancestral_Guidance.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/9/90/Circling_Eagle.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/1/1f/Circling_Eagle_2.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/e/e4/Come_Catch_Me%21.png"
+    ]
+  },
+  "melissa": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/0/01/Apologize.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/8/86/Doll_Buster.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/a/ad/Doll_Buster_%28Jujutsu_Kaisen%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/4/41/Eyes_on_You%21.png"
+    ]
+  },
+  "minotaur": {
+    "status": "updated",
+    "count": 2,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/b/b9/Despair_Stomp.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/3/3d/Despair_Stomp_%28Enraged%29.png"
+    ]
+  },
+  "minsitthar": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/c/c2/4f953145b4acdeb3fb4fa4ecea59c8b9.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/d/d3/Alecto_Final_Blow.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/f/fd/Brave_Smite.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/0/0a/Cheers.png"
+    ]
+  },
+  "miya": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/e/ed/Aim_for_the_Stars.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/7/73/Arrow_of_Eclipse.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/6/6a/Arrow_of_Eclipse_%28Legend%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/3/3b/Arrow_of_Eclipse_%28SEASONS%29.png"
+    ]
+  },
+  "moskov": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/6/6b/ALLSTAR_2024_Skin_Tag.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/f/fa/Abyss_Walker.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/4/4b/Abyss_Walker_%28ALLSTAR_2024%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/2/28/Abyss_Walker_Buff.png"
+    ]
+  },
+  "nana": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/9/9f/Celebration_Dance.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/c/ce/Cool_Summer.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/b/b9/Double_Kawaii%21.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/c/cb/Happy_Easter.png"
+    ]
+  },
+  "natalia": {
+    "status": "updated",
+    "count": 2,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/1/10/Assassin_Instinct.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/8/89/Claw_Dash.png"
+    ]
+  },
+  "natan": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/6/6e/Are_You_Kidding.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/f/fd/Brave_Smite.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/1/1a/Demon_Hunter_Sword.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/5/53/Entropy%3F.png"
+    ]
+  },
+  "nolan": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/e/e8/Cosmic_Leap.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/3/3b/Cosmic_Leap_%28Double_11%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/4/46/Dimensional_Rift.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/f/f3/Dimensional_Rift_%28Double_11%29.png"
+    ]
+  },
+  "novaria": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/0/03/Astral_Echo.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/c/c5/Astral_Meteor.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/0/09/Astral_Recall.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/9/96/Astral_Recall_2.png"
+    ]
+  },
+  "obsidia": {
+    "status": "updated",
+    "count": 3,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/f/ff/Abyssal_Bone_Needle.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/a/a0/Abyssal_Bone_Needle_%28The_Aspirants%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/f/f2/Even_the_Abyss_Bugs_Are_Better_._%2A%2A%2A.png"
+    ]
+  },
+  "odette": {
+    "status": "updated",
+    "count": 3,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/5/5a/Avian_Authority.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/3/37/Blue_Nova.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/2/2d/Hero104610.png"
+    ]
+  },
+  "paquito": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/4/45/Champ_Stance.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/e/ed/Champ_Stance_%28KOF%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/0/02/Champ_Stance_%28Street_Fighter%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/6/61/Golden_Fist.png"
+    ]
+  },
+  "pharsa": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/9/9c/Almost%21.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/a/a6/Awesome-Pharsa.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/1/15/Curse_of_Crow.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/b/b3/Curse_of_Crow_%28Neobeast%29.png"
+    ]
+  },
+  "phoveus": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/3/33/Arrival.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/4/41/Astaros_Eye.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/3/30/Dark_Wave.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/3/3f/Demonic_Force.png"
+    ]
+  },
+  "popol-and-kupa": {
+    "status": "skipped",
+    "icons": []
+  },
+  "rafaela": {
+    "status": "updated",
+    "count": 1,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/4/40/Divine_Resurrection.png"
+    ]
+  },
+  "roger": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/2/2e/Bitter_Smile.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/3/39/Bloodthirsty_Howl.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/7/75/Bloodthirsty_Howl_%28Metro_Zero%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/7/7c/Bloodthirsty_Howl_%28Transformers%29.png"
+    ]
+  },
+  "ruby": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/9/90/Be_good%21.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/b/b8/Be_Good%21_%28The_Aspirants%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/9/90/Be_good%21.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/0/0a/Don%27t_run%2C_Wolf_King%21.png"
+    ]
+  },
+  "saber": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/d/db/Charge.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/f/fd/Charge_%28Legend%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/2/20/Enemy%27s_Bane.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/3/32/Enemy%27s_Bane_%28Legend%29.png"
+    ]
+  },
+  "selena": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/7/7d/Abyss_Twin.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/c/c2/Abyssal_Arrow.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/a/a9/Abyssal_Arrow_%28The_Aspirants%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/c/c4/Abyssal_Arrow_%28Zenith%29.png"
+    ]
+  },
+  "silvanna": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/1/13/Cometic_Lance_2.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/c/cf/Credit_Badge.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/8/87/Driven_Determination.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/0/0d/Dyrroth-Silvanna_BUFF.png"
+    ]
+  },
+  "sora": {
+    "status": "updated",
+    "count": 3,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/5/52/Bored.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/7/7b/Chill.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/5/5b/Heaven%27s_Wrath.png"
+    ]
+  },
+  "sun": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/b/b7/Clone_Techniques.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/f/f9/Endless_Variety.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/2/27/Happy_New_Year%212.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/3/37/Hehe.png"
+    ]
+  },
+  "suyou": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/c/ca/Blade_Surge.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/c/ce/Blade_Surge_%28Naruto%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/8/89/Evil_Queller.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/4/4a/Evil_Queller_%28Naruto%29.png"
+    ]
+  },
+  "terizla": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/c/c3/Body_of_Smith.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/1/1a/Craftsman%27s_Spirit.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/9/93/Execution_Strike.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/f/f6/Execution_Strike_2.png"
+    ]
+  },
+  "thamuz": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/0/06/Cauterant_Inferno.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/d/de/Cauterant_Inferno_%28Kung_Fu_Panda%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/5/51/Chasm_Trample.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/f/fd/Chasm_Trample_%28Kung_Fu_Panda%29.png"
+    ]
+  },
+  "tigreal": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/9/96/Attack_Wave.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/0/02/Fearless.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/0/05/Final_Verdict.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/1/1e/Flicker.png"
+    ]
+  },
+  "uranus": {
+    "status": "updated",
+    "count": 1,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/9/96/Consecration.png"
+    ]
+  },
+  "vale": {
+    "status": "updated",
+    "count": 1,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/a/a0/Definitely_Not_Napping%21.png"
+    ]
+  },
+  "valentina": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/5/56/Arcane_Shade.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/3/32/Crossbow_of_Tang.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/7/73/Energy_Eruption.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/b/b2/Hero%27s_Resolve.png"
+    ]
+  },
+  "valir": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/8/89/Angry%21.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/6/6a/Ashing.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/9/91/Ashing_%28KOF%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/d/dd/Ashing_%28Legend%29.png"
+    ]
+  },
+  "vexana": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/3/37/Cursed_Blast.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/3/32/Cursed_Blast_%28The_Aspirants%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/5/55/Cursed_Blast_%28Zenith%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/e/ed/Deathly_Grasp.png"
+    ]
+  },
+  "wanwan": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/e/ed/515_Wanwan.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/4/4c/Bouncing_Ball.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/3/32/Crossbow_of_Tang.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/1/10/Crossbow_of_Tang_%28grayscale%29.png"
+    ]
+  },
+  "xavier": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/9/9a/Dawning_Light.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/3/37/Dawning_Light_%28Jujutsu_Kaisen%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/7/78/Dawning_Light_-_Enhanced.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/d/d1/Dawning_Light_-_Enhanced_%28Jujutsu_Kaisen%29.png"
+    ]
+  },
+  "xborg": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/f/f0/Bumblebee_reporting_for_duty%21.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/2/20/Double_11_Skin_Tag.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/7/7b/Firaga_Armor.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/6/6f/Firaga_Armor_%28Double_11%29.png"
+    ]
+  },
+  "yi-sun-shin": {
+    "status": "skipped",
+    "icons": []
+  },
+  "yin": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/a/ac/515_Yin.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/f/ff/Abysm_Strike.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/c/c2/Abyssal_Arrow.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/e/ed/Abyssal_Trap.png"
+    ]
+  },
+  "yu-zhong": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/5/5c/Black_Dragon_Form.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/4/42/Black_Dragon_Form_2.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/0/00/Cursing_Touch.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/7/7e/Deadly_Venom.png"
+    ]
+  },
+  "yve": {
+    "status": "updated",
+    "count": 2,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/f/f6/Galactic_Power.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/4/48/Hero1011-displaymodel.png"
+    ]
+  },
+  "zetian": {
+    "status": "skipped",
+    "icons": []
+  },
+  "zhask": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/b/bf/Decimation_%28Zhask%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/6/6d/Dominator%27s_Descent.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/6/6b/Dominator%27s_Descent_2.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/8/80/Golden_Staff.png"
+    ]
+  },
+  "zhuxin": {
+    "status": "updated",
+    "count": 4,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/4/40/Crimson_Beacon.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/d/dc/Crimson_Butterflies.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/3/37/Crimson_Butterflies_%28stack%29.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/4/43/Fluttering_Grace.png"
+    ]
+  },
+  "zilong": {
+    "status": "updated",
+    "count": 2,
+    "icons": [
+      "https://static.wikia.nocookie.net/mobile-legends/images/1/16/515_Zilong.png",
+      "https://static.wikia.nocookie.net/mobile-legends/images/a/a8/Dragon_Flurry.png"
+    ]
+  }
+}
