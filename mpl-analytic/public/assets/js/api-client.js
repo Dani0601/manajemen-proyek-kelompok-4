@@ -52,16 +52,18 @@ console.log("=== FILE HERO-DETAIL.JS BERHASIL DIMUAT ===");
     try {
       // Menggunakan helper request() bawaan agar API_BASE_URL dan error otomatis tertangani.
       // Pastikan endpoint ini sesuai dengan routing backend PHP Anda.
-      const [buildData, detailData] = await Promise.all([
+      const [buildData, detailData, skillsData] = await Promise.all([
         request(`/heroes/${heroId}/builds`),
-        request(`/heroes/${heroId}`)
+        request(`/heroes/${heroId}`),
+        request(`/heroes/${heroId}/skills`)
       ]);
 
       // Catatan: Fungsi request() sudah otomatis me-return 'result.data', 
       // sehingga kita tidak perlu lagi membongkar 'raw.data' nantinya.
       return {
         buildRaw: buildData,
-        detailRaw: detailData
+        detailRaw: detailData,
+        skillsRaw: skillsData
       };
     } catch (error) {
       console.error("API Fetch Error:", error.message);

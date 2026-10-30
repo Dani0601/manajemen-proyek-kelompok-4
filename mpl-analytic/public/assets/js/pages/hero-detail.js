@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const buildItemsContainer = document.getElementById("hd-build-items");
         const emblemContainer = document.getElementById("hd-emblem");
         const spellContainer = document.getElementById("hd-spell");
+        const skillContainer = document.getElementById("hd-skill"); // Kontainer untuk Skill Hero
 
         // 2. Fungsi Inisialisasi
         async function init() {
@@ -41,14 +42,15 @@ document.addEventListener("DOMContentLoaded", () => {
             render(normalizedData);
         }
 
-        // 4. Normalisasi Data (Menyesuaikan dengan format yang dibutuhkan render)
+        // 4. Normalisasi Data (Menyesuaikan dengan format JSON endpoint /skills)
         function normalizeHeroDetail(raw) {
             if (!raw || !raw.buildRaw) {
-                return { build: { hasBuild: false } };
+                return { build: { hasBuild: false }, skills: [] };
             }
 
             const buildData = raw.buildRaw;
             const detailData = raw.detailRaw || null;
+            const skillsRaw = raw.skillsRaw || null;
             const items = buildData.items || [];
             const hasBuild = items.length > 0;
 
@@ -60,6 +62,19 @@ document.addEventListener("DOMContentLoaded", () => {
             let cleanEmblemName = "";
             if (detailData && detailData.recommendations && detailData.recommendations.emblems.length > 0) {
                 cleanEmblemName = detailData.recommendations.emblems[0].name;
+            }
+
+            // Normalisasi array skills dari endpoint /heroes/{id}/skills
+            let heroSkills = [];
+            const skillsArray = skillsRaw && skillsRaw.skills ? skillsRaw.skills : [];
+            
+            if (Array.isArray(skillsArray)) {
+                heroSkills = skillsArray.map(skill => ({
+                    name: skill.skill_name || "",
+                    type: skill.skill_type || "", // Contoh: "Passive", "Skill 1", "Skill 2", "Ultimate"
+                    icon: skill.skill_icon_url || "",
+                    position: skill.skill_position || 0
+                })).sort((a, b) => a.position - b.position); // Urutkan berdasarkan posisi (1, 2, 3, 4)
             }
 
             return {
@@ -77,7 +92,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     spell: {
                         name: cleanSpellName
                     }
-                }
+                },
+                skills: heroSkills
             };
         }
 
@@ -102,14 +118,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 for (let i = 1; i <= 6; i++) {
                     const item = data.build.items.find(x => x.position === i);
                     if (item) {
-                        const imgSrc = item.icon ? item.icon : '/assets/img/default-item.png'; // Ganti path sesuai aset default proyek Anda
+                        const imgSrc = item.icon ? item.icon : '/assets/img/default-item.png'; 
                         itemsHtml += `
                             <li class="hd-items item-slot">
                                 <img src="${imgSrc}" alt="${item.name}" title="${item.name}" style="width: 100%; max-width: 50px; border-radius: 50%;" />
                             </li>
                         `;
                     } else {
-                        // Merender slot kosong jika item kurang dari 6
                         itemsHtml += `<li class="hd-items item-slot empty-slot" style="width: 50px; height: 50px; background: #e9ecef; border-radius: 50%;"></li>`;
                     }
                 }
@@ -135,22 +150,34 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>
                 `;
             }
+
+            // Render Skill Hero (Pasif, Skill 1, Skill 2, Ultimate)
+            if (skillContainer && data.skills && data.skills.length > 0) {
+                let skillsHtml = `<div class="d-flex justify-content-around align-items-center w-100 py-2">`;
+                
+                data.skills.forEach(skill => {
+                    const imgSrc = skill.icon ? skill.icon : '/assets/img/default-skill.png';
+                    skillsHtml += `
+                        <div class="d-flex flex-column align-items-center text-center">
+                            <img src="${imgSrc}" alt="${skill.name}" title="${skill.name}" 
+                                 style="width: 55px; height: 55px; border-radius: 12px; object-fit: cover; box-shadow: 0 4px 6px rgba(0,0,0,0.2);" />
+                            <span class="mt-2 text-dark" style="font-size: 12px; font-weight: 600;">${skill.type || skill.name}</span>
+                        </div>
+                    `;
+                });
+                
+                skillsHtml += `</div>`;
+                skillContainer.innerHTML = skillsHtml;
+            }
         }
 
         // 6. Helper untuk mengatur State (Loading, Empty, Ready, Error)
         function setSectionState(sectionName, state) {
             const section = document.querySelector(`[data-hd-section="${sectionName}"]`);
             if (!section) return;
-
-            // FE 1 biasanya memiliki class atau logika spesifik untuk .hd-state-slot
-            // Di sini kita mensimulasikan perubahan state melalui atribut dataset
             section.dataset.state = state;
-            
-            // Catatan: Jika tampilan state belum berubah secara visual, 
-            // Anda bisa berkoordinasi dengan FE 1 mengenai class CSS apa yang mengatur `.hd-state-slot`
         }
 
-        // Mengekspos fungsi yang bisa dipanggil dari luar (jika diperlukan)
         return {
             init,
             render,
@@ -158,6 +185,5 @@ document.addEventListener("DOMContentLoaded", () => {
         };
     })();
 
-    // Jalankan skrip saat halaman selesai dimuat
     HeroDetail.init();
 });
