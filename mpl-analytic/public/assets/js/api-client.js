@@ -1,3 +1,4 @@
+console.log("=== FILE HERO-DETAIL.JS BERHASIL DIMUAT ===");
 (function () {
   "use strict";
 
@@ -47,8 +48,60 @@
     );
   }
 
+  async function getHeroDetail(heroId) {
+    try {
+      // Menggunakan helper request() bawaan agar API_BASE_URL dan error otomatis tertangani.
+      // Pastikan endpoint ini sesuai dengan routing backend PHP Anda.
+      const [buildData, detailData] = await Promise.all([
+        request(`/heroes/${heroId}/builds`),
+        request(`/heroes/${heroId}`)
+      ]);
+
+      // Catatan: Fungsi request() sudah otomatis me-return 'result.data', 
+      // sehingga kita tidak perlu lagi membongkar 'raw.data' nantinya.
+      return {
+        buildRaw: buildData,
+        detailRaw: detailData
+      };
+    } catch (error) {
+      console.error("API Fetch Error:", error.message);
+      return null; // Memicu state error di fungsi render UI
+    }
+  }
+
+
+  async function getPlayerList() {
+    try {
+        // Pastikan endpoint '/players' ini sesuai dengan URL di backend PHP Anda
+        const response = await request('/players'); 
+        return response;
+    } catch (error) {
+        console.error("Gagal mengambil daftar pemain:", error.message);
+        throw error;
+    }
+  }
+
+  // player comparison
+  async function getPlayerComparison(player1Id, player2Id) {
+      if (player1Id === player2Id) {
+          throw new Error("SAME_PLAYER");
+      }
+      try {
+          // Ganti URL sesuai endpoint perbandingan pemain di backend Anda
+          const response = await request(`/players/compare?p1=${player1Id}&p2=${player2Id}`);
+          return response; // response otomatis berisi isi dari "data" karena helper request()
+      } catch (error) {
+          console.error("API Fetch Error:", error.message);
+          throw error;
+      }
+  }
+
+
   window.ApiClient = {
     getDashboard,
-    getTournamentSchedule
+    getTournamentSchedule,
+    getHeroDetail,
+    getPlayerComparison,
+    getPlayerList
   };
 })();

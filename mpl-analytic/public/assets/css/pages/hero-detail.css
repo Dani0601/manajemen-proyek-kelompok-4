@@ -1,0 +1,185 @@
+/* =====================================================
+   DETAIL HERO — semua selector berawalan .hd
+   Warna/token dari desain: navy #172B4D, biru #2F6FED, merah #ED2F2F,
+   oranye #F28C28, hijau #24D321, abu #96999E, latar #F5F5F5.
+   ===================================================== */
+
+.hd {
+    --hd-navy: #172B4D;
+    --hd-blue: #2F6FED;
+    --hd-red: #ED2F2F;
+    --hd-red-text: #D42626;      /* merah lebih gelap untuk teks (kontras >= 4.5:1) */
+    --hd-orange: #F28C28;
+    --hd-green: #24D321;
+    --hd-green-text: #138A0F;    /* hijau lebih gelap untuk teks (kontras >= 4.5:1) */
+    --hd-gray: #96999E;
+    --hd-track: #D9D9D9;
+    --hd-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.hd-header { display: flex; align-items: center; gap: 12px; }
+.hd-header__back {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 44px; height: 44px; margin-left: -10px; color: var(--hd-navy);
+}
+.hd-header__title { margin: 0; font-size: 20px; font-weight: 600; color: var(--hd-navy); }
+
+.hd-section__title { margin: 0 0 8px; font-size: 15px; font-weight: 600; color: var(--hd-navy); line-height: 1.3; }
+
+/* Kartu */
+.hd-card { background: #fff; border-radius: 12px; padding: 12px; }
+.hd-card--shadow { background: #F5F5F5; box-shadow: var(--hd-shadow); }
+.hd-card--line { border: 1px solid #000; }
+
+/* Banner */
+.hd-banner { overflow: hidden; border-radius: 12px; background: var(--hd-navy); }
+.hd-banner__image:not([src]) { visibility: hidden; }
+.hd-banner__image { display: block; width: 100%; height: auto; aspect-ratio: 2.5 / 1; object-fit: cover; object-position: center 30%; }
+
+/* Build item */
+.hd-build__layout { display: grid; gap: 16px; }
+.hd-items { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px; margin: 0; padding: 0; list-style: none; }
+.hd-item { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; text-align: center; }
+.hd-item__media { position: relative; width: min(100%, 44px); aspect-ratio: 1; }
+.hd-item__image, .hd-avatar { display: block; width: 100%; height: 100%; border-radius: 8px; object-fit: cover; background: var(--hd-navy); }
+.hd-item__slot {
+    position: absolute; top: -4px; left: -4px; z-index: 1;
+    display: flex; align-items: center; justify-content: center; width: 16px; height: 16px;
+    border: 1.5px solid #fff; border-radius: 50%; background: var(--hd-blue); color: #fff; font-size: 9px; font-weight: 600; line-height: 1;
+}
+.hd-item__name { font-size: 10px; line-height: 1.2; color: var(--hd-navy); overflow-wrap: anywhere; }
+.hd-avatar { display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 600; font-size: 14px; }
+
+/* Emblem & battle spell */
+.hd-build__side { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.hd-setup { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 4px 8px; padding: 8px; border: 1.5px solid; }
+.hd-setup--emblem { border-color: var(--hd-red); }
+.hd-setup--spell { border-color: var(--hd-green); }
+.hd-setup__icon { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; background: var(--hd-navy); }
+.hd-setup__label { margin: 0; font-size: 11px; font-weight: 500; text-transform: uppercase; line-height: 1.2; }
+.hd-setup--emblem .hd-setup__label { color: var(--hd-red-text); }
+.hd-setup--spell .hd-setup__label { color: var(--hd-green-text); }
+.hd-setup__name { margin: 0; font-size: 13px; font-weight: 600; color: var(--hd-navy); line-height: 1.2; }
+.hd-setup__text { display: flex; flex-direction: column; min-width: 0; }
+.hd-talents { grid-column: 1 / -1; display: flex; justify-content: center; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.hd-talent { width: 28px; height: 28px; border-radius: 8px; background: #000; overflow: hidden; }
+.hd-talent img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+/* Skill */
+.hd-skills { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; }
+.hd-skill { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; }
+.hd-skill__media { width: min(100%, 48px); aspect-ratio: 1; }
+.hd-skill__label { font-size: 10px; color: var(--hd-navy); text-align: center; }
+
+/* Official ratings */
+.hd-ratings { display: grid; gap: 4px; margin: 0; }
+.hd-rating { display: grid; grid-template-columns: 38% minmax(0, 1fr) 16px; align-items: center; gap: 8px; }
+.hd-rating dt { font-size: 11px; font-weight: 400; color: var(--hd-navy); }
+.hd-rating dd { margin: 0; }
+.hd-rating__blocks { display: flex; gap: 3px; }
+.hd-rating__block { width: 7px; height: 7px; background: var(--hd-track); }
+.hd-rating__block.is-filled { background: var(--hd-blue); }
+.hd-rating__value { font-size: 11px; font-weight: 500; text-align: right; }
+
+/* Statistik */
+.hd-stats { display: grid; gap: 14px; margin: 0; padding: 4px 0; list-style: none; }
+.hd-stat { display: grid; grid-template-columns: 24% minmax(0, 1fr) auto; align-items: center; gap: 8px; }
+.hd-stat__label { font-size: 12px; font-weight: 500; color: var(--hd-navy); }
+.hd-bar { height: 6px; border-radius: 999px; background: var(--hd-track); overflow: hidden; }
+.hd-bar__fill { display: block; height: 100%; border-radius: 999px; }
+.hd-stat__value { min-width: 44px; font-size: 11px; font-weight: 700; text-align: right; }
+.hd-tone--blue { color: var(--hd-blue); } .hd-tone--blue .hd-bar__fill, .hd-bar__fill.hd-tone--blue { background: var(--hd-blue); }
+.hd-tone--red { color: var(--hd-red-text); } .hd-bar__fill.hd-tone--red { background: var(--hd-red); }
+.hd-tone--orange { color: #B85F0A; } .hd-bar__fill.hd-tone--orange { background: var(--hd-orange); }
+
+/* Hero counter (mobile: satu kartu; desktop: dua kartu berwarna) */
+.hd-counters { display: grid; gap: 12px; padding: 12px; border: 1px solid #000; border-radius: 12px; background: #fff; }
+.hd-counter { display: grid; gap: 8px; }
+.hd-pill { display: inline-block; justify-self: start; margin: 0; padding: 6px 12px; border-radius: 999px; background: var(--hd-navy); color: #fff; font-size: 11px; font-weight: 500; line-height: 1.25; }
+.hd-counter__list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.hd-counter-row { display: grid; grid-template-columns: 28px minmax(0, 76px) minmax(24px, 1fr) auto; align-items: center; gap: 8px; }
+.hd-counter-row__image { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
+.hd-counter-row .hd-avatar { border-radius: 50%; font-size: 11px; }
+.hd-counter-row__name { font-size: 11px; font-weight: 600; color: var(--hd-navy); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hd-counter-row__value { font-size: 11px; font-weight: 600; }
+
+/* Catatan item situasional */
+.hd-note { display: flex; align-items: center; gap: 12px; }
+.hd-note__icon { flex: 0 0 auto; }
+.hd-note__text { margin: 0; font-size: 12px; line-height: 1.5; color: #1F5EA8; }
+.hd-note-dummy { margin: 0; font-size: 11px; color: var(--color-text-secondary); }
+
+/* State: loading / kosong / galat */
+.hd-state-slot[hidden] { display: none; }
+[data-hd-panel].is-stated > :not(.hd-state-slot) { display: none; }
+.hd-empty { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 20px 16px; text-align: center; border: 1px solid #000; border-radius: 12px; background: #fff; }
+.hd-banner .hd-empty, .hd-card .hd-empty { border: 0; padding: 12px 8px; }
+.hd-empty__icon { display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background: #D9D9D9; }
+.hd-empty__icon img { width: 24px; height: 24px; object-fit: contain; }
+.hd-empty__title { margin: 4px 0 0; font-size: 16px; font-weight: 700; color: var(--hd-navy); }
+.hd-empty__text { max-width: 420px; margin: 0; font-size: 12px; line-height: 1.5; }
+.hd-empty__button {
+    min-width: 160px; min-height: 44px; margin-top: 8px; padding: 10px 24px; border: 0; border-radius: 24px;
+    background: #172B4D; color: #fff; box-shadow: 0 2px 4px rgba(0, 0, 0, .25); cursor: pointer;
+    font-family: inherit; font-size: 14px; font-weight: 600;
+}
+.hd-empty__button:hover { background: #0F1F3A; color: #fff; }
+a.hd-empty__button { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+.hd[hidden], #hd-no-hero[hidden] { display: none; }
+.hd--no-hero > :not(#hd-no-hero):not(.hd-header) { display: none; }
+.hd-empty__button:focus-visible { outline: 3px solid var(--hd-blue); outline-offset: 3px; }
+
+.hd-skel { display: block; border-radius: 8px; background: #D9D9D9; animation: hd-pulse 1.4s ease-in-out infinite; }
+.hd-skel--line { height: 8px; border-radius: 999px; }
+.hd-skel-grid { display: grid; gap: 8px; }
+.hd-skel-cell { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.hd-skel-cell .hd-skel:first-child { width: min(100%, 44px); aspect-ratio: 1; }
+.hd-skel-row { display: grid; grid-template-columns: 24% minmax(0, 1fr) 40px; align-items: center; gap: 8px; min-height: 24px; }
+.hd-loading-text { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 0; padding: 8px 0 0; color: #172B4D; font-size: 12px; font-weight: 600; }
+.hd-spinner { width: 16px; height: 16px; border: 2px solid #D9D9D9; border-top-color: #172B4D; border-radius: 50%; animation: hd-spin .8s linear infinite; }
+@keyframes hd-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .55; } }
+@keyframes hd-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .hd-skel, .hd-spinner { animation: none; } }
+
+/* ---------- Tablet / desktop ---------- */
+@media (min-width: 768px) {
+    .hd { gap: 20px; }
+    .hd-header__title { font-size: 22px; }
+    .hd-section__title { font-size: 15px; margin-bottom: 8px; }
+    .hd-banner__image { aspect-ratio: 3.2 / 1; }
+
+    .hd-build__layout { grid-template-columns: minmax(0, 1fr) 28%; align-items: start; }
+    .hd-build__side { grid-template-columns: 1fr; }
+    .hd-item__media { width: min(100%, 52px); }
+    .hd-item__name { font-size: 11px; }
+    .hd-skill__media { width: min(100%, 56px); }
+    .hd-skills { grid-template-columns: repeat(4, minmax(0, 120px)); justify-content: space-around; }
+    .hd-skill__label { font-size: 11px; }
+
+    .hd-ratings-section { display: none; }   /* Official Ratings hanya di desain mobile */
+
+    .hd-duo { display: grid; gap: 20px; }
+    .hd-counters { grid-template-columns: 1fr 1fr; padding: 0; border: 0; background: none; gap: 12px; }
+    .hd-counter { align-content: start; padding: 12px; border: 1.5px solid; border-radius: 12px; background: #fff; box-shadow: var(--hd-shadow); }
+    .hd-counter--favorable { border-color: var(--hd-blue); }
+    .hd-counter--unfavorable { border-color: var(--hd-orange); }
+    .hd-stats { gap: 22px; padding: 12px 0; }
+    .hd-stat__label, .hd-stat__value { font-size: 13px; }
+    .hd-note__text { font-size: 13px; }
+    .hd-empty__text { font-size: 14px; }
+    .hd-empty__button { min-width: 180px; min-height: 48px; }
+}
+
+@media (max-width: 380px) {
+    .hd-item__name { font-size: 9.5px; }
+    .hd-setup__name { font-size: 12px; }
+}
+
+/* Statistik + Hero Counter berdampingan hanya jika ruang cukup */
+@media (min-width: 1200px) {
+    .hd-duo { grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); align-items: start; }
+}
