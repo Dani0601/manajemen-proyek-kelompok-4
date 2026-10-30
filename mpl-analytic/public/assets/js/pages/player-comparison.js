@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const alertBox = document.getElementById("pc-alert");
     const alertCloseBtn = document.getElementById("pc-alert-close");
     const noticeBox = document.getElementById("pc-notice");
-    const liveRegion = document.getElementById("pc-live"); // Untuk screen reader (Aksesibilitas)
+    const liveRegion = document.getElementById("pc-live"); // Untuk screen reader
 
     let allPlayersData = [];
 
@@ -154,11 +154,11 @@ document.addEventListener("DOMContentLoaded", () => {
             if (resultContainer) resultContainer.hidden = false;
             if (liveRegion) liveRegion.textContent = "Data perbandingan berhasil dimuat.";
 
-            // Lempar ke UI FE 1
+            // Lempar ke fungsi Render
             if (window.ComparisonRender && typeof window.ComparisonRender.init === "function") {
                 window.ComparisonRender.init(normalizedData);
             } else {
-                console.warn("Fungsi window.ComparisonRender.init dari FE 1 belum dipanggil/tersedia.");
+                console.warn("Fungsi window.ComparisonRender.init belum tersedia.");
             }
 
         } catch (error) {
@@ -196,3 +196,70 @@ document.addEventListener("DOMContentLoaded", () => {
     // Inisialisasi
     initData();
 });
+
+// =========================================================================
+// MOCK RENDERER SEMENTARA (Akan ditimpa oleh kode FE 1 nanti)
+// =========================================================================
+window.ComparisonRender = {
+    init: function(data) {
+        const canvas = document.getElementById("pc-radar-chart");
+        if (!canvas) {
+            console.error("Canvas #pc-radar-chart tidak ditemukan!");
+            return;
+        }
+
+        // Ubah teks legenda HTML buatan FE 1
+        const legendA = document.getElementById("pc-legend-a");
+        const legendB = document.getElementById("pc-legend-b");
+        if(legendA) legendA.textContent = data.playerA.player_name || "Pemain A";
+        if(legendB) legendB.textContent = data.playerB.player_name || "Pemain B";
+
+        // Hancurkan grafik lama jika ada agar tidak menumpuk (glitch)
+        if (window.myRadarChart) {
+            window.myRadarChart.destroy();
+        }
+
+        // Gambar Spider Chart dengan Chart.js
+        window.myRadarChart = new Chart(canvas, {
+            type: 'radar',
+            data: {
+                labels: ['Kill Power', 'Farm Rate', 'Survival', 'Versatility', 'Objective', 'Teamfight'],
+                datasets: [
+                    {
+                        label: data.playerA.player_name,
+                        data: data.playerA.radarDataset,
+                        backgroundColor: 'rgba(54, 162, 235, 0.4)', // Biru
+                        borderColor: 'rgb(54, 162, 235)',
+                        pointBackgroundColor: 'rgb(54, 162, 235)',
+                        borderWidth: 2
+                    },
+                    {
+                        label: data.playerB.player_name,
+                        data: data.playerB.radarDataset,
+                        backgroundColor: 'rgba(255, 99, 132, 0.4)', // Merah
+                        borderColor: 'rgb(255, 99, 132)',
+                        pointBackgroundColor: 'rgb(255, 99, 132)',
+                        borderWidth: 2
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { display: true },
+                        suggestedMin: 0,
+                        suggestedMax: 100, // Asumsi nilai maksimal stat adalah 100
+                        ticks: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: { display: false } // Sembunyikan legend bawaan
+                }
+            }
+        });
+        
+        console.log("Mock Spider Chart berhasil digambar!");
+    }
+};

@@ -1,98 +1,158 @@
-
 /* =====================================================
    PERBANDINGAN PEMAIN
    Semua selector diawali .pc agar tidak bentrok dengan halaman lain.
    Mobile-first; tata letak desktop mulai di >= 768px.
+
+   Token mengikuti design system Figma (palet, tipografi, spacing 4/8/10/12/16/24).
+   Ubah nilai di blok :root-nya (.pc) di bawah, bukan di tiap aturan.
    ===================================================== */
 
 .pc {
-    /* Warna seri data (token tim UI). Hanya dipakai di halaman ini. */
-    --pc-blue: #3478F6;
-    --pc-orange: #F28C28;
-    --pc-line: var(--color-navy);
+    /* ---- Warna (palet Figma) ---- */
+    --pc-blue: #2F6FED;          /* pemain A (kiri) */
+    --pc-orange: #F28C28;        /* pemain B (kanan) */
+    --pc-red: #ED2F2F;           /* galat / validasi */
+    --pc-grey: #96999E;
+    --pc-surface: #F5F5F5;
+
+    /* Teks berwarna: #F28C28 hanya 2.45:1 dan #ED2F2F 3.8:1 di atas putih/pink,
+       di bawah batas 4.5:1. Varian teks di bawah dipakai khusus untuk huruf. */
+    --pc-blue-text: #2F6FED;     /* 4.55:1 */
+    --pc-orange-text: #B85C00;   /* 4.60:1 */
+    --pc-red-text: #CC2020;      /* 5.09:1 di atas #FEF3F2 */
+    --pc-red-bg: #FEF3F2;
+
+    --pc-navy: var(--color-navy);
+    --pc-text-muted: #475467;
+    --pc-line: #000000;          /* garis tabel */
+    --pc-border: #D0D5DD;
+    --pc-skeleton: #D9D9D9;
+
+    /* ---- Bentuk ---- */
     --pc-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     --pc-radius: 12px;
+    --pc-radius-card: 16px;
+    --pc-radius-sm: 8px;
+
+    /* ---- Tipografi mobile ----
+       Body di design system 8px; dinaikkan ke 11px agar terbaca di layar 360-430px. */
+    --pc-fs-page: 20px;
+    --pc-fs-section: 15px;
+    --pc-fs-body: 11px;
+    --pc-fs-caption: 10px;
+    --pc-fs-action: 10px;
+    --pc-fs-number: 12px;
+
+    /* ---- Tata letak ---- */
+    --pc-vs-col: 44px;           /* lebar kolom "Vs" antar dua sisi */
 
     display: flex;
     flex-direction: column;
     gap: 16px;
+    min-width: 0;
 }
 
-.pc-result {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+.pc [hidden] {
+    display: none !important;
 }
 
-.pc-result[hidden],
-.pc-status[hidden] {
-    display: none;
-}
-
-.pc-result.is-loading {
-    opacity: 0.5;
-    pointer-events: none;
-}
-
-/* ---------- Header halaman (mobile) ---------- */
+/* ---------- Judul halaman (mobile) ---------- */
 
 .pc-header {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 4px;
 }
 
+/* Tombol kembali: ikon 24px, area ketuk 44x44. */
 .pc-header__back {
     display: inline-flex;
+    flex: 0 0 44px;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
-    margin-left: -8px;
-    color: var(--color-navy);
+    width: 44px;
+    height: 44px;
+    margin-left: -12px;
+    border-radius: 50%;
+    color: var(--pc-navy);
+}
+
+.pc-header__back:hover {
+    background-color: var(--pc-surface);
 }
 
 .pc-header__title {
     margin: 0;
-    font-size: 18px;
-    font-weight: 700;
+    color: var(--pc-navy);
+    font-size: var(--pc-fs-page);
+    font-weight: 600;
     line-height: 1.3;
 }
 
-/* ---------- Pemilih pemain ---------- */
+/* ---------- Pemilih + kartu ---------- */
+
+.pc-lineup {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+}
+
+/* Pemilih dan kartu memakai kolom yang sama: [sisi A] [Vs] [sisi B] */
+.pc-pickers,
+.pc-cards {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--pc-vs-col) minmax(0, 1fr);
+    min-width: 0;
+}
+
+.pc-cards {
+    align-items: center;
+}
 
 .pc-picker {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    align-content: start;
+    min-width: 0;
 }
+
+.pc-picker--a { grid-column: 1; }
+.pc-picker--b { grid-column: 3; }
 
 .pc-select {
     position: relative;
+    min-width: 0;
     height: 44px;
 }
 
 .pc-select__control {
     width: 100%;
     height: 100%;
-    padding: 0 32px;
+    padding: 0 28px 0 26px;
 
-    border: 1px solid var(--color-border);
-    border-radius: 8px;
-    color: var(--color-navy);
-    background-color: var(--color-white);
+    border: 1px solid var(--pc-border);
+    border-radius: var(--pc-radius-sm);
+    color: var(--pc-navy);
+    background-color: #FFFFFF;
     box-shadow: var(--pc-shadow);
 
     appearance: none;
     -webkit-appearance: none;
     cursor: pointer;
-    text-align: center;
-    text-align-last: center;
+    text-align: left;
     text-overflow: ellipsis;
+    white-space: nowrap;
 
     font-family: inherit;
-    font-size: 14px;
+    font-size: var(--pc-fs-action);
     font-weight: 600;
+    line-height: 1.2;
+}
+
+.pc-select--team .pc-select__control {
+    padding-left: 34px;
 }
 
 .pc-select__control:focus-visible {
@@ -100,8 +160,14 @@
     outline-offset: 2px;
 }
 
+.pc-select__control:disabled {
+    cursor: default;
+    opacity: 1;
+}
+
 .pc-select__dot,
-.pc-select__chevron {
+.pc-select__chevron,
+.pc-select__logo {
     position: absolute;
     top: 50%;
     pointer-events: none;
@@ -110,156 +176,240 @@
 
 .pc-select__dot {
     left: 12px;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
 }
 
-.pc-select--a .pc-select__dot { background-color: var(--pc-blue); }
-.pc-select--b .pc-select__dot { background-color: var(--pc-orange); }
+.pc-picker--a .pc-select__dot { background-color: var(--pc-blue); }
+.pc-picker--b .pc-select__dot { background-color: var(--pc-orange); }
 
-.pc-select__chevron {
-    right: 10px;
-    color: var(--color-navy);
-}
-
-/* ---------- Status ---------- */
-
-.pc-status {
-    margin: 0;
-    padding: 10px 14px;
-    border: 1px solid #F3C99C;
-    border-radius: 8px;
-    color: #8A4B0F;
-    background-color: #FFF4E6;
-    font-size: 14px;
-}
-
-/* ---------- Kartu pemain + Vs ---------- */
-
-.pc-cards {
-    position: relative;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 28px;
-}
-
-.pc-player {
-    display: grid;
-    gap: 8px;
-    min-width: 0;
-    padding: 12px;
-
-    border-radius: var(--pc-radius);
-    background-color: var(--color-white);
-    box-shadow: var(--pc-shadow);
-}
-
-.pc-player__image {
-    display: block;
-    width: 100%;
-    aspect-ratio: 2 / 1;
-    border-radius: 8px;
-    object-fit: cover;
-}
-
-.pc-player__info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    min-width: 0;
-    text-align: center;
-}
-
-.pc-player__name {
-    margin: 0;
-    max-width: 100%;
-    overflow-wrap: anywhere;
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 1.25;
-}
-
-.pc-player__team {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    min-width: 0;
-    text-align: left;
-}
-
-.pc-team__logo {
-    flex: 0 0 auto;
-    width: 24px;
-    height: 24px;
+.pc .pc-select__logo {
+    left: 10px;
+    width: 18px;
+    height: 18px;
     object-fit: contain;
 }
 
-.pc-team__text {
+.pc-select__chevron {
+    right: 8px;
+    color: var(--pc-navy);
+}
+
+/* iOS Safari memperbesar halaman saat kolom form < 16px difokuskan, sehingga
+   halaman jadi bisa digeser ke samping. Khusus iOS, ukuran dinaikkan ke 16px. */
+@supports (-webkit-touch-callout: none) {
+    .pc-select__control {
+        font-size: 16px;
+    }
+}
+
+/* State loading awal: pemilih menjadi kotak putih kosong (Figma). */
+.pc-lineup.is-skeleton .pc-select__control {
+    color: transparent;
+    pointer-events: none;
+}
+
+.pc-lineup.is-skeleton .pc-select__dot,
+.pc-lineup.is-skeleton .pc-select__chevron,
+.pc-lineup.is-skeleton .pc-select__logo {
+    visibility: hidden;
+}
+
+/* ---------- Pesan netral ---------- */
+
+.pc-status {
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid var(--pc-border);
+    border-radius: var(--pc-radius-sm);
+    color: var(--pc-navy);
+    background-color: var(--pc-surface);
+    font-size: var(--pc-fs-body);
+    font-weight: 500;
+}
+
+/* ---------- Kartu pemain (foto) + Vs ---------- */
+
+.pc-card {
+    position: relative;
+    min-width: 0;
+    aspect-ratio: 5 / 4;
+    overflow: hidden;
+    border-radius: var(--pc-radius-card);
+    background-color: #FFFFFF;
+    box-shadow: var(--pc-shadow);
+}
+
+/* Absolut + inset: tinggi kartu berasal dari aspect-ratio, jadi height:100% tidak ter-resolve.
+   Diawali .pc agar menang atas aturan global `.app-content img { height: auto }`. */
+.pc .pc-card__image,
+.pc .pc-card__fallback {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Foto hasil ekspor Figma membawa tepi transparan/bayangan; diperbesar 6% lalu dipotong
+   kartu (overflow:hidden) agar foto memenuhi kartu. Wajah diutamakan lewat object-position. */
+.pc .pc-card__image {
+    display: block;
+    inset: -3%;
+    width: 106%;
+    max-width: none;
+    height: 106%;
+    object-fit: cover;
+    object-position: center 20%;
+}
+
+/* Saat loading kartu tampil kosong, tanpa isi. */
+.pc-cards.is-loading .pc-card > * {
+    visibility: hidden;
+}
+
+/* Cadangan jika foto belum tersedia: inisial + nama, karena kartu tidak punya teks lain. */
+.pc-card__fallback {
     display: flex;
     flex-direction: column;
-    min-width: 0;
-    color: var(--color-navy);
-    font-size: 12px;
-    line-height: 1.3;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 8px;
+    color: #FFFFFF;
+    background-color: var(--pc-navy);
+    text-align: center;
+}
+
+.pc-card__initials {
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.1;
+}
+
+.pc-card__name {
+    max-width: 100%;
+    overflow: hidden;
+    font-size: var(--pc-fs-action);
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.pc-card__team {
+    max-width: 100%;
+    overflow: hidden;
+    font-size: var(--pc-fs-caption);
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .pc-vs {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    z-index: 1;
-
     display: flex;
     align-items: center;
     justify-content: center;
+    justify-self: center;
     width: 36px;
     height: 36px;
 
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--pc-border);
     border-radius: 50%;
-    color: var(--color-navy);
-    background-color: var(--color-white);
-    box-shadow: var(--pc-shadow);
-    transform: translate(-50%, -50%);
+    color: var(--pc-navy);
+    background-color: #FFFFFF;
 
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 700;
 }
 
-/* Cadangan jika gambar belum tersedia */
-.pc-avatar {
+/* ---------- Pesan validasi ---------- */
+
+.pc-alert {
     display: flex;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 8px 8px 8px 12px;
+
+    border: 1px solid var(--pc-red);
+    border-radius: var(--pc-radius-sm);
+    color: var(--pc-red-text);
+    background-color: var(--pc-red-bg);
+    box-shadow: 0 2px 6px rgba(237, 47, 47, 0.12);
+}
+
+.pc-alert__body {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.pc-alert__icon {
+    flex: 0 0 auto;
+    color: var(--pc-red);
+}
+
+.pc-alert__text {
+    min-width: 0;
+}
+
+.pc-alert__title,
+.pc-alert__hint {
+    margin: 0;
+    color: var(--pc-red-text);
+    font-size: var(--pc-fs-caption);
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+/* Ikon x kecil, area ketuk 44x44; margin negatif menjaga tinggi kotak tetap rapat. */
+.pc-alert__close {
+    display: inline-flex;
+    flex: 0 0 44px;
     align-items: center;
     justify-content: center;
-    color: var(--color-white);
-    background-color: var(--color-navy);
-    font-weight: 600;
-}
+    width: 44px;
+    height: 44px;
+    margin: -10px -10px -10px 0;
+    padding: 0;
 
-.pc-player__image.pc-avatar {
-    font-size: 28px;
-}
-
-.pc-team__logo.pc-avatar {
+    border: 0;
     border-radius: 50%;
-    font-size: 9px;
+    color: var(--pc-red-text);
+    background: transparent;
+}
+
+.pc-alert__close:focus-visible {
+    outline: 3px solid var(--color-blue);
+    outline-offset: -3px;
 }
 
 /* ---------- Section ---------- */
 
+.pc-result,
+.pc-skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.pc-section {
+    min-width: 0;
+}
+
 .pc-section__title {
     margin: 0 0 8px;
-    font-size: 16px;
+    color: var(--pc-navy);
+    font-size: var(--pc-fs-section);
     font-weight: 600;
     line-height: 1.3;
 }
 
 .pc-panel {
-    padding: 12px;
+    padding: 8px;
+    border: 1px solid var(--pc-border);
     border-radius: var(--pc-radius);
-    background-color: var(--color-white);
+    background-color: #FFFFFF;
     box-shadow: var(--pc-shadow);
 }
 
@@ -278,14 +428,14 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 12px;
+    font-size: var(--pc-fs-caption);
     font-weight: 600;
 }
 
 .pc-legend__box {
-    width: 14px;
-    height: 14px;
-    border-radius: 3px;
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
 }
 
 .pc-legend__box--a { background-color: var(--pc-blue); }
@@ -303,7 +453,7 @@
     overflow: hidden;
     border: 1px solid var(--pc-line);
     border-radius: var(--pc-radius);
-    background-color: var(--color-white);
+    background-color: #FFFFFF;
 }
 
 .pc-row {
@@ -327,22 +477,23 @@
 
 .pc-row__a,
 .pc-row__b {
-    font-size: 14px;
-    font-weight: 500;
+    font-size: var(--pc-fs-number);
+    font-weight: 600;
 }
 
 .pc-row__a {
     padding-left: 15%;
-    color: var(--pc-blue);
+    color: var(--pc-blue-text);
 }
 
 .pc-row__b {
-    color: var(--pc-orange);
+    color: var(--pc-orange-text);
 }
 
 .pc-row__label {
     min-width: 0;
-    font-size: 12px;
+    color: var(--pc-text-muted);
+    font-size: var(--pc-fs-body);
     line-height: 1.3;
 }
 
@@ -364,17 +515,18 @@
 
 .pc-perf__name {
     overflow: hidden;
-    font-size: 14px;
+    font-size: var(--pc-fs-number);
     font-weight: 700;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
 .pc-bar {
+    display: block;
     height: 8px;
     overflow: hidden;
     border-radius: 999px;
-    background-color: #D9D9D9;
+    background-color: var(--pc-skeleton);
 }
 
 .pc-bar__fill {
@@ -387,15 +539,263 @@
 .pc-bar__fill--b { background-color: var(--pc-orange); }
 
 .pc-perf__value {
-    font-size: 12px;
+    font-size: var(--pc-fs-body);
     font-weight: 700;
     white-space: nowrap;
 }
 
 .pc-note {
     margin: 0;
-    color: var(--color-text-secondary);
+    color: var(--pc-text-muted);
+    font-size: var(--pc-fs-caption);
+}
+
+/* ---------- Data kosong / galat (di dalam kotak .pc-table) ---------- */
+
+.pc-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 16px 12px;
+    text-align: center;
+}
+
+.pc-empty__icon {
+    display: block;
+    width: 44px;
+    height: 44px;
+    color: var(--pc-border);
+}
+
+.pc-empty__icon svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.pc-empty--error .pc-empty__icon {
+    color: var(--pc-red);
+}
+
+.pc-empty__title {
+    margin: 4px 0 0;
+    color: var(--pc-navy);
     font-size: 12px;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.pc-empty__text {
+    margin: 0;
+    max-width: 32ch;
+    color: var(--pc-text-muted);
+    font-size: var(--pc-fs-caption);
+    line-height: 1.4;
+}
+
+/* Tombol pil kecil; area ketuk dilebarkan ke 44px lewat ::after. */
+.pc-empty__button {
+    position: relative;
+    min-width: 88px;
+    height: 30px;
+    margin-top: 8px;
+    padding: 0 16px;
+
+    border: 0;
+    border-radius: 999px;
+    color: #FFFFFF;
+    background-color: var(--pc-navy);
+
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.pc-empty__button::after {
+    content: "";
+    position: absolute;
+    inset: -8px -4px;
+}
+
+.pc-empty__button:hover {
+    background-color: #0F2040;
+}
+
+/* ---------- State galat: panel merah satu halaman (Figma) ---------- */
+
+.pc.is-error .pc-lineup,
+.pc.is-error .pc-header__title {
+    display: none;
+}
+
+.pc-notice--error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: min(60vh, 460px);
+    border-color: var(--pc-red);
+    border-radius: 4px;
+}
+
+.pc-empty--error {
+    gap: 8px;
+    padding: 24px 16px;
+}
+
+.pc-empty--error .pc-empty__icon {
+    width: 48px;
+    height: 48px;
+}
+
+.pc-empty--error .pc-empty__title {
+    margin-top: 8px;
+    font-size: 16px;
+}
+
+.pc-empty--error .pc-empty__text {
+    max-width: 36ch;
+    font-size: 12px;
+}
+
+.pc-empty--error .pc-empty__button {
+    width: min(100%, 280px);
+    height: 44px;
+    margin-top: 16px;
+    border-radius: 8px;
+    background-color: var(--pc-red-text);
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.pc-empty--error .pc-empty__button:hover {
+    background-color: #A91A1A;
+}
+
+/* ---------- State loading (skeleton) ---------- */
+
+.pc-sk {
+    display: block;
+    border-radius: var(--pc-radius-sm);
+    background-color: var(--pc-skeleton);
+    animation: pc-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes pc-pulse {
+    50% { opacity: 0.55; }
+}
+
+.pc-sk--heading {
+    display: inline-block;
+    width: 96px;
+    height: 14px;
+    vertical-align: middle;
+    border-radius: 999px;
+}
+
+.pc-sk--a,
+.pc-sk--b {
+    width: 26px;
+    height: 10px;
+}
+
+.pc-sk--a { margin-left: 15%; }
+.pc-sk--label { width: 72px; height: 10px; }
+.pc-sk--name { width: 40px; height: 10px; }
+.pc-sk--value { width: 32px; height: 10px; justify-self: end; }
+
+.pc-bar--skeleton .pc-bar__fill {
+    width: 62%;
+    background-color: var(--pc-skeleton);
+    box-shadow: inset 0 0 0 1px var(--pc-grey);
+}
+
+.pc-radar-skeleton {
+    position: relative;
+    height: 300px;
+}
+
+.pc-radar-skeleton__shape {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: auto;
+    height: 64%;
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+}
+
+.pc-sk-label {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.pc-sk--pill {
+    width: 48px;
+    height: 7px;
+    border-radius: 999px;
+}
+
+.pc-sk--pill-short { width: 32px; height: 5px; }
+
+.pc-sk-label--tl { top: 8%;  left: 18%; }
+.pc-sk-label--tr { top: 8%;  right: 18%; }
+.pc-sk-label--r  { top: 46%; right: 3%; }
+.pc-sk-label--br { bottom: 8%; right: 12%; }
+.pc-sk-label--bl { bottom: 8%; left: 12%; }
+.pc-sk-label--l  { top: 46%; left: 3%; }
+
+.pc-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 0;
+    color: var(--pc-navy);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.pc-spinner {
+    flex: 0 0 auto;
+    animation: pc-spin 0.9s linear infinite;
+}
+
+@keyframes pc-spin {
+    to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pc-sk,
+    .pc-spinner {
+        animation: none;
+    }
+}
+
+/* =====================================================
+   MOBILE KECIL / SEDANG (576px - 767px)
+   Empat pemilih muat dalam satu baris per sisi.
+   ===================================================== */
+
+@media (min-width: 576px) {
+    .pc-picker {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    .pc-picker .pc-select {
+        flex: 1 1 0;
+        max-width: 260px;
+    }
+
+    /* Sisi B dicerminkan seperti di Figma: pemain di dalam, tim di tepi luar. */
+    .pc-picker--b {
+        flex-direction: row-reverse;
+    }
 }
 
 /* =====================================================
@@ -404,15 +804,27 @@
 
 @media (min-width: 768px) {
     .pc {
+        --pc-vs-col: clamp(96px, 14%, 160px);
+        --pc-fs-section: 20px;
+        --pc-fs-body: 14px;
+        --pc-fs-caption: 12px;
+        --pc-fs-action: 14px;
+        --pc-fs-number: 16px;
+
         gap: 24px;
     }
 
-    .pc-result {
+    .pc-result,
+    .pc-skeleton {
         gap: 24px;
     }
 
-    /* Di desktop judul halaman hanya untuk pembaca layar (Figma: judul ada di sidebar) */
+    /* Di desktop judul halaman hanya untuk pembaca layar; tombol kembali tetap tampil. */
     .pc-header {
+        margin-bottom: -12px;
+    }
+
+    .pc-header__title {
         position: absolute;
         width: 1px;
         height: 1px;
@@ -421,65 +833,40 @@
         white-space: nowrap;
     }
 
-    .pc-picker {
-        display: flex;
-        justify-content: space-between;
-    }
-
     .pc-select {
-        width: clamp(200px, 24%, 300px);
         height: 48px;
     }
 
-    .pc-select__control {
-        font-size: 16px;
+    .pc-card {
+        aspect-ratio: 2 / 1;
     }
 
-    .pc-select__dot {
-        left: 16px;
-        width: 14px;
-        height: 14px;
-        border-radius: 3px;
-    }
-
-    .pc-cards {
-        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-        align-items: center;
-        gap: 16px;
-    }
-
-    .pc-player {
-        grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-        align-items: center;
-        gap: 16px;
-        padding: 12px;
-    }
-
-    .pc-player__name {
-        font-size: 20px;
-    }
-
-    .pc-team__logo {
-        width: 32px;
-        height: 32px;
-    }
-
-    .pc-team__text {
-        font-size: 14px;
+    .pc-card__initials {
+        font-size: 40px;
     }
 
     .pc-vs {
-        position: static;
-        width: 80px;
+        width: min(80px, 100%);
         height: 32px;
         border-radius: 999px;
-        transform: none;
-        box-shadow: none;
+        font-size: 14px;
+    }
+
+    .pc-alert {
+        padding: 10px 10px 10px 16px;
+    }
+
+    .pc-alert__body {
+        justify-content: center;
+    }
+
+    .pc-alert__title,
+    .pc-alert__hint {
+        font-size: 12px;
     }
 
     .pc-section__title {
         margin-bottom: 12px;
-        font-size: 20px;
     }
 
     .pc-panel {
@@ -490,8 +877,18 @@
         font-size: 14px;
     }
 
-    .pc-radar__canvas {
+    .pc-legend__box {
+        width: 14px;
+        height: 14px;
+    }
+
+    .pc-radar__canvas,
+    .pc-radar-skeleton {
         height: 340px;
+    }
+
+    .pc-radar-skeleton__shape {
+        height: 76%;
     }
 
     .pc-row {
@@ -500,19 +897,15 @@
 
     .pc-row__a,
     .pc-row__b {
-        font-size: 16px;
+        font-weight: 500;
     }
 
     .pc-row__label {
-        font-size: 14px;
+        color: inherit;
     }
 
     .pc-table--perf .pc-row {
         min-height: 40px;
-    }
-
-    .pc-perf__name {
-        font-size: 16px;
     }
 
     .pc-perf__value {
@@ -522,18 +915,53 @@
     .pc-note {
         font-size: 13px;
     }
+
+    .pc-empty {
+        padding: 24px 16px;
+    }
+
+    .pc-empty__title {
+        font-size: 14px;
+    }
+
+    .pc-empty__text {
+        font-size: 12px;
+    }
+
+    .pc-loading {
+        font-size: 14px;
+    }
+
+    .pc-sk--heading { width: 120px; height: 16px; }
+    .pc-sk--label { width: 140px; }
+    .pc-sk--a,
+    .pc-sk--b { width: 36px; }
+    .pc-sk--pill { width: 64px; height: 8px; }
+    .pc-sk--pill-short { width: 44px; height: 6px; }
 }
 
+/* Layar sangat sempit (<= 360px): rapatkan agar tidak ada scroll horizontal. */
 @media (max-width: 360px) {
-    .pc-cards {
-        gap: 24px;
+    .pc {
+        --pc-vs-col: 40px;
     }
 
-    .pc-player {
-        padding: 10px;
+    .pc-vs {
+        width: 32px;
+        height: 32px;
     }
 
-    .pc-radar__canvas {
+    .pc-radar__canvas,
+    .pc-radar-skeleton {
         height: 280px;
     }
+
+    .pc-alert {
+        padding-left: 8px;
+    }
+}
+
+/* Topbar tanpa kolom cari: tombol menu tetap di kanan (mobile). */
+.app-topbar--no-search .app-topbar__menu {
+    margin-left: auto;
 }

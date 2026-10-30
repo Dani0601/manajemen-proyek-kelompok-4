@@ -82,13 +82,13 @@ console.log("=== FILE HERO-DETAIL.JS BERHASIL DIMUAT ===");
   }
 
   // player comparison
-  async function getPlayerComparison(player1Id, player2Id) {
+  async function getPlayerComparison(player1Id, player2Id, seasonId =1) {
       if (player1Id === player2Id) {
           throw new Error("SAME_PLAYER");
       }
       try {
           // Ganti URL sesuai endpoint perbandingan pemain di backend Anda
-          const response = await request(`/players/compare?p1=${player1Id}&p2=${player2Id}`);
+          const response = await request(`/players/compare?p1=${player1Id}&p2=${player2Id}&season=${seasonId}`);
           return response; // response otomatis berisi isi dari "data" karena helper request()
       } catch (error) {
           console.error("API Fetch Error:", error.message);

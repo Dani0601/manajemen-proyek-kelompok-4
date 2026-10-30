@@ -2,7 +2,7 @@
 $pageTitle = 'Perbandingan Pemain | MLBB Guide';
 $pageDescription = 'Bandingkan statistik dan performa dua pemain MPL ID.';
 $pageCss = 'comparison.css';
-$pageJs = 'comparison.js';
+$pageJs = 'player-comparison.js';
 
 require BASE_PATH . '/views/layouts/header.php';
 require BASE_PATH . '/views/layouts/navbar.php';
@@ -248,4 +248,33 @@ $radarLabels = ['tl', 'tr', 'r', 'br', 'bl', 'l'];
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <script src="<?= $assetBase ?>/js/api-client.js"></script>
 <script src="<?= $assetBase ?>/js/pages/player-comparison.js"></script>
+
+<script>
+window.ComparisonRender = {
+    init: function(data) {
+        const canvas = document.getElementById("pc-radar-chart");
+        if (!canvas) return;
+        
+        const legendA = document.getElementById("pc-legend-a");
+        const legendB = document.getElementById("pc-legend-b");
+        if(legendA) legendA.textContent = data.playerA.player_name || "Pemain A";
+        if(legendB) legendB.textContent = data.playerB.player_name || "Pemain B";
+
+        if (window.myRadarChart) window.myRadarChart.destroy();
+
+        window.myRadarChart = new Chart(canvas, {
+            type: 'radar',
+            data: {
+                labels: ['Kill Power', 'Farm Rate', 'Survival', 'Versatility', 'Objective', 'Teamfight'],
+                datasets: [
+                    { label: data.playerA.player_name, data: data.playerA.radarDataset, backgroundColor: 'rgba(54,162,235,0.4)', borderColor: '#36A2EB' },
+                    { label: data.playerB.player_name, data: data.playerB.radarDataset, backgroundColor: 'rgba(255,99,132,0.4)', borderColor: '#FF6384' }
+                ]
+            },
+            options: { scales: { r: { ticks: { display: false }, suggestedMin: 0, suggestedMax: 100 } }, plugins: { legend: { display: false } } }
+        });
+    }
+};
+</script>
+
 <?php require BASE_PATH . '/views/layouts/footer.php'; ?>
