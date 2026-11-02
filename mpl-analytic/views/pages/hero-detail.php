@@ -108,17 +108,32 @@ $heroId = (int) ($_GET['id'] ?? 0);
     </div>
 
     <!-- ATURAN ITEM SITUASIONAL -->
-    <section class="hd-section" data-hd-section="note" aria-labelledby="hd-note-title">
-        <h2 id="hd-note-title" class="hd-section__title">Aturan item situasional</h2>
-        <div class="hd-card hd-card--line" data-hd-panel>
-            <div class="hd-note">
-                <svg class="hd-note__icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F5B800"
-                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.7.6 1 1.4 1 2.3h6c0-.9.3-1.7 1-2.3A7 7 0 0 0 12 2z"></path>
-                </svg>
-                <p id="hd-note" class="hd-note__text"></p>
+    <section class="hd-section" data-hd-section="situational" aria-labelledby="hd-situational-title">
+        <h2 id="hd-situational-title" class="hd-section__title">Aturan item situasional</h2>
+        <div class="hd-card hd-card--line hd-situational" data-hd-panel>
+            
+            <!-- Filter Komposisi Musuh -->
+            <div class="hd-situational__filter-group">
+                <p class="hd-situational__label">Komposisi hero musuh</p>
+                <div class="hd-situational__filters" id="hd-sit-filters">
+                    <button class="hd-sit-filter is-active" data-filter="physical">Physical</button>
+                    <button class="hd-sit-filter" data-filter="magic">Magic</button>
+                    <button class="hd-sit-filter" data-filter="cc">Banyak CC</button>
+                    <button class="hd-sit-filter" data-filter="healing">Healing</button>
+                </div>
             </div>
-            <div class="hd-state-slot" hidden></div>
+
+            <!-- Hasil Rekomendasi -->
+            <div class="hd-situational__result-group">
+                <p class="hd-situational__label">Rekomendasi item & emble</p>
+                
+                <!-- Daftar Kartu -->
+                <div class="hd-situational__list" id="hd-sit-list"></div>
+                
+                <!-- State Loading / Kosong -->
+                <div class="hd-state-slot" hidden></div>
+            </div>
+            
         </div>
     </section>
 

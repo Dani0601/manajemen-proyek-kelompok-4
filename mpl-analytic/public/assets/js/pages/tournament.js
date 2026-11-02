@@ -200,7 +200,7 @@
         </span>
       </a>
       ${dateText ? `
-        <div class="tr-match__date">${escapeHTML(dateText)}</div>
+        <div class="tr-pill__time">${escapeHTML(dateText)}</div>
       ` : ''}
     `;
   }

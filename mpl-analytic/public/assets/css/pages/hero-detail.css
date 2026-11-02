@@ -183,3 +183,117 @@ a.hd-empty__button { display: inline-flex; align-items: center; justify-content:
 @media (min-width: 1200px) {
     .hd-duo { grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); align-items: start; }
 }
+
+/*--css tambahan item situasional--*/
+/* ---------- Aturan Item Situasional ---------- */
+.hd-situational {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+}
+
+.hd-situational__label {
+    margin: 0 0 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--hd-navy);
+}
+
+.hd-situational__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.hd-sit-filter {
+    padding: 6px 20px;
+    border: 1px solid var(--hd-navy);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--hd-navy);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.hd-sit-filter.is-active,
+.hd-sit-filter:hover {
+    background: var(--hd-navy);
+    color: #fff;
+}
+
+.hd-situational__list {
+    display: grid;
+    gap: 8px;
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+    .hd-situational__list { grid-template-columns: repeat(3, 1fr); }
+}
+
+.hd-sit-card {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid var(--hd-navy);
+    border-radius: 8px;
+    align-items: flex-start;
+}
+
+.hd-sit-card__icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--hd-navy);
+}
+
+.hd-sit-card__content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 0 0 auto;
+    width: 35%;
+}
+
+.hd-sit-card__title { margin: 0; font-size: 12px; font-weight: 700; color: var(--hd-navy); }
+.hd-sit-card__category { margin: 0; font-size: 10px; color: var(--hd-gray); line-height: 1.2; }
+
+.hd-sit-card__badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: var(--hd-navy);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    align-self: flex-start;
+    margin-top: 4px;
+}
+
+.hd-sit-card__reason-box {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    border-left: 1px solid #ddd;
+    padding-left: 12px;
+}
+
+.hd-sit-card__reason-label {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--hd-navy);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+}
+
+.hd-sit-card__reason {
+    margin: 0;
+    font-size: 10px;
+    line-height: 1.4;
+    color: var(--hd-navy);
+}

@@ -1,4 +1,3 @@
-console.log("=== FILE HERO-DETAIL.JS BERHASIL DIMUAT ===");
 (function () {
   "use strict";
 
@@ -48,26 +47,27 @@ console.log("=== FILE HERO-DETAIL.JS BERHASIL DIMUAT ===");
     );
   }
 
-  async function getHeroDetail(heroId) {
+async function getHeroDetail(heroId) {
     try {
-      // Menggunakan helper request() bawaan agar API_BASE_URL dan error otomatis tertangani.
-      // Pastikan endpoint ini sesuai dengan routing backend PHP Anda.
-      const [buildData, detailData, skillsData] = await Promise.all([
+      // Menggunakan Promise.allSettled agar kegagalan 1 endpoint tidak membatalkan yang lain
+      const results = await Promise.allSettled([
         request(`/heroes/${heroId}/builds`),
         request(`/heroes/${heroId}`),
-        request(`/heroes/${heroId}/skills`)
+        request(`/heroes/${heroId}/skills`),
+        request(`/heroes/${heroId}/counters`),
+        request(`/heroes/${heroId}/stats`)
       ]);
 
-      // Catatan: Fungsi request() sudah otomatis me-return 'result.data', 
-      // sehingga kita tidak perlu lagi membongkar 'raw.data' nantinya.
       return {
-        buildRaw: buildData,
-        detailRaw: detailData,
-        skillsRaw: skillsData
+        buildRaw: results[0].status === "fulfilled" ? results[0].value : null,
+        detailRaw: results[1].status === "fulfilled" ? results[1].value : null,
+        skillsRaw: results[2].status === "fulfilled" ? results[2].value : null,
+        countersRaw: results[3].status === "fulfilled" ? results[3].value : null,
+        statsRaw: results[4].status === "fulfilled" ? results[4].value : null
       };
     } catch (error) {
-      console.error("API Fetch Error:", error.message);
-      return null; // Memicu state error di fungsi render UI
+      console.error("API Fetch Error:", error);
+      return null;
     }
   }
 
@@ -104,6 +104,32 @@ console.log("=== FILE HERO-DETAIL.JS BERHASIL DIMUAT ===");
     getTournamentSchedule,
     getHeroDetail,
     getPlayerComparison,
-    getPlayerList
+    getPlayerList,
+    baseUrl: "http://menpro.test/manajemen-proyek-kelompok-4/mpl-analytic/public",
+    // Tambahkan di dalam objek window.ApiClient
+    searchHeroes: async function(query = '', role = '') {
+        try {
+            // 1. Ambil baseUrl (jika undefined, gunakan string kosong agar tidak error)
+            const base = this.baseUrl || '';
+            
+            // 2. Gunakan URLSearchParams HANYA untuk merangkai parameter ?q= dan ?role=
+            const params = new URLSearchParams();
+            if (query) params.append('q', query);
+            if (role) params.append('role', role);
+
+            // 3. Gabungkan parameter menjadi string URL akhir
+            const queryString = params.toString() ? `?${params.toString()}` : '';
+            const finalUrl = `${base}/api/heroes/search${queryString}`;
+
+            // 4. Lakukan pemanggilan API
+            const response = await fetch(finalUrl);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            
+            return await response.json();
+        } catch (error) {
+            console.error("Gagal melakukan pencarian:", error);
+            throw error;
+        }
+    }
   };
 })();
