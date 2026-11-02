@@ -561,7 +561,47 @@ function renderWRBRChart(topWR, topBR, heroMeta) {
   });
 }
 
+// fitur pencarian hero
+// 1. LETAKKAN FUNGSI EXECUTESEARCH DI SINI (Di luar agar mudah dibaca)
+async function executeSearch() {
+    // Sesuaikan ID dengan HTML buatan FE 1
+    const searchInput = document.getElementById("search-input")?.value.trim() || "";
+    const roleFilter = document.querySelector(".role-filter.is-active")?.dataset?.role || "";
+    
+    const heroListContainer = document.getElementById("hero-list");
+    const skeletonLoading = document.getElementById("loading-state");
+    const emptyStateUi = document.getElementById("empty-state");
 
+    if (!heroListContainer || !skeletonLoading || !emptyStateUi) return;
+
+    // Tampilkan Loading
+    heroListContainer.hidden = true;
+    emptyStateUi.hidden = true;
+    skeletonLoading.hidden = false;
+
+    try {
+        const response = await window.ApiClient.searchHeroes(searchInput, roleFilter);
+        const heroes = response.data || [];
+        
+        skeletonLoading.hidden = true;
+
+        // BDD: State Hasil Kosong
+        if (heroes.length === 0) {
+            emptyStateUi.hidden = false;
+            return;
+        }
+
+        // State Sukses
+        heroListContainer.hidden = false;
+        // Panggil fungsi render hero Anda di sini
+        // renderHeroCards(heroes); 
+
+    } catch (error) {
+        skeletonLoading.hidden = true;
+        heroListContainer.hidden = false;
+        heroListContainer.innerHTML = `<div class="text-center text-danger">Gagal memuat data.</div>`;
+    }
+}
 // ==================================================
 // MEMUAT DASHBOARD DARI API
 // ==================================================
@@ -723,4 +763,26 @@ async function loadDashboard() {
       }`
     );
   }
+
+  // 3. PASANG EVENT LISTENER DI BAGIAN BAWAH FUNGSI INI
+    const searchInputEl = document.getElementById("search-input");
+    if (searchInputEl) {
+        searchInputEl.addEventListener("keyup", (e) => {
+            if (e.key === "Enter") executeSearch();
+        });
+    }
+
+    const roleButtons = document.querySelectorAll(".role-filter");
+    if (roleButtons.length > 0) {
+        roleButtons.forEach(btn => {
+            btn.addEventListener("click", function() {
+                // Pindahkan state aktif ke tombol yang diklik
+                roleButtons.forEach(b => b.classList.remove("is-active"));
+                this.classList.add("is-active");
+                
+                // Jalankan pencarian
+                executeSearch();
+            });
+        });
+    }
 }
