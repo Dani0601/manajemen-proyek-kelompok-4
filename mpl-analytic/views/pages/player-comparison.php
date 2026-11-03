@@ -2,6 +2,9 @@
 $pageTitle = 'Perbandingan Pemain | MLBB Guide';
 $pageDescription = 'Bandingkan statistik dan performa dua pemain MPL ID.';
 $pageCss = 'comparison.css';
+
+$pageJs = 'comparison.js';
+$hideGlobalSearch = true; // pencarian hero tidak relevan di halaman ini
 $pageJs = 'player-comparison.js';
 
 require BASE_PATH . '/views/layouts/header.php';
@@ -54,8 +57,20 @@ $radarLabels = ['tl', 'tr', 'r', 'br', 'bl', 'l'];
     data-asset-base="<?= $assetBase ?>"
 >
 
-    <!-- Judul halaman (tampil di mobile; di desktop hanya untuk pembaca layar) -->
+    <!-- Tombol kembali (mobile + desktop) dan judul (di desktop hanya untuk pembaca layar) -->
     <header class="pc-header">
+        <a
+            class="pc-header__back"
+            href="<?= htmlspecialchars($baseUrl . '/dashboard', ENT_QUOTES, 'UTF-8') ?>"
+            data-back
+            aria-label="Kembali"
+        >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"
+                 aria-hidden="true" focusable="false">
+                <path d="M20 12H4M10 6l-6 6 6 6"></path>
+            </svg>
+        </a>
         <h1 class="pc-header__title">Perbandingan Pemain</h1>
     </header>
 
