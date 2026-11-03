@@ -1,14 +1,23 @@
-# Use this workspace to collaborate
-workspace:
-  id: 47f0484f-52e5-43c7-8646-cebfd6afd2a1
+# Each entry here maps a local resource to one or more corresponding objects in Postman Cloud
 
-localResources:
-  collections:
-    - ../mpl_analytic_postman_collection.json
-    - ../mpl-analytic/docs/mpl_analytic_postman_collection.json
+# Each entry here maps a local resource to one or more corresponding objects in Postman Cloud
+
+# Each entry here maps a local resource to one or more corresponding objects in Postman Cloud
+
 
 # Each entry here maps a local resource to one or more corresponding objects in Postman Cloud
 
 cloudResources:
   collections:
-    ../postman/collections/MPL Analytic API - Automation Test Suite: 42971219-34bd-4ec8-bc1a-2a42ede31547
+    ../postman/collections/MPL Analytic API - Automation Test Suite: cd8899d4-f1a2-4d1f-ace1-fdf71e924ea1
+  environments:
+    ../postman/environments/New Environment.environment.yaml: 58827706-f8df7968-90f2-4237-bb00-3b847c0a61cf
+  globals:
+    ../postman/globals/workspace.globals.yaml: 902a874e-ca90-4b7a-8ab8-7f17bcd0774f
+
+localResources:
+  collections:
+    - ../MPL Analytic API - Automation Test Suite
+    - ../mpl-analytic/docs/MPL Analytic API - Automation Test Suite
+workspace:
+  id: 47f0484f-52e5-43c7-8646-cebfd6afd2a1

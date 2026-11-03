@@ -434,12 +434,42 @@ paths:
                 success: true
                 message: Detail hero berhasil diambil.
                 data:
-                  hero_id: 1
-                  hero_name: Miya
-                  role: Marksman
-                  specialty: Reap/Damage
-                  hero_slug: miya
-                  created_at: '2026-01-01 00:00:00'
+                  hero_id: 77
+                  hero_name: Aulus
+                  role: Fighter
+                  hero_slug: aulus
+                  hero_url: https://id-mpl.com/images/heroes/aulus.png
+                  recommendations:
+                    items:
+                    - item_name: Oracle
+                      condition_key: vs_magic
+                      condition_text: VS MAGIC
+                      share_percent: '31.0000'
+                      reason: Data build situasional mencatat item ini untuk menghadapi
+                        damage magic (VS MAGIC).
+                      item_url: https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_bc24b55abbbec6da408eb0ea5c37cad4.png
+                      item_icon_url: https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_bc24b55abbbec6da408eb0ea5c37cad4.png
+                      suitability_status: situational
+                    emblems:
+                    - name: Fighter
+                      emblem_url: https://static.wikia.nocookie.net/mobile-legends/images/b/ba/Custom_Fighter_Emblem.png/revision/latest?cb=20240110091232
+                      emblem_icon_url: https://static.wikia.nocookie.net/mobile-legends/images/b/ba/Custom_Fighter_Emblem.png/revision/latest?cb=20240110091232
+                      suitability_status: popular_in_build_data
+                      build_count: 8
+                      total_builds: 13
+                    talents:
+                    - position: 1
+                      talent_name: Thrill
+                      talent_url: https://static.wikia.nocookie.net/mobile-legends/images/2/2e/Thrill.png/revision/latest?cb=20240215060116
+                      talent_icon_url: https://static.wikia.nocookie.net/mobile-legends/images/2/2e/Thrill.png/revision/latest?cb=20240215060116
+                      build_count: 5
+                      total_builds: 13
+                    spells:
+                    - spell_name: Retribution
+                      spell_url: https://static.wikia.nocookie.net/mobile-legends/images/f/fb/Retribution.png/revision/latest?cb=20210818154637
+                      spell_icon_url: https://static.wikia.nocookie.net/mobile-legends/images/f/fb/Retribution.png/revision/latest?cb=20210818154637
+                      share_percent: '27.0000'
+                      build_count: 11
         '400':
           description: Validasi parameter hero_id gagal (bukan angka positif).
           content:
@@ -591,26 +621,31 @@ paths:
                 success: true
                 message: Build hero berhasil diambil.
                 data:
-                  hero_id: 1
+                  hero_id: 77
                   items:
-                  - item_id: 10
-                    item_name: Swift Boots
-                    slot: 1
-                  - item_id: 25
-                    item_name: Haas's Claws
-                    slot: 2
-                  - item_id: 30
-                    item_name: Berserker's Fury
-                    slot: 3
+                  - position: 1
+                    item_name: War Axe
+                    item_url: https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_70b3eecfe02a3a1f81d1e44f49c06634.png
+                    share_percent: '42.0000'
                   emblems:
-                  - emblem_name: Marksman
-                    talent: Fatal
+                  - emblem_name: Custom Fighter Emblem
+                    emblem_url: https://static.wikia.nocookie.net/mobile-legends/images/b/ba/Custom_Fighter_Emblem.png/revision/latest?cb=20240110091232
+                    emblem_icon_url: https://static.wikia.nocookie.net/mobile-legends/images/b/ba/Custom_Fighter_Emblem.png/revision/latest?cb=20240110091232
+                  talents:
+                  - position: 1
+                    talent_name: Thrill
+                    talent_url: https://static.wikia.nocookie.net/mobile-legends/images/2/2e/Thrill.png/revision/latest?cb=20240215060116
+                    talent_icon_url: https://static.wikia.nocookie.net/mobile-legends/images/2/2e/Thrill.png/revision/latest?cb=20240215060116
                   spells:
-                  - hero_build_spell_id: 309
-                    spell_name: Flicker
-                    spell_icon_url: https://static.wikia.nocookie.net/mobile-legends/images/1/1e/Flicker.png/revision/latest?cb=20210818154536
-                    share_percent: '28.0000'
-                    build_count: 32
+                  - spell_name: Retribution
+                    spell_url: https://static.wikia.nocookie.net/mobile-legends/images/f/fb/Retribution.png/revision/latest?cb=20210818154637
+                    spell_icon_url: https://static.wikia.nocookie.net/mobile-legends/images/f/fb/Retribution.png/revision/latest?cb=20210818154637
+                  situational_swaps:
+                  - condition_text: VS MAGIC
+                    item_name: Oracle
+                    item_url: https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_bc24b55abbbec6da408eb0ea5c37cad4.png
+                    item_icon_url: https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_bc24b55abbbec6da408eb0ea5c37cad4.png
+                    share_percent: '31.0000'
         '400':
           description: Validasi parameter hero_id gagal (bukan angka positif).
           content:
@@ -753,57 +788,18 @@ paths:
                 success: true
                 message: Data skill hero berhasil diambil.
                 data:
-                  hero:
-                    hero_id: 1
-                    hero_name: Dyrroth
-                    role: Fighter
-                    hero_slug: dyrroth
-                    hero_url: https://mlbb-image.scoregg.com/hero_h/85.png
-                    created_at: '2026-10-06 14:52:46'
-                    updated_at: '2026-10-20 16:17:32'
-                  skills:
-                  - hero_skill_id: 953
-                    skill_position: 1
-                    skill_type: Passive
-                    skill_name: Wrath of the Abyss
-                    skill_icon_url: https://static.wikia.nocookie.net/mobile-legends/images/f/ff/Abysm_Strike.png
-                    description: When Dyrroth's Rage reaches 50%, he will enhance Burst Strike and Spectre Step.
-                    tags:
-                    - Heal
-                    - Buff
-                    - Damage
-                    snapshot_at: '2026-10-06 13:09:27'
-                  - hero_skill_id: 954
-                    skill_position: 2
-                    skill_type: Skill 1
-                    skill_name: Burst Strike
-                    skill_icon_url: https://static.wikia.nocookie.net/mobile-legends/images/3/3f/Abysm_Strike_%28HUNTER%C3%97HUNTER%29.png
-                    description: Dyrroth releases a burst strike in a designated direction.
-                    tags:
-                    - Slow
-                    - Damage
-                    snapshot_at: '2026-10-06 13:09:27'
-                  - hero_skill_id: 955
-                    skill_position: 3
-                    skill_type: Skill 2
-                    skill_name: Spectre Step
-                    skill_icon_url: https://static.wikia.nocookie.net/mobile-legends/images/6/69/Abysm_Strike_%28KOF%29.png
-                    description: Dyrroth dashes in the designated direction.
-                    tags:
-                    - Blink
-                    - Debuff
-                    snapshot_at: '2026-10-06 13:09:27'
-                  - hero_skill_id: 956
-                    skill_position: 4
-                    skill_type: Ultimate
-                    skill_name: Abysm Strike
-                    skill_icon_url: https://static.wikia.nocookie.net/mobile-legends/images/0/0f/Abysm_Strike_%28Street_Fighter%29.png
-                    description: Dyrroth charges and strikes, dealing physical damage.
-                    tags:
-                    - Burst
-                    - Slow
-                    snapshot_at: '2026-10-06 13:09:27'
-                  skill_order: []
+                - skill_id: 101
+                  skill_name: Moon Blessing
+                  type: Passive
+                  description: Meningkatkan movement speed saat basic attack.
+                - skill_id: 102
+                  skill_name: Moon Arrow
+                  type: Skill 1
+                  description: Menembakkan anak panah tambahan ke target lain.
+                - skill_id: 104
+                  skill_name: Hidden Moonlight
+                  type: Ultimate
+                  description: Menghilangkan diri dan meningkatkan attack speed.
         '400':
           description: Validasi parameter hero_id gagal (bukan angka positif).
           content:
@@ -955,14 +951,20 @@ paths:
                 success: true
                 message: Master data player berhasil diambil
                 data:
-                - player_id: 23
-                  player_name: ABOYY
-                  team_id: 6
-                  team_name: Geek Fam ID
                 - player_id: 2
-                  player_name: ALBERTTT
+                  player_name: Skylar
+                  player_photo_url: https://cdn.jsdelivr.net/gh/Dani0601/manajemen-proyek-kelompok-4@BEDani/mpl-analytic/public/assets/images/players/skylar.png
+                  photo_url: https://cdn.jsdelivr.net/gh/Dani0601/manajemen-proyek-kelompok-4@BEDani/mpl-analytic/public/assets/images/players/skylar.png
                   team_id: 1
-                  team_name: EVOS
+                  team_name: RRQ Hoshi
+                  role: Goldlaner
+                - player_id: 23
+                  player_name: CW
+                  player_photo_url: https://cdn.jsdelivr.net/gh/Dani0601/manajemen-proyek-kelompok-4@BEDani/mpl-analytic/public/assets/images/players/cw.png
+                  photo_url: https://cdn.jsdelivr.net/gh/Dani0601/manajemen-proyek-kelompok-4@BEDani/mpl-analytic/public/assets/images/players/cw.png
+                  team_id: 2
+                  team_name: ONIC
+                  role: Goldlaner
         '405':
           description: Method HTTP tidak diizinkan (hanya GET didukung).
           content:
@@ -1018,6 +1020,8 @@ paths:
                   player_1:
                     player_id: 2
                     player_name: Skylar
+                    player_photo_url: https://cdn.jsdelivr.net/gh/Dani0601/manajemen-proyek-kelompok-4@BEDani/mpl-analytic/public/assets/images/players/skylar.png
+                    photo_url: https://cdn.jsdelivr.net/gh/Dani0601/manajemen-proyek-kelompok-4@BEDani/mpl-analytic/public/assets/images/players/skylar.png
                     team_name: RRQ Hoshi
                     role: Goldlaner
                     total_games: 32
@@ -1027,6 +1031,8 @@ paths:
                   player_2:
                     player_id: 23
                     player_name: CW
+                    player_photo_url: https://cdn.jsdelivr.net/gh/Dani0601/manajemen-proyek-kelompok-4@BEDani/mpl-analytic/public/assets/images/players/cw.png
+                    photo_url: https://cdn.jsdelivr.net/gh/Dani0601/manajemen-proyek-kelompok-4@BEDani/mpl-analytic/public/assets/images/players/cw.png
                     team_name: ONIC
                     role: Goldlaner
                     total_games: 30
@@ -1095,9 +1101,12 @@ paths:
                 message: Detail pemain berhasil diambil.
                 data:
                   player_id: 2
-                  player_name: ALBERTTT
+                  player_name: Skylar
+                  player_photo_url: https://cdn.jsdelivr.net/gh/Dani0601/manajemen-proyek-kelompok-4@BEDani/mpl-analytic/public/assets/images/players/skylar.png
+                  photo_url: https://cdn.jsdelivr.net/gh/Dani0601/manajemen-proyek-kelompok-4@BEDani/mpl-analytic/public/assets/images/players/skylar.png
                   team_id: 1
-                  team_name: EVOS
+                  team_name: RRQ Hoshi
+                  role: Goldlaner
         '400':
           description: Validasi parameter player_id gagal (bukan angka positif).
           content:
@@ -1175,23 +1184,18 @@ paths:
                 success: true
                 message: Statistik pemain berhasil diambil.
                 data:
-                  player:
-                    player_id: 2
-                    player_name: ALBERTTT
-                    team_id: 1
-                    team_name: EVOS
-                  stats:
-                    player_id: 2
-                    total_games: 21
-                    total_kills: '90'
-                    total_deaths: '37'
-                    total_assists: '63'
-                    avg_kills: '4.29'
-                    avg_deaths: '1.76'
-                    avg_assists: '3.00'
-                    avg_kda: '4.14'
-                    avg_gold_per_game: '14111'
-                    avg_damage_per_game: '50255'
+                  player_id: 2
+                  total_games: 32
+                  kills: 140
+                  deaths: 45
+                  assists: 160
+                  kda: 6.67
+                  win_rate: 65.6
+                  signature_heroes:
+                  - hero_id: 12
+                    hero_name: Claude
+                    games: 12
+                    win_rate: 75.0
         '400':
           description: Validasi parameter player_id gagal (bukan angka positif).
           content:
@@ -1258,25 +1262,13 @@ paths:
                 success: true
                 message: Riwayat game pemain berhasil diambil.
                 data:
-                  player:
-                    player_id: 2
-                    player_name: ALBERTTT
-                    team_id: 1
-                    team_name: EVOS
-                  games:
-                  - game_id: s18_w07_m54_g01
-                    hero_id: 2
-                    hero_name: Paquito
-                    team_id: 1
-                    team_name: EVOS
-                    kills: 5
-                    deaths: 2
-                    assists: 3
-                    gold_earned: '10273.000'
-                    hero_damage: '58105.000'
-                    match_id: s18_w07_m54
-                    game_number: 1
-                    match_date: '2026-10-04'
+                - game_id: s17_w01_m01_g01
+                  hero_id: 12
+                  hero_name: Claude
+                  kills: 6
+                  deaths: 1
+                  assists: 8
+                  result: WIN
         '400':
           description: Validasi parameter player_id gagal (bukan angka positif).
           content:
@@ -1911,6 +1903,8 @@ paths:
                 data:
                 - player_id: 2
                   player_name: Skylar
+                  player_photo_url: https://cdn.jsdelivr.net/gh/Dani0601/manajemen-proyek-kelompok-4@BEDani/mpl-analytic/public/assets/images/players/skylar.png
+                  photo_url: https://cdn.jsdelivr.net/gh/Dani0601/manajemen-proyek-kelompok-4@BEDani/mpl-analytic/public/assets/images/players/skylar.png
                   hero_id: 12
                   hero_name: Claude
                   kills: 8
@@ -2401,10 +2395,14 @@ components:
         role:
           type: string
           example: Goldlaner
+        player_photo_url:
+          type: string
+          nullable: true
+          example: https://cdn.jsdelivr.net/gh/Dani0601/manajemen-proyek-kelompok-4@BEDani/mpl-analytic/public/assets/images/players/skylar.png
         photo_url:
           type: string
           nullable: true
-          example: https://id-mpl.com/assets/players/skylar.png
+          example: https://cdn.jsdelivr.net/gh/Dani0601/manajemen-proyek-kelompok-4@BEDani/mpl-analytic/public/assets/images/players/skylar.png
     Item:
       type: object
       properties:
@@ -2425,64 +2423,3 @@ components:
           example:
             physical_attack: 160
             movement_spd: 5%
-    HeroSkill:
-      type: object
-      properties:
-        hero_skill_id:
-          type: integer
-          example: 953
-        skill_position:
-          type: integer
-          example: 1
-        skill_type:
-          type: string
-          example: Passive
-        skill_name:
-          type: string
-          example: Wrath of the Abyss
-        skill_icon_url:
-          type: string
-          format: uri
-          nullable: true
-          example: https://static.wikia.nocookie.net/mobile-legends/images/f/ff/Abysm_Strike.png
-        description:
-          type: string
-          example: When Dyrroth's Rage reaches 50%, he will enhance Burst Strike and Spectre Step.
-        tags:
-          type: array
-          items:
-            type: string
-          example:
-          - Heal
-          - Buff
-          - Damage
-        snapshot_at:
-          type: string
-          format: date-time
-          example: '2026-10-06 13:09:27'
-    HeroBuildSpell:
-      type: object
-      properties:
-        hero_build_spell_id:
-          type: integer
-          example: 309
-        spell_name:
-          type: string
-          example: Flicker
-        spell_icon_url:
-          type: string
-          format: uri
-          nullable: true
-          example: https://static.wikia.nocookie.net/mobile-legends/images/1/1e/Flicker.png/revision/latest?cb=20210818154536
-        share_percent:
-          type: string
-          example: '28.0000'
-        build_count:
-          type: integer
-          nullable: true
-          example: 32
-        snapshot_at:
-          type: string
-          format: date-time
-          example: '2026-10-06 13:09:27'
-
