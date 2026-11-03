@@ -48,28 +48,39 @@ document.addEventListener("DOMContentLoaded", () => {
             const buildData = raw.buildRaw || {};
             const detailData = raw.detailRaw || {};
             const skillsRaw = raw.skillsRaw || {};
-            const situationalSwaps = raw.situational_swaps 
-                                  || detailData.situational_swaps 
-                                  || buildData.situational_swaps 
-                                  || (raw.data && raw.data.situational_swaps) 
-                                  || [];
+            
+            // 1. TANGKAP OBJEK RECOMMENDATIONS
+            // Mengambil dari detailData (jika di-fetch tergabung) atau raw.data
+            const recommendations = detailData.recommendations || (raw.data && raw.data.recommendations) || {};
+
+            // 2. ITEM SITUASIONAL
+            const situationalSwaps = recommendations.items || [];
             console.log("RADAR SITUASIONAL 1: Data mentah berhasil diekstrak:", situationalSwaps);
+            
             const items = buildData.items || [];
             const hasBuild = items.length > 0;
 
-
+            // 3. SPELL
             let cleanSpellName = "";
             let spellIconUrl = "";
-            if (buildData.spells && buildData.spells.length > 0) {
-                cleanSpellName = buildData.spells[0].spell_name.replace("ALSO ", "").trim();
-                spellIconUrl = buildData.spells[0].spell_icon_url || "";
+            if (recommendations.spells && recommendations.spells.length > 0) {
+                cleanSpellName = recommendations.spells[0].spell_name.replace("ALSO ", "").trim();
+                spellIconUrl = recommendations.spells[0].spell_icon_url || recommendations.spells[0].spell_url || "";
             }
 
+            // 4. EMBLEM & TALENT
             let cleanEmblemName = "";
-            if (detailData.recommendations && detailData.recommendations.emblems && detailData.recommendations.emblems.length > 0) {
-                cleanEmblemName = detailData.recommendations.emblems[0].name;
+            let emblemIconUrl = "";
+            if (recommendations.emblems && recommendations.emblems.length > 0) {
+                cleanEmblemName = recommendations.emblems[0].name;
+                emblemIconUrl = recommendations.emblems[0].emblem_icon_url || recommendations.emblems[0].emblem_url || "";
             }
-
+            // Ambil talents dari recommendations, bukan buildData lagi
+            const emblemTalents = recommendations.talents ? recommendations.talents.map(t => ({
+                name: t.talent_name,
+                icon: t.talent_icon_url || t.talent_url || ""
+            })) : [];
+            // 5. SKILLS (Tetap sama)
             let heroSkills = [];
             const skillsArray = skillsRaw.skills || [];
             if (Array.isArray(skillsArray)) {
@@ -80,7 +91,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     position: skill.skill_position || 0
                 })).sort((a, b) => a.position - b.position);
             }
-            // normalisasi data counter hero
+
+            // 6. COUNTERS (Tetap sama)
             const countersRaw = raw.countersRaw || {};
             let strongAgainst = countersRaw.strong_against || [];
             let weakAgainst = countersRaw.counters || [];
@@ -95,16 +107,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 weak: weakAgainst.map(h => formatCounter(h, false)).sort((a, b) => a.winRate - b.winRate).slice(0, 3)
             };
 
-            // normalisasi statistik hero
+            // 7. STATS (Tetap sama)
             const statsRaw = raw.statsRaw || {};
             const statsDataBackend = (statsRaw.data && statsRaw.data.stats) ? statsRaw.data.stats : (statsRaw.stats || {});
             const stats = {
-                // Konversi string "59.5000" menjadi angka "59.50"
                 winRate: parseFloat(statsDataBackend.win_rate || 0).toFixed(2),
                 pickRate: parseFloat(statsDataBackend.pick_rate || 0).toFixed(2),
                 banRate: parseFloat(statsDataBackend.ban_rate || 0).toFixed(2)
             };
 
+            // 8. RETURN DATA
             return {
                 heroName: detailData.hero_name || "Hero",
                 bannerUrl: detailData.hero_url || "",
@@ -117,17 +129,18 @@ document.addEventListener("DOMContentLoaded", () => {
                     })),
                     emblem: {
                         name: cleanEmblemName,
-                        talents: buildData.talents ? buildData.talents.map(t => t.talent_name) : []
+                        icon: emblemIconUrl,
+                        talents: emblemTalents // Menggunakan variabel baru
                     },
                     spell: {
                         name: cleanSpellName,
-                        icon: spellIconUrl
+                        icon: spellIconUrl // Menggunakan variabel baru
                     }
                 },
                 skills: heroSkills,
                 counters: heroCounters,
                 stats: stats,
-                situational: situationalSwaps
+                situational: situationalSwaps // Menggunakan variabel baru
             };
         }
 
@@ -215,35 +228,54 @@ document.addEventListener("DOMContentLoaded", () => {
             // Render Emblem
             if (emblemContainer) {
                 const emblemName = build.emblem?.name || "No Emblem";
-                const talents = build.emblem?.talents || [];
-
-                let talentsHtml = talents.map(t => `
-                    <li class="hd-talent" title="${t}">
-                        <div class="hd-avatar">${t ? t.charAt(0) : '?'}</div>
-                    </li>
-                `).join("");
+                const emblemIcon = build.emblem?.icon || "";
+                const emblemNameInitial = emblemName.charAt(0).toUpperCase();
+                
+                const emblemIconHtml = emblemIcon 
+                    ? `<img src="${emblemIcon}" alt="${emblemName}" class="hd-setup__icon" referrerpolicy="no-referrer" onerror="this.onerror=null; this.outerHTML='<div class=&quot;hd-avatar hd-setup__icon hd-avatar--dark&quot;>${emblemNameInitial}</div>';">`
+                    : `<div class="hd-avatar hd-setup__icon hd-avatar--dark">${emblemNameInitial}</div>`;
+                // Gunakan gambar untuk talent jika ada, jika error otomatis jadi huruf inisial
+                const talentsHtml = (build.emblem?.talents || []).map(talent => {
+                    const tName = typeof talent === 'string' ? talent : (talent.name || "T");
+                    const tIcon = typeof talent === 'string' ? "" : talent.icon;
+                    
+                    if (tIcon) {
+                        return `<img src="${tIcon}" alt="${tName}" class="hd-setup__icon" referrerpolicy="no-referrer" title="${tName}" onerror="this.outerHTML='<div class=&quot;hd-avatar hd-setup__icon&quot; title=&quot;${tName}&quot;>${tName.charAt(0)}</div>';">`;
+                    }
+                    return `<div class="hd-avatar hd-setup__icon" title="${tName}">${tName.charAt(0)}</div>`;
+                }).join('');
 
                 emblemContainer.innerHTML = `
-                    <div class="hd-setup hd-setup--emblem">
-                        <div class="hd-avatar hd-setup__icon">${emblemName.charAt(0)}</div>
-                        <div class="hd-setup__text">
-                            <p class="hd-setup__label">EMBLEM SETUP</p>
-                            <p class="hd-setup__name">${emblemName}</p>
+                    <div class="hd-setup">
+                        <!-- BAGIAN KIRI: Ikon Emblem Utama -->
+                        <div class="hd-setup__main-icon">
+                            ${emblemIconHtml} 
                         </div>
-                        <ul class="hd-talents">${talentsHtml}</ul>
+                        
+                        <!-- BAGIAN KANAN: Teks dan Talent yang dikelompokkan -->
+                        <div class="hd-setup__details">
+                            <div class="hd-setup__text">
+                                <p class="hd-setup__label">EMBLEM SETUP</p>
+                                <p class="hd-setup__name">${emblemName}</p>
+                            </div>
+                            <div class="hd-setup__talents">
+                                ${talentsHtml}
+                            </div>
+                        </div>
                     </div>
                 `;
             }
 
-            // Render Battle Spell
+            // --- Render Battle Spell ---
             if (spellContainer) {
                 const spellName = build.spell?.name || "No Spell";
                 const spellIcon = build.spell?.icon || "";
-                const assetBase = container.dataset.assetBase || '';
-                const defaultSpellIcon = `${assetBase}/assets/img/default-spell.png`; // Fallback jika gambar rusak
+
+                // Anti-pecah: Jika gambar gagal dimuat, ganti dengan Div berisi huruf pertama Spell
                 const iconHtml = spellIcon 
-                    ? `<img src="${spellIcon}" alt="${spellName}" class="hd-setup__icon" referrerpolicy="no-referrer" onerror="this.onerror=null; this.outerHTML='<div class=\\'hd-avatar hd-setup__icon\\'>${spellName.charAt(0)}</div>';">`
+                    ? `<img src="${spellIcon}" alt="${spellName}" class="hd-setup__icon" referrerpolicy="no-referrer" onerror="this.outerHTML='<div class=&quot;hd-avatar hd-setup__icon&quot;>${spellName.charAt(0)}</div>';">`
                     : `<div class="hd-avatar hd-setup__icon">${spellName.charAt(0)}</div>`;
+
                 spellContainer.innerHTML = `
                     <div class="hd-setup hd-setup--spell">
                         ${iconHtml}
@@ -428,12 +460,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 const assetBase = container.dataset.assetBase || '';
                 
                 listContainer.innerHTML = filtered.map(item => {
-                    const defaultIcon = `${assetBase}/assets/img/default-item.png`;
-                    const winRateShare = parseFloat(item.share_percent).toFixed(1);
+                    const itemIcon = item.item_icon_url || item.item_url || `${assetBase}/assets/img/default-item.png`;
+                    
+                    // Gunakan reason dari backend
+                    const reasonText = item.reason || `Sering digunakan (${parseFloat(item.share_percent).toFixed(1)}%) saat menghadapi komposisi hero ${filterValue}.`;
                     
                     return `
                     <div class="hd-sit-card">
-                        <img src="${defaultIcon}" alt="${item.item_name}" class="hd-sit-card__icon" onerror="this.onerror=null;">
+                        <img src="${itemIcon}" alt="${item.item_name}" class="hd-sit-card__icon" onerror="this.onerror=null;">
                         <div class="hd-sit-card__content">
                             <h3 class="hd-sit-card__title">${item.item_name}</h3>
                             <p class="hd-sit-card__category">Item Build</p>
@@ -441,7 +475,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         </div>
                         <div class="hd-sit-card__reason-box">
                             <span class="hd-sit-card__reason-label">ALASAN</span>
-                            <p class="hd-sit-card__reason">Sering digunakan (${winRateShare}%) saat menghadapi komposisi hero ${filterValue}.</p>
+                            <p class="hd-sit-card__reason">${reasonText}</p>
                         </div>
                     </div>
                     `;
