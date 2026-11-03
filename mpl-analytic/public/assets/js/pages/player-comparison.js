@@ -164,20 +164,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Helper: Render Kartu Pemain
     function renderPlayerCard(player) {
-        // Jika API backend mengembalikan URL foto (sesuaikan nama propertinya, misal 'photo' atau 'image_url')
-        if (player.photo) {
-            return `<img class="pc-card__image" src="${player.photo}" alt="${player.player_name}">`;
-        } 
-        
-        // Jika tidak ada foto, FE 1 sudah menyiapkan desain fallback (Kotak Biru dengan Inisial)
-        const initial = player.player_name ? player.player_name.charAt(0).toUpperCase() : "?";
+        if (!player) return "";
 
-        
-        return `
+        const playerName = player.player_name || "?";
+        const initial = playerName.charAt(0).toUpperCase();
+
+        // 1. Sesuaikan penangkap URL dengan data JSON backend yang baru
+        const photoUrl = player.photo_url || player.player_photo_url || player.photo || "";
+
+        // 2. Siapkan desain fallback bawaan dari FE 1
+        const fallbackNormal = `
         <div class="pc-card__fallback">
             <span class="pc-card__initials">${initial}</span>
-            <span class="pc-card__name">${player.player_name}</span>
+            <span class="pc-card__name">${playerName}</span>
         </div>`;
+
+        // 3. Ubah tanda kutip menjadi &quot; agar aman dimasukkan ke dalam atribut onerror
+        const fallbackForOnError = fallbackNormal.replace(/"/g, '&quot;').replace(/\n/g, '');
+
+        // 4. Jika ada URL foto, cetak gambar dengan sistem Anti-Pecah
+        if (photoUrl) {
+            return `<img class="pc-card__image" src="${photoUrl}" alt="${playerName}" onerror="this.onerror=null; this.outerHTML='${fallbackForOnError}';">`;
+        } 
+        
+        // 5. Jika dari awal URL fotonya memang kosong/null, langsung cetak kotak fallback
+        return fallbackNormal;
     }
 
     // ==========================================
