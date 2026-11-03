@@ -131,20 +131,22 @@ class Hero
     ): array {
         $sql = "
             SELECT
-                hero_counter_id,
-                source_hero_id,
-                hero_id,
-                relation_type,
-                target_source_hero_id,
-                target_hero_id,
-                target_hero_name,
-                target_hero_url,
-                win_rate_advantage,
-                snapshot_at
-            FROM hero_counters
-            WHERE hero_id = :hero_id
-              AND relation_type = :relation_type
-            ORDER BY win_rate_advantage DESC
+                hc.hero_counter_id,
+                hc.source_hero_id,
+                hc.hero_id,
+                hc.relation_type,
+                hc.target_source_hero_id,
+                hc.target_hero_id,
+                hc.target_hero_name,
+                COALESCE(h.hero_url, hc.target_hero_url) AS target_hero_url,
+                hc.win_rate_advantage,
+                hc.snapshot_at
+            FROM hero_counters hc
+            LEFT JOIN heroes h
+                ON h.hero_slug = SUBSTRING_INDEX(hc.target_hero_url, '/hero/', -1)
+            WHERE hc.hero_id = :hero_id
+              AND hc.relation_type = :relation_type
+            ORDER BY hc.win_rate_advantage DESC
         ";
 
         $stmt = $this->db->prepare($sql);
