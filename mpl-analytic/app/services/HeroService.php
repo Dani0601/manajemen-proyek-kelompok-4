@@ -57,6 +57,8 @@ class HeroService
             'recommendations' => [
                 'items' => $this->hero->getSituationalRecommendations($heroId),
                 'emblems' => $this->hero->getEmblemRecommendations($heroId),
+                'talents' => $this->hero->getBuildTalents($heroId),
+                'spells' => $this->hero->getBuildSpells($heroId),
             ],
         ]);
     }
