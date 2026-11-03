@@ -1,4 +1,3 @@
-
 /* =====================================================
    PERBANDINGAN PEMAIN
    Semua selector diawali .pc agar tidak bentrok dengan halaman lain.
@@ -960,6 +959,13 @@
     .pc-alert {
         padding-left: 8px;
     }
+
+}
+
+/* Topbar tanpa kolom cari: tombol menu tetap di kanan (mobile). */
+.app-topbar--no-search .app-topbar__menu {
+    margin-left: auto;
+
 }
 
 /* Topbar tanpa kolom cari: tombol menu tetap di kanan (mobile). */

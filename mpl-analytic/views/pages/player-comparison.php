@@ -2,8 +2,10 @@
 $pageTitle = 'Perbandingan Pemain | MLBB Guide';
 $pageDescription = 'Bandingkan statistik dan performa dua pemain MPL ID.';
 $pageCss = 'comparison.css';
+
 $pageJs = 'comparison.js';
 $hideGlobalSearch = true; // pencarian hero tidak relevan di halaman ini
+$pageJs = 'player-comparison.js';
 
 require BASE_PATH . '/views/layouts/header.php';
 require BASE_PATH . '/views/layouts/navbar.php';
@@ -258,7 +260,9 @@ $radarLabels = ['tl', 'tr', 'r', 'br', 'bl', 'l'];
     </div>
 </div>
 
-<!-- Chart.js untuk radar (versi dipatok) -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="<?= $assetBase ?>/js/api-client.js"></script>
+<script src="<?= $assetBase ?>/js/pages/player-comparison.js"></script>
+
 
 <?php require BASE_PATH . '/views/layouts/footer.php'; ?>

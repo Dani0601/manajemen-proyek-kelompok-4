@@ -15,6 +15,7 @@ class Player {
         $sql = "SELECT 
                     p.player_id, 
                     p.player_name,
+                    p.player_photo_url,
                     (
                         SELECT t.team_id
                         FROM game_players gp
@@ -46,6 +47,9 @@ class Player {
         foreach ($rows as &$row) {
             if (isset($row['team_id']) && $row['team_id'] !== null) {
                 $row['team_id'] = (int)$row['team_id'];
+            }
+            if (!isset($row['photo_url']) && isset($row['player_photo_url'])) {
+                $row['photo_url'] = $row['player_photo_url'];
             }
         }
         return $rows;
@@ -85,6 +89,7 @@ class Player {
         $sql = "SELECT 
                     p.player_id, 
                     p.player_name,
+                    p.player_photo_url,
                     (
                         SELECT t.team_id
                         FROM game_players gp
@@ -112,8 +117,13 @@ class Player {
         $stmt->execute();
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($result && isset($result['team_id']) && $result['team_id'] !== null) {
-            $result['team_id'] = (int)$result['team_id'];
+        if ($result) {
+            if (isset($result['team_id']) && $result['team_id'] !== null) {
+                $result['team_id'] = (int)$result['team_id'];
+            }
+            if (!isset($result['photo_url']) && isset($result['player_photo_url'])) {
+                $result['photo_url'] = $result['player_photo_url'];
+            }
         }
         return $result ?: null;
     }

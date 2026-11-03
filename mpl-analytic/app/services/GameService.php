@@ -396,6 +396,12 @@ class GameService
             'player_name' =>
                 $player['player_name'] ?? null,
 
+            'player_photo_url' =>
+                $player['player_photo_url'] ?? null,
+
+            'photo_url' =>
+                $player['player_photo_url'] ?? null,
+
             'team_id' =>
                 $player['team_id'] ?? null,
 
