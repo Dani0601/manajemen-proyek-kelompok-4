@@ -198,6 +198,7 @@ class Hero
             SELECT
                 hero_build_emblem_id,
                 emblem_name,
+                emblem_icon_url,
                 build_count,
                 total_builds,
                 snapshot_at
@@ -210,7 +211,13 @@ class Hero
         $stmt->bindValue(':hero_id', $heroId, PDO::PARAM_INT);
         $stmt->execute();
 
-        return $stmt->fetchAll();
+        $rows = $stmt->fetchAll();
+        foreach ($rows as &$row) {
+            if (!isset($row['emblem_url']) && isset($row['emblem_icon_url'])) {
+                $row['emblem_url'] = $row['emblem_icon_url'];
+            }
+        }
+        return $rows;
     }
 
     public function getBuildSpells(int $heroId): array
@@ -232,7 +239,14 @@ class Hero
         $stmt->bindValue(':hero_id', $heroId, PDO::PARAM_INT);
         $stmt->execute();
 
-        return $stmt->fetchAll();
+        $rows = $stmt->fetchAll();
+        foreach ($rows as &$row) {
+            if (!isset($row['spell_url']) && isset($row['spell_icon_url'])) {
+                $row['spell_url'] = $row['spell_icon_url'];
+            }
+        }
+        unset($row);
+        return $rows;
     }
 
     public function getBuildTalents(int $heroId): array
@@ -242,6 +256,7 @@ class Hero
                 hero_build_talent_id,
                 position,
                 talent_name,
+                talent_icon_url,
                 build_count,
                 total_builds,
                 snapshot_at
@@ -254,28 +269,42 @@ class Hero
         $stmt->bindValue(':hero_id', $heroId, PDO::PARAM_INT);
         $stmt->execute();
 
-        return $stmt->fetchAll();
+        $rows = $stmt->fetchAll();
+        foreach ($rows as &$row) {
+            if (!isset($row['talent_url']) && isset($row['talent_icon_url'])) {
+                $row['talent_url'] = $row['talent_icon_url'];
+            }
+        }
+        return $rows;
     }
 
     public function getSituationalSwaps(int $heroId): array
     {
         $sql = "
             SELECT
-                hero_build_swap_id,
-                condition_text,
-                item_name,
-                share_percent,
-                snapshot_at
-            FROM hero_build_situational_swaps
-            WHERE hero_id = :hero_id
-            ORDER BY share_percent DESC
+                s.hero_build_swap_id,
+                s.condition_text,
+                s.item_name,
+                s.share_percent,
+                s.snapshot_at,
+                mi.item_url
+            FROM hero_build_situational_swaps s
+            LEFT JOIN master_items mi
+                ON LOWER(mi.item_name) = LOWER(s.item_name)
+            WHERE s.hero_id = :hero_id
+            ORDER BY s.share_percent DESC
         ";
 
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':hero_id', $heroId, PDO::PARAM_INT);
         $stmt->execute();
 
-        return $stmt->fetchAll();
+        $rows = $stmt->fetchAll();
+        foreach ($rows as &$row) {
+            $row['item_icon_url'] = $row['item_url'] ?? null;
+        }
+        unset($row);
+        return $rows;
     }
 
     /** Source-backed situational item rules for this hero. */
@@ -283,16 +312,19 @@ class Hero
     {
         $sql = "
             SELECT
-                rule_id,
-                item_name,
-                condition_key,
-                condition_text,
-                share_percent,
-                reason,
-                snapshot_at
-            FROM item_suitability_rules
-            WHERE hero_id = :hero_id AND is_active = 1
-            ORDER BY share_percent DESC, item_name ASC
+                r.rule_id,
+                r.item_name,
+                r.condition_key,
+                r.condition_text,
+                r.share_percent,
+                r.reason,
+                r.snapshot_at,
+                mi.item_url
+            FROM item_suitability_rules r
+            LEFT JOIN master_items mi
+                ON LOWER(mi.item_name) = LOWER(r.item_name)
+            WHERE r.hero_id = :hero_id AND r.is_active = 1
+            ORDER BY r.share_percent DESC, r.item_name ASC
         ";
 
         $stmt = $this->db->prepare($sql);
@@ -304,6 +336,7 @@ class Hero
             // No enemy-composition input exists in API Contract v1 in this repository.
             // Keep the status honest: these are situational options, not a confirmed match.
             $row['suitability_status'] = 'situational';
+            $row['item_icon_url']      = $row['item_url'] ?? null;
             unset($row['rule_id']);
         }
         unset($row);
@@ -315,7 +348,7 @@ class Hero
     public function getEmblemRecommendations(int $heroId): array
     {
         $sql = "
-            SELECT emblem_name, build_count, total_builds, snapshot_at
+            SELECT emblem_name, emblem_icon_url, build_count, total_builds, snapshot_at
             FROM hero_build_emblems
             WHERE hero_id = :hero_id
             ORDER BY build_count DESC, total_builds DESC
@@ -337,8 +370,11 @@ class Hero
             if ($name === '') {
                 continue;
             }
+            $iconUrl = $row['emblem_icon_url'] ?? null;
             $recommendations[] = [
                 'name' => $name,
+                'emblem_icon_url' => $iconUrl,
+                'emblem_url' => $iconUrl,
                 'suitability_status' => 'popular_in_build_data',
                 'reason' => 'Emblem ini tercatat pada data build hero; jumlah penggunaan yang tersedia ditampilkan sebagai konteks.',
                 'build_count' => isset($row['build_count']) ? (int) $row['build_count'] : null,
