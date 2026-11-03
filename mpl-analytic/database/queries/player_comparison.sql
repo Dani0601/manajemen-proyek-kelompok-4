@@ -2,6 +2,7 @@ WITH PlayerRawStats AS (
     SELECT 
         p.player_id,
         p.player_name,
+        p.player_photo_url,
         SUBSTRING_INDEX(
             GROUP_CONCAT(t.team_name ORDER BY gp.created_at DESC SEPARATOR '|||'),
             '|||',
@@ -65,7 +66,8 @@ WITH PlayerRawStats AS (
 
     GROUP BY
         p.player_id,
-        p.player_name
+        p.player_name,
+        p.player_photo_url
 ),
 
 SeasonMaxStats AS (
@@ -82,6 +84,7 @@ SeasonMaxStats AS (
 SELECT
     prs.player_id,
     prs.player_name,
+    prs.player_photo_url,
     prs.team_name,
 
     ROUND(
