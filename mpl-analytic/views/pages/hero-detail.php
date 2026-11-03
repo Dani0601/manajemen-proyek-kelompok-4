@@ -51,6 +51,7 @@ $heroId = (int) ($_GET['id'] ?? 0);
                 <h2 id="hd-build-title" class="hd-section__title">Build item (6 slot)</h2>
                 <div class="hd-card hd-card--shadow">
                     <ol id="hd-build-items" class="hd-items" aria-labelledby="hd-build-title"></ol>
+                    <div class="hd-state-slot" hidden></div>
                 </div>
             </div>
 
@@ -108,32 +109,21 @@ $heroId = (int) ($_GET['id'] ?? 0);
     </div>
 
     <!-- ATURAN ITEM SITUASIONAL -->
-    <section class="hd-section" data-hd-section="situational" aria-labelledby="hd-situational-title">
-        <h2 id="hd-situational-title" class="hd-section__title">Aturan item situasional</h2>
-        <div class="hd-card hd-card--line hd-situational" data-hd-panel>
-            
-            <!-- Filter Komposisi Musuh -->
-            <div class="hd-situational__filter-group">
-                <p class="hd-situational__label">Komposisi hero musuh</p>
-                <div class="hd-situational__filters" id="hd-sit-filters">
-                    <button class="hd-sit-filter is-active" data-filter="physical">Physical</button>
-                    <button class="hd-sit-filter" data-filter="magic">Magic</button>
-                    <button class="hd-sit-filter" data-filter="cc">Banyak CC</button>
-                    <button class="hd-sit-filter" data-filter="healing">Healing</button>
-                </div>
+    <section class="hd-section" data-hd-section="situational" aria-labelledby="hd-situ-title">
+        <h2 id="hd-situ-title" class="hd-section__title">Aturan item situasional</h2>
+        <div class="hd-card hd-card--line hd-situ" data-hd-panel>
+            <div class="hd-situ__block">
+                <h3 id="hd-situ-comp-title" class="hd-situ__title">Komposisi hero musuh</h3>
+                <div id="hd-situ-chips" class="hd-chips" role="group" aria-labelledby="hd-situ-comp-title"></div>
             </div>
-
-            <!-- Hasil Rekomendasi -->
-            <div class="hd-situational__result-group">
-                <p class="hd-situational__label">Rekomendasi item & emble</p>
-                
-                <!-- Daftar Kartu -->
-                <div class="hd-situational__list" id="hd-sit-list"></div>
-                
-                <!-- State Loading / Kosong -->
-                <div class="hd-state-slot" hidden></div>
+            <div class="hd-situ__block">
+                <h3 id="hd-situ-rec-title" class="hd-situ__title">Rekomendasi item &amp; emblem</h3>
+                <ul id="hd-situ-list" class="hd-rec-list" aria-labelledby="hd-situ-rec-title"></ul>
+                <p id="hd-situ-none" class="hd-situ__none" role="status" hidden>
+                    Belum ada rekomendasi untuk komposisi musuh yang dipilih.
+                </p>
             </div>
-            
+            <div class="hd-state-slot" hidden></div>
         </div>
     </section>
 
@@ -152,6 +142,5 @@ $heroId = (int) ($_GET['id'] ?? 0);
 </div>
 
 <script src="<?= $assetBase ?>/js/api-client.js"></script>
-<script src="<?= $assetBase ?>/js/pages/hero-detail.js"></script>
 
 <?php require BASE_PATH . '/views/layouts/footer.php'; ?>
