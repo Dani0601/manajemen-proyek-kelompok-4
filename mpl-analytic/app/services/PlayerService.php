@@ -59,6 +59,8 @@ class PlayerService
             return [
                 "player_id" => (int)$stats['player_id'],
                 "player_name" => $stats['player_name'],
+                "player_photo_url" => $stats['player_photo_url'] ?? null,
+                "photo_url" => $stats['player_photo_url'] ?? null,
                 "team_name" => $stats['team_name'],
 
                 // 1. Radar Chart / Perbandingan Pemain

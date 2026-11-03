@@ -658,6 +658,12 @@ function renderWRBRChart(topWR, topBR, heroMeta) {
   return true;
 }
 
+    } catch (error) {
+        skeletonLoading.hidden = true;
+        heroListContainer.hidden = false;
+        heroListContainer.innerHTML = `<div class="text-center text-danger">Gagal memuat data.</div>`;
+    }
+}
 // ==================================================
 // MEMUAT DASHBOARD DARI API
 // ==================================================
