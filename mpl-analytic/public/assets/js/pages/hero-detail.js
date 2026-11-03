@@ -59,8 +59,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             let cleanSpellName = "";
+            let spellIconUrl = "";
             if (buildData.spells && buildData.spells.length > 0) {
                 cleanSpellName = buildData.spells[0].spell_name.replace("ALSO ", "").trim();
+                spellIconUrl = buildData.spells[0].spell_icon_url || "";
             }
 
             let cleanEmblemName = "";
@@ -118,7 +120,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         talents: buildData.talents ? buildData.talents.map(t => t.talent_name) : []
                     },
                     spell: {
-                        name: cleanSpellName
+                        name: cleanSpellName,
+                        icon: spellIconUrl
                     }
                 },
                 skills: heroSkills,
@@ -235,9 +238,15 @@ document.addEventListener("DOMContentLoaded", () => {
             // Render Battle Spell
             if (spellContainer) {
                 const spellName = build.spell?.name || "No Spell";
+                const spellIcon = build.spell?.icon || "";
+                const assetBase = container.dataset.assetBase || '';
+                const defaultSpellIcon = `${assetBase}/assets/img/default-spell.png`; // Fallback jika gambar rusak
+                const iconHtml = spellIcon 
+                    ? `<img src="${spellIcon}" alt="${spellName}" class="hd-setup__icon" referrerpolicy="no-referrer" onerror="this.onerror=null; this.outerHTML='<div class=\\'hd-avatar hd-setup__icon\\'>${spellName.charAt(0)}</div>';">`
+                    : `<div class="hd-avatar hd-setup__icon">${spellName.charAt(0)}</div>`;
                 spellContainer.innerHTML = `
                     <div class="hd-setup hd-setup--spell">
-                        <div class="hd-avatar hd-setup__icon">${spellName.charAt(0)}</div>
+                        ${iconHtml}
                         <div class="hd-setup__text">
                             <p class="hd-setup__label">BATTLE SPELL</p>
                             <p class="hd-setup__name">${spellName}</p>
