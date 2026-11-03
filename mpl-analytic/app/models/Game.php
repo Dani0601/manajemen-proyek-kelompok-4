@@ -77,6 +77,7 @@ class Game
             SELECT
                 gp.*,
                 p.player_name,
+                p.player_photo_url,
                 h.hero_name
             FROM game_players gp
             LEFT JOIN players p
@@ -95,7 +96,13 @@ class Game
             ':game_id' => $gameId,
         ]);
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($rows as &$row) {
+            if (!isset($row['photo_url']) && isset($row['player_photo_url'])) {
+                $row['photo_url'] = $row['player_photo_url'];
+            }
+        }
+        return $rows;
     }
 
     /**
@@ -116,6 +123,7 @@ class Game
             SELECT
                 gp.*,
                 p.player_name,
+                p.player_photo_url,
                 h.hero_name
             FROM game_players gp
             LEFT JOIN players p
@@ -133,7 +141,13 @@ class Game
 
         $stmt->execute($params);
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($rows as &$row) {
+            if (!isset($row['photo_url']) && isset($row['player_photo_url'])) {
+                $row['photo_url'] = $row['player_photo_url'];
+            }
+        }
+        return $rows;
     }
 
     /**
