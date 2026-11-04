@@ -467,11 +467,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     
                     return `
                     <div class="hd-sit-card">
-                        <img src="${itemIcon}" alt="${item.item_name}" class="hd-sit-card__icon" onerror="this.onerror=null;">
-                        <div class="hd-sit-card__content">
-                            <h3 class="hd-sit-card__title">${item.item_name}</h3>
-                            <p class="hd-sit-card__category">Item Build</p>
-                            <span class="hd-sit-card__badge">Cocok</span>
+                        <div class="hd-sit-card__header">
+                            <img src="${itemIcon}" alt="${item.item_name}" class="hd-sit-card__icon" onerror="this.onerror=null;">
+                            <div class="hd-sit-card__area">
+                                <h3 class="hd-sit-card__title">${item.item_name}</h3>
+                                <p class="hd-sit-card__category">Item Build</p>
+                                <span class="hd-sit-card__badge">Cocok</span>
+                            </div>
                         </div>
                         <div class="hd-sit-card__reason-box">
                             <span class="hd-sit-card__reason-label">ALASAN</span>
