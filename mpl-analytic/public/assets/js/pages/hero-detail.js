@@ -43,12 +43,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // 4. Normalisasi Data
         function normalizeHeroDetail(raw) {
+            console.log("RADAR MENTAH API:", raw);
             if (!raw) return { build: { hasBuild: false }, skills: [], bannerUrl: "", heroName: "" };
 
             const buildData = raw.buildRaw || {};
-            const detailData = raw.detailRaw || {};
+            const detailData = raw.detail || raw.detailRaw || raw.data?.detail || raw.data || raw || {};
+            console.log("RADAR DETAIL DATA BERHASIL DIAMBIL:", detailData);
             const skillsRaw = raw.skillsRaw || {};
-            
+            console.log("RADAR DETAIL DATA:", detailData);
             // 1. TANGKAP OBJEK RECOMMENDATIONS
             // Mengambil dari detailData (jika di-fetch tergabung) atau raw.data
             const recommendations = detailData.recommendations || (raw.data && raw.data.recommendations) || {};
@@ -75,6 +77,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 cleanEmblemName = recommendations.emblems[0].name;
                 emblemIconUrl = recommendations.emblems[0].emblem_icon_url || recommendations.emblems[0].emblem_url || "";
             }
+
+            const officialRatings = {
+                offense: Number(detailData.offense ?? detailData.offense_rating ?? 0),
+                durability: Number(detailData.durability ?? detailData.durability_rating ?? 0),
+                controlEffects: Number(detailData.control_effects ?? detailData.controlEffects ?? 0),
+                difficulty: Number(detailData.difficulty ?? detailData.difficulty_rating ?? 0)
+            };
+            
             // Ambil talents dari recommendations, bukan buildData lagi
             const emblemTalents = recommendations.talents ? recommendations.talents.map(t => ({
                 name: t.talent_name,
@@ -140,6 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 skills: heroSkills,
                 counters: heroCounters,
                 stats: stats,
+                ratings: officialRatings,
                 situational: situationalSwaps // Menggunakan variabel baru
             };
         }
@@ -156,6 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
             renderBanner(data);
             renderBuild(data.build);
             renderSkills(data.skills);
+            renderRatings(data.ratings);
             renderStats(data.stats);
             renderSituational(data.situational);
             console.log("RADAR: SEMUA RENDER SELESAI DENGAN AMAN!");
@@ -314,6 +326,67 @@ document.addEventListener("DOMContentLoaded", () => {
             skillContainer.innerHTML = skillsHtml;
         }
 
+        // Sub-Render: Official Ratings
+        // Sub-Render: Official Ratings (Diperbarui agar lebih fleksibel)
+        function renderRatings(ratings) {
+            console.log("RADAR RENDER RATINGS - Data masuk:", ratings) ;
+            const section = document.querySelector('[data-hd-section="ratings"]') || document.querySelector('.hd-ratings-section');
+            const container = document.getElementById('hd-ratings') || document.querySelector('.hd-ratings');
+            const stateSlot = section ? section.querySelector('.hd-state-slot') : null;
+
+            if (!section || !container) {
+                console.warn("Elemen untuk Official Ratings tidak ditemukan.");
+                return;
+            }
+
+            // Pastikan nilai rating aman (jika kosong/null, jadikan minimal 0 atau 1 agar tetap tampil)
+            const safeRatings = {
+                offense: Number(ratings?.offense ?? 0),
+                durability: Number(ratings?.durability ?? 0),
+                controlEffects: Number(ratings?.controlEffects ?? 0),
+                difficulty: Number(ratings?.difficulty ?? 0)
+            };
+
+            setSectionState("ratings", "ready");
+            container.style.display = 'grid'; 
+            if (stateSlot) stateSlot.hidden = true;
+
+            const createBlocks = (value) => {
+                let blocksHtml = '';
+                const maxValue = 10;
+                const numValue = Number(value) || 0; 
+                
+                for (let i = 0; i < maxValue; i++) {
+                    const isFilled = i < numValue ? 'is-filled' : '';
+                    blocksHtml += `<div class="hd-rating__block ${isFilled}"></div>`;
+                }
+                return blocksHtml;
+            };
+
+            container.innerHTML = `
+                <div class="hd-rating">
+                    <dt>Offense</dt>
+                    <dd class="hd-rating__blocks">${createBlocks(safeRatings.offense)}</dd>
+                    <dd class="hd-rating__value">${safeRatings.offense}</dd>
+                </div>
+                <div class="hd-rating">
+                    <dt>Durability</dt>
+                    <dd class="hd-rating__blocks">${createBlocks(safeRatings.durability)}</dd>
+                    <dd class="hd-rating__value">${safeRatings.durability}</dd>
+                </div>
+                <div class="hd-rating">
+                    <dt>Control Effects</dt>
+                    <dd class="hd-rating__blocks">${createBlocks(safeRatings.controlEffects)}</dd>
+                    <dd class="hd-rating__value">${safeRatings.controlEffects}</dd>
+                </div>
+                <div class="hd-rating">
+                    <dt>Difficulty</dt>
+                    <dd class="hd-rating__blocks">${createBlocks(safeRatings.difficulty)}</dd>
+                    <dd class="hd-rating__value">${safeRatings.difficulty}</dd>
+                </div>
+            `;
+        }
+
         // Sub-Render: Hero Counter
         function renderCounters(counterData) {
             console.log("CEK 1: Data masuk ke renderCounters?", counterData);
@@ -424,84 +497,57 @@ document.addEventListener("DOMContentLoaded", () => {
                 buildStatRow("Ban Rate", statsData.banRate, "hd-tone--orange");
         }
 
-        // Sub-Render: Aturan Item Situasional
+       // Sub-Render: Aturan Item Situasional (Secara Jeneral / Tanpa Filter)
         function renderSituational(situationalItems) {
-            console.log("RADAR SITUASIONAL 2: Masuk ke renderSituational. Isi data:", situationalItems);
+            console.log("RADAR SITUASIONAL: Masuk ke renderSituational (Jeneral). Isi data:", situationalItems);
+            
             const section = document.querySelector('[data-hd-section="situational"]');
-            const listContainer = document.getElementById('hd-sit-list');
-            const stateSlot = section ? section.querySelector('.hd-situational__result-group .hd-state-slot') : null;
-            let filterButtons = document.querySelectorAll('.hd-sit-filter');
+            const listContainer = document.getElementById('hd-situ-list');
+            const noneText = document.getElementById('hd-situ-none');
+            
+            if (!section || !listContainer) return;
 
-            if (!section || !listContainer || !stateSlot) return;
+            // Jika data kosong
+            if (!situationalItems || situationalItems.length === 0) {
+                listContainer.innerHTML = '';
+                if (noneText) noneText.hidden = false;
+                return;
+            }
 
-            function updateList(filterValue) {
-                // Petakan filter UI ke condition_text backend
-                let conditionTarget = "";
-                if (filterValue === 'magic') conditionTarget = 'VS MAGIC';
-                else if (filterValue === 'physical') conditionTarget = 'VS PHYSICAL';
-                else if (filterValue === 'cc') conditionTarget = 'VS CC';
-                else if (filterValue === 'healing') conditionTarget = 'VS HEALING';
+            if (noneText) noneText.hidden = true;
 
-                // Filter data berdasarkan kondisi
-                const filtered = situationalItems.filter(item => item.condition_text === conditionTarget);
+            // Hapus kontainer chips filter jika sebelumnya sempat terbuat
+            const existingChips = section.querySelector('.hd-chips');
+            if (existingChips) {
+                existingChips.remove();
+            }
 
-                // Skenario BDD: Belum ada aturan (Negatif)
-                if (filtered.length === 0) {
-                    listContainer.style.display = 'none';
-                    stateSlot.innerHTML = `<div class="text-center py-4 text-muted" style="font-size: 13px;">Belum ada rekomendasi untuk kondisi ini</div>`;
-                    stateSlot.hidden = false;
-                    return;
-                }
+            const assetBase = container.dataset.assetBase || '';
 
-                // Skenario BDD: Rekomendasi tampil
-                listContainer.style.display = 'grid';
-                stateSlot.hidden = true;
-
-                const assetBase = container.dataset.assetBase || '';
+            // Render langsung seluruh item secara jeneral sesuai struktur CSS .hd-rec
+            listContainer.innerHTML = situationalItems.map(item => {
+                const itemIcon = item.item_icon_url || item.item_url || `${assetBase}/assets/img/default-item.png`;
+                const itemName = item.item_name || 'Item Situasional';
+                const categoryText = item.condition_text || 'Item Defense'; // Sesuai contoh gambar
+                const reasonText = item.reason || 'Rekomendasi item situasional berdasarkan kondisi pertempuran.';
                 
-                listContainer.innerHTML = filtered.map(item => {
-                    const itemIcon = item.item_icon_url || item.item_url || `${assetBase}/assets/img/default-item.png`;
-                    
-                    // Gunakan reason dari backend
-                    const reasonText = item.reason || `Sering digunakan (${parseFloat(item.share_percent).toFixed(1)}%) saat menghadapi komposisi hero ${filterValue}.`;
-                    
-                    return `
-                    <div class="hd-sit-card">
-                        <div class="hd-sit-card__header">
-                            <img src="${itemIcon}" alt="${item.item_name}" class="hd-sit-card__icon" onerror="this.onerror=null;">
-                            <div class="hd-sit-card__area">
-                                <h3 class="hd-sit-card__title">${item.item_name}</h3>
-                                <p class="hd-sit-card__category">Item Build</p>
-                                <span class="hd-sit-card__badge">Cocok</span>
-                            </div>
+                return `
+                <li class="hd-rec">
+                    <img src="${itemIcon}" alt="${itemName}" class="hd-rec__image" onerror="this.onerror=null; this.src='${assetBase}/assets/img/default-item.png'" loading="lazy">
+                    <div class="hd-rec__body">
+                        <div class="hd-rec__info">
+                            <h4 class="hd-rec__name">${itemName}</h4>
+                            <p class="hd-rec__type">${categoryText}</p>
+                            <span class="hd-badge">cocok</span>
                         </div>
-                        <div class="hd-sit-card__reason-box">
-                            <span class="hd-sit-card__reason-label">ALASAN</span>
-                            <p class="hd-sit-card__reason">${reasonText}</p>
+                        <div class="hd-rec__reason">
+                            <p class="hd-rec__label">ALASAN</p>
+                            <p class="hd-rec__text">${reasonText}</p>
                         </div>
                     </div>
-                    `;
-                }).join('');
-            }
-
-            // Bersihkan dan pasang ulang event listener agar tidak duplikat saat re-render
-            filterButtons.forEach(btn => btn.replaceWith(btn.cloneNode(true)));
-            filterButtons = document.querySelectorAll('.hd-sit-filter');
-            
-            filterButtons.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    filterButtons.forEach(b => b.classList.remove('is-active'));
-                    this.classList.add('is-active');
-                    updateList(this.dataset.filter);
-                });
-            });
-
-            // Eksekusi otomatis saat halaman pertama kali dimuat
-            const defaultActive = document.querySelector('.hd-sit-filter.is-active') || filterButtons[0];
-            if (defaultActive) {
-                defaultActive.classList.add('is-active');
-                updateList(defaultActive.dataset.filter);
-            }
+                </li>
+                `;
+            }).join('');
         }
 
         function setSectionState(sectionName, state) {

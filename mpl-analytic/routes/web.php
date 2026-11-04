@@ -38,6 +38,7 @@ $routes = [
     '/tournament' => BASE_PATH . '/views/pages/tournament.php',
     '/player-comparison' =>
         BASE_PATH . '/views/pages/player-comparison.php',
+    '/hero-detail' => BASE_PATH . '/views/pages/hero-detail.php',   
 ];
 
 if (isset($routes[$path]) && file_exists($routes[$path])) {

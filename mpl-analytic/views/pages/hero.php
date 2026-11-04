@@ -13,7 +13,7 @@ $roles = ['Fighter', 'Mage', 'Assassin', 'Tank', 'Marksman', 'Support'];
 ?>
 
 <div class="hl" id="hero-list"
-     data-detail-url="<?= htmlspecialchars($baseUrl . '/hero', ENT_QUOTES, 'UTF-8') ?>"
+     data-detail-url="<?= htmlspecialchars($baseUrl . '/hero-detail', ENT_QUOTES, 'UTF-8') ?>"
      data-asset-base="<?= htmlspecialchars($assetBase, ENT_QUOTES, 'UTF-8') ?>">
     <h1 class="hl__title">Jelajahi semua Hero</h1>
 
