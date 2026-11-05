@@ -550,17 +550,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Render langsung seluruh item secara jeneral sesuai struktur CSS .hd-rec
             listContainer.innerHTML = situationalItems.map(item => {
-                const itemIcon = item.item_icon_url || item.item_url || `${assetBase}/img/default-item.png`;
-                const itemName = item.item_name || 'Item Situasional';
-                const categoryText = item.condition_text || 'Item Defense'; // Sesuai contoh gambar
-                const reasonText = item.reason || 'Rekomendasi item situasional berdasarkan kondisi pertempuran.';
+                // 1. Ekstraksi Gambar yang lebih tangguh (Cari ke berbagai kemungkinan key)
+                const itemIcon = item.item_icon_url || item.item_url || item.icon || item.url || `${assetBase}/assets/img/default-item.png`;
+                
+                // 2. Ambil nama mentah dari DB (Contoh: "Situational: Radiant Armor (VS MAGIC)")
+                let rawName = item.item_name || item.name || 'Item Situasional';
+                
+                // 3. Bersihkan kata "Situational: " di awal kalimat
+                rawName = rawName.replace(/^Situational:\s*/i, '');
+                
+                let cleanName = rawName;
+                let categoryText = item.condition_text || item.condition || 'Situasional';
+                
+                // 4. Pisahkan teks di dalam kurung (...) sebagai kategori
+                const bracketMatch = rawName.match(/(.*?)\s*\((.*?)\)$/);
+                if (bracketMatch) {
+                    cleanName = bracketMatch[1].trim();     // Menjadi: "Radiant Armor"
+                    categoryText = bracketMatch[2].trim();  // Menjadi: "VS MAGIC"
+                }
+
+                const reasonText = item.reason || item.reason_text || 'Item situasional untuk menghadapi kondisi spesifik.';
                 
                 return `
                 <li class="hd-rec">
-                    <img src="${itemIcon}" alt="${itemName}" class="hd-rec__image" onerror="this.onerror=null; this.src='${assetBase}/img/default-item.png'" loading="lazy">
+                    <img src="${itemIcon}" alt="${cleanName}" class="hd-rec__image" onerror="this.onerror=null; this.src='${assetBase}/img/default-item.png'" loading="lazy">
                     <div class="hd-rec__body">
                         <div class="hd-rec__info">
-                            <h4 class="hd-rec__name">${itemName}</h4>
+                            <h4 class="hd-rec__name">${cleanName}</h4>
                             <p class="hd-rec__type">${categoryText}</p>
                             <span class="hd-badge">cocok</span>
                         </div>

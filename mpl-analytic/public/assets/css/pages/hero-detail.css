@@ -121,7 +121,7 @@
 }
 .hd-chip[aria-pressed="false"] { background: #fff; color: var(--hd-navy); }
 .hd-chip:focus-visible { outline: 3px solid var(--hd-blue); outline-offset: 2px; }
-.hd-rec-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.hd-rec-list { display: grid; gap: 16px; margin: 0; padding: 0; list-style: none;}
 .hd-rec {
     display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start;
     padding: 12px; border: 1px solid #000; border-radius: 12px; background: #fff;
