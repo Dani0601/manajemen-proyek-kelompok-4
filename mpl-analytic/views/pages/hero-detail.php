@@ -73,14 +73,7 @@ $heroId = (int) ($_GET['id'] ?? 0);
         </div>
     </section>
 
-    <!-- OFFICIAL RATINGS (hanya ada di desain mobile) -->
-    <section class="hd-section hd-ratings-section" data-hd-section="ratings" aria-labelledby="hd-ratings-title">
-        <h2 id="hd-ratings-title" class="hd-section__title">Official Ratings</h2>
-        <div class="hd-card hd-card--line" data-hd-panel>
-            <dl id="hd-ratings" class="hd-ratings"></dl>
-            <div class="hd-state-slot" hidden></div>
-        </div>
-    </section>
+
 
     <!-- STATISTIK + HERO COUNTER -->
     <div class="hd-duo">
@@ -88,6 +81,15 @@ $heroId = (int) ($_GET['id'] ?? 0);
             <h2 id="hd-stats-title" class="hd-section__title">Statistik Hero</h2>
             <div class="hd-card hd-card--line" data-hd-panel>
                 <ul id="hd-stats" class="hd-stats"></ul>
+                <div class="hd-state-slot" hidden></div>
+            </div>
+        </section>
+
+        <!-- OFFICIAL RATINGS (hanya ada di desain mobile) -->
+        <section class="hd-section hd-ratings-section" data-hd-section="ratings" aria-labelledby="hd-ratings-title">
+            <h2 id="hd-ratings-title" class="hd-section__title">Official Ratings</h2>
+            <div class="hd-card hd-card--line" data-hd-panel>
+                <dl id="hd-ratings" class="hd-ratings"></dl>
                 <div class="hd-state-slot" hidden></div>
             </div>
         </section>
