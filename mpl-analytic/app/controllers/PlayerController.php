@@ -17,7 +17,7 @@ class PlayerController {
     public function index() {
         try {
             $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-            $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 50;
+            $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 100;
 
             $data = $this->playerService->getMasterPlayers($page, $limit);
 
@@ -34,7 +34,7 @@ class PlayerController {
         try {
             $p1 = isset($_GET['p1']) ? (int)$_GET['p1'] : null;
             $p2 = isset($_GET['p2']) ? (int)$_GET['p2'] : null;
-            $seasonId = isset($_GET['season']) ? (int)$_GET['season'] : 17;
+            $seasonId = isset($_GET['season']) ? (int)$_GET['season'] : 18;
 
             if (!$p1 || !$p2) {
                 jsonResponse(null, "Parameter p1 dan p2 wajib diisi.", 400);
