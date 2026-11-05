@@ -12,7 +12,7 @@ class PlayerService
         $this->playerModel = new Player($db);
     }
 
-    public function getMasterPlayers(int $page = 1, int $limit = 50)
+    public function getMasterPlayers(int $page = 1, int $limit = 100)
     {
         $offset = ($page - 1) * $limit;
 
@@ -22,7 +22,7 @@ class PlayerService
     public function comparePlayers(
         int $player1Id,
         int $player2Id,
-        int $seasonId = 17
+        int $seasonId = 18
     ) {
         // Ambil statistik kedua pemain sekaligus
         $rawStats = $this->playerModel->getPlayerComparisonStats(
