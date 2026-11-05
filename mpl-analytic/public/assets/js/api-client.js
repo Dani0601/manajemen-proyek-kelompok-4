@@ -112,12 +112,22 @@ async function getHeroDetail(heroId) {
     // Ini akan menembak ke URL: /api/heroes atau /api/heroes?search=akai&role=Tank
     return request(`/heroes${queryString}`);
   }
+  async function getHeroBuilds(heroId) {
+      if (!heroId) throw new Error('Hero ID diperlukan untuk getHeroBuilds');
+      return request(`/heroes/${heroId}/builds`);
+  }
+  async function getHeroCounters(heroId) {
+      if (!heroId) throw new Error('Hero ID diperlukan untuk getHeroCounters');
+      return request(`/heroes/${heroId}/counters`);
+  }
 
 
   window.ApiClient = {
     getDashboard,
     getTournamentSchedule,
     getHeroDetail,
+    getHeroBuilds,
+    getHeroCounters,
     getPlayerComparison,
     getPlayerList,
     getHeroes,

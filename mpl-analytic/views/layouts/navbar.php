@@ -163,54 +163,7 @@ $showSearch = !$isHeroDetailPage && empty($hideGlobalSearch);
                 >
             </a>
 
-            <!-- Search bar: disembunyikan pada Detail Hero -->
-            <?php if ($showSearch): ?>
-                <form
-                    class="app-search"
-                    role="search"
-                    action="<?= htmlspecialchars($baseUrl . '/hero', ENT_QUOTES, 'UTF-8') ?>"
-                    method="get"
-                >
-                    <button
-                        type="submit"
-                        aria-label="Cari"
-                    >
-                        <svg
-                            width="18"
-                            height="18"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2.4"
-                            stroke-linecap="round"
-                            aria-hidden="true"
-                        >
-                            <circle
-                                cx="10.5"
-                                cy="10.5"
-                                r="6.5"
-                            ></circle>
 
-                            <path d="M15.5 15.5 21 21"></path>
-                        </svg>
-                    </button>
-
-                    <label
-                        class="visually-hidden"
-                        for="global-search"
-                    >
-                        Cari hero
-                    </label>
-
-                    <!-- <input
-                        id="global-search"
-                        type="search"
-                        name="q"
-                        placeholder="Cari hero..."
-                        autocomplete="off"
-                    > -->
-                </form>
-            <?php endif; ?>
 
             <!-- Tombol menu mobile -->
             <button
