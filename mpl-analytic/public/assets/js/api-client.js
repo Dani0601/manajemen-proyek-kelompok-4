@@ -97,11 +97,11 @@ async function getHeroDetail(heroId) {
           throw error;
       }
   }
-  async function getHeroes(search = '', role = '') {
+  async function getHeroes(q = '', role = '') {
     const params = new URLSearchParams();
     
     // Gunakan trim() untuk menghindari spasi kosong
-    if (search.trim()) params.append('search', search.trim());
+    if (q.trim()) params.append('q', q.trim());
     
     // Jangan kirim parameter role jika isinya kosong atau 'All Roles'
     if (role.trim() && role !== 'All Roles') params.append('role', role.trim());

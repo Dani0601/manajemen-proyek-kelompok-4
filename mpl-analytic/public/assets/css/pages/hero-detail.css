@@ -57,16 +57,16 @@
 
 /* Emblem & battle spell */
 .hd-build__side { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.hd-setup { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 4px 8px; padding: 8px; border: 1.5px solid; }
-.hd-setup--emblem { border-color: var(--hd-red); }
-.hd-setup--spell { border-color: var(--hd-green); }
-.hd-setup__icon { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; background: var(--hd-navy); }
-.hd-setup__label { margin: 0; font-size: 11px; font-weight: 500; text-transform: uppercase; line-height: 1.2; }
+.hd-setup { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 12px 12px; padding: 12px; border-radius:8px;}
+.hd-setup--emblem { border-color: var(--hd-navy); align-items: flex-start; border: 1.5px solid; }
+.hd-setup--spell { border-color: var(--hd-navy); border: 1.5px solid; }
+.hd-setup__icon { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: var(--hd-navy); }
+.hd-setup__label { margin: 0; font-size: 13px; font-weight: 500; text-transform: uppercase; line-height: 1.2; }
 .hd-setup--emblem .hd-setup__label { color: var(--hd-red-text); }
 .hd-setup--spell .hd-setup__label { color: var(--hd-green-text); }
 .hd-setup__name { margin: 0; font-size: 13px; font-weight: 600; color: var(--hd-navy); line-height: 1.2; }
-.hd-setup__text { display: flex; flex-direction: column; min-width: 0; }
-.hd-talents { grid-column: 1 / -1; display: flex; justify-content: center; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.hd-setup__text { display: flex; flex-direction: column; min-width: 0; gap: 4px; }
+.hd-talents { display: flex; gap: 6px; margin: 4px 0 0 0; padding: 0; list-style: none; }
 .hd-talent { width: 28px; height: 28px; border-radius: 8px; background: #000; overflow: hidden; }
 .hd-talent img { display: block; width: 100%; height: 100%; object-fit: cover; }
 

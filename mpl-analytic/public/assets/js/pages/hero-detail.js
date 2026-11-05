@@ -47,8 +47,20 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!raw) return { build: { hasBuild: false }, skills: [], bannerUrl: "", heroName: "" };
 
             const buildData = raw.buildRaw || {};
-            const detailData = raw.detail || raw.detailRaw || raw.data?.detail || raw.data || raw || {};
-            console.log("RADAR DETAIL DATA BERHASIL DIAMBIL:", detailData);
+            // Memastikan data tertangkap meskipun API membungkusnya di dalam 'raw.data'
+            // 1. PENCARIAN OBYEK DETAIL SECARA TEGAS
+            let detailData = {};
+            if (raw.detail && Object.keys(raw.detail).length > 0) {
+                detailData = raw.detail;
+            } else if (raw.data && raw.data.detail) {
+                detailData = raw.data.detail;
+            } else if (raw.detailRaw && Object.keys(raw.detailRaw).length > 0) {
+                detailData = raw.detailRaw;
+            } else {
+                detailData = raw;
+            }
+
+            console.log("RADAR DETAIL DATA FIX:", detailData);
             const skillsRaw = raw.skillsRaw || {};
             console.log("RADAR DETAIL DATA:", detailData);
             // 1. TANGKAP OBJEK RECOMMENDATIONS
@@ -78,12 +90,33 @@ document.addEventListener("DOMContentLoaded", () => {
                 emblemIconUrl = recommendations.emblems[0].emblem_icon_url || recommendations.emblems[0].emblem_url || "";
             }
 
+            // 3. EKSTRAKSI RATINGS (Pencarian Rekursif Super Akurat)
+            // Fungsi pembantu ini akan melacak properti di seluruh pelosok data JSON API
+            function findValue(obj, keys) {
+                if (!obj || typeof obj !== 'object') return null;
+                // Cek apakah key ada di level saat ini
+                for (let key of keys) {
+                    if (key in obj && obj[key] !== null && obj[key] !== "") {
+                        return obj[key];
+                    }
+                }
+                // Jika tidak ada, gali lebih dalam ke dalam sub-objek/array
+                for (let k in obj) {
+                    const result = findValue(obj[k], keys);
+                    if (result !== null) return result;
+                }
+                return null;
+            }
+
+            // Sapu bersih seluruh variabel 'raw' untuk mencari angka rating
             const officialRatings = {
-                offense: Number(detailData.offense ?? detailData.offense_rating ?? 0),
-                durability: Number(detailData.durability ?? detailData.durability_rating ?? 0),
-                controlEffects: Number(detailData.control_effects ?? detailData.controlEffects ?? 0),
-                difficulty: Number(detailData.difficulty ?? detailData.difficulty_rating ?? 0)
+                offense: Number(findValue(raw, ['offense', 'offense_rating'])) || 0,
+                durability: Number(findValue(raw, ['durability', 'durability_rating'])) || 0,
+                controlEffects: Number(findValue(raw, ['control_effects', 'controlEffects', 'control_effect'])) || 0,
+                difficulty: Number(findValue(raw, ['difficulty', 'difficulty_rating'])) || 0
             };
+
+            console.log("HASIL SAPU BERSIH RATINGS:", officialRatings);
             
             // Ambil talents dari recommendations, bukan buildData lagi
             const emblemTalents = recommendations.talents ? recommendations.talents.map(t => ({
@@ -128,8 +161,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // 8. RETURN DATA
             return {
-                heroName: detailData.hero_name || "Hero",
-                bannerUrl: detailData.hero_url || "",
+                heroName: detailData.hero_name || detailData.name || "Hero",
+                bannerUrl: detailData.hero_url || detailData.bannerUrl || "",
                 build: {
                     hasBuild: hasBuild,
                     items: items.map(item => ({
@@ -177,7 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
         function renderBanner(data) {
             if (!bannerImg) return;
             const assetBase = container.dataset.assetBase || '';
-            const fallbackBanner = `${assetBase}/assets/img/default-banner.png`;
+            const fallbackBanner = `${assetBase}/img/default-banner.png`;
 
             if (data.bannerUrl) {
                 bannerImg.src = data.bannerUrl;
@@ -211,12 +244,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     for (let i = 1; i <= 6; i++) {
                         const item = build.items.find(x => x.position === i);
                         if (item) {
-                            const imgSrc = item.icon ? item.icon : `${assetBase}/assets/img/default-item.png`; 
+                            const imgSrc = item.icon ? item.icon : `${assetBase}/img/default-item.png`; 
                             itemsHtml += `
                                 <li class="hd-item">
                                     <div class="hd-item__media">
                                         <span class="hd-item__slot">${i}</span>
-                                        <img src="${imgSrc}" alt="${item.name}" title="${item.name}" class="hd-item__image" onerror="this.src='${assetBase}/assets/img/default-item.png'" loading="lazy" />
+                                        <img src="${imgSrc}" alt="${item.name}" title="${item.name}" class="hd-item__image" onerror="this.src='${assetBase}/img/default-item.png'" loading="lazy" />
                                     </div>
                                     <span class="hd-item__name">${item.name}</span>
                                 </li>
@@ -258,21 +291,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 }).join('');
 
                 emblemContainer.innerHTML = `
-                    <div class="hd-setup">
+                    <div class = "hd-setup">
                         <!-- BAGIAN KIRI: Ikon Emblem Utama -->
-                        <div class="hd-setup__main-icon">
-                            ${emblemIconHtml} 
-                        </div>
-                        
+                        ${emblemIconHtml} 
                         <!-- BAGIAN KANAN: Teks dan Talent yang dikelompokkan -->
-                        <div class="hd-setup__details">
-                            <div class="hd-setup__text">
-                                <p class="hd-setup__label">EMBLEM SETUP</p>
-                                <p class="hd-setup__name">${emblemName}</p>
-                            </div>
-                            <div class="hd-setup__talents">
-                                ${talentsHtml}
-                            </div>
+                        <div class="hd-setup__text">
+                            <p class="hd-setup__label">EMBLEM SETUP</p>
+                            <p class="hd-setup__name">${emblemName}</p>
+                            ${talentsHtml ? `<ul class="hd-talents">${talentsHtml}</ul>` : ''}
                         </div>
                     </div>
                 `;
@@ -289,12 +315,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     : `<div class="hd-avatar hd-setup__icon">${spellName.charAt(0)}</div>`;
 
                 spellContainer.innerHTML = `
-                    <div class="hd-setup hd-setup--spell">
-                        ${iconHtml}
-                        <div class="hd-setup__text">
-                            <p class="hd-setup__label">BATTLE SPELL</p>
-                            <p class="hd-setup__name">${spellName}</p>
-                        </div>
+                    ${iconHtml}
+                    <div class="hd-setup__text">
+                        <p class="hd-setup__label">BATTLE SPELL</p>
+                        <p class="hd-setup__name">${spellName}</p>
                     </div>
                 `;
             }
@@ -312,12 +336,12 @@ document.addEventListener("DOMContentLoaded", () => {
             const assetBase = container.dataset.assetBase || '';
 
             let skillsHtml = skills.map(skill => {
-                const imgSrc = skill.icon ? skill.icon : `${assetBase}/assets/img/default-skill.png`;
+                const imgSrc = skill.icon ? skill.icon : `${assetBase}/img/default-skill.png`;
                 const label = SKILL_LABELS[skill.type] || skill.type;
 
                 return `
                     <li class="hd-skill">
-                        <img src="${imgSrc}" alt="${skill.name}" title="${skill.name}" class="hd-skill__media" onerror="this.src='${assetBase}/assets/img/default-skill.png'" loading="lazy">
+                        <img src="${imgSrc}" alt="${skill.name}" title="${skill.name}" class="hd-skill__media" onerror="this.src='${assetBase}/img/default-skill.png'" loading="lazy">
                         <span class="hd-skill__label">${label}</span>
                     </li>
                 `;
@@ -526,14 +550,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Render langsung seluruh item secara jeneral sesuai struktur CSS .hd-rec
             listContainer.innerHTML = situationalItems.map(item => {
-                const itemIcon = item.item_icon_url || item.item_url || `${assetBase}/assets/img/default-item.png`;
+                const itemIcon = item.item_icon_url || item.item_url || `${assetBase}/img/default-item.png`;
                 const itemName = item.item_name || 'Item Situasional';
                 const categoryText = item.condition_text || 'Item Defense'; // Sesuai contoh gambar
                 const reasonText = item.reason || 'Rekomendasi item situasional berdasarkan kondisi pertempuran.';
                 
                 return `
                 <li class="hd-rec">
-                    <img src="${itemIcon}" alt="${itemName}" class="hd-rec__image" onerror="this.onerror=null; this.src='${assetBase}/assets/img/default-item.png'" loading="lazy">
+                    <img src="${itemIcon}" alt="${itemName}" class="hd-rec__image" onerror="this.onerror=null; this.src='${assetBase}/img/default-item.png'" loading="lazy">
                     <div class="hd-rec__body">
                         <div class="hd-rec__info">
                             <h4 class="hd-rec__name">${itemName}</h4>
