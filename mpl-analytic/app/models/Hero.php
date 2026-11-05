@@ -138,12 +138,13 @@ class Hero
                 hc.target_source_hero_id,
                 hc.target_hero_id,
                 hc.target_hero_name,
-                COALESCE(h.hero_url, hc.target_hero_url) AS target_hero_url,
+                h_src.hero_url AS source_hero_url,
+                COALESCE(h_tgt.hero_url, hc.target_hero_url) AS target_hero_url,
                 hc.win_rate_advantage,
                 hc.snapshot_at
             FROM hero_counters hc
-            LEFT JOIN heroes h
-                ON h.hero_slug = SUBSTRING_INDEX(hc.target_hero_url, '/hero/', -1)
+            LEFT JOIN heroes h_src ON h_src.hero_id = hc.hero_id
+            LEFT JOIN heroes h_tgt ON h_tgt.hero_id = hc.target_hero_id
             WHERE hc.hero_id = :hero_id
               AND hc.relation_type = :relation_type
             ORDER BY hc.win_rate_advantage DESC

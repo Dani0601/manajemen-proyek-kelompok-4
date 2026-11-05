@@ -218,6 +218,12 @@ function renderHeroes(container, heroes, rateKey, prefix) {
     return;
   }
 
+  // 1. Ambil URL detail hero dari atribut HTML (jika ada), atau gunakan fallback
+  const dashboardRoot = document.getElementById("dashboard");
+  const detailUrlBase = dashboardRoot && dashboardRoot.dataset.detailUrl
+    ? dashboardRoot.dataset.detailUrl
+    : "/manajemen-proyek-kelompok-4/mpl-analytic/public/hero-detail";
+
   container.innerHTML = heroes.slice(0, 5).map((hero, index) => {
     const imageUrl = escapeHTML(
       hero.hero_url || HERO_PLACEHOLDER
@@ -226,31 +232,38 @@ function renderHeroes(container, heroes, rateKey, prefix) {
     const heroName = escapeHTML(hero.hero_name || "Hero");
     const rate = escapeHTML(formatPercent(hero[rateKey]));
     const safePrefix = escapeHTML(prefix);
+    
+    // 2. Ekstrak hero ID dengan fallback 0
+    const heroId = escapeHTML(hero.hero_id || hero.id || 0);
+    const targetUrl = `${detailUrlBase}?id=${heroId}`;
 
+    // 3. Render HTML dengan tag <a> ber-atribut display: contents
     return `
       <li class="dash-hero">
-        <div class="dash-hero__media">
-          <span class="dash-hero__rank">${index + 1}</span>
+        <a href="${targetUrl}" title="Lihat detail ${heroName}" style="display: contents; text-decoration: none; color: inherit;">
+          <div class="dash-hero__media">
+            <span class="dash-hero__rank">${index + 1}</span>
 
-          <img
-            src="${imageUrl}"
-            alt="${heroName}"
-            class="dash-hero__image"
-            loading="lazy"
-            onerror="this.onerror=null;this.src='${HERO_PLACEHOLDER}';"
+            <img
+              src="${imageUrl}"
+              alt="${heroName}"
+              class="dash-hero__image"
+              loading="lazy"
+              onerror="this.onerror=null;this.src='${HERO_PLACEHOLDER}';"
+            >
+          </div>
+
+          <div
+            class="dash-hero__name"
+            title="${heroName}"
           >
-        </div>
+            ${heroName}
+          </div>
 
-        <div
-          class="dash-hero__name"
-          title="${heroName}"
-        >
-          ${heroName}
-        </div>
-
-        <div class="dash-hero__stat">
-          ${safePrefix}: ${rate}
-        </div>
+          <div class="dash-hero__stat">
+            ${safePrefix}: ${rate}
+          </div>
+        </a>
       </li>
     `;
   }).join("");
@@ -561,7 +574,47 @@ function renderWRBRChart(topWR, topBR, heroMeta) {
   });
 }
 
+// fitur pencarian hero
+// 1. LETAKKAN FUNGSI EXECUTESEARCH DI SINI (Di luar agar mudah dibaca)
+async function executeSearch() {
+    // Sesuaikan ID dengan HTML buatan FE 1
+    const searchInput = document.getElementById("search-input")?.value.trim() || "";
+    const roleFilter = document.querySelector(".role-filter.is-active")?.dataset?.role || "";
+    
+    const heroListContainer = document.getElementById("hero-list");
+    const skeletonLoading = document.getElementById("loading-state");
+    const emptyStateUi = document.getElementById("empty-state");
 
+    if (!heroListContainer || !skeletonLoading || !emptyStateUi) return;
+
+    // Tampilkan Loading
+    heroListContainer.hidden = true;
+    emptyStateUi.hidden = true;
+    skeletonLoading.hidden = false;
+
+    try {
+        const response = await window.ApiClient.searchHeroes(searchInput, roleFilter);
+        const heroes = response.data || [];
+        
+        skeletonLoading.hidden = true;
+
+        // BDD: State Hasil Kosong
+        if (heroes.length === 0) {
+            emptyStateUi.hidden = false;
+            return;
+        }
+
+        // State Sukses
+        heroListContainer.hidden = false;
+        // Panggil fungsi render hero Anda di sini
+        // renderHeroCards(heroes); 
+
+    } catch (error) {
+        skeletonLoading.hidden = true;
+        heroListContainer.hidden = false;
+        heroListContainer.innerHTML = `<div class="text-center text-danger">Gagal memuat data.</div>`;
+    }
+}
 // ==================================================
 // MEMUAT DASHBOARD DARI API
 // ==================================================
@@ -585,6 +638,11 @@ async function loadDashboard() {
     error.hidden = true;
     error.textContent = "";
   }
+
+  const rootDash = document.getElementById("dashboard");
+    if (rootDash) {
+        rootDash.classList.remove("is-page-loading");
+    }
 
   setDashboardState("loading");
   DASH_SECTIONS.forEach(clearSectionState);
@@ -723,4 +781,26 @@ async function loadDashboard() {
       }`
     );
   }
+
+  // 3. PASANG EVENT LISTENER DI BAGIAN BAWAH FUNGSI INI
+    const searchInputEl = document.getElementById("search-input");
+    if (searchInputEl) {
+        searchInputEl.addEventListener("keyup", (e) => {
+            if (e.key === "Enter") executeSearch();
+        });
+    }
+
+    const roleButtons = document.querySelectorAll(".role-filter");
+    if (roleButtons.length > 0) {
+        roleButtons.forEach(btn => {
+            btn.addEventListener("click", function() {
+                // Pindahkan state aktif ke tombol yang diklik
+                roleButtons.forEach(b => b.classList.remove("is-active"));
+                this.classList.add("is-active");
+                
+                // Jalankan pencarian
+                executeSearch();
+            });
+        });
+    }
 }
