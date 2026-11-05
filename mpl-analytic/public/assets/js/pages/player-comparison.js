@@ -368,7 +368,7 @@ window.ComparisonRender = {
                         borderColor: '#F28C28',
                         pointBackgroundColor: '#F28C28',
                         pointBorderColor: '#fff',
-                        pointBorderWidth: 1,
+                        pointBorderWidth: 1.5,
                         borderWidth: 2
                     }
                 ]
@@ -379,18 +379,18 @@ window.ComparisonRender = {
                 scales: {
                     r: {
                         startAngle: 330,
-                        angleLines: { display: true,color: '#E2E8F0' },
-                        grid: { color: '#E2E8F0' },
+                        angleLines: { display: true,color: '#74767b' },
+                        grid: { color: '#74767b' },
                         suggestedMin: 0,
                         suggestedMax: 100, // Menjaga bentuk jaring tetap proporsional (0-100)
-                        ticks: { display: false },
+                        ticks: { display: false, stepSize: 20 },
 
                         pointLabels: {
                             font: {
-                                size: 10,
+                                size: 11,
                                 weight: '600'
                             },
-                            color: '#475569'
+                            color: '#74767b'
                         }
                     }
                 },

@@ -218,6 +218,12 @@ function renderHeroes(container, heroes, rateKey, prefix) {
     return;
   }
 
+  // 1. Ambil URL detail hero dari atribut HTML (jika ada), atau gunakan fallback
+  const dashboardRoot = document.getElementById("dashboard");
+  const detailUrlBase = dashboardRoot && dashboardRoot.dataset.detailUrl
+    ? dashboardRoot.dataset.detailUrl
+    : "/manajemen-proyek-kelompok-4/mpl-analytic/public/hero-detail";
+
   container.innerHTML = heroes.slice(0, 5).map((hero, index) => {
     const imageUrl = escapeHTML(
       hero.hero_url || HERO_PLACEHOLDER
@@ -226,31 +232,38 @@ function renderHeroes(container, heroes, rateKey, prefix) {
     const heroName = escapeHTML(hero.hero_name || "Hero");
     const rate = escapeHTML(formatPercent(hero[rateKey]));
     const safePrefix = escapeHTML(prefix);
+    
+    // 2. Ekstrak hero ID dengan fallback 0
+    const heroId = escapeHTML(hero.hero_id || hero.id || 0);
+    const targetUrl = `${detailUrlBase}?id=${heroId}`;
 
+    // 3. Render HTML dengan tag <a> ber-atribut display: contents
     return `
       <li class="dash-hero">
-        <div class="dash-hero__media">
-          <span class="dash-hero__rank">${index + 1}</span>
+        <a href="${targetUrl}" title="Lihat detail ${heroName}" style="display: contents; text-decoration: none; color: inherit;">
+          <div class="dash-hero__media">
+            <span class="dash-hero__rank">${index + 1}</span>
 
-          <img
-            src="${imageUrl}"
-            alt="${heroName}"
-            class="dash-hero__image"
-            loading="lazy"
-            onerror="this.onerror=null;this.src='${HERO_PLACEHOLDER}';"
+            <img
+              src="${imageUrl}"
+              alt="${heroName}"
+              class="dash-hero__image"
+              loading="lazy"
+              onerror="this.onerror=null;this.src='${HERO_PLACEHOLDER}';"
+            >
+          </div>
+
+          <div
+            class="dash-hero__name"
+            title="${heroName}"
           >
-        </div>
+            ${heroName}
+          </div>
 
-        <div
-          class="dash-hero__name"
-          title="${heroName}"
-        >
-          ${heroName}
-        </div>
-
-        <div class="dash-hero__stat">
-          ${safePrefix}: ${rate}
-        </div>
+          <div class="dash-hero__stat">
+            ${safePrefix}: ${rate}
+          </div>
+        </a>
       </li>
     `;
   }).join("");
@@ -625,6 +638,11 @@ async function loadDashboard() {
     error.hidden = true;
     error.textContent = "";
   }
+
+  const rootDash = document.getElementById("dashboard");
+    if (rootDash) {
+        rootDash.classList.remove("is-page-loading");
+    }
 
   setDashboardState("loading");
   DASH_SECTIONS.forEach(clearSectionState);

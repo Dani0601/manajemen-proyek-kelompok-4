@@ -11,7 +11,7 @@ $assetBase = htmlspecialchars(ASSET_BASE, ENT_QUOTES, 'UTF-8');
 
 // Kartu fitur: label mengikuti Figma, ikon dari public/assets/images/icons.
 $features = [
-    ['label' => 'Hero',       'path' => '/hero',              'icon' => 'Iron Age Warrior.png'],
+    ['label' => 'Hero',       'path' => '/heroes',              'icon' => 'Iron Age Warrior.png'],
     ['label' => 'Build',      'path' => '/meta',              'icon' => 'Footman.png'],
     ['label' => 'Tf pemain',  'path' => '/player-comparison', 'icon' => 'Trophy.png'],
     ['label' => 'MPL',        'path' => '/tournament',        'icon' => 'Trophy.png'],

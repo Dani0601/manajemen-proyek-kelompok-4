@@ -100,6 +100,73 @@
 }
 
 /* =====================================================
+   SUB-NAVIGASI (MPL / Tournament)
+   ===================================================== */
+
+.app-nav-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.app-nav-toggle {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+}
+
+.app-nav-toggle > span:nth-child(2) {
+    flex: 1 1 auto;
+}
+
+.app-nav-toggle__chev {
+    flex: 0 0 14px;
+    transition: transform 0.2s ease;
+}
+
+.app-nav-toggle[aria-expanded="true"] .app-nav-toggle__chev {
+    transform: rotate(180deg);
+}
+
+.app-subnav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 2px 0 4px 20px;
+    padding-left: 14px;
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.app-subnav__link {
+    display: block;
+    padding: 7px 12px;
+    border-radius: var(--radius-md);
+    color: rgba(255, 255, 255, 0.78);
+    font-size: clamp(12px, 1vw, 14px);
+    font-weight: 500;
+    line-height: 1.3;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.app-subnav__link:hover {
+    color: var(--color-white);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.app-subnav__link.is-active {
+    color: var(--color-white);
+    font-weight: 600;
+    background-color: rgba(255, 255, 255, 0.16);
+}
+
+.app-subnav__link:focus-visible {
+    outline: 2px solid var(--color-white);
+    outline-offset: -2px;
+}
+
+/* =====================================================
    TOPBAR
    ===================================================== */
 
@@ -260,7 +327,13 @@
         font-size: 13px;
     }
 
+    /* Tombol menu selalu di pojok kanan, tidak menempel logo */
     .app-topbar__menu {
-        margin-left: 0;
+        margin-left: auto;
     }
+}
+
+/* Topbar tanpa kolom cari: tombol menu tetap di kanan (mobile). */
+.app-topbar--no-search .app-topbar__menu {
+    margin-left: auto;
 }

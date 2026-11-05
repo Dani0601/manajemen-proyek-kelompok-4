@@ -97,6 +97,21 @@ async function getHeroDetail(heroId) {
           throw error;
       }
   }
+  async function getHeroes(search = '', role = '') {
+    const params = new URLSearchParams();
+    
+    // Gunakan trim() untuk menghindari spasi kosong
+    if (search.trim()) params.append('search', search.trim());
+    
+    // Jangan kirim parameter role jika isinya kosong atau 'All Roles'
+    if (role.trim() && role !== 'All Roles') params.append('role', role.trim());
+
+    const queryString = params.toString() ? `?${params.toString()}` : '';
+    
+    // Memanfaatkan fungsi helper request() yang sudah ada
+    // Ini akan menembak ke URL: /api/heroes atau /api/heroes?search=akai&role=Tank
+    return request(`/heroes${queryString}`);
+  }
 
 
   window.ApiClient = {
@@ -105,6 +120,7 @@ async function getHeroDetail(heroId) {
     getHeroDetail,
     getPlayerComparison,
     getPlayerList,
+    getHeroes,
     baseUrl: "http://menpro.test/manajemen-proyek-kelompok-4/mpl-analytic/public",
     // Tambahkan di dalam objek window.ApiClient
     searchHeroes: async function(query = '', role = '') {
