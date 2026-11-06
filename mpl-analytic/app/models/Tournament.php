@@ -1,5 +1,9 @@
 <?php
 // app/models/Tournament.php
+// [DOKUMENTASI MODEL JADWAL & KLASEMEN TURNAMEN MPL]
+// Data Access Layer untuk mengeksekusi query:
+// - getMatchesBySeason()    -> Query jadwal pertandingan dari tabel matches, teams, dan seasons
+// - getStandingsBySeason()  -> Query kalkulasi klasemen dari database/queries/tournament_standings.sql
 
 class Tournament {
     private $db;

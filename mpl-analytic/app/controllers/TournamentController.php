@@ -1,5 +1,11 @@
 <?php
 // app/controllers/TournamentController.php
+// [DOKUMENTASI API JADWAL & KLASEMEN TURNAMEN MPL]
+// Controller ini menangani endpoint:
+// 1. GET /api/tournaments/{id}/schedule  -> Mengambil jadwal pertandingan (Matches Schedule)
+// 2. GET /api/tournaments/{id}/standings -> Mengambil data klasemen turnamen (Tournament Standings)
+// 3. GET /api/tournaments/{id}           -> Mengambil detail turnamen / season
+// 4. GET /api/tournaments                -> Mengambil seluruh daftar turnamen / seasons
 require_once __DIR__ . '/../services/TournamentService.php';
 require_once __DIR__ . '/../helpers/response.php';
 
