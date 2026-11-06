@@ -166,29 +166,30 @@ document.addEventListener("DOMContentLoaded", () => {
     function renderPlayerCard(player) {
         if (!player) return "";
 
-        const playerName = player.player_name || "?";
+        const playerName = player.player_name || "Unknown";
         const initial = playerName.charAt(0).toUpperCase();
 
-        // 1. Sesuaikan penangkap URL dengan data JSON backend yang baru
-        const photoUrl = player.photo_url || player.player_photo_url || player.photo || "";
+        // 1. Ambil URL mentah dari API (berisi http://localhost/...)
+        const rawPhotoUrl = player.photo_url || player.player_photo_url || player.photo || "";
 
-        // 2. Siapkan desain fallback bawaan dari FE 1
-        const fallbackNormal = `
+        // 2. TRIK JITU: Ambil HANYA nama filenya saja dari URL tersebut (contoh: "killuaa.png")
+        // Jika URL kosong, fileName juga akan kosong.
+        const fileName = rawPhotoUrl ? rawPhotoUrl.substring(rawPhotoUrl.lastIndexOf('/') + 1) : "";
+
+        // 3. Rakit ulang menggunakan path folder lokal yang terbukti benar
+        const photoUrl = fileName ? `assets/images/players/${fileName}` : "";
+
+        // 4. Siapkan visual utama (Gambar atau Fallback)
+        const mediaHtml = photoUrl 
+            ? `<img class="pc-card__image" src="${photoUrl}" alt="${playerName}" style="object-fit: cover;" onerror="this.onerror=null; this.outerHTML='<span class=&quot;pc-card__initials&quot;>${initial}</span>';">`
+            : `<span class="pc-card__initials">${initial}</span>`;
+
+        // 5. Cetak ke HTML
+        return `
         <div class="pc-card__fallback">
-            <span class="pc-card__initials">${initial}</span>
+            ${mediaHtml}
             <span class="pc-card__name">${playerName}</span>
         </div>`;
-
-        // 3. Ubah tanda kutip menjadi &quot; agar aman dimasukkan ke dalam atribut onerror
-        const fallbackForOnError = fallbackNormal.replace(/"/g, '&quot;').replace(/\n/g, '');
-
-        // 4. Jika ada URL foto, cetak gambar dengan sistem Anti-Pecah
-        if (photoUrl) {
-            return `<img class="pc-card__image" src="${photoUrl}" alt="${playerName}" onerror="this.onerror=null; this.outerHTML='${fallbackForOnError}';">`;
-        } 
-        
-        // 5. Jika dari awal URL fotonya memang kosong/null, langsung cetak kotak fallback
-        return fallbackNormal;
     }
 
     // ==========================================

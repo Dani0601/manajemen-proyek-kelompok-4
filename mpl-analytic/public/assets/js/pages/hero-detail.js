@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
     const HeroDetail = (function () {
-        // 1. Deklarasi Elemen Utama
+        // ==========================================
+        // 1. DEKLARASI ELEMEN UTAMA
+        // ==========================================
         const container = document.getElementById("hero-detail");
         const dummyNote = document.getElementById("hd-dummy-note");
         const counterContainer = document.getElementById("hd-counters");
@@ -10,7 +12,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const skillContainer = document.getElementById("hd-skills");
         const bannerImg = document.getElementById("hd-banner-img");
 
-        // 2. Inisialisasi
+        // ==========================================
+        // 2. INISIALISASI
+        // ==========================================
         async function init() {
             if (!container) return;
 
@@ -26,143 +30,197 @@ document.addEventListener("DOMContentLoaded", () => {
             await fetchHeroDetail(heroId);
         }
 
-        // 3. API Fetch
+        // ==========================================
+        // 3. API FETCH (Sangat Sederhana karena diurus api-client.js)
+        // ==========================================
         async function fetchHeroDetail(heroId) {
             if (!window.ApiClient || !window.ApiClient.getHeroDetail) {
                 console.error("ApiClient.getHeroDetail tidak ditemukan.");
                 setSectionState("build", "error");
                 return;
             }
-            console.log("RADAR 1: Mulai ambil API untuk ID", heroId);
-            const rawData = await window.ApiClient.getHeroDetail(heroId);
-            console.log("RADAR 2: Data mentah berhasil didapat", rawData);
-            const normalizedData = normalizeHeroDetail(rawData);
-            console.log("RADAR 3: Data berhasil dinormalisasi", normalizedData);
-            render(normalizedData);
+            console.log("RADAR 1: Mengambil data terpadu untuk ID", heroId);
+
+            try {
+                // Panggil fungsi getHeroDetail dari api-client.js yang membungkus 5 endpoint
+                const rawData = await window.ApiClient.getHeroDetail(heroId);
+                
+                if (!rawData) throw new Error("Data API kosong");
+
+                console.log("RADAR 2: Data mentah berhasil didapat:", rawData);
+                const normalizedData = normalizeHeroDetail(rawData);
+                console.log("RADAR 3: Data dinormalisasi:", normalizedData);
+                
+                render(normalizedData);
+            } catch (error) {
+                console.error("Terjadi kesalahan saat fetch API:", error);
+                setSectionState("build", "error");
+            }
         }
 
-        // 4. Normalisasi Data
+        // ==========================================
+        // 4. NORMALISASI DATA
+        // ==========================================
         function normalizeHeroDetail(raw) {
-            console.log("RADAR MENTAH API:", raw);
             if (!raw) return { build: { hasBuild: false }, skills: [], bannerUrl: "", heroName: "" };
 
-            const buildData = raw.buildRaw || {};
-            const detailData = raw.detail || raw.detailRaw || raw.data?.detail || raw.data || raw || {};
-            console.log("RADAR DETAIL DATA BERHASIL DIAMBIL:", detailData);
-            const skillsRaw = raw.skillsRaw || {};
-            console.log("RADAR DETAIL DATA:", detailData);
-            // 1. TANGKAP OBJEK RECOMMENDATIONS
-            // Mengambil dari detailData (jika di-fetch tergabung) atau raw.data
-            const recommendations = detailData.recommendations || (raw.data && raw.data.recommendations) || {};
+            // 1. PISAHKAN SUMBER DATA SESUAI HASIL DARI api-client.js
+            const detailData = raw.detailRaw?.data || raw.detailRaw || {};
+            const buildData = raw.buildRaw?.data || raw.buildRaw || {}; // Khusus Item Situasional
+            const skillsData = raw.skillsRaw?.data || raw.skillsRaw || {};
+            const countersData = raw.countersRaw?.data || raw.countersRaw || {};
+            const statsData = raw.statsRaw?.data || raw.statsRaw || {};
 
-            // 2. ITEM SITUASIONAL
-            const situationalSwaps = recommendations.items || [];
-            console.log("RADAR SITUASIONAL 1: Data mentah berhasil diekstrak:", situationalSwaps);
-            
-            const items = buildData.items || [];
+            // 2. TANGKAP RECOMMENDATIONS (HANYA DARI ENDPOINT DETAIL)
+            const recommendations = detailData.recommendations || {};
+
+            // A. DATA DETAIL (Banner & Nama)
+            const heroName = detailData.hero_name || detailData.name || "Hero";
+            const bannerUrl = detailData.hero_url || detailData.bannerUrl || "";
+
+            // B. DATA BUILD UTAMA (Item 6 Slot, Emblem, Spell - SEMUANYA DARI DETAIL)
+            let items = [];
+            if (Array.isArray(buildData)) {
+                items = buildData;
+            } else {
+                items = buildData.items || [];
+            }
             const hasBuild = items.length > 0;
 
-            // 3. SPELL
+            const spellsRaw = recommendations.spells || detailData.spells || [];
             let cleanSpellName = "";
             let spellIconUrl = "";
-            if (recommendations.spells && recommendations.spells.length > 0) {
-                cleanSpellName = recommendations.spells[0].spell_name.replace("ALSO ", "").trim();
-                spellIconUrl = recommendations.spells[0].spell_icon_url || recommendations.spells[0].spell_url || "";
+            if (spellsRaw.length > 0) {
+                cleanSpellName = (spellsRaw[0].spell_name || "").replace("ALSO ", "").trim();
+                spellIconUrl = spellsRaw[0].spell_icon_url || spellsRaw[0].spell_url || "";
             }
 
-            // 4. EMBLEM & TALENT
+            const emblemsRaw = recommendations.emblems || detailData.emblems || [];
             let cleanEmblemName = "";
             let emblemIconUrl = "";
-            if (recommendations.emblems && recommendations.emblems.length > 0) {
-                cleanEmblemName = recommendations.emblems[0].name;
-                emblemIconUrl = recommendations.emblems[0].emblem_icon_url || recommendations.emblems[0].emblem_url || "";
+            let emblemTalents = [];
+            if (emblemsRaw.length > 0) {
+                cleanEmblemName = emblemsRaw[0].name || emblemsRaw[0].emblem_name || "";
+                emblemIconUrl = emblemsRaw[0].emblem_icon_url || emblemsRaw[0].emblem_url || "";
+            }
+            
+            const talentsRaw = recommendations.talents || detailData.talents || [];
+            if (talentsRaw.length > 0) {
+                emblemTalents = talentsRaw.map(t => ({
+                    name: t.talent_name || t.name,
+                    icon: t.talent_icon_url || t.talent_url || t.icon || ""
+                }));
             }
 
-            const officialRatings = {
-                offense: Number(detailData.offense ?? detailData.offense_rating ?? 0),
-                durability: Number(detailData.durability ?? detailData.durability_rating ?? 0),
-                controlEffects: Number(detailData.control_effects ?? detailData.controlEffects ?? 0),
-                difficulty: Number(detailData.difficulty ?? detailData.difficulty_rating ?? 0)
-            };
+            // C. ITEM SITUASIONAL: ikon dari /builds, alasan dari /heroes/{id}
+            const swapsFromBuild = buildData.situational_swaps || [];
+            const recItems = recommendations.items || [];
+
+            const reasonByCondition = {};
+            recItems.forEach((r) => {
+            reasonByCondition[(r.condition_text || "").trim().toUpperCase()] = r.reason;
+            });
+
+            const situationalSwaps = swapsFromBuild.length
+            ? swapsFromBuild.map((swap) => ({
+                ...swap,
+                reason: reasonByCondition[(swap.condition_text || "").trim().toUpperCase()] || ""
+                }))
+            : recItems;
             
-            // Ambil talents dari recommendations, bukan buildData lagi
-            const emblemTalents = recommendations.talents ? recommendations.talents.map(t => ({
-                name: t.talent_name,
-                icon: t.talent_icon_url || t.talent_url || ""
-            })) : [];
-            // 5. SKILLS (Tetap sama)
+            // D. RATINGS (DARI DETAIL)
+            function findValue(obj, keys) {
+                if (!obj || typeof obj !== 'object') return null;
+                for (let key of keys) {
+                    if (key in obj && obj[key] !== null && obj[key] !== "") return obj[key];
+                }
+                for (let k in obj) {
+                    const result = findValue(obj[k], keys);
+                    if (result !== null) return result;
+                }
+                return null;
+            }
+            
+            const officialRatings = {
+                offense: Number(findValue(detailData, ['offense', 'offense_rating'])) || 0,
+                durability: Number(findValue(detailData, ['durability', 'durability_rating'])) || 0,
+                controlEffects: Number(findValue(detailData, ['control_effects', 'controlEffects', 'control_effect'])) || 0,
+                difficulty: Number(findValue(detailData, ['difficulty', 'difficulty_rating'])) || 0
+            };
+
+            // E. SKILLS (DARI SKILLS RAW ATAU DETAIL)
             let heroSkills = [];
-            const skillsArray = skillsRaw.skills || [];
+            const skillsArray = Array.isArray(skillsData) ? skillsData : (skillsData.skills || detailData.skills || []);
             if (Array.isArray(skillsArray)) {
                 heroSkills = skillsArray.map(skill => ({
                     name: skill.skill_name || "",
                     type: skill.skill_type || "",
-                    icon: skill.skill_icon_url || "",
+                    icon: skill.skill_icon_url || skill.skill_url || "",
                     position: skill.skill_position || 0
                 })).sort((a, b) => a.position - b.position);
             }
 
-            // 6. COUNTERS (Tetap sama)
-            const countersRaw = raw.countersRaw || {};
-            let strongAgainst = countersRaw.strong_against || [];
-            let weakAgainst = countersRaw.counters || [];
+            // F. COUNTERS (DARI COUNTERS RAW)
+            let strongAgainst = countersData.strong_against || (Array.isArray(countersData) ? countersData.filter(c => c.relation_type === 'strong') : []);
+            let weakAgainst = countersData.counters || (Array.isArray(countersData) ? countersData.filter(c => c.relation_type === 'counter' || c.relation_type === 'weak') : []);
+            
             const formatCounter = (hero, isAdvantage) => {
-                const name = hero.target_hero_name.replace(/(Decisive|Strong|Slight)/g, '').trim();
+                const name = hero.target_hero_name ? hero.target_hero_name.replace(/(Decisive|Strong|Slight)/g, '').trim() : "Unknown";
                 const advantage = parseFloat(hero.win_rate_advantage || 0);
                 const winRate = isAdvantage ? (50 + advantage) : (50 - advantage);
-                return { name, winRate: winRate.toFixed(1) };
+                const icon = hero.target_hero_icon_url || hero.target_hero_url || "";
+                return { name, winRate: winRate.toFixed(1), icon };
             };
+            
             const heroCounters = {
                 strong: strongAgainst.map(h => formatCounter(h, true)).sort((a, b) => b.winRate - a.winRate).slice(0, 3),
                 weak: weakAgainst.map(h => formatCounter(h, false)).sort((a, b) => a.winRate - b.winRate).slice(0, 3)
             };
 
-            // 7. STATS (Tetap sama)
-            const statsRaw = raw.statsRaw || {};
-            const statsDataBackend = (statsRaw.data && statsRaw.data.stats) ? statsRaw.data.stats : (statsRaw.stats || {});
+            // G. STATS (DARI STATS RAW ATAU DETAIL)
+            const statsSource = statsData.stats || statsData || detailData.stats || {};
             const stats = {
-                winRate: parseFloat(statsDataBackend.win_rate || 0).toFixed(2),
-                pickRate: parseFloat(statsDataBackend.pick_rate || 0).toFixed(2),
-                banRate: parseFloat(statsDataBackend.ban_rate || 0).toFixed(2)
+                winRate: parseFloat(statsSource.win_rate || 0).toFixed(2),
+                pickRate: parseFloat(statsSource.pick_rate || 0).toFixed(2),
+                banRate: parseFloat(statsSource.ban_rate || 0).toFixed(2)
             };
 
-            // 8. RETURN DATA
+            // RETURN DATA FINAL KE FUNGSI RENDER
             return {
-                heroName: detailData.hero_name || "Hero",
-                bannerUrl: detailData.hero_url || "",
+                heroName: heroName,
+                bannerUrl: bannerUrl,
                 build: {
                     hasBuild: hasBuild,
                     items: items.map(item => ({
                         position: item.position,
                         name: item.item_name,
-                        icon: item.item_url || "" 
+                        icon: item.item_icon_url || item.item_url || "" 
                     })),
                     emblem: {
                         name: cleanEmblemName,
                         icon: emblemIconUrl,
-                        talents: emblemTalents // Menggunakan variabel baru
+                        talents: emblemTalents
                     },
                     spell: {
                         name: cleanSpellName,
-                        icon: spellIconUrl // Menggunakan variabel baru
+                        icon: spellIconUrl
                     }
                 },
                 skills: heroSkills,
                 counters: heroCounters,
                 stats: stats,
                 ratings: officialRatings,
-                situational: situationalSwaps // Menggunakan variabel baru
+                situational: situationalSwaps
             };
         }
 
-        // 5. Fungsi Main Render (Memanggil Masing-masing Sub-Render Tanpa Early Return)
+        // ==========================================
+        // 5. FUNGSI MAIN RENDER
+        // ==========================================
         function render(data) {
-            console.log("RADAR 4: Masuk ke fungsi render utama. Isi data:", data);
             if (dummyNote) dummyNote.style.display = "none";
-            if (!data){
-                console.log("RADAR 5: Data kosong, render dihentikan.");
-                return;
-            } 
+            if (!data) return;
+            
             renderCounters(data.counters);
             renderBanner(data);
             renderBuild(data.build);
@@ -170,14 +228,13 @@ document.addEventListener("DOMContentLoaded", () => {
             renderRatings(data.ratings);
             renderStats(data.stats);
             renderSituational(data.situational);
-            console.log("RADAR: SEMUA RENDER SELESAI DENGAN AMAN!");
         }
 
         // Sub-Render: Banner Hero
         function renderBanner(data) {
             if (!bannerImg) return;
             const assetBase = container.dataset.assetBase || '';
-            const fallbackBanner = `${assetBase}/assets/img/default-banner.png`;
+            const fallbackBanner = `${assetBase}/images/default-banner.png`;
 
             if (data.bannerUrl) {
                 bannerImg.src = data.bannerUrl;
@@ -202,21 +259,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             } else {
                 setSectionState("build", "ready");
+                const assetBase = container.dataset.assetBase || '';
 
                 // Render 6 Items
                 if (buildItemsContainer) {
                     let itemsHtml = "";
-                    const assetBase = container.dataset.assetBase || '';
-
                     for (let i = 1; i <= 6; i++) {
                         const item = build.items.find(x => x.position === i);
                         if (item) {
-                            const imgSrc = item.icon ? item.icon : `${assetBase}/assets/img/default-item.png`; 
+                            const imgSrc = item.icon ? item.icon : `${assetBase}/images/default-item.png`; 
                             itemsHtml += `
                                 <li class="hd-item">
                                     <div class="hd-item__media">
                                         <span class="hd-item__slot">${i}</span>
-                                        <img src="${imgSrc}" alt="${item.name}" title="${item.name}" class="hd-item__image" onerror="this.src='${assetBase}/assets/img/default-item.png'" loading="lazy" />
+                                        <img src="${imgSrc}" alt="${item.name}" title="${item.name}" class="hd-item__image" onerror="this.src='${assetBase}/images/default-item.png'" loading="lazy" />
                                     </div>
                                     <span class="hd-item__name">${item.name}</span>
                                 </li>
@@ -237,64 +293,54 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
 
-            // Render Emblem
+            // Render Emblem (Menggunakan HTML Grid langsung sesuai CSS Figma)
             if (emblemContainer) {
                 const emblemName = build.emblem?.name || "No Emblem";
                 const emblemIcon = build.emblem?.icon || "";
                 const emblemNameInitial = emblemName.charAt(0).toUpperCase();
                 
                 const emblemIconHtml = emblemIcon 
-                    ? `<img src="${emblemIcon}" alt="${emblemName}" class="hd-setup__icon" referrerpolicy="no-referrer" onerror="this.onerror=null; this.outerHTML='<div class=&quot;hd-avatar hd-setup__icon hd-avatar--dark&quot;>${emblemNameInitial}</div>';">`
-                    : `<div class="hd-avatar hd-setup__icon hd-avatar--dark">${emblemNameInitial}</div>`;
-                // Gunakan gambar untuk talent jika ada, jika error otomatis jadi huruf inisial
+                    ? `<img src="${emblemIcon}" alt="${emblemName}" class="hd-setup__icon" referrerpolicy="no-referrer" onerror="this.onerror=null; this.outerHTML='<div class=&quot;hd-setup__icon hd-avatar hd-avatar--dark&quot;>${emblemNameInitial}</div>';">`
+                    : `<div class="hd-setup__icon hd-avatar hd-avatar--dark">${emblemNameInitial}</div>`;
+                
                 const talentsHtml = (build.emblem?.talents || []).map(talent => {
                     const tName = typeof talent === 'string' ? talent : (talent.name || "T");
                     const tIcon = typeof talent === 'string' ? "" : talent.icon;
                     
                     if (tIcon) {
-                        return `<img src="${tIcon}" alt="${tName}" class="hd-setup__icon" referrerpolicy="no-referrer" title="${tName}" onerror="this.outerHTML='<div class=&quot;hd-avatar hd-setup__icon&quot; title=&quot;${tName}&quot;>${tName.charAt(0)}</div>';">`;
+                        return `<li class="hd-talent"><img src="${tIcon}" alt="${tName}" referrerpolicy="no-referrer" title="${tName}" onerror="this.outerHTML='<div class=&quot;hd-talent hd-avatar&quot; title=&quot;${tName}&quot;>${tName.charAt(0)}</div>';"></li>`;
                     }
-                    return `<div class="hd-avatar hd-setup__icon" title="${tName}">${tName.charAt(0)}</div>`;
+                    return `<li class="hd-talent"><div class="hd-avatar" title="${tName}">${tName.charAt(0)}</div></li>`;
                 }).join('');
 
                 emblemContainer.innerHTML = `
-                    <div class="hd-setup">
+                    <div class = "hd-setup">
                         <!-- BAGIAN KIRI: Ikon Emblem Utama -->
-                        <div class="hd-setup__main-icon">
-                            ${emblemIconHtml} 
-                        </div>
-                        
+                        ${emblemIconHtml} 
                         <!-- BAGIAN KANAN: Teks dan Talent yang dikelompokkan -->
-                        <div class="hd-setup__details">
-                            <div class="hd-setup__text">
-                                <p class="hd-setup__label">EMBLEM SETUP</p>
-                                <p class="hd-setup__name">${emblemName}</p>
-                            </div>
-                            <div class="hd-setup__talents">
-                                ${talentsHtml}
-                            </div>
+                        <div class="hd-setup__text">
+                            <p class="hd-setup__label">EMBLEM SETUP</p>
+                            <p class="hd-setup__name">${emblemName}</p>
+                            ${talentsHtml ? `<ul class="hd-talents">${talentsHtml}</ul>` : ''}
                         </div>
                     </div>
                 `;
             }
 
-            // --- Render Battle Spell ---
+            // Render Battle Spell
             if (spellContainer) {
                 const spellName = build.spell?.name || "No Spell";
                 const spellIcon = build.spell?.icon || "";
 
-                // Anti-pecah: Jika gambar gagal dimuat, ganti dengan Div berisi huruf pertama Spell
                 const iconHtml = spellIcon 
-                    ? `<img src="${spellIcon}" alt="${spellName}" class="hd-setup__icon" referrerpolicy="no-referrer" onerror="this.outerHTML='<div class=&quot;hd-avatar hd-setup__icon&quot;>${spellName.charAt(0)}</div>';">`
-                    : `<div class="hd-avatar hd-setup__icon">${spellName.charAt(0)}</div>`;
+                    ? `<img src="${spellIcon}" alt="${spellName}" class="hd-setup__icon" referrerpolicy="no-referrer" onerror="this.outerHTML='<div class=&quot;hd-setup__icon hd-avatar&quot;>${spellName.charAt(0)}</div>';">`
+                    : `<div class="hd-setup__icon hd-avatar">${spellName.charAt(0)}</div>`;
 
                 spellContainer.innerHTML = `
-                    <div class="hd-setup hd-setup--spell">
-                        ${iconHtml}
-                        <div class="hd-setup__text">
-                            <p class="hd-setup__label">BATTLE SPELL</p>
-                            <p class="hd-setup__name">${spellName}</p>
-                        </div>
+                    ${iconHtml}
+                    <div class="hd-setup__text">
+                        <p class="hd-setup__label">BATTLE SPELL</p>
+                        <p class="hd-setup__name">${spellName}</p>
                     </div>
                 `;
             }
@@ -312,12 +358,12 @@ document.addEventListener("DOMContentLoaded", () => {
             const assetBase = container.dataset.assetBase || '';
 
             let skillsHtml = skills.map(skill => {
-                const imgSrc = skill.icon ? skill.icon : `${assetBase}/assets/img/default-skill.png`;
+                const imgSrc = skill.icon ? skill.icon : `${assetBase}/images/default-skill.png`;
                 const label = SKILL_LABELS[skill.type] || skill.type;
 
                 return `
                     <li class="hd-skill">
-                        <img src="${imgSrc}" alt="${skill.name}" title="${skill.name}" class="hd-skill__media" onerror="this.src='${assetBase}/assets/img/default-skill.png'" loading="lazy">
+                        <img src="${imgSrc}" alt="${skill.name}" title="${skill.name}" class="hd-skill__media" onerror="this.src='${assetBase}/images/default-skill.png'" loading="lazy">
                         <span class="hd-skill__label">${label}</span>
                     </li>
                 `;
@@ -327,19 +373,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         // Sub-Render: Official Ratings
-        // Sub-Render: Official Ratings (Diperbarui agar lebih fleksibel)
         function renderRatings(ratings) {
-            console.log("RADAR RENDER RATINGS - Data masuk:", ratings) ;
             const section = document.querySelector('[data-hd-section="ratings"]') || document.querySelector('.hd-ratings-section');
-            const container = document.getElementById('hd-ratings') || document.querySelector('.hd-ratings');
+            const containerBox = document.getElementById('hd-ratings') || document.querySelector('.hd-ratings');
             const stateSlot = section ? section.querySelector('.hd-state-slot') : null;
 
-            if (!section || !container) {
-                console.warn("Elemen untuk Official Ratings tidak ditemukan.");
-                return;
-            }
+            if (!section || !containerBox) return;
 
-            // Pastikan nilai rating aman (jika kosong/null, jadikan minimal 0 atau 1 agar tetap tampil)
             const safeRatings = {
                 offense: Number(ratings?.offense ?? 0),
                 durability: Number(ratings?.durability ?? 0),
@@ -348,7 +388,7 @@ document.addEventListener("DOMContentLoaded", () => {
             };
 
             setSectionState("ratings", "ready");
-            container.style.display = 'grid'; 
+            containerBox.style.display = 'grid'; 
             if (stateSlot) stateSlot.hidden = true;
 
             const createBlocks = (value) => {
@@ -363,7 +403,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 return blocksHtml;
             };
 
-            container.innerHTML = `
+            containerBox.innerHTML = `
                 <div class="hd-rating">
                     <dt>Offense</dt>
                     <dd class="hd-rating__blocks">${createBlocks(safeRatings.offense)}</dd>
@@ -389,10 +429,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Sub-Render: Hero Counter
         function renderCounters(counterData) {
-            console.log("CEK 1: Data masuk ke renderCounters?", counterData);
-
             const section = document.querySelector('[data-hd-section="counters"]');
-            console.log("CEK 2: Apakah elemen section ketemu?", section);
             const favorableList = document.getElementById("hd-counter-favorable");
             const unfavorableList = document.getElementById("hd-counter-unfavorable");
             const stateSlot = section ? section.querySelector('.hd-state-slot') : null;
@@ -400,7 +437,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (!section) return;
 
-            // --- BDD Skenario 2: Data Belum Cukup ---
             if (!counterData || (counterData.strong.length === 0 && counterData.weak.length === 0)) {
                 setSectionState("counters", "empty");
                 panels.forEach(panel => panel.style.display = 'none');
@@ -412,40 +448,35 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            // --- BDD Skenario 1: Tampilkan Daftar Terurut ---
             setSectionState("counters", "ready");
             panels.forEach(panel => panel.style.display = '');
             if (stateSlot) stateSlot.hidden = true;
 
-            // Fungsi pembantu untuk membuat tag <li class="hd-counter-row">
             function buildList(heroes, isAdvantage) {
                 if (heroes.length === 0) {
-                    // grid-column: 1 / -1 memastikan teks kosong memakan seluruh lebar 4 kolom
                     return `<li class="text-center py-2 text-muted" style="font-size: 12px; grid-column: 1 / -1;">Belum ada data</li>`;
                 }
                 
                 const barColor = isAdvantage ? 'var(--hd-blue, #0d6efd)' : 'var(--hd-orange, #fd7e14)';
 
-                return heroes.map(h => `
+                return heroes.map(h => {
+                    const avatarHtml = h.icon 
+                        ? `<img src="${h.icon}" alt="${h.name}" class="hd-avatar" style="object-fit: cover;" referrerpolicy="no-referrer" onerror="this.outerHTML='<div class=&quot;hd-avatar&quot;>${h.name.charAt(0)}</div>'">`
+                        : `<div class="hd-avatar">${h.name.charAt(0)}</div>`;
+
+                    return `
                     <li class="hd-counter-row">
-                        <!-- Kolom 1: Avatar Inisial -->
-                        <div class="hd-avatar">${h.name.charAt(0)}</div>
-                        
-                        <!-- Kolom 2: Nama Hero -->
+                        ${avatarHtml}
                         <span class="hd-counter-row__name" title="${h.name}">${h.name}</span>
-                        
-                        <!-- Kolom 3: Progress Bar -->
                         <div style="height: 6px; width: 100%; background: #e9ecef; border-radius: 4px; overflow: hidden;">
                             <div style="width: ${h.winRate}%; height: 100%; background: ${barColor};"></div>
                         </div>
-                        
-                        <!-- Kolom 4: Nilai Persentase -->
                         <span class="hd-counter-row__value" style="color: ${barColor};">${h.winRate}%</span>
                     </li>
-                `).join("");
+                    `;
+                }).join("");
             }
 
-            // Suntikkan data ke masing-masing ID list
             if (favorableList) favorableList.innerHTML = buildList(counterData.strong, true);
             if (unfavorableList) unfavorableList.innerHTML = buildList(counterData.weak, false);
         }
@@ -453,15 +484,14 @@ document.addEventListener("DOMContentLoaded", () => {
         // Sub-Render: Statistik Hero
         function renderStats(statsData) {
             const section = document.querySelector('[data-hd-section="stats"]');
-            const statsContainer = document.getElementById("hd-stats");
+            const statsContainerBox = document.getElementById("hd-stats");
             const stateSlot = section ? section.querySelector('.hd-state-slot') : null;
 
-            if (!section || !statsContainer) return;
+            if (!section || !statsContainerBox) return;
 
-            // --- BDD Skenario: Data Kosong ---
             if (!statsData || (statsData.winRate == 0 && statsData.pickRate == 0 && statsData.banRate == 0)) {
                 setSectionState("stats", "empty");
-                statsContainer.style.display = 'none';
+                statsContainerBox.style.display = 'none';
                 
                 if (stateSlot) {
                     stateSlot.innerHTML = `<div class="text-center py-4 text-muted" style="font-size: 13px;">Data statistik belum tersedia</div>`;
@@ -470,44 +500,34 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            // --- BDD Skenario: Data Tersedia ---
             setSectionState("stats", "ready");
-            statsContainer.style.display = '';
+            statsContainerBox.style.display = '';
             if (stateSlot) stateSlot.hidden = true;
 
-            // Fungsi pembantu pembuat tag <li> dengan class BEM
             const buildStatRow = (label, value, toneClass) => `
                 <li class="hd-stat">
                     <span class="hd-stat__label">${label}</span>
-                    
                     <div class="hd-bar">
-                        <!-- Class tone disematkan di sini agar background warna menyesuaikan CSS -->
                         <span class="hd-bar__fill ${toneClass}" style="width: ${value}%;"></span>
                     </div>
-                    
-                    <!-- Class tone disematkan di sini untuk mengubah warna teks persentase -->
                     <span class="hd-stat__value ${toneClass}">${value}%</span>
                 </li>
             `;
 
-            // Suntikkan 3 baris statistik sesuai warna desain (Biru, Merah, Oranye)
-            statsContainer.innerHTML = 
+            statsContainerBox.innerHTML = 
                 buildStatRow("Win Rate", statsData.winRate, "hd-tone--blue") + 
                 buildStatRow("Pick Rate", statsData.pickRate, "hd-tone--red") + 
                 buildStatRow("Ban Rate", statsData.banRate, "hd-tone--orange");
         }
 
-       // Sub-Render: Aturan Item Situasional (Secara Jeneral / Tanpa Filter)
+        // Sub-Render: Item Situasional
         function renderSituational(situationalItems) {
-            console.log("RADAR SITUASIONAL: Masuk ke renderSituational (Jeneral). Isi data:", situationalItems);
-            
             const section = document.querySelector('[data-hd-section="situational"]');
             const listContainer = document.getElementById('hd-situ-list');
             const noneText = document.getElementById('hd-situ-none');
             
             if (!section || !listContainer) return;
 
-            // Jika data kosong
             if (!situationalItems || situationalItems.length === 0) {
                 listContainer.innerHTML = '';
                 if (noneText) noneText.hidden = false;
@@ -516,27 +536,41 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (noneText) noneText.hidden = true;
 
-            // Hapus kontainer chips filter jika sebelumnya sempat terbuat
+            // Hapus filter chips jika ada
             const existingChips = section.querySelector('.hd-chips');
-            if (existingChips) {
-                existingChips.remove();
-            }
-
+            if (existingChips) existingChips.remove();
             const assetBase = container.dataset.assetBase || '';
-
-            // Render langsung seluruh item secara jeneral sesuai struktur CSS .hd-rec
             listContainer.innerHTML = situationalItems.map(item => {
-                const itemIcon = item.item_icon_url || item.item_url || `${assetBase}/assets/img/default-item.png`;
-                const itemName = item.item_name || 'Item Situasional';
-                const categoryText = item.condition_text || 'Item Defense'; // Sesuai contoh gambar
-                const reasonText = item.reason || 'Rekomendasi item situasional berdasarkan kondisi pertempuran.';
+                let rawName = item.item_name || item.name || 'Item Situasional';
+                rawName = rawName.replace(/^Situational:\s*/i, '');
+                
+                let cleanName = rawName;
+                let categoryText = item.condition_text || item.condition || 'Situasional';
+                
+                const bracketMatch = rawName.match(/(.*?)\s*\((.*?)\)$/);
+                if (bracketMatch) {
+                    cleanName = bracketMatch[1].trim();     
+                    categoryText = bracketMatch[2].trim();  
+                }
+
+                // Sistem Gambar dengan Inisial Fallback
+                const itemIcon = item.item_icon_url || item.item_url || item.icon || item.url || "";
+                const initial = cleanName.charAt(0).toUpperCase();
+                
+                const fallbackDiv = `<div class=&quot;hd-rec__image&quot; style=&quot;display:flex; align-items:center; justify-content:center; background:var(--hd-navy, #1e293b); color:#fff; font-size:24px; font-weight:bold; border-radius:12px;&quot;>${initial}</div>`;
+                
+                const mediaHtml = itemIcon 
+                    ? `<img src="${itemIcon}" alt="${cleanName}" class="hd-rec__image" style="object-fit: cover;" onerror="this.onerror=null; this.outerHTML='${fallbackDiv}';">`
+                    : fallbackDiv.replace(/&quot;/g, '"');
+
+                const reasonText = item.reason || item.reason_text || 'Item situasional untuk menghadapi kondisi spesifik.';
                 
                 return `
                 <li class="hd-rec">
-                    <img src="${itemIcon}" alt="${itemName}" class="hd-rec__image" onerror="this.onerror=null; this.src='${assetBase}/assets/img/default-item.png'" loading="lazy">
+                    ${mediaHtml}
                     <div class="hd-rec__body">
                         <div class="hd-rec__info">
-                            <h4 class="hd-rec__name">${itemName}</h4>
+                            <h4 class="hd-rec__name">${cleanName}</h4>
                             <p class="hd-rec__type">${categoryText}</p>
                             <span class="hd-badge">cocok</span>
                         </div>
@@ -550,11 +584,13 @@ document.addEventListener("DOMContentLoaded", () => {
             }).join('');
         }
 
+        // Helper: Set State UI
         function setSectionState(sectionName, state) {
             const section = document.querySelector(`[data-hd-section="${sectionName}"]`);
             if (section) section.dataset.state = state;
         }
 
+        // Buka fungsi ke luar modul
         return { init, render, normalizeHeroDetail };
     })();
 

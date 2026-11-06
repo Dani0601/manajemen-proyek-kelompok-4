@@ -57,16 +57,16 @@
 
 /* Emblem & battle spell */
 .hd-build__side { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.hd-setup { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 4px 8px; padding: 8px; border: 1.5px solid; }
-.hd-setup--emblem { border-color: var(--hd-red); }
-.hd-setup--spell { border-color: var(--hd-green); }
-.hd-setup__icon { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; background: var(--hd-navy); }
-.hd-setup__label { margin: 0; font-size: 11px; font-weight: 500; text-transform: uppercase; line-height: 1.2; }
+.hd-setup { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 12px 12px; padding: 12px; border-radius:8px;}
+.hd-setup--emblem { border-color: var(--hd-navy); align-items: flex-start; border: 1.5px solid; }
+.hd-setup--spell { border-color: var(--hd-navy); border: 1.5px solid; }
+.hd-setup__icon { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: var(--hd-navy); }
+.hd-setup__label { margin: 0; font-size: 13px; font-weight: 500; text-transform: uppercase; line-height: 1.2; }
 .hd-setup--emblem .hd-setup__label { color: var(--hd-red-text); }
 .hd-setup--spell .hd-setup__label { color: var(--hd-green-text); }
 .hd-setup__name { margin: 0; font-size: 13px; font-weight: 600; color: var(--hd-navy); line-height: 1.2; }
-.hd-setup__text { display: flex; flex-direction: column; min-width: 0; }
-.hd-talents { grid-column: 1 / -1; display: flex; justify-content: center; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.hd-setup__text { display: flex; flex-direction: column; min-width: 0; gap: 4px; }
+.hd-talents { display: flex; gap: 6px; margin: 4px 0 0 0; padding: 0; list-style: none; }
 .hd-talent { width: 28px; height: 28px; border-radius: 8px; background: #000; overflow: hidden; }
 .hd-talent img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
@@ -121,7 +121,7 @@
 }
 .hd-chip[aria-pressed="false"] { background: #fff; color: var(--hd-navy); }
 .hd-chip:focus-visible { outline: 3px solid var(--hd-blue); outline-offset: 2px; }
-.hd-rec-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.hd-rec-list { display: grid; gap: 16px; margin: 0; padding: 0; list-style: none;}
 .hd-rec {
     display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start;
     padding: 12px; border: 1px solid #000; border-radius: 12px; background: #fff;
@@ -200,9 +200,9 @@ a.hd-empty__button { display: inline-flex; align-items: center; justify-content:
     .hd-skills { grid-template-columns: repeat(4, minmax(0, 120px)); justify-content: space-around; }
     .hd-skill__label { font-size: 11px; }
 
-    .hd-ratings-section { display: none; }   /* Official Ratings hanya di desain mobile */
+    .hd-ratings-section { display: grid; }   /* Official Ratings hanya di desain mobile */
 
-    .hd-duo { display: grid; gap: 20px; }
+
     .hd-counters { grid-template-columns: 1fr 1fr; padding: 0; border: 0; background: none; gap: 12px; }
     .hd-counter { align-content: start; padding: 12px; border: 1.5px solid; border-radius: 12px; background: #fff; box-shadow: var(--hd-shadow); }
     .hd-counter--favorable { border-color: var(--hd-blue); }
@@ -220,16 +220,28 @@ a.hd-empty__button { display: inline-flex; align-items: center; justify-content:
     .hd-empty__button { min-width: 180px; min-height: 48px; }
 }
 
-@media (max-width: 380px) {
-    .hd-item__name { font-size: 9.5px; }
-    .hd-setup__name { font-size: 12px; }
+/* ===== Statistik | Official Ratings | Hero Counter ===== */
+
+@media (min-width: 768px) {
+    .hd .hd-duo {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+        align-items: stretch;                       /* semua kotak sama tinggi */
+    }
+    .hd .hd-duo > .hd-section { display: flex; flex-direction: column; min-width: 0; margin: 0; }
+    .hd .hd-duo > .hd-section > [data-hd-panel] { flex: 1; }
+    .hd .hd-duo > [data-hd-section="counters"] { grid-column: 1 / -1; }
+
+    /* Official Ratings: isi di tengah kotak dan ukuran diselaraskan dengan Statistik */
+    .hd-ratings-section > [data-hd-panel] { display: flex; flex-direction: column; justify-content: center; }
+    .hd-ratings { gap: 14px; }
+    .hd-rating { grid-template-columns: minmax(84px, 40%) minmax(0, 1fr) 16px; }
+    .hd-rating dt, .hd-rating__value { font-size: 13px; }
+    .hd-rating__block { flex: 1 1 0; max-width: 10px; height: 8px; }
 }
 
-/* Statistik + Hero Counter berdampingan hanya jika ruang cukup */
 @media (min-width: 1200px) {
-    .hd-duo { grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); align-items: start; }
-}
-
-@media (min-width: 1200px) {
-    .hd-rec-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .hd .hd-duo { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2fr); }
+    .hd .hd-duo > [data-hd-section="counters"] { grid-column: auto; }
 }
