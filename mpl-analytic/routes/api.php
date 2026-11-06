@@ -551,13 +551,14 @@ if (
 
 /*
 |--------------------------------------------------------------------------
-| TOURNAMENTS
+| TOURNAMENTS (JADWAL & KLASEMEN TURNAMEN MPL)
 |--------------------------------------------------------------------------
 |
-| GET /api/tournaments
-| GET /api/tournaments/{id}
-| GET /api/tournaments/{id}/standings
-| GET /api/tournaments/{id}/schedule
+| Dokumentasi Routing API Turnamen:
+| 1. GET /api/tournaments                -> Master list turnamen / seasons
+| 2. GET /api/tournaments/{id}           -> Detail turnamen
+| 3. GET /api/tournaments/{id}/standings -> Data klasemen turnamen (Standings)
+| 4. GET /api/tournaments/{id}/schedule  -> Jadwal pertandingan (Match Schedule)
 |
 | Database tidak memiliki tabel tournaments.
 | Data tournament menggunakan seasons, schedules,

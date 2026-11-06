@@ -1,5 +1,9 @@
 <?php
 // app/services/TournamentService.php
+// [DOKUMENTASI SERVICE JADWAL & KLASEMEN TURNAMEN MPL]
+// Service layer untuk mengolah dan memetakan struktur data:
+// - getUpcomingMatches() -> Menyiapkan struktur JSON respon jadwal pertandingan
+// - getStandings()       -> Menyiapkan struktur JSON respon klasemen turnamen
 require_once __DIR__ . '/../models/Tournament.php';
 
 class TournamentService {
