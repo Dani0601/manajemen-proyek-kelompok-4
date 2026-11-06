@@ -64,7 +64,7 @@ function showDashboardError(message) {
   }
 
   if (error) {
-    error.textContent = message;
+    console.warn(message);   // jangan timpa isi #dashboard-error (ikon, judul, teks dari PHP)
     error.hidden = false;
   }
 
@@ -636,7 +636,6 @@ async function loadDashboard() {
 
   if (error) {
     error.hidden = true;
-    error.textContent = "";
   }
 
   const rootDash = document.getElementById("dashboard");
@@ -659,15 +658,29 @@ async function loadDashboard() {
 
     // Gunakan endpoint Dashboard, bukan endpoint Tournament.
     // Simulasi untuk uji tampilan: ?demo=empty (data kosong) / ?demo=error (API gagal)
-    const demo = new URLSearchParams(window.location.search).get("demo");
+    const demoParams = new URLSearchParams(window.location.search);
+    // Simulasi hanya aktif di komputer lokal; di server production diabaikan.
+    const isLocalHost = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+    const demo = isLocalHost ? demoParams.get("demo") : null;
+    // ?demo=empty|error  -> semua section
+    // ?demo=empty&section=wr  -> hanya section tertentu (wr, br, pr, chart, schedule; boleh dipisah koma)
+    const demoSections = demoParams.get("section")
+      ? demoParams.get("section").split(",").map((x) => x.trim())
+      : null;
+    const demoAll = !demoSections;
 
-    if (demo === "error") {
+    if (demo === "error" && demoAll) {
       throw new Error("Simulasi galat API (?demo=error).");
     }
 
-    const data = demo === "empty"
+    const data = demo === "empty" && demoAll
       ? { top_win_rate: [], top_pick_rate: [], hero_meta: [], schedule: [] }
       : await window.ApiClient.getDashboard();
+
+    // Simulasi kosong untuk section tertentu saja: kosongkan jadwal di data
+    if (demo === "empty" && demoSections && demoSections.includes("schedule")) {
+      data.schedule = [];
+    }
 
     console.log("Dashboard berhasil dimuat:", data);
 
@@ -681,13 +694,13 @@ async function loadDashboard() {
       : [];
 
     // 1. Top 5 Win Rate.
-    const topWR = attachHeroImages(
+    let topWR = attachHeroImages(
       withValidRate(data.top_win_rate, "win_rate"),
       heroMeta
     );
 
     // 2. Top 5 Ban Rate.
-    const topBR = attachHeroImages(
+    let topBR = attachHeroImages(
       withValidRate(heroMeta, "ban_rate")
         .sort(
           (a, b) =>
@@ -699,11 +712,16 @@ async function loadDashboard() {
     );
 
     // 3. Top 5 Pick Rate.
-    const topPR = attachHeroImages(
+    let topPR = attachHeroImages(
       withValidRate(data.top_pick_rate, "pick_rate"),
       heroMeta
     );
-
+    // Simulasi kosong per section (hanya jika ?demo=empty&section=...)
+    if (demo === "empty" && demoSections) {
+      if (demoSections.includes("wr")) topWR = [];
+      if (demoSections.includes("br")) topBR = [];
+      if (demoSections.includes("pr")) topPR = [];
+    }
     console.log("Jumlah Top WR:", topWR.length);
     console.log("Jumlah Top BR:", topBR.length);
     console.log("Jumlah Top PR:", topPR.length);
@@ -751,6 +769,14 @@ async function loadDashboard() {
       showSectionState("chart");
     }
     if (!hasMatches) showSectionState("schedule");
+
+    // Simulasi per section: chart kosong / error pada section tertentu
+    if (demoSections && demo === "empty" && demoSections.includes("chart")) {
+      showSectionState("chart");
+    }
+    if (demoSections && demo === "error") {
+      demoSections.forEach((id) => showSectionState(id, "error"));
+    }
 
     // Tampilkan konten setelah proses render selesai.
     if (content) {

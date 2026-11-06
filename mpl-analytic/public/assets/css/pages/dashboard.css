@@ -999,3 +999,44 @@
         width: 220px;
     }
 }
+/* ===== [MODIF] Error satu halaman: sesuai Figma Dashboard-Eror ===== */
+.dash-error {
+    justify-content: center;
+    gap: 0;
+    padding: 32px 20px 18vh;            /* isi sedikit naik dari tengah, seperti Figma */
+    border: 1px solid #ED2F2F;
+    border-radius: 10px;
+}
+
+.dash-error__icon {
+    width: 72px;
+    height: 72px;
+    margin-bottom: 28px;
+    background-color: #FF0000;          /* merah murni */
+    font-size: 48px;
+}
+
+.dash-error__title {
+    margin: 0 0 16px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #000;
+}
+
+.dash-error__text {
+    max-width: none;
+    color: #96999E;                     /* abu dari Figma */
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+/* Figma tidak memiliki tombol "Coba Lagi" */
+.dash-error__button { display: none; }
+
+@media (min-width: 768px) {
+    .dash-error { padding-bottom: 22vh; }
+    .dash-error__icon { width: 106px; height: 106px; margin-bottom: 40px; font-size: 72px; }
+    .dash-error__title { margin-bottom: 24px; font-size: 24px; }
+    .dash-error__text { max-width: none; font-size: 18px; line-height: 1.4; }
+}

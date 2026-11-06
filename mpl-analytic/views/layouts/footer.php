@@ -10,6 +10,8 @@
     src="<?= htmlspecialchars(ASSET_BASE, ENT_QUOTES, 'UTF-8') ?>/js/main.js"
 ></script>
 
+<script src="<?= htmlspecialchars(ASSET_BASE, ENT_QUOTES, 'UTF-8') ?>/js/ui-state.js"></script>
+
 <?php if (!empty($pageJs)): ?>
     <script
         src="<?= htmlspecialchars(ASSET_BASE, ENT_QUOTES, 'UTF-8') ?>/js/pages/<?= htmlspecialchars($pageJs, ENT_QUOTES, 'UTF-8') ?>"

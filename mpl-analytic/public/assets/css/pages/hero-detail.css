@@ -245,3 +245,66 @@ a.hd-empty__button { display: inline-flex; align-items: center; justify-content:
     .hd .hd-duo { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2fr); }
     .hd .hd-duo > [data-hd-section="counters"] { grid-column: auto; }
 }
+/* ===== [MODIF] Desktop: Build item sejajar Emblem & Battle Spell ===== */
+@media (min-width: 768px) {
+    .hd-build__layout { grid-template-rows: auto 1fr; align-items: stretch; }
+
+    /* pembungkus dibuat "transparan" agar judul & kartu item jadi anak grid langsung */
+    .hd-build__items { display: contents; }
+    .hd-build__items .hd-section__title { grid-column: 1; grid-row: 1; }
+    .hd-build__items .hd-card { grid-column: 1; grid-row: 2; display: flex; align-items: center; }
+    .hd-build__items .hd-items { flex: 1; }
+
+    /* kolom kanan mulai sejajar dengan kartu item, dan tingginya sama */
+    .hd-build__side { grid-column: 2; grid-row: 2; grid-auto-rows: 1fr; }
+}
+/* ===== [MODIF] Desktop: layout Emblem Setup ===== */
+@media (min-width: 768px) {
+    .hd-setup--emblem .hd-setup__row { align-items: center; row-gap: 8px; }
+    /* ikon emblem membentang 2 baris, di tengah vertikal */
+    .hd-setup--emblem .hd-setup__main-icon { grid-row: 1 / span 2; align-self: center; }
+    /* talent pindah ke kolom kanan, tepat di bawah teks, rata kiri */
+    .hd-setup--emblem .hd-setup__talents { grid-column: 2; justify-content: flex-start; gap: 8px; }
+}
+/* ===== [MODIF] State kosong: Belum ada data build ===== */
+.hd-build-empty { grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 28px 16px; text-align: center; list-style: none; }
+.hd-build-empty__icon { display: flex; align-items: center; justify-content: center; width: 60px; height: 60px; border-radius: 50%; background: #D9D9D9; margin-bottom: 6px; }
+.hd-build-empty__title { margin: 0; font-size: 14px; font-weight: 600; color: var(--hd-navy); }
+.hd-build-empty__text { margin: 0; font-size: 10px; font-weight: 500; color: var(--hd-navy); }
+
+@media (min-width: 768px) {
+    .hd-build-empty { padding: 40px 16px; }
+    .hd-build-empty__title { font-size: 15px; }
+    .hd-build-empty__text { font-size: 11px; }
+}
+/* ===== [MODIF] State kosong: Aturan item situasional ===== */
+.hd-situ-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 28px 16px; text-align: center; }
+.hd-situ-empty[hidden] { display: none; }   /* wajib: display:flex akan menimpa atribut hidden */
+.hd-situ-empty__icon { display: flex; align-items: center; justify-content: center; width: 60px; height: 60px; margin-bottom: 6px; border-radius: 50%; background: #D9D9D9; }
+.hd-situ-empty__title { margin: 0; font-size: 14px; font-weight: 600; color: var(--hd-navy); }
+.hd-situ-empty__text { margin: 0; font-size: 10px; font-weight: 500; color: var(--hd-navy); }
+
+@media (min-width: 768px) {
+    .hd-situ-empty { padding: 40px 16px; }
+    .hd-situ-empty__title { font-size: 15px; }
+    .hd-situ-empty__text { font-size: 11px; }
+}
+/* ===== [MODIF] State seragam (UiState) di Detail Hero ===== */
+.hd-card--shadow.is-stated { background: #F5F5F5; border: 0; box-shadow: var(--hd-shadow); }
+.hd-counters.is-stated { padding: 0; border: 0; background: none; }
+.hd-counters.is-stated > .hd-state-slot { grid-column: 1 / -1; }
+.hd-state-slot { width: 100%; }
+
+/* ===== [MODIF] Aturan item situasional (mobile): ALASAN di samping nama item ===== */
+@media (max-width: 768px) {
+    .hd-rec { align-items: center; }
+    .hd-rec__body {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);  /* kiri: nama+tipe+badge, kanan: alasan */
+        column-gap: 10px;
+        align-items: center;
+    }
+    .hd-rec__name { font-size: 14px; }
+    .hd-rec__type { font-size: 10px; }
+    .hd-rec__label { font-size: 10px; }
+    .hd-rec__text { font-size: 8px; line-height: 1.35; }
+}

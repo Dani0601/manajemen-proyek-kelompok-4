@@ -1,0 +1,14 @@
+# Rahasia / konfigurasi lokal
+.env
+
+# Cache Python (scraper)
+__pycache__/
+*.pyc
+
+# Backup database (file besar, tidak perlu di repo)
+database/backup_*.sql
+
+# Sistem / editor
+.DS_Store
+Thumbs.db
+.vscode/

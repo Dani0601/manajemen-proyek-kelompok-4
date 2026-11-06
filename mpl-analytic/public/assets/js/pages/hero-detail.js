@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            setSectionState("build", "loading");
+            SECTIONS.forEach(n => showState(n, "loading"));
             await fetchHeroDetail(heroId);
         }
 
@@ -36,10 +36,9 @@ document.addEventListener("DOMContentLoaded", () => {
         async function fetchHeroDetail(heroId) {
             if (!window.ApiClient || !window.ApiClient.getHeroDetail) {
                 console.error("ApiClient.getHeroDetail tidak ditemukan.");
-                setSectionState("build", "error");
+                showAllError(heroId);
                 return;
             }
-            console.log("RADAR 1: Mengambil data terpadu untuk ID", heroId);
 
             try {
                 // Panggil fungsi getHeroDetail dari api-client.js yang membungkus 5 endpoint
@@ -47,14 +46,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 
                 if (!rawData) throw new Error("Data API kosong");
 
-                console.log("RADAR 2: Data mentah berhasil didapat:", rawData);
                 const normalizedData = normalizeHeroDetail(rawData);
-                console.log("RADAR 3: Data dinormalisasi:", normalizedData);
                 
                 render(normalizedData);
+                applySimulation();
             } catch (error) {
                 console.error("Terjadi kesalahan saat fetch API:", error);
-                setSectionState("build", "error");
+                showAllError(heroId);
             }
         }
 
@@ -253,10 +251,9 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!build) return;
 
             if (!build.hasBuild) {
-                setSectionState("build", "empty");
-                if (buildItemsContainer) {
-                    buildItemsContainer.innerHTML = `<div class="text-center w-100 py-3">Belum ada data build</div>`;
-                }
+                showState("build", "empty");
+                if (emblemContainer) emblemContainer.innerHTML = "";
+                if (spellContainer) spellContainer.innerHTML = "";
             } else {
                 setSectionState("build", "ready");
                 const assetBase = container.dataset.assetBase || '';
@@ -350,10 +347,10 @@ document.addEventListener("DOMContentLoaded", () => {
         function renderSkills(skills) {
             if (!skillContainer) return;
             if (!skills || skills.length === 0) {
-                skillContainer.innerHTML = `<li class="text-center w-100 py-2">Data skill tidak tersedia</li>`;
+                showState("skills", "empty");
                 return;
             }
-
+            clearState("skills");
             const SKILL_LABELS = { "Passive": "Pasif", "Skill 1": "Skill 1", "Skill 2": "Skill 2", "Ultimate": "Ultimate" };
             const assetBase = container.dataset.assetBase || '';
 
@@ -438,13 +435,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!section) return;
 
             if (!counterData || (counterData.strong.length === 0 && counterData.weak.length === 0)) {
-                setSectionState("counters", "empty");
-                panels.forEach(panel => panel.style.display = 'none');
-                
-                if (stateSlot) {
-                    stateSlot.innerHTML = `<div class="text-center py-4 text-muted" style="font-size: 13px;">Data belum cukup untuk rekomendasi counter</div>`;
-                    stateSlot.hidden = false;
-                }
+                showState("counters", "empty");
                 return;
             }
 
@@ -490,13 +481,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!section || !statsContainerBox) return;
 
             if (!statsData || (statsData.winRate == 0 && statsData.pickRate == 0 && statsData.banRate == 0)) {
-                setSectionState("stats", "empty");
-                statsContainerBox.style.display = 'none';
-                
-                if (stateSlot) {
-                    stateSlot.innerHTML = `<div class="text-center py-4 text-muted" style="font-size: 13px;">Data statistik belum tersedia</div>`;
-                    stateSlot.hidden = false;
-                }
+                showState("stats", "empty");
                 return;
             }
 
@@ -530,11 +515,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (!situationalItems || situationalItems.length === 0) {
                 listContainer.innerHTML = '';
-                if (noneText) noneText.hidden = false;
+                showState('situational', 'empty');
                 return;
             }
 
-            if (noneText) noneText.hidden = true;
+            setSectionState("situational", "ready");
 
             // Hapus filter chips jika ada
             const existingChips = section.querySelector('.hd-chips');
@@ -583,11 +568,62 @@ document.addEventListener("DOMContentLoaded", () => {
                 `;
             }).join('');
         }
+        // ==========================================
+        // STATE SERAGAM (memakai UiState dari ui-state.js)
+        // ==========================================
+        const SECTIONS = ["build", "skills", "stats", "counters", "situational"];
+        const EMPTY_COPY = {
+            build:       { title: "Belum ada data build", text: "Build untuk hero ini belum tersedia" },
+            skills:      { title: "Data skill tidak tersedia", text: "Skill hero ini belum tersedia" },
+            stats:       { title: "Data statistik belum tersedia", text: "Statistik hero ini belum tersedia" },
+            counters:    { title: "Data belum cukup untuk rekomendasi counter", text: "Data counter hero ini belum mencukupi" },
+            situational: { title: "Belum ada rekomendasi untuk kondisi ini", text: "Aturan item situasional untuk hero ini belum tersedia" }
+        };
+
+        function showState(name, type, opts) {
+            const section = document.querySelector(`[data-hd-section="${name}"]`);
+            const slot = section ? section.querySelector(".hd-state-slot") : null;
+            if (!slot || !window.UiState) return;
+            const copy = type === "empty" ? (EMPTY_COPY[name] || {}) : {};
+            UiState.render(slot, type, Object.assign({}, copy, opts));
+            slot.parentElement.classList.add("is-stated");
+            slot.hidden = false;
+            section.dataset.state = type;
+        }
+
+        function clearState(name) {
+            const section = document.querySelector(`[data-hd-section="${name}"]`);
+            const slot = section ? section.querySelector(".hd-state-slot") : null;
+            if (!slot) return;
+            slot.parentElement.classList.remove("is-stated");
+            slot.hidden = true;
+            slot.replaceChildren();
+            section.dataset.state = "ready";
+        }
+
+        function showAllError(heroId) {
+            SECTIONS.forEach(n => showState(n, "error", {
+                onRetry: () => {
+                    SECTIONS.forEach(m => showState(m, "loading"));
+                    fetchHeroDetail(heroId);
+                }
+            }));
+        }
+
+        // Simulasi (localhost saja): ?state=empty|error|loading|partial&section=build,stats
+        function applySimulation() {
+            const sim = window.UiState && UiState.simulate();
+            if (!sim) return;
+            const targets = sim.sections || (sim.state === "partial" ? ["stats", "counters", "situational"] : SECTIONS);
+            const type = sim.state === "partial" ? "empty" : sim.state;
+            targets.forEach(n => showState(n, type, type === "error" ? { onRetry: () => location.reload() } : {}));
+        }
 
         // Helper: Set State UI
         function setSectionState(sectionName, state) {
             const section = document.querySelector(`[data-hd-section="${sectionName}"]`);
             if (section) section.dataset.state = state;
+            if (state === "ready") clearState(sectionName);
         }
 
         // Buka fungsi ke luar modul
