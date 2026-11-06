@@ -45,6 +45,9 @@ $pageCss = $pageCss ?? '';
         href="<?= htmlspecialchars(ASSET_BASE, ENT_QUOTES, 'UTF-8') ?>/css/components.css"
     >
 
+    <!-- CSS state seragam -->
+    <link rel="stylesheet" href="<?= htmlspecialchars(ASSET_BASE, ENT_QUOTES, 'UTF-8') ?>/css/ui-state.css">
+
         <!-- CSS responsive -->
     <link
     rel="stylesheet"

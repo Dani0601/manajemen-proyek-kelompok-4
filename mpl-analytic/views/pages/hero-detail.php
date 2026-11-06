@@ -77,6 +77,16 @@ $heroId = (int) ($_GET['id'] ?? 0);
 
     <!-- STATISTIK + HERO COUNTER -->
     <div class="hd-duo">
+
+         <!-- OFFICIAL RATINGS (hanya ada di desain mobile) -->
+        <section class="hd-section hd-ratings-section" data-hd-section="ratings" aria-labelledby="hd-ratings-title">
+            <h2 id="hd-ratings-title" class="hd-section__title">Official Ratings</h2>
+            <div class="hd-card hd-card--line" data-hd-panel>
+                <dl id="hd-ratings" class="hd-ratings"></dl>
+                <div class="hd-state-slot" hidden></div>
+            </div>
+        </section>
+
         <section class="hd-section" data-hd-section="stats" aria-labelledby="hd-stats-title">
             <h2 id="hd-stats-title" class="hd-section__title">Statistik Hero</h2>
             <div class="hd-card hd-card--line" data-hd-panel>
@@ -85,14 +95,7 @@ $heroId = (int) ($_GET['id'] ?? 0);
             </div>
         </section>
 
-        <!-- OFFICIAL RATINGS (hanya ada di desain mobile) -->
-        <section class="hd-section hd-ratings-section" data-hd-section="ratings" aria-labelledby="hd-ratings-title">
-            <h2 id="hd-ratings-title" class="hd-section__title">Official Ratings</h2>
-            <div class="hd-card hd-card--line" data-hd-panel>
-                <dl id="hd-ratings" class="hd-ratings"></dl>
-                <div class="hd-state-slot" hidden></div>
-            </div>
-        </section>
+       
 
         <section class="hd-section" data-hd-section="counters" aria-labelledby="hd-counter-title">
             <h2 id="hd-counter-title" class="hd-section__title">Hero Counter</h2>
@@ -112,14 +115,18 @@ $heroId = (int) ($_GET['id'] ?? 0);
 
     <!-- ATURAN ITEM SITUASIONAL -->
     <section class="hd-section" data-hd-section="situational" aria-labelledby="hd-situ-title">
-        <h2 id="hd-situ-title" class="hd-section__title">Aturan item situasional</h2>
+        <h2 id="hd-situ-title" class="hd-section__title">Aturan Item Situasional</h2>
         <div class="hd-card hd-card--line hd-situ" data-hd-panel>
             <div class="hd-situ__block">
-                <h3 id="hd-situ-rec-title" class="hd-situ__title">Rekomendasi item &amp; emble</h3>
+                <h3 id="hd-situ-rec-title" class="hd-situ__title">Rekomendasi Item &amp; Emblem</h3>
                 <ul id="hd-situ-list" class="hd-rec-list" aria-labelledby="hd-situ-rec-title"></ul>
-                <p id="hd-situ-none" class="hd-situ__none" role="status" hidden>
-                    Belum ada rekomendasi untuk komposisi musuh yang dipilih.
-                </p>
+              <div id="hd-situ-none" class="hd-situ-empty" role="status" hidden>
+                    <span class="hd-situ-empty__icon" aria-hidden="true">
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><rect x="4" y="10" width="4" height="10" rx="1"/><rect x="10" y="4" width="4" height="16" rx="1"/><rect x="16" y="12" width="4" height="8" rx="1"/></svg>
+                    </span>
+                    <p class="hd-situ-empty__title">Belum ada rekomendasi untuk kondisi ini</p>
+                    <p class="hd-situ-empty__text">Aturan item situasional untuk hero ini belum tersedia</p>
+                </div>
             </div>
             <div class="hd-state-slot" hidden></div>
         </div>

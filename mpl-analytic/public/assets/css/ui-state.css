@@ -1,0 +1,18 @@
+/* Komponen state seragam (empty / error / loading) — dipakai semua halaman */
+.ui-state { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 28px 16px; text-align: center; }
+.ui-state__icon { display: flex; align-items: center; justify-content: center; width: 60px; height: 60px; margin-bottom: 6px; border-radius: 50%; background: #D9D9D9; }
+.ui-state--error .ui-state__icon { background: #FDE8E8; }
+.ui-state__title { margin: 0; font-size: 14px; font-weight: 600; color: #172B4D; }
+.ui-state__text { max-width: 420px; margin: 0; font-size: 11px; font-weight: 500; line-height: 1.5; color: #172B4D; }
+.ui-state__button { min-width: 140px; min-height: 40px; margin-top: 8px; padding: 8px 22px; border: 0; border-radius: 24px; background: #172B4D; color: #fff; font-weight: 600; box-shadow: 0 2px 4px rgba(0,0,0,.25); cursor: pointer; }
+.ui-state__button:hover { background: #0F1F3A; }
+.ui-state__button:disabled { opacity: .6; cursor: wait; }
+.ui-state__button:focus-visible { outline: 3px solid #2F6FED; outline-offset: 3px; }
+.ui-state__spinner { width: 28px; height: 28px; border: 3px solid #fff; border-top-color: #172B4D; border-radius: 50%; animation: ui-state-spin .8s linear infinite; }
+@keyframes ui-state-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .ui-state__spinner { animation: none; } }
+@media (min-width: 768px) {
+    .ui-state { padding: 40px 16px; }
+    .ui-state__title { font-size: 15px; }
+    .ui-state__text { font-size: 12px; }
+}
