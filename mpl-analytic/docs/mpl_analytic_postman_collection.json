@@ -53,6 +53,12 @@
             "value": "1",
             "type": "string",
             "description": "ID Item perlengkapan untuk pengujian"
+        },
+        {
+            "key": "teamId",
+            "value": "5",
+            "type": "string",
+            "description": "ID Tim untuk pengujian (diisi otomatis oleh GET /api/teams)"
         }
     ],
     "item": [
@@ -6276,7 +6282,1016 @@
             ]
         },
         {
-            "name": "05 - Matches",
+            "name": "05 - Teams",
+            "description": "Pengujian endpoint Teams API:\\n- GET /api/teams               -> Daftar semua tim\\n- GET /api/teams/{id}          -> Detail tim\\n- GET /api/teams/{id}/stats    -> Statistik tim per season\\n- GET /api/teams/{id}/matches  -> Riwayat pertandingan tim\\n\\nMencakup: sukses (200), error validasi (400), tidak ditemukan (404), method tidak diizinkan (405).",
+            "item": [
+                {
+                    "name": "[200] GET /api/teams - Berhasil Daftar Semua Tim (Extract teamId)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"[200] Status 200\", function () { pm.response.to.have.status(200); });",
+                                    "pm.test(\"[Header] Content-Type adalah JSON\", function () { pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"); });",
+                                    "pm.test(\"[Schema] Response format sukses (success: true, message: string)\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    pm.expect(j.success).to.be.true;",
+                                    "    pm.expect(j.message).to.be.a('string');",
+                                    "});",
+                                    "pm.test(\"[Data] Response data adalah array tim yang tidak kosong\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    pm.expect(j.data).to.be.an('array').that.is.not.empty;",
+                                    "});",
+                                    "pm.test(\"[Data] Setiap objek tim memiliki team_id, team_name, dan logo_url CDN\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    j.data.forEach(function(team) {",
+                                    "        pm.expect(team).to.have.property('team_id');",
+                                    "        pm.expect(team).to.have.property('team_name');",
+                                    "        pm.expect(team).to.have.property('logo_url');",
+                                    "        if (team.logo_url) {",
+                                    "            pm.expect(team.logo_url).to.match(/^https?:\\/\\//);",
+                                    "        }",
+                                    "    });",
+                                    "});",
+                                    "pm.test(\"[Data] Menyimpan teamId ke variabel koleksi\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    pm.expect(j.data).to.be.an('array').that.is.not.empty;",
+                                    "    var firstTeam = j.data[0];",
+                                    "    if (firstTeam && firstTeam.team_id) {",
+                                    "        pm.collectionVariables.set(\"teamId\", String(firstTeam.team_id));",
+                                    "    }",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/teams",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "teams"
+                            ]
+                        },
+                        "description": "Mengambil daftar semua tim dan menyimpan teamId pertama ke variabel koleksi."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[405] POST /api/teams - Error Method Not Allowed",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"[405] Status 405\", function () { pm.response.to.have.status(405); });",
+                                    "pm.test(\"[Schema] Response gagal (success: false)\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    pm.expect(j.success).to.be.false;",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/teams",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "teams"
+                            ]
+                        },
+                        "description": "POST tidak diizinkan. Harus mengembalikan 405."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[200] GET /api/teams/:teamId - Berhasil Detail Tim",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"[200] Status 200\", function () { pm.response.to.have.status(200); });",
+                                    "pm.test(\"[Header] Content-Type adalah JSON\", function () { pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"); });",
+                                    "pm.test(\"[Schema] Response format sukses (success: true, message: string)\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    pm.expect(j.success).to.be.true;",
+                                    "    pm.expect(j.message).to.be.a('string');",
+                                    "});",
+                                    "pm.test(\"[Data] Response data adalah objek tim yang valid\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    pm.expect(j.data).to.be.an('object');",
+                                    "    pm.expect(j.data.team_id).to.be.a('number');",
+                                    "    pm.expect(j.data.team_name).to.be.a('string').that.is.not.empty;",
+                                    "    pm.expect(j.data).to.have.property('logo_url');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/teams/{{teamId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "teams",
+                                "{{teamId}}"
+                            ]
+                        },
+                        "description": "Mengambil detail tim berdasarkan teamId."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[400] GET /api/teams/:teamId - Error ID Bukan Integer (abc)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"[400] Status 400\", function () { pm.response.to.have.status(400); });",
+                                    "pm.test(\"[Schema] Response gagal (success: false)\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    pm.expect(j.success).to.be.false;",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/teams/abc",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "teams",
+                                "abc"
+                            ]
+                        },
+                        "description": "ID harus berupa integer positif. 'abc' harus mengembalikan 400."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[400] GET /api/teams/:teamId - Error ID Bernilai 0 atau Negatif (0)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"[400] Status 400\", function () { pm.response.to.have.status(400); });",
+                                    "pm.test(\"[Schema] Response gagal (success: false)\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    pm.expect(j.success).to.be.false;",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/teams/0",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "teams",
+                                "0"
+                            ]
+                        },
+                        "description": "ID harus lebih besar dari 0. '0' harus mengembalikan 400."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[404] GET /api/teams/:teamId - Error Tim Tidak Ditemukan (999999)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"[404] Status 404\", function () { pm.response.to.have.status(404); });",
+                                    "pm.test(\"[Schema] Response gagal (success: false)\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    pm.expect(j.success).to.be.false;",
+                                    "});",
+                                    "pm.test(\"[Error] Error code TEAM_NOT_FOUND\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    pm.expect(j.error.code).to.equal('TEAM_NOT_FOUND');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/teams/999999",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "teams",
+                                "999999"
+                            ]
+                        },
+                        "description": "Tim dengan ID 999999 tidak ada. Harus mengembalikan 404."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[405] POST /api/teams/:teamId - Error Method Not Allowed",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"[405] Status 405\", function () { pm.response.to.have.status(405); });",
+                                    "pm.test(\"[Schema] Response gagal (success: false)\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    pm.expect(j.success).to.be.false;",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/teams/{{teamId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "teams",
+                                "{{teamId}}"
+                            ]
+                        },
+                        "description": "POST tidak diizinkan. Harus mengembalikan 405."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[200] GET /api/teams/:teamId/stats - Berhasil Statistik Tim Season 1",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"[200] Status 200\", function () { pm.response.to.have.status(200); });",
+                                    "pm.test(\"[Header] Content-Type adalah JSON\", function () { pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"); });",
+                                    "pm.test(\"[Schema] Response format sukses (success: true, message: string)\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    pm.expect(j.success).to.be.true;",
+                                    "    pm.expect(j.message).to.be.a('string');",
+                                    "});",
+                                    "pm.test(\"[Data] Response data memiliki field team, season, dan stats\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    pm.expect(j.data).to.be.an('object');",
+                                    "    pm.expect(j.data).to.have.property('team');",
+                                    "    pm.expect(j.data.team).to.have.property('logo_url');",
+                                    "    pm.expect(j.data).to.have.property('season');",
+                                    "    pm.expect(j.data).to.have.property('stats');",
+                                    "});",
+                                    "pm.test(\"[Data] Stats memiliki sub-objek matches dan games\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    if (j.data.stats !== null) {",
+                                    "        pm.expect(j.data.stats).to.have.property('matches');",
+                                    "        pm.expect(j.data.stats).to.have.property('games');",
+                                    "    }",
+                                    "});",
+                                    "pm.test(\"[Data] Stats.matches memiliki total, wins, losses, win_rate\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    if (j.data.stats !== null) {",
+                                    "        var m = j.data.stats.matches;",
+                                    "        pm.expect(m.total).to.be.a('number');",
+                                    "        pm.expect(m.wins).to.be.a('number');",
+                                    "        pm.expect(m.losses).to.be.a('number');",
+                                    "        pm.expect(m.win_rate).to.be.a('number');",
+                                    "    }",
+                                    "});",
+                                    "pm.test(\"[Data] Stats.games memiliki field lengkap\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    if (j.data.stats !== null) {",
+                                    "        var g = j.data.stats.games;",
+                                    "        pm.expect(g.total).to.be.a('number');",
+                                    "        pm.expect(g.wins).to.be.a('number');",
+                                    "        pm.expect(g.losses).to.be.a('number');",
+                                    "        pm.expect(g.win_rate).to.be.a('number');",
+                                    "        pm.expect(g.avg_duration_seconds).to.be.a('number');",
+                                    "        pm.expect(g.avg_kills_per_game).to.be.a('number');",
+                                    "        pm.expect(g.avg_deaths_per_game).to.be.a('number');",
+                                    "    }",
+                                    "});",
+                                    "pm.test(\"[Data] Response memiliki array players dengan photo_url\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    pm.expect(j.data.players).to.be.an('array');",
+                                    "    if (j.data.players && j.data.players.length > 0) {",
+                                    "        j.data.players.forEach(function(p) {",
+                                    "            pm.expect(p).to.have.property('player_photo_url');",
+                                    "            pm.expect(p).to.have.property('photo_url');",
+                                    "        });",
+                                    "    }",
+                                    "});",
+                                    "pm.test(\"[Logic] wins + losses == total (matches)\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    if (j.data.stats !== null) {",
+                                    "        var m = j.data.stats.matches;",
+                                    "        pm.expect(m.wins + m.losses).to.equal(m.total);",
+                                    "    }",
+                                    "});",
+                                    "pm.test(\"[Logic] win_rate antara 0 dan 100\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    if (j.data.stats !== null) {",
+                                    "        pm.expect(j.data.stats.matches.win_rate).to.be.within(0, 100);",
+                                    "        pm.expect(j.data.stats.games.win_rate).to.be.within(0, 100);",
+                                    "    }",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/teams/{{teamId}}/stats?season={{seasonId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "teams",
+                                "{{teamId}}",
+                                "stats"
+                            ],
+                            "query": [
+                                {
+                                    "key": "season",
+                                    "value": "{{seasonId}}"
+                                }
+                            ]
+                        },
+                        "description": "Mengambil statistik agregat tim selama satu season."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[200] GET /api/teams/:teamId/stats - Season Tanpa Data (season=9999)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"[200] Status 200\", function () { pm.response.to.have.status(200); });",
+                                    "pm.test(\"[Header] Content-Type adalah JSON\", function () { pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"); });",
+                                    "pm.test(\"[Schema] Response format sukses (success: true, message: string)\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    pm.expect(j.success).to.be.true;",
+                                    "    pm.expect(j.message).to.be.a('string');",
+                                    "});",
+                                    "pm.test(\"[Data] stats adalah null untuk season yang tidak ada datanya\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    pm.expect(j.data).to.be.an('object');",
+                                    "    pm.expect(j.data.stats).to.be.null;",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/teams/{{teamId}}/stats?season=9999",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "teams",
+                                "{{teamId}}",
+                                "stats"
+                            ],
+                            "query": [
+                                {
+                                    "key": "season",
+                                    "value": "9999"
+                                }
+                            ]
+                        },
+                        "description": "Season 9999 tidak memiliki data. stats harus null, bukan error."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[400] GET /api/teams/:teamId/stats - Error Season Tidak Valid (season=-1)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"[400] Status 400\", function () { pm.response.to.have.status(400); });",
+                                    "pm.test(\"[Schema] Response gagal (success: false)\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    pm.expect(j.success).to.be.false;",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/teams/{{teamId}}/stats?season=-1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "teams",
+                                "{{teamId}}",
+                                "stats"
+                            ],
+                            "query": [
+                                {
+                                    "key": "season",
+                                    "value": "-1"
+                                }
+                            ]
+                        },
+                        "description": "Parameter season harus positif. '-1' harus mengembalikan 400."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[400] GET /api/teams/:teamId/stats - Error ID Bukan Integer (abc)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"[400] Status 400\", function () { pm.response.to.have.status(400); });",
+                                    "pm.test(\"[Schema] Response gagal (success: false)\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    pm.expect(j.success).to.be.false;",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/teams/abc/stats",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "teams",
+                                "abc",
+                                "stats"
+                            ]
+                        },
+                        "description": "ID harus berupa integer positif."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[404] GET /api/teams/:teamId/stats - Error Tim Tidak Ditemukan (999999)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"[404] Status 404\", function () { pm.response.to.have.status(404); });",
+                                    "pm.test(\"[Schema] Response gagal (success: false)\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    pm.expect(j.success).to.be.false;",
+                                    "});",
+                                    "pm.test(\"[Error] Error code TEAM_NOT_FOUND\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    pm.expect(j.error.code).to.equal('TEAM_NOT_FOUND');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/teams/999999/stats?season=1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "teams",
+                                "999999",
+                                "stats"
+                            ],
+                            "query": [
+                                {
+                                    "key": "season",
+                                    "value": "1"
+                                }
+                            ]
+                        },
+                        "description": "Tim 999999 tidak ada."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[405] POST /api/teams/:teamId/stats - Error Method Not Allowed",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"[405] Status 405\", function () { pm.response.to.have.status(405); });",
+                                    "pm.test(\"[Schema] Response gagal (success: false)\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    pm.expect(j.success).to.be.false;",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/teams/{{teamId}}/stats",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "teams",
+                                "{{teamId}}",
+                                "stats"
+                            ]
+                        },
+                        "description": "POST tidak diizinkan."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[200] GET /api/teams/:teamId/matches - Berhasil Riwayat Pertandingan (Season 1)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"[200] Status 200\", function () { pm.response.to.have.status(200); });",
+                                    "pm.test(\"[Header] Content-Type adalah JSON\", function () { pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"); });",
+                                    "pm.test(\"[Schema] Response format sukses (success: true, message: string)\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    pm.expect(j.success).to.be.true;",
+                                    "    pm.expect(j.message).to.be.a('string');",
+                                    "});",
+                                    "pm.test(\"[Data] Response data memiliki field team, season, pagination, matches\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    pm.expect(j.data).to.have.property('team');",
+                                    "    pm.expect(j.data).to.have.property('season');",
+                                    "    pm.expect(j.data).to.have.property('pagination');",
+                                    "    pm.expect(j.data).to.have.property('matches');",
+                                    "});",
+                                    "pm.test(\"[Data] Pagination memiliki page, limit, total, total_pages\", function () {",
+                                    "    var p = pm.response.json().data.pagination;",
+                                    "    pm.expect(p.page).to.be.a('number');",
+                                    "    pm.expect(p.limit).to.be.a('number');",
+                                    "    pm.expect(p.total).to.be.a('number');",
+                                    "    pm.expect(p.total_pages).to.be.a('number');",
+                                    "});",
+                                    "pm.test(\"[Data] matches adalah array\", function () {",
+                                    "    pm.expect(pm.response.json().data.matches).to.be.an('array');",
+                                    "});",
+                                    "pm.test(\"[Data] Setiap match memiliki match_id, team, opponent, result, dan logo_url\", function () {",
+                                    "    var matches = pm.response.json().data.matches;",
+                                    "    matches.forEach(function(m) {",
+                                    "        pm.expect(m).to.have.property('match_id');",
+                                    "        pm.expect(m).to.have.property('team');",
+                                    "        pm.expect(m.team).to.have.property('logo_url');",
+                                    "        pm.expect(m).to.have.property('opponent');",
+                                    "        pm.expect(m.opponent).to.have.property('logo_url');",
+                                    "        pm.expect(m).to.have.property('result');",
+                                    "    });",
+                                    "});",
+                                    "pm.test(\"[Logic] result hanya berisi win, loss, atau null\", function () {",
+                                    "    var matches = pm.response.json().data.matches;",
+                                    "    matches.forEach(function(m) {",
+                                    "        pm.expect(['win', 'loss', null]).to.include(m.result);",
+                                    "    });",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/teams/{{teamId}}/matches?season={{seasonId}}&page=1&limit=10",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "teams",
+                                "{{teamId}}",
+                                "matches"
+                            ],
+                            "query": [
+                                {
+                                    "key": "season",
+                                    "value": "{{seasonId}}"
+                                },
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                }
+                            ]
+                        },
+                        "description": "Mengambil riwayat pertandingan tim dalam satu season dengan pagination."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[200] GET /api/teams/:teamId/matches - Berhasil Pagination Halaman 2",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"[200] Status 200\", function () { pm.response.to.have.status(200); });",
+                                    "pm.test(\"[Header] Content-Type adalah JSON\", function () { pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"); });",
+                                    "pm.test(\"[Schema] Response format sukses (success: true, message: string)\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    pm.expect(j.success).to.be.true;",
+                                    "    pm.expect(j.message).to.be.a('string');",
+                                    "});",
+                                    "pm.test(\"[Data] page adalah 2 pada pagination\", function () {",
+                                    "    pm.expect(pm.response.json().data.pagination.page).to.equal(2);",
+                                    "});",
+                                    "pm.test(\"[Data] limit adalah 5 pada pagination\", function () {",
+                                    "    pm.expect(pm.response.json().data.pagination.limit).to.equal(5);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/teams/{{teamId}}/matches?season={{seasonId}}&page=2&limit=5",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "teams",
+                                "{{teamId}}",
+                                "matches"
+                            ],
+                            "query": [
+                                {
+                                    "key": "season",
+                                    "value": "{{seasonId}}"
+                                },
+                                {
+                                    "key": "page",
+                                    "value": "2"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "5"
+                                }
+                            ]
+                        },
+                        "description": "Mengambil halaman 2 riwayat pertandingan."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[200] GET /api/teams/:teamId/matches - Season Tanpa Data (season=9999)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"[200] Status 200\", function () { pm.response.to.have.status(200); });",
+                                    "pm.test(\"[Header] Content-Type adalah JSON\", function () { pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"); });",
+                                    "pm.test(\"[Schema] Response format sukses (success: true, message: string)\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    pm.expect(j.success).to.be.true;",
+                                    "    pm.expect(j.message).to.be.a('string');",
+                                    "});",
+                                    "pm.test(\"[Data] matches adalah array kosong\", function () {",
+                                    "    pm.expect(pm.response.json().data.matches).to.be.an('array').that.is.empty;",
+                                    "});",
+                                    "pm.test(\"[Data] pagination.total adalah 0\", function () {",
+                                    "    pm.expect(pm.response.json().data.pagination.total).to.equal(0);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/teams/{{teamId}}/matches?season=9999",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "teams",
+                                "{{teamId}}",
+                                "matches"
+                            ],
+                            "query": [
+                                {
+                                    "key": "season",
+                                    "value": "9999"
+                                }
+                            ]
+                        },
+                        "description": "Season 9999 tidak ada data. matches harus array kosong."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[400] GET /api/teams/:teamId/matches - Error ID Bukan Integer (abc)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"[400] Status 400\", function () { pm.response.to.have.status(400); });",
+                                    "pm.test(\"[Schema] Response gagal (success: false)\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    pm.expect(j.success).to.be.false;",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/teams/abc/matches",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "teams",
+                                "abc",
+                                "matches"
+                            ]
+                        },
+                        "description": "ID harus berupa integer positif."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[404] GET /api/teams/:teamId/matches - Error Tim Tidak Ditemukan (999999)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"[404] Status 404\", function () { pm.response.to.have.status(404); });",
+                                    "pm.test(\"[Schema] Response gagal (success: false)\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    pm.expect(j.success).to.be.false;",
+                                    "});",
+                                    "pm.test(\"[Error] Error code TEAM_NOT_FOUND\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    pm.expect(j.error.code).to.equal('TEAM_NOT_FOUND');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/teams/999999/matches?season=1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "teams",
+                                "999999",
+                                "matches"
+                            ],
+                            "query": [
+                                {
+                                    "key": "season",
+                                    "value": "1"
+                                }
+                            ]
+                        },
+                        "description": "Tim 999999 tidak ada."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[405] POST /api/teams/:teamId/matches - Error Method Not Allowed",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"[405] Status 405\", function () { pm.response.to.have.status(405); });",
+                                    "pm.test(\"[Schema] Response gagal (success: false)\", function () {",
+                                    "    var j = pm.response.json();",
+                                    "    pm.expect(j.success).to.be.false;",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/teams/{{teamId}}/matches",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "teams",
+                                "{{teamId}}",
+                                "matches"
+                            ]
+                        },
+                        "description": "POST tidak diizinkan."
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "06 - Matches",
             "item": [
                 {
                     "name": "[501] GET /api/matches - Belum Diimplementasikan",
@@ -7021,7 +8036,7 @@
             ]
         },
         {
-            "name": "06 - Tournaments",
+            "name": "07 - Tournaments",
             "item": [
                 {
                     "name": "[200] GET /api/tournaments - Berhasil Daftar Turnamen",
@@ -8363,7 +9378,7 @@
             ]
         },
         {
-            "name": "07 - Games",
+            "name": "08 - Games",
             "item": [
                 {
                     "name": "[200] GET /api/games - Berhasil Daftar Game (Extract gameId)",
@@ -9931,7 +10946,7 @@
             ]
         },
         {
-            "name": "08 - Items",
+            "name": "09 - Items",
             "item": [
                 {
                     "name": "[501] GET /api/items - Belum Diimplementasikan",
@@ -10418,7 +11433,7 @@
             ]
         },
         {
-            "name": "09 - Negative and Security Tests",
+            "name": "10 - Negative and Security Tests",
             "item": [
                 {
                     "name": "[404] GET /api/unknown-endpoint - Route Global Tidak Ditemukan",

@@ -1,0 +1,14 @@
+$kind: http-request
+name: "[501] GET /api/matches - Belum Diimplementasikan"
+description: Master daftar pertandingan. Mengembalikan 501 jika belum diaktifkan di controller.
+url: "{{baseUrl}}/api/matches"
+method: GET
+headers:
+  Accept: application/json
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("[501,200] Status salah satu dari 501,200", function () { pm.expect([501,200]).to.include(pm.response.code); });
+      pm.test("[Header] Content-Type adalah JSON", function () { pm.expect(pm.response.headers.get("Content-Type")).to.include("application/json"); });
+    language: text/javascript
+order: 1000

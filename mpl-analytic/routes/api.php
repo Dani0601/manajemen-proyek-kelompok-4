@@ -209,31 +209,67 @@ if ($uri === 'api/seasons') {
 | TEAMS
 |--------------------------------------------------------------------------
 |
-| GET /api/teams
+| GET /api/teams                   -> Daftar semua tim
+| GET /api/teams/{id}              -> Detail tim
+| GET /api/teams/{id}/stats        -> Statistik tim per season
+| GET /api/teams/{id}/matches      -> Riwayat pertandingan tim
 |
 */
 
-if ($uri === 'api/teams') {
+// GET /api/teams (list)
+if (
+    $method === 'GET' &&
+    $uri === 'api/teams'
+) {
+    $controller = loadController('TeamController.php', 'TeamController');
+    $controller->index();
+    exit;
+}
 
-    $controller = loadController(
-        'MetaController.php',
-        'MetaController'
-    );
-
-    if (method_exists($controller, 'teams')) {
-        $controller->teams();
-    } else {
+// GET /api/teams/{id} dan sub-routes
+if (
+    $method === 'GET' &&
+    isset($segments[0], $segments[1]) &&
+    $segments[0] === 'api' &&
+    $segments[1] === 'teams'
+) {
+    if (!isset($segments[2])) {
         jsonResponse(
             null,
-            'Endpoint belum diimplementasikan.',
-            501,
-            [
-                'error' => [
-                    'code' => 'NOT_IMPLEMENTED'
-                ]
-            ]
+            'Endpoint tim tidak ditemukan.',
+            404,
+            ['error' => ['code' => 'ENDPOINT_NOT_FOUND']]
         );
     }
+
+    $teamId = validatePositiveInteger($segments[2], 'team_id');
+
+    $controller = loadController('TeamController.php', 'TeamController');
+
+    // GET /api/teams/{id}/stats
+    if (isset($segments[3]) && $segments[3] === 'stats') {
+        $controller->stats($teamId);
+        exit;
+    }
+
+    // GET /api/teams/{id}/matches
+    if (isset($segments[3]) && $segments[3] === 'matches') {
+        $controller->matches($teamId);
+        exit;
+    }
+
+    // GET /api/teams/{id}
+    if (!isset($segments[3])) {
+        $controller->show($teamId);
+        exit;
+    }
+
+    jsonResponse(
+        null,
+        'Endpoint tim tidak ditemukan.',
+        404,
+        ['error' => ['code' => 'ENDPOINT_NOT_FOUND']]
+    );
 }
 
 

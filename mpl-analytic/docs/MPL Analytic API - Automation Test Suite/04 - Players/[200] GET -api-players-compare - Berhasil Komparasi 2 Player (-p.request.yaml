@@ -1,0 +1,29 @@
+$kind: http-request
+name: "[200] GET /api/players/compare - Berhasil Komparasi 2 Player (?p1=2&p2=23&season=1)"
+description: Membandingkan performa head-to-head 2 pemain pada season tertentu (US-03).
+url: "{{baseUrl}}/api/players/compare?p1={{playerId}}&p2={{player2Id}}&season={{seasonId}}"
+method: GET
+headers:
+  Accept: application/json
+queryParams:
+  p1: "{{playerId}}"
+  p2: "{{player2Id}}"
+  season: "{{seasonId}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("[200] Status 200", function () { pm.response.to.have.status(200); });
+      pm.test("[Header] Content-Type adalah JSON", function () { pm.expect(pm.response.headers.get("Content-Type")).to.include("application/json"); });
+      pm.test("[Schema] Response format sukses (success: true, message: string)", function () {
+          var j = pm.response.json();
+          pm.expect(j.success).to.be.true;
+          pm.expect(j.message).to.be.a('string');
+      });
+      pm.test("[Data] Memiliki data player_1 dan player_2", function () {
+          var j = pm.response.json();
+          pm.expect(j.data).to.be.an('object');
+          pm.expect(j.data).to.have.property('player_1');
+          pm.expect(j.data).to.have.property('player_2');
+      });
+    language: text/javascript
+order: 4000

@@ -1,0 +1,23 @@
+$kind: collection
+description: |-
+  Postman Collection komprehensif untuk pengujian seluruh endpoint backend MPL Analytic.
+
+  Memenuhi kriteria kelengkapan pengujian:
+  - Seluruh endpoint RESTful (Dashboard, Meta, Heroes, Players, Matches, Tournaments, Games, Items)
+  - Kondisi Sukses (200 OK / Response Valid)
+  - Semua Kondisi Error per Endpoint (400 Bad Request, 404 Not Found, 405 Method Not Allowed, 501 Not Implemented)
+  - Pengujian Keamanan & Negatif (SQL Injection, XSS, Path Traversal, Unsupported Methods)
+
+  Environment Base URL:
+  - Laragon / Apache: http://127.0.0.1/manajemen-proyek-kelompok-4/mpl-analytic/public
+  - PHP Built-in Server: http://localhost:8000
+  - VirtualHost: http://manajemen-proyek-kelompok-4.test
+variables:
+  baseUrl: http://127.0.0.1/manajemen-proyek-kelompok-4/mpl-analytic/public
+  seasonId: "1"
+  heroId: "1"
+  playerId: "2"
+  player2Id: "23"
+  matchId: s17_w01_m01
+  gameId: s17_w01_m01_g01
+  itemId: "1"

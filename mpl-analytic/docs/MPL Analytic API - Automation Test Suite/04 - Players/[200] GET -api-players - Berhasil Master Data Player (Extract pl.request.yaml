@@ -1,0 +1,35 @@
+$kind: http-request
+name: "[200] GET /api/players - Berhasil Master Data Player (Extract playerId)"
+description: Mengambil master list player dan menyimpan playerId & player2Id untuk tes komparasi.
+url: "{{baseUrl}}/api/players"
+method: GET
+headers:
+  Accept: application/json
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("[200] Status 200", function () { pm.response.to.have.status(200); });
+      pm.test("[Header] Content-Type adalah JSON", function () { pm.expect(pm.response.headers.get("Content-Type")).to.include("application/json"); });
+      pm.test("[Schema] Response format sukses (success: true, message: string)", function () {
+          var j = pm.response.json();
+          pm.expect(j.success).to.be.true;
+          pm.expect(j.message).to.be.a('string');
+      });
+      pm.test("[Data] Menyimpan playerId ke variable", function () {
+          var j = pm.response.json();
+          pm.expect(j.data).to.be.an('array').that.is.not.empty;
+          var p1 = j.data[0];
+          var id1 = p1.player_id || p1.id;
+          if (id1) {
+              pm.collectionVariables.set("playerId", String(id1));
+          }
+          if (j.data.length > 1) {
+              var p2 = j.data[1];
+              var id2 = p2.player_id || p2.id;
+              if (id2) {
+                  pm.collectionVariables.set("player2Id", String(id2));
+              }
+          }
+      });
+    language: text/javascript
+order: 1000
