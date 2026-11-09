@@ -1,0 +1,19 @@
+$kind: http-request
+name: "[200] GET /api/tournaments/:seasonId - Berhasil Detail Turnamen"
+description: Mengambil informasi detail spesifik satu turnamen/musim.
+url: "{{baseUrl}}/api/tournaments/{{seasonId}}"
+method: GET
+headers:
+  Accept: application/json
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("[200] Status 200", function () { pm.response.to.have.status(200); });
+      pm.test("[Header] Content-Type adalah JSON", function () { pm.expect(pm.response.headers.get("Content-Type")).to.include("application/json"); });
+      pm.test("[Schema] Response format sukses (success: true, message: string)", function () {
+          var j = pm.response.json();
+          pm.expect(j.success).to.be.true;
+          pm.expect(j.message).to.be.a('string');
+      });
+    language: text/javascript
+order: 3000
