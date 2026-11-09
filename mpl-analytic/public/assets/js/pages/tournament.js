@@ -105,10 +105,13 @@
     if (pageTitle && pageNote) {
       if (cleanKey === 'hasil') {
         pageTitle.textContent = 'HASIL PERTANDINGAN';
-        pageNote.textContent = 'Pertandingan MPL Indonesia Season 18 selanjutnya : Evos vs RRQ pada hari Jumat, 16 Oktober 2026 pukul 15:00.';
+        pageNote.textContent = ''; // Anda bisa isi logic untuk mengambil pertandingan terdekat di sini
       } else if (cleanKey === 'jadwal') {
         pageTitle.textContent = 'JADWAL MPL INDONESIA SEASON 18';
-        pageNote.textContent = ''; // Kosongkan catatan jika ada
+        pageNote.textContent = ''; 
+      } else if (cleanKey === 'klasemen') {
+        pageTitle.textContent = 'KLASEMEN MPL INDONESIA SEASON 18';
+        pageNote.textContent = ''; 
       }
     }
     // Update status tab (jika ada tombol tab di dalam halaman)
@@ -128,6 +131,20 @@
       const isTarget = panel.id === 'tr-panel-' + cleanKey;
       panel.hidden = !isTarget;
     });
+
+    // ==========================================
+    // INI ADALAH PEMICU UNTUK MENGAMBIL DATA API
+    // ==========================================
+    if (cleanKey === 'jadwal' && window.TournamentSchedule) {
+        // Panggil file tournament-schedule.js untuk tarik data
+        window.TournamentSchedule.init(); 
+    } 
+    else if (cleanKey === 'hasil') {
+        // Panggil fungsi hasil pertandingan lama
+        if (typeof loadMatchResults === 'function') {
+            loadMatchResults();
+        }
+    }
   }
 
   function initTabFromHash() {

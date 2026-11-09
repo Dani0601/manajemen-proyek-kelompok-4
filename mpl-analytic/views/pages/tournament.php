@@ -47,16 +47,37 @@ $loading = static fn(string $label) =>
 
     <!-- KLASEMEN LENGKAP -->
     <section class="tr-panel" id="tr-panel-klasemen" aria-label="Klasemen" hidden>
-        <h2 class="tr-section-title">Klasemen Musim ke-<span data-season-no><?= $seasonNumber ?></span></h2>
-        <div id="tr-standings-content"></div>
+        <div class="mb-4">
+            <h2 class="tr-section-title fw-bold text-uppercase">Klasemen Musim ke-<span data-season-no><?= $seasonNumber ?></span></h2>
+        </div>
 
-        <section class="tr-legend" aria-labelledby="tr-legend-title" hidden>
-            <h3 id="tr-legend-title">Cara membaca tabel</h3>
+        <!-- Tabel Klasemen Wrapper -->
+        <div class="card bg-dark border-secondary shadow-sm mb-4">
+            <div class="card-body p-0">
+                <!-- Kontainer JS Tidak Diubah -->
+                <div id="tr-standings-content" class="table-responsive">
+                    <?= $loading('Memuat klasemen...') ?>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cara Membaca Tabel (Legend) -->
+        <section class="tr-legend shadow-sm" aria-labelledby="tr-legend-title">
+            <div class="tr-legend-header">
+                <h3 id="tr-legend-title">Cara membaca tabel</h3>
+            </div>
             <dl>
-                <dt>Poin</dt><dd>Poin pertandingan</dd>
-                <dt>WL</dt><dd>Kemenangan dan kekalahan pertandingan</dd>
-                <dt>+/-</dt><dd>Selisih skor bersih dalam pertandingan</dd>
-                <dt>Pertandingan</dt><dd>Kemenangan dan kekalahan game dalam pertandingan</dd>
+                <dt>Poin</dt>
+                <dd>Poin pertandingan</dd>
+                
+                <dt>M-K (WL)</dt>
+                <dd>Kemenangan dan kekalahan pertandingan</dd>
+                
+                <dt>+/-</dt>
+                <dd>Selisih skor bersih dalam pertandingan</dd>
+                
+                <dt>PTD</dt>
+                <dd>Kemenangan dan kekalahan game dalam pertandingan</dd>
             </dl>
         </section>
     </section>
@@ -64,5 +85,6 @@ $loading = static fn(string $label) =>
 
 <script src="<?= $assetBase ?>/js/api-client.js"></script>
 <script src="<?= $assetBase ?>/js/pages/match-results.js"></script>
-
+<script src="<?= $assetBase ?>/js/pages/tournament-schedule.js"></script>
+<script src="<?= $assetBase ?>/js/pages/tournament-standings.js"></script>
 <?php require BASE_PATH . '/views/layouts/footer.php'; ?>
