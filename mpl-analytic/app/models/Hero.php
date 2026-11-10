@@ -288,6 +288,7 @@ class Hero
                 s.hero_build_swap_id,
                 s.condition_text,
                 s.item_name,
+                s.reason,
                 s.share_percent,
                 s.snapshot_at,
                 mi.item_url
