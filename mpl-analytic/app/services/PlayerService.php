@@ -138,10 +138,27 @@ class PlayerService
             return null;
         }
 
-        $stats = $this->playerModel->getPlayerStats($playerId);
+        $stats           = $this->playerModel->getPlayerStats($playerId);
+        $mostUsedHeroes  = $this->playerModel->getMostUsedHeroes($playerId, 5);
+
+        // Tambahkan win_rate dan data build (spell + emblem) untuk setiap hero
+        foreach ($mostUsedHeroes as &$hero) {
+            $hero['win_rate'] = $hero['pick_count'] > 0
+                ? round(($hero['wins'] / $hero['pick_count']) * 100, 2)
+                : 0.0;
+
+            $hero['build'] = [
+                'items'   => $this->playerModel->getHeroBuildItems($hero['hero_id']),
+                'spells'  => $this->playerModel->getHeroSpells($hero['hero_id']),
+                'emblems' => $this->playerModel->getHeroEmblems($hero['hero_id']),
+            ];
+        }
+        unset($hero);
+
         return [
-            'player' => $player,
-            'stats'  => $stats,
+            'player'           => $player,
+            'stats'            => $stats,
+            'most_used_heroes' => $mostUsedHeroes,
         ];
     }
 
