@@ -37,7 +37,8 @@ $loading = static fn(string $label) =>
 
     <!-- JADWAL -->
     <section class="tr-panel" id="tr-panel-jadwal" aria-label="Jadwal pertandingan">
-        <h2 class="tr-section-title">Jadwal Musim ke-<span data-season-no><?= $seasonNumber ?></span></h2>
+        <p class="tr-note" id="tr-schedule-note"></p>
+        <h2 class="tr-section-title">Jadwal Pertandingan Musim ke-<span data-season-no><?= $seasonNumber ?></span></h2>
         <div id="tr-week-nav" class="tr-wk">
             <div class="tr-skel-wk" aria-hidden="true">
                 <span class="tr-skel__bar" style="width:50px"></span>
@@ -94,7 +95,7 @@ $loading = static fn(string $label) =>
     <!-- KLASEMEN LENGKAP -->
     <section class="tr-panel" id="tr-panel-klasemen" aria-label="Klasemen" hidden>
         <div class="mb-4">
-            <h2 class="tr-section-title fw-bold text-uppercase">Klasemen Musim ke-<span data-season-no><?= $seasonNumber ?></span></h2>
+            <h2 class="tr-section-title fw-bold text-uppercase">Klasemen Season <span data-season-no><?= $seasonNumber ?></span></h2>
             <p id="tr-standings-leader" class="mt-0 mb-0" style="font-size: 14px; font-weight: 500; color: #000;"></p>
         </div>
 
@@ -157,6 +158,9 @@ $loading = static fn(string $label) =>
                     var p = document.getElementById('tr-panel-' + n);
                     if (p) p.hidden = (n !== h);
                 });
+                if (h === 'jadwal' && window.TournamentSchedule) {
+                    window.TournamentSchedule.init();
+                }
             }
 
             apply();                                      // jalan saat halaman dibuka

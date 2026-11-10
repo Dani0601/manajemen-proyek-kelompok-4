@@ -102,10 +102,10 @@
         pageTitle.textContent = 'HASIL PERTANDINGAN';
         pageNote.textContent = ''; // Anda bisa isi logic untuk mengambil pertandingan terdekat di sini
       } else if (cleanKey === 'jadwal') {
-        pageTitle.textContent = 'JADWAL MPL INDONESIA SEASON 18';
+        pageTitle.textContent = 'JADWAL MPL INDONESIA';
         pageNote.textContent = ''; 
       } else if (cleanKey === 'klasemen') {
-        pageTitle.textContent = 'KLASEMEN MPL INDONESIA SEASON 18';
+        pageTitle.textContent = 'KLASEMEN MPL INDONESIA';
         pageNote.textContent = ''; 
       }
     }

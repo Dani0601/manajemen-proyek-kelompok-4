@@ -107,16 +107,18 @@ console.log("File Jadwal sudah siap dan berhasil dimuat!");
         const el = document.getElementById('tr-schedule-note');
         if (!el) return;
 
+        const season = document.querySelector('.tr')?.dataset.seasonNumber || '';
+        const base = `Pertandingan MPL Indonesia Season ${season}`;
+
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         const next = allMatches.find(m => new Date(`${m.match_date}`.slice(0, 10) + 'T00:00:00') >= today);
 
-        if (!next) { el.textContent = ''; return; }
+        if (!next) { el.textContent = base; return; }
 
         const t = getMatchTime(next);
         const jam = t !== '--:--' ? ` pukul ${t}` : '';
-        const season = document.querySelector('.tr')?.dataset.seasonNumber || '';
-        el.textContent = `Pertandingan MPL Indonesia Season ${season} selanjutnya: ${shortName(next.team_a)} vs ${shortName(next.team_b)} pada hari ${formatFullDate(next.match_date)}${jam}.`;
+        el.textContent = `${base} selanjutnya: ${shortName(next.team_a)} vs ${shortName(next.team_b)} pada hari ${formatFullDate(next.match_date)}${jam}.`;
     }
 
     function renderWeekNav() {
@@ -275,6 +277,14 @@ console.log("File Jadwal sudah siap dan berhasil dimuat!");
             if (!isLoaded) {
                 loadSchedule();
                 isLoaded = true;
+            } else {
+                this.refresh();
+            }
+        },
+        refresh: function () {
+            if (allMatches.length) {
+                renderNextMatch();
+                renderWeekNav();
             }
         }
     };
