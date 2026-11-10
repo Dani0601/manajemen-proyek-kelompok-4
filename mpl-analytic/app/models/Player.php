@@ -160,6 +160,140 @@ class Player {
     }
 
     /**
+     * Mengambil top N hero yang paling sering dipakai oleh seorang player
+     */
+    public function getMostUsedHeroes(int $playerId, int $limit = 5): array {
+        $sql = "SELECT
+                    gp.hero_id,
+                    h.hero_name,
+                    h.hero_url                                          AS hero_icon_url,
+                    COUNT(*)                                            AS pick_count,
+                    SUM(CASE WHEN g.winner_team_id = gp.team_id THEN 1 ELSE 0 END)                       AS wins,
+                    COUNT(*) - SUM(CASE WHEN g.winner_team_id = gp.team_id THEN 1 ELSE 0 END)            AS losses,
+                    ROUND(AVG(gp.kills),   2)                          AS avg_kills,
+                    ROUND(AVG(gp.deaths),  2)                          AS avg_deaths,
+                    ROUND(AVG(gp.assists), 2)                          AS avg_assists,
+                    ROUND(
+                        (SUM(gp.kills) + SUM(gp.assists)) / NULLIF(SUM(gp.deaths), 0),
+                        2
+                    )                                                   AS avg_kda
+                FROM game_players gp
+                JOIN heroes  h ON gp.hero_id = h.hero_id
+                JOIN games   g ON gp.game_id = g.game_id
+                WHERE gp.player_id = :player_id
+                GROUP BY gp.hero_id, h.hero_name, h.hero_url
+                ORDER BY pick_count DESC
+                LIMIT :lmt";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':player_id', $playerId, PDO::PARAM_INT);
+        $stmt->bindValue(':lmt',       $limit,    PDO::PARAM_INT);
+        $stmt->execute();
+
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Cast tipe numerik
+        foreach ($rows as &$row) {
+            $row['hero_id']    = (int)$row['hero_id'];
+            $row['pick_count'] = (int)$row['pick_count'];
+            $row['wins']       = (int)$row['wins'];
+            $row['losses']     = (int)$row['losses'];
+            $row['avg_kills']  = (float)$row['avg_kills'];
+            $row['avg_deaths'] = (float)$row['avg_deaths'];
+            $row['avg_assists']= (float)$row['avg_assists'];
+            $row['avg_kda']    = $row['avg_kda'] !== null ? (float)$row['avg_kda'] : null;
+        }
+        unset($row);
+
+        return $rows;
+    }
+
+    /**
+     * Mengambil daftar build item (equipment) untuk hero tertentu
+     */
+    public function getHeroBuildItems(int $heroId): array {
+        $sql = "SELECT
+                    position,
+                    item_name,
+                    item_url AS item_icon_url,
+                    power_spike
+                FROM hero_build_items
+                WHERE hero_id = :hero_id
+                  AND item_url IS NOT NULL
+                ORDER BY position ASC
+                LIMIT 6";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':hero_id', $heroId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($rows as &$row) {
+            $row['position']    = (int)$row['position'];
+            $row['power_spike'] = (int)($row['power_spike'] ?? 0) === 1;
+        }
+        unset($row);
+
+        return $rows;
+    }
+
+    /**
+     * Mengambil battle spell yang direkomendasikan untuk hero tertentu
+     */
+    public function getHeroSpells(int $heroId): array {
+        // Ambil top 2 spell berdasarkan share_percent / build_count tertinggi
+        $sql = "SELECT
+                    spell_name,
+                    spell_icon_url
+                FROM hero_build_spells
+                WHERE hero_id = :hero_id
+                  AND spell_icon_url IS NOT NULL
+                ORDER BY COALESCE(share_percent, 0) DESC, COALESCE(build_count, 0) DESC
+                LIMIT 2";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':hero_id', $heroId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($rows as &$row) {
+            $row['spell_name'] = preg_replace('/^ALSO\s+/i', '', trim($row['spell_name']));
+        }
+        unset($row);
+
+        return $rows;
+    }
+
+    /**
+     * Mengambil emblem yang direkomendasikan untuk hero tertentu
+     */
+    public function getHeroEmblems(int $heroId): array {
+        // Ambil emblem utama (paling banyak dipakai)
+        $sql = "SELECT
+                    emblem_name,
+                    emblem_icon_url
+                FROM hero_build_emblems
+                WHERE hero_id = :hero_id
+                  AND emblem_icon_url IS NOT NULL
+                ORDER BY COALESCE(build_count, 0) DESC
+                LIMIT 1";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':hero_id', $heroId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($rows as &$row) {
+            if (preg_match('/EMBLEM\s+([A-Za-z0-9_\-\s]+)$/i', trim($row['emblem_name']), $m)) {
+                $row['emblem_name'] = 'Emblem ' . trim($m[1]);
+            }
+        }
+        unset($row);
+
+        return $rows;
+    }
+
+    /**
      * Mengambil riwayat game seorang player
      */
     public function getPlayerGames(int $playerId): array {
