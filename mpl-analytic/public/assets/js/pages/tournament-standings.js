@@ -94,7 +94,7 @@ console.log("1. File tournament-standings.js berhasil dimuat!");
             console.error("Elemen #tr-standings-content tidak ditemukan di HTML!");
             return;
         }
-
+        document.querySelector('.tr')?.classList.add('is-loading');
         try {
             const root = document.querySelector('.tr');
             const seasonId = root && root.dataset.seasonId ? parseInt(root.dataset.seasonId, 10) : 1;
@@ -110,13 +110,39 @@ console.log("1. File tournament-standings.js berhasil dimuat!");
             if (teams.length === 0) {
                 console.log("5. Data kosong.");
                 container.innerHTML = `
-                    <div class="p-4 text-center" style="color: #94a3b8;">
-                        <p class="mb-0">Belum ada data klasemen untuk musim ini.</p>
+                    <div class="text-center shadow-sm d-flex flex-column justify-content-center align-items-center" style="width: 100%; min-height: 240px; padding: 40px 20px; background-color: #172B4D; border-radius: 4px; border: 1px solid rgba(255, 255, 255, 0.2);">
+                        <!-- Ikon Lingkaran dengan 3 Bar -->
+                        <div style="width: 72px; height: 72px; background-color: #cbd5e1; border-radius: 50%; display: flex; align-items: flex-end; justify-content: center; gap: 6px; padding-bottom: 20px; margin-bottom: 16px;">
+                            <div style="width: 8px; height: 16px; background-color: #ffffff; border-radius: 2px;"></div>
+                            <div style="width: 8px; height: 28px; background-color: #ffffff; border-radius: 2px;"></div>
+                            <div style="width: 8px; height: 20px; background-color: #ffffff; border-radius: 2px;"></div>
+                        </div>
+                        <!-- Teks Informasi -->
+                        <div style="color: #ffffff; font-weight: 600; font-size: 15px; margin-bottom: 4px;">
+                            Data klasemen belum tersedia
+                        </div>
+                        <div style="color: #cbd5e1; font-size: 13px;">
+                            Belum ada data klasemen yang dapat ditampilkan saat ini
+                        </div>
                     </div>
                 `;
+
+                const legend = document.querySelector('.tr-legend');
+                if (legend) legend.setAttribute('hidden', 'true');
                 return;
             }
-
+            const leaderContainer = document.getElementById('tr-standings-leader');
+            if (leaderContainer) {
+                const topTeam = teams[0]; // Ambil tim urutan pertama
+                // Gunakan inisial/kode jika ada (misal: TLID), jika tidak gunakan nama lengkap
+                const leaderName = topTeam.team_code ? topTeam.team_code : topTeam.team_name; 
+                const wins = topTeam.match_wins || 0;
+                const losses = topTeam.match_losses || 0;
+                const rootElement = document.querySelector('.tr');
+                const seasonNumber = rootElement ? (rootElement.dataset.seasonNumber || '18') : '18';
+                // Set teks sesuai dengan format desain Figma
+                leaderContainer.textContent = `Pemuncak klasemen MPL Indonesia Musim ${seasonNumber}: ${leaderName}, ${wins} kemenangan - ${losses} kekalahan`;
+            }
             console.log("5. Mulai render tabel HTML...");
             container.innerHTML = renderTable(teams);
 
@@ -133,6 +159,11 @@ console.log("1. File tournament-standings.js berhasil dimuat!");
                     <p class="small mb-0">${error.message || 'Terjadi kesalahan jaringan.'}</p>
                 </div>
             `;
+        }finally {
+            const panel = document.getElementById('tr-panel-klasemen');
+            if (panel && !panel.hidden) {
+                document.querySelector('.tr')?.classList.remove('is-loading');
+            }
         }
     }
 

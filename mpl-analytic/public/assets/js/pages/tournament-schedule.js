@@ -2,9 +2,11 @@ console.log("File Jadwal sudah siap dan berhasil dimuat!");
 (function () {
     'use strict';
 
-    let isLoaded = false; 
+    let isLoaded = false;
+    let allMatches = [];
+    let activeWeek = 1;
+    let totalWeeks = 1;
 
-    // Kamus Backup Logo Tim Berdasarkan Nama
     const TEAM_LOGOS = {
         "ONIC": "https://wsrv.nl/?url=https://ik.imagekit.io/nloe8dhf7w/mplid/s14/teams/onic-b-256.png",
         "Dewa United Esports": "https://wsrv.nl/?url=https://ik.imagekit.io/nloe8dhf7w/mplid/s14/teams/dewa-united-500.png",
@@ -17,141 +19,262 @@ console.log("File Jadwal sudah siap dan berhasil dimuat!");
         "Natus Vincere": "https://wsrv.nl/?url=https://ik.imagekit.io/nloe8dhf7w/mplid/s14/teams/NAVI-2.png"
     };
 
-    // Fungsi helper untuk mendapatkan logo (Prioritas: API -> Kamus TEAM_LOGOS -> Fallback Inisial)
-    function getTeamLogoHTML(team) {
-        const teamName = team?.team_name || 'Tim';
-        const fallback = teamName.slice(0, 2).toUpperCase();
-        
-        // Cek apakah logo dari API valid (ada isinya dan bukan default.png)
-        let logoUrl = team?.logo_url;
-        if (!logoUrl || logoUrl.includes('default.png')) {
-            // Jika tidak valid, ambil dari kamus TEAM_LOGOS berdasarkan nama tim
-            logoUrl = TEAM_LOGOS[teamName] || null;
-        }
+    // Nama singkat seperti di Figma (short_code dari API masih null)
+    const SHORT_NAMES = {
+        "Natus Vincere": "Navi",
+        "RRQ Hoshi": "RRQ",
+        "Bigetron by Vitality": "Bigetron",
+        "Team Liquid ID": "Team Liquid",
+        "Geek Fam ID": "Geek Fam",
+        "Dewa United Esports": "Dewa United"
+    };
+    const shortName = (t) => t?.short_code || SHORT_NAMES[t?.team_name] || t?.team_name || 'Tim';
 
-        if (logoUrl) {
-            return `<img class="tr-logo" src="${logoUrl}" alt="${escapeHTML(teamName)}">`;
-        }
-
-        // Jika di kamus juga tidak ada, gunakan inisial huruf
-        return `<span class="tr-logo tr-logo--fallback" aria-hidden="true">${escapeHTML(fallback)}</span>`;
-    }
-
-    // Fungsi pengaman karakter HTML
     function escapeHTML(value) {
         return String(value ?? '').replace(/[&<>"']/g, (char) => ({
             '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
         })[char]);
     }
 
-    // Fungsi mengubah format tanggal
+    function getTeamLogoHTML(team) {
+        const teamName = team?.team_name || 'Tim';
+        const fallback = teamName.slice(0, 2).toUpperCase();
+
+        let logoUrl = team?.logo_url;
+        if (!logoUrl || logoUrl.includes('default.png')) {
+            logoUrl = TEAM_LOGOS[teamName] || null;
+        }
+
+        if (logoUrl) {
+            return `<img class="tr-logo" src="${logoUrl}" alt="${escapeHTML(teamName)}">`;
+        }
+        return `<span class="tr-logo tr-logo--fallback" aria-hidden="true">${escapeHTML(fallback)}</span>`;
+    }
+
+    // Tanpa tahun, sesuai Figma ("Jumat, 16 Oktober")
     function formatMatchDate(value) {
         if (!value) return '';
         const date = new Date(`${value}`.slice(0, 10) + 'T00:00:00');
         if (Number.isNaN(date.getTime())) return String(value);
+        return new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long' }).format(date);
+    }
+
+    function formatFullDate(value) {
+        const date = new Date(`${value}`.slice(0, 10) + 'T00:00:00');
+        if (Number.isNaN(date.getTime())) return '';
         return new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(date);
     }
 
-    // Fungsi mencetak HTML 1 Pertandingan
+    // match_id format: s18_w01_m01 -> minggu 1
+    function getWeek(match) {
+        if (match.week) return parseInt(match.week, 10);
+        const m = /_w(\d+)_/.exec(match.match_id || '');
+        return m ? parseInt(m[1], 10) : 1;
+    }
+
+    function getMatchTime(match) {
+        if (match.match_time) return match.match_time.slice(0, 5);
+        if (match.match_date && /[T ]\d{2}:\d{2}/.test(match.match_date)) {
+            return match.match_date.split(/[T ]/)[1].slice(0, 5);
+        }
+        return '--:--';
+    }
+
     function renderMatchItem(match) {
         const teamA = match.team_a;
         const teamB = match.team_b;
         const matchId = match.match_id || '';
-        
-        let matchTime = "--:--";
-        if (match.match_date) {
-            const timePart = match.match_date.split('T')[1] || match.match_date.split(' ')[1];
-            if (timePart) matchTime = timePart.slice(0, 5);
-        }
-
-        const isFinished = match.winner_team_id !== null;
-        const scoreA = isFinished ? (teamA.score ?? 0) : '-';
-        const scoreB = isFinished ? (teamB.score ?? 0) : '-';
-
-        const logoHTML_A = getTeamLogoHTML(teamA);
-        const logoHTML_B = getTeamLogoHTML(teamB);
 
         return `
-            <a class="tr-res" href="#match-${matchId}" data-match-id="${matchId}">
-                <div class="tr-res__time">${matchTime}</div>
+            <a class="tr-res tr-res--schedule" href="#match-${escapeHTML(matchId)}" data-match-id="${escapeHTML(matchId)}">
+                <div class="tr-res__time">${getMatchTime(match)}</div>
                 <div class="tr-res__teams">
                     <div class="tr-res__team">
-                        ${logoHTML_A}
-                        <span class="tr-res__name" title="${escapeHTML(teamA.team_name)}">${escapeHTML(teamA.team_name)}</span>
-                        <span class="tr-res__score">${scoreA}</span>
+                        ${getTeamLogoHTML(teamA)}
+                        <span class="tr-res__name" title="${escapeHTML(teamA.team_name)}">${escapeHTML(shortName(teamA))}</span>
                     </div>
                     <div class="tr-res__team">
-                        ${logoHTML_B}
-                        <span class="tr-res__name" title="${escapeHTML(teamB.team_name)}">${escapeHTML(teamB.team_name)}</span>
-                        <span class="tr-res__score">${scoreB}</span>
+                        ${getTeamLogoHTML(teamB)}
+                        <span class="tr-res__name" title="${escapeHTML(teamB.team_name)}">${escapeHTML(shortName(teamB))}</span>
                     </div>
                 </div>
+                <div class="tr-res__vs">Vs</div>
             </a>
         `;
     }
 
-    // Fungsi Utama Menarik Data Jadwal
-    async function loadSchedule() {
+    function renderNextMatch() {
+        const el = document.getElementById('tr-schedule-note');
+        if (!el) return;
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const next = allMatches.find(m => new Date(`${m.match_date}`.slice(0, 10) + 'T00:00:00') >= today);
+
+        if (!next) { el.textContent = ''; return; }
+
+        const t = getMatchTime(next);
+        const jam = t !== '--:--' ? ` pukul ${t}` : '';
+        const season = document.querySelector('.tr')?.dataset.seasonNumber || '';
+        el.textContent = `Pertandingan MPL Indonesia Season ${season} selanjutnya: ${shortName(next.team_a)} vs ${shortName(next.team_b)} pada hari ${formatFullDate(next.match_date)}${jam}.`;
+    }
+
+    function renderWeekNav() {
+        const nav = document.getElementById('tr-week-nav');
+        if (!nav) {
+            const content = document.getElementById('tr-schedule-content');
+            if (!content) return;
+            nav = document.createElement('div');
+            nav.id = 'tr-week-nav';
+            content.parentNode.insertBefore(nav, content);
+        }
+
+        nav.className = 'tr-wk';
+        nav.innerHTML =
+            `<span class="tr-wk__label">Minggu</span>` +
+            `<div class="tr-wk__btns">` +
+            Array.from({ length: totalWeeks }, (_, i) => {
+                const w = i + 1;
+                return `<button type="button" class="tr-wk__btn ${w === activeWeek ? 'is-active' : ''}" data-week="${w}">${w}</button>`;
+            }).join('') +
+            `</div>`;
+
+        nav.querySelectorAll('.tr-wk__btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                activeWeek = parseInt(btn.dataset.week, 10);
+                renderSchedule();
+            });
+        });
+        console.log('totalWeeks:', totalWeeks, 'activeWeek:', activeWeek);
+    }
+
+    function renderSchedule() {
         const container = document.getElementById('tr-schedule-content');
         if (!container) return;
 
-        container.innerHTML = `<div class="text-center py-4">Memuat seluruh jadwal pertandingan...</div>`;
+        const weekMatches = allMatches.filter(m => m._week === activeWeek);
 
+        if (weekMatches.length === 0) {
+            const emptyCard = `
+                <div class="text-center shadow-sm d-flex flex-column justify-content-center align-items-center" style="width: 100%; min-height: 240px; padding: 40px 20px; background-color: #172B4D; border-radius: 4px; margin-bottom: 24px; border: 1px solid rgba(255, 255, 255, 0.2);">
+                    <!-- Ikon Lingkaran dengan 3 Bar -->
+                    <div style="width: 72px; height: 72px; background-color: #cbd5e1; border-radius: 50%; display: flex; align-items: flex-end; justify-content: center; gap: 6px; padding-bottom: 20px; margin-bottom: 16px;">
+                        <div style="width: 8px; height: 16px; background-color: #ffffff; border-radius: 2px;"></div>
+                        <div style="width: 8px; height: 28px; background-color: #ffffff; border-radius: 2px;"></div>
+                        <div style="width: 8px; height: 20px; background-color: #ffffff; border-radius: 2px;"></div>
+                    </div>
+                    <!-- Teks Informasi -->
+                    <div style="color: #ffffff; font-weight: 600; font-size: 15px; margin-bottom: 4px;">
+                        Belum ada jadwal pertandingan
+                    </div>
+                    <div style="color: #cbd5e1; font-size: 13px;">
+                        Belum ada pertandingan yang dijadwalkan untuk minggu ini
+                    </div>
+                </div>`;
+                container.innerHTML = `
+                <div style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; width: 100%;">
+                    ${emptyCard}
+                    ${emptyCard}
+                    ${emptyCard}
+                </div>
+            `;
+            renderWeekNav();
+            return;
+        }
+
+        const grouped = {};
+        weekMatches.forEach(match => {
+            const key = formatMatchDate(match.match_date) || 'Jadwal Lainnya';
+            (grouped[key] = grouped[key] || []).push(match);
+        });
+
+        container.innerHTML = Object.entries(grouped).map(([dateStr, list]) => `
+            <div class="tr-day">
+                <h3 class="tr-day__title">${escapeHTML(dateStr)}</h3>
+                <div class="tr-day__matches">
+                    ${list.map(renderMatchItem).join('')}
+                </div>
+            </div>
+        `).join('');
+
+        renderWeekNav();
+    }
+
+    async function loadSchedule() {
+        const container = document.getElementById('tr-schedule-content');
+        if (!container) return;
+        document.querySelector('.tr')?.classList.add('is-loading');
         try {
             const root = document.querySelector('.tr');
             const seasonId = root && root.dataset.seasonId ? parseInt(root.dataset.seasonId, 10) : 1;
 
             const response = await window.ApiClient.getTournamentSchedule(seasonId);
-            const allMatches = Array.isArray(response) ? response : (response.data || []);
+            allMatches = Array.isArray(response) ? response : (response.data || []);
 
             if (allMatches.length === 0) {
-                container.innerHTML = `
-                    <div class="tr-empty" role="status" style="margin-top: 16px;">
-                        <strong>Belum ada jadwal</strong>
-                        <p>Belum ada data pertandingan untuk season ini.</p>
-                    </div>
-                `;
+                const emptyCard = `
+                    <div class="text-center shadow-sm d-flex flex-column justify-content-center align-items-center" style="width: 100%; min-height: 240px; padding: 40px 20px; background-color: #172B4D; border-radius: 4px; margin-top: 0; border: 1px solid rgba(255, 255, 255, 0.2);">
+                        <!-- Ikon Lingkaran dengan 3 Bar -->
+                        <div style="width: 72px; height: 72px; background-color: #cbd5e1; border-radius: 50%; display: flex; align-items: flex-end; justify-content: center; gap: 6px; padding-bottom: 20px; margin-bottom: 16px;">
+                            <div style="width: 8px; height: 16px; background-color: #ffffff; border-radius: 2px;"></div>
+                            <div style="width: 8px; height: 28px; background-color: #ffffff; border-radius: 2px;"></div>
+                            <div style="width: 8px; height: 20px; background-color: #ffffff; border-radius: 2px;"></div>
+                        </div>
+                        <!-- Teks Informasi -->
+                        <div style="color: #ffffff; font-weight: 600; font-size: 15px; margin-bottom: 4px;">
+                            Belum ada jadwal pertandingan
+                        </div>
+                        <div style="color: #cbd5e1; font-size: 13px;">
+                            Belum ada data pertandingan untuk season ini
+                        </div>
+                    </div>`;
+                    container.innerHTML = `
+                        <div style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; width: 100%;">
+                            ${emptyCard}
+                            ${emptyCard}
+                            ${emptyCard}
+                        </div>
+                    `;
                 return;
             }
 
-            allMatches.sort((a, b) => new Date(a.match_date) - new Date(b.match_date));
+            allMatches.sort((a, b) =>
+                new Date(a.match_date) - new Date(b.match_date) ||
+                String(a.match_id).localeCompare(String(b.match_id))
+            );
+            allMatches.forEach(m => { m._week = getWeek(m); });
+            totalWeeks = Math.max(...allMatches.map(m => m._week));
 
-            const groupedByDate = {};
-            allMatches.forEach((match) => {
-                const dateText = formatMatchDate(match.match_date) || 'Jadwal Lainnya';
-                if (!groupedByDate[dateText]) groupedByDate[dateText] = [];
-                groupedByDate[dateText].push(match);
-            });
-
-            let html = '';
-            for (const [dateStr, dateMatches] of Object.entries(groupedByDate)) {
-                html += `
-                    <div class="tr-day">
-                        <h3 class="tr-day__title">${escapeHTML(dateStr)}</h3>
-                        <div class="tr-day__matches">
-                            ${dateMatches.map(renderMatchItem).join('')}
-                        </div>
-                    </div>
-                `;
-            }
-            container.innerHTML = html;
-
+            // Minggu default: minggu pertandingan terdekat, kalau tidak ada pakai minggu terakhir
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const upcoming = allMatches.find(m => new Date(`${m.match_date}`.slice(0, 10) + 'T00:00:00') >= today);
+            activeWeek = upcoming ? upcoming._week : allMatches[allMatches.length - 1]._week;
+            
+            renderNextMatch();
+            renderSchedule();
+            console.log('totalWeeks:', totalWeeks, 'activeWeek:', activeWeek);
         } catch (error) {
             console.error('[Tournament Schedule] Error:', error);
             container.innerHTML = `
-                <div class="tr-empty" role="status" style="margin-top: 16px;">
-                    <strong>Gagal memuat jadwal</strong>
+                <div class="tr-empty" role="status">
+                    <strong>Gagal memuat jadwal pertandingan</strong>
                     <p>Terjadi kesalahan jaringan.</p>
-                </div>
-            `;
+                </div>`;
+        }finally {
+            const panel = document.getElementById('tr-panel-jadwal');
+            if (panel && !panel.hidden) {
+                document.querySelector('.tr')?.classList.remove('is-loading');
+            }
         }
+
     }
 
     window.TournamentSchedule = {
-        init: function() {
-            if (!isLoaded) { 
+        init: function () {
+            if (!isLoaded) {
                 loadSchedule();
-                isLoaded = true; 
+                isLoaded = true;
             }
         }
     };

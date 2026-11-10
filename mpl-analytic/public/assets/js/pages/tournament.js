@@ -56,12 +56,7 @@
       return String(value);
     }
 
-    return new Intl.DateTimeFormat('id-ID', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    }).format(date);
+    return new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long' }).format(date);
   }
 
   function getTeamName(team) {
@@ -313,7 +308,7 @@
   async function loadMatchResults() {
     const container = getResultsContainer();
     if (!container) return;
-
+    document.querySelector('.tr')?.classList.add('is-loading');
     if (!window.MatchResults || typeof window.MatchResults.getMatchResults !== 'function') {
       showResultsMessage('Gagal memuat hasil pertandingan', 'Modul pengambilan data belum tersedia.');
       return;
@@ -330,6 +325,8 @@
     } catch (error) {
       console.error('[Tournament] Gagal memuat hasil pertandingan:', error);
       showResultsMessage('Gagal memuat hasil', 'Terjadi kesalahan saat mengambil data. Silakan muat ulang halaman.');
+    }finally {
+        document.querySelector('.tr')?.classList.remove('is-loading');
     }
   }
 

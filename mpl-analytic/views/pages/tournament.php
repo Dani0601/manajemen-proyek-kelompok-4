@@ -26,37 +26,93 @@ $loading = static fn(string $label) =>
     . '</div>';
 ?>
 
-<div class="tr" data-asset-base="<?= $assetBase ?>" data-view="jadwal" data-season-id="<?= $seasonId ?>" data-season-number="<?= $seasonNumber ?>">
-    <!-- JUDUL HALAMAN -->
+<div class="tr is-loading" data-asset-base="<?= $assetBase ?>" data-view="jadwal" data-season-id="<?= $seasonId ?>" data-season-number="<?= $seasonNumber ?>">
     <header class="tr-head">
-        <h1 class="tr-title" id="tr-head-title">Jadwal MPL Indonesia Season <?= $seasonNumber ?></h1>
+        <span class="tr-skel__bar tr-head-skel" style="width:60%"></span>
+        <span class="tr-skel__bar tr-head-skel" style="width:100%; margin-top:0"></span>
+        <span class="tr-skel__bar tr-head-skel tr-head-skel--jadwal" style="width:30%; margin-top:0"></span>
+        <h1 class="tr-title" id="tr-head-title">Jadwal Pertandingan</h1>
         <p class="tr-note" id="tr-schedule-note"></p>
     </header>
 
     <!-- JADWAL -->
     <section class="tr-panel" id="tr-panel-jadwal" aria-label="Jadwal pertandingan">
-        <h2 class="tr-section-title">Jadwal Pertandingan Musim ke-<span data-season-no><?= $seasonNumber ?></span></h2>
-        <div id="tr-schedule-content"></div>
+        <h2 class="tr-section-title">Jadwal Musim ke-<span data-season-no><?= $seasonNumber ?></span></h2>
+        <div id="tr-week-nav" class="tr-wk">
+            <div class="tr-skel-wk" aria-hidden="true">
+                <span class="tr-skel__bar" style="width:50px"></span>
+                <div class="tr-skel-wk__btns">
+                    <?php for ($i = 0; $i < 9; $i++): ?><span class="tr-skel-wk__btn"></span><?php endfor; ?>
+                </div>
+            </div>
+        </div>
+        <div id="tr-schedule-content">
+            <div class="tr-skel" role="status" aria-live="polite" aria-label="Memuat jadwal">
+                <?php foreach ([2, 3, 4] as $rows): ?>
+                <div class="tr-skel__day">
+                    <span class="tr-skel__bar" style="width:90px"></span>
+                    <?php for ($i = 0; $i < $rows; $i++): ?>
+                    <div class="tr-skel__row"><span class="tr-skel__bar" style="width:36px"></span></div>
+                    <?php endfor; ?>
+                </div>
+                <?php endforeach; ?>
+                <div class="tr-skel__status">
+                    <span class="tr-skel__spinner" aria-hidden="true"></span>
+                    Memuat Halaman
+                </div>
+            </div>
+        </div>
     </section>
 
     <!-- HASIL PERTANDINGAN -->
     <section class="tr-panel" id="tr-panel-hasil" aria-label="Hasil pertandingan" hidden>
         <h2 class="tr-section-title">Hasil Pertandingan Musim ke-<span data-season-no><?= $seasonNumber ?></span></h2>
-        <div id="tr-results-content"><?= $loading('Memuat hasil pertandingan...') ?></div>
+        <div id="tr-results-content">
+            <div class="tr-skel" role="status" aria-live="polite" aria-label="Memuat hasil pertandingan">
+                <div class="tr-skel-wk" aria-hidden="true" style="border:1px solid var(--tr-navy);background:#fff">
+                    <span class="tr-skel__bar" style="width:50px"></span>
+                    <div class="tr-skel-wk__btns">
+                        <?php for ($i = 0; $i < 9; $i++): ?><span class="tr-skel-wk__btn"></span><?php endfor; ?>
+                    </div>
+                </div>
+                <?php foreach ([2, 3, 3] as $rows): ?>
+                <div class="tr-skel__day">
+                    <span class="tr-skel__bar" style="width:90px"></span>
+                    <?php for ($i = 0; $i < $rows; $i++): ?>
+                    <div class="tr-skel__row"><span class="tr-skel__bar" style="width:36px"></span></div>
+                    <?php endfor; ?>
+                </div>
+                <?php endforeach; ?>
+                <div class="tr-skel__status">
+                    <span class="tr-skel__spinner" aria-hidden="true"></span>
+                    Memuat Halaman
+                </div>
+            </div>
+        </div>
     </section>
 
     <!-- KLASEMEN LENGKAP -->
     <section class="tr-panel" id="tr-panel-klasemen" aria-label="Klasemen" hidden>
         <div class="mb-4">
             <h2 class="tr-section-title fw-bold text-uppercase">Klasemen Musim ke-<span data-season-no><?= $seasonNumber ?></span></h2>
+            <p id="tr-standings-leader" class="mt-0 mb-0" style="font-size: 14px; font-weight: 500; color: #000;"></p>
         </div>
 
         <!-- Tabel Klasemen Wrapper -->
         <div class="card bg-dark border-secondary shadow-sm mb-4">
             <div class="card-body p-0">
                 <!-- Kontainer JS Tidak Diubah -->
-                <div id="tr-standings-content" class="table-responsive">
-                    <?= $loading('Memuat klasemen...') ?>
+                <div id="tr-standings-content">
+                    <div class="tr-skel" role="status" aria-live="polite" aria-label="Memuat klasemen">
+                        <div class="tr-skel__box tr-skel__box--table"></div>
+                        <div class="tr-skel__box tr-skel__box--sm">
+                            <span class="tr-skel__bar" style="width:120px"></span>
+                        </div>
+                        <div class="tr-skel__status">
+                            <span class="tr-skel__spinner" aria-hidden="true"></span>
+                            Memuat Halaman
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -64,7 +120,7 @@ $loading = static fn(string $label) =>
         <!-- Cara Membaca Tabel (Legend) -->
         <section class="tr-legend shadow-sm" aria-labelledby="tr-legend-title">
             <div class="tr-legend-header">
-                <h3 id="tr-legend-title">Cara membaca tabel</h3>
+                <h3 id="tr-legend-title">Cara Membaca Tabel Klasemen</h3>
             </div>
             <dl>
                 <dt>Poin</dt>
@@ -81,6 +137,32 @@ $loading = static fn(string $label) =>
             </dl>
         </section>
     </section>
+    <script>
+        (function () {
+            var titles = {
+                jadwal: 'Jadwal Pertandingan',
+                hasil: 'Hasil Pertandingan',
+                klasemen: 'Klasemen'
+            };
+
+            function apply() {
+                var h = (location.hash || '#jadwal').replace('#', '');
+
+                // 1. ganti judul h1
+                var t = document.getElementById('tr-head-title');
+                if (t && titles[h]) t.textContent = titles[h];
+
+                // 2. tampilkan panel yang sesuai
+                ['jadwal', 'hasil', 'klasemen'].forEach(function (n) {
+                    var p = document.getElementById('tr-panel-' + n);
+                    if (p) p.hidden = (n !== h);
+                });
+            }
+
+            apply();                                      // jalan saat halaman dibuka
+            window.addEventListener('hashchange', apply); // jalan saat pindah tab
+        })();
+    </script>
 </div>
 
 <script src="<?= $assetBase ?>/js/api-client.js"></script>
