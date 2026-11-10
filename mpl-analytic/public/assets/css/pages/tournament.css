@@ -40,8 +40,8 @@
 /* Klasemen: tabel navy */
 .tr-table-wrap { background: var(--tr-navy); overflow: hidden; }
 .tr-table-scroll { overflow-x: auto; overflow-y: hidden; }
-.tr-table { width: 100%; border-collapse: collapse; font-size: 12px; color: #fff; }
-.tr-table th, .tr-table td { padding: 10px 4px; text-align: center; border-top: 1px solid rgba(255,255,255,.4); font-weight: 400; white-space: nowrap; }
+.tr-table { width: 100%; border-collapse: collapse; font-size: 12px; color: #fff; box-sizing: border-box;}
+.tr-table th, .tr-table td { padding: 10px 4px; text-align: center; border-top: 1px solid rgba(243,235,235); font-weight: 400; white-space: nowrap; }
 .tr-table thead th { font-weight: 600; font-size: 13px; border-top: 0; padding-block: 12px; }
 .tr-table tbody th { font-weight: 600; }
 .tr-table .tr-table__team { text-align: left; padding-left: 8px; }
@@ -52,10 +52,10 @@
 .tr-table .tr-logo--fallback { color: var(--tr-navy); }
 .tr-table .tr-table__pts { font-weight: 600; }
 .tr-pos, .tr-neg { font-weight: 400; }
-.tr-legend { margin-top: 4px; }
-.tr-legend h3 { margin: 0 0 8px; font-size: 12px; font-weight: 600; color: #000; }
+.tr-legend { margin-top: 0; }
+.tr-legend h3 { margin-bottom: 1px; background: var(--tr-navy); color: rgb(243, 235, 235); font-size: 12px; padding: 14px 12px; font-weight: 400; }
 .tr-legend dl { display: grid; grid-template-columns: 96px minmax(0, 1fr); margin: 0; background: var(--tr-navy); color: #fff; font-size: 9px; }
-.tr-legend dt, .tr-legend dd { margin: 0; padding: 14px 12px; border-top: 1px solid rgba(255,255,255,.4); }
+.tr-legend dt, .tr-legend dd { margin: 0; padding: 14px 12px; border-top: 1px solid rgb(243, 235, 235); }
 .tr-legend dt { font-size: 13px; font-weight: 500; }
 .tr-legend dt:first-of-type, .tr-legend dt:first-of-type + dd { border-top: 0; }
 
@@ -88,6 +88,12 @@
 .tr-res .tr-logo--fallback { color: var(--tr-navy); }
 .tr-res__name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; font-weight: 500; }
 .tr-res__score { text-align: center; font-size: 12px; font-weight: 600; }
+.tr-wk:empty { display: none; }
+
+.tr .tr-head-skel { display: none; }
+.tr.is-loading .tr-head-skel { display: block; margin-bottom: 12px; }
+.tr.is-loading .tr-title,
+.tr.is-loading .tr-section-title { display: none; }
 
 /* Tablet & desktop (sidebar sudah dari layout) */
 @media (min-width: 768px) {
@@ -107,3 +113,91 @@
   .tr-res__team { grid-template-columns: 40px 150px 30px; gap: 16px; } .tr-res .tr-logo { width: 40px; height: 40px; }
   .tr-res__name, .tr-res__score { font-size: 12px; } .tr-chev { display: flex; align-items: center; justify-content: center; width: 40px; }
 }
+
+/* ===== Skeleton loading Klasemen ===== */
+.tr-skel { display: flex; flex-direction: column; gap: 8px; }
+.tr-skel__box {
+    background: #fff;
+    border: 1px solid var(--tr-navy);
+    border-radius: 2px;
+    padding: 8px 10px;
+}
+.tr-skel__box--table { height: 360px; }
+.tr-skel__box--sm { height: 56px; }
+.tr-skel__box--center { display: flex; justify-content: center; }
+
+.tr-skel__bar {
+    display: block;
+    height: 10px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
+    background-size: 200% 100%;
+    animation: tr-shimmer 1.2s infinite linear;
+}
+@keyframes tr-shimmer { to { background-position: -200% 0; } }
+
+.tr-skel__status {
+    display: flex; align-items: center; justify-content: center;
+    gap: 8px; margin-top: 8px;
+    font-size: 11px; color: var(--tr-navy);
+}
+.tr-skel__spinner {
+    width: 14px; height: 14px;
+    border: 2px solid #d1d5db;
+    border-top-color: var(--tr-navy);
+    border-radius: 50%;
+    animation: tr-spin .8s linear infinite;
+}
+@keyframes tr-spin { to { transform: rotate(360deg); } }
+
+/* Kotak bar minggu yang kosong disembunyikan */
+.tr-wk:empty { display: none; }
+
+/* Judul jadi skeleton saat loading */
+.tr .tr-head-skel { display: none; }
+.tr.is-loading .tr-head-skel { display: block; margin-bottom: 12px; }
+.tr.is-loading .tr-title,
+.tr.is-loading .tr-section-title { display: none; }
+.tr.is-loading #tr-panel-klasemen .card {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+.tr.is-loading .tr-legend { display: none; }
+
+/* Skeleton bar minggu */
+.tr-skel-wk {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; width: 100%;
+}
+.tr-skel-wk__btns { display: flex; flex: 1; justify-content: space-between; gap: 4px; }
+.tr-skel-wk__btn {
+    width: 22px; height: 22px; border-radius: 2px;
+    background: #e5e7eb;
+}
+
+/* Skeleton blok hari */
+.tr-skel__day {
+    background: #fff;
+    border: 1px solid var(--tr-navy);
+    border-radius: 2px;
+    padding: 10px 0 0;
+}
+.tr-skel__day > .tr-skel__bar { margin: 0 12px 10px; }
+.tr-skel__row {
+    height: 56px;
+    border-top: 1px solid #e5e7eb;
+    padding: 0 12px;
+    display: flex; align-items: center;
+    position: relative;
+}
+.tr-skel__row::after {
+    content: ""; position: absolute; left: 84px; top: 0; bottom: 0;
+    border-left: 1px solid #e5e7eb;
+}
+
+/* Bar minggu tampil walau berisi skeleton (override :empty) */
+.tr-wk:has(.tr-skel-wk) { display: block; padding: 0; }
+
+.tr .tr-head-skel--jadwal { display: none; }
+.tr.is-loading[data-view="jadwal"] .tr-head-skel--jadwal { display: block; margin-bottom: 12px; }

@@ -120,6 +120,11 @@ async function getHeroDetail(heroId) {
       if (!heroId) throw new Error('Hero ID diperlukan untuk getHeroCounters');
       return request(`/heroes/${heroId}/counters`);
   }
+  async function getTournamentStandings(seasonId = 1) {
+    return request(
+      `/tournaments/${encodeURIComponent(seasonId)}/standings`
+    );
+  }
 
 
   window.ApiClient = {
@@ -131,6 +136,7 @@ async function getHeroDetail(heroId) {
     getPlayerComparison,
     getPlayerList,
     getHeroes,
+    getTournamentStandings,
     baseUrl: "http://menpro.test/manajemen-proyek-kelompok-4/mpl-analytic/public",
     // Tambahkan di dalam objek window.ApiClient
     searchHeroes: async function(query = '', role = '') {
