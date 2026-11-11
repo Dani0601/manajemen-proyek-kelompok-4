@@ -36,6 +36,7 @@ $routes = [
     '/meta' => BASE_PATH . '/views/pages/meta.php',
     '/hero' => BASE_PATH . '/views/pages/hero.php',
     '/tournament' => BASE_PATH . '/views/pages/tournament.php',
+    '/team-list' => BASE_PATH . '/views/pages/team-list.php',
     '/player-comparison' =>
         BASE_PATH . '/views/pages/player-comparison.php',
     '/hero-detail' => BASE_PATH . '/views/pages/hero-detail.php',   
