@@ -51,10 +51,11 @@
     background: transparent; color: #fff; cursor: pointer; font: inherit; font-size: 12px;
 }
 
-/* Skeleton */
-.tl-head-skel { display: none; }
+/* Skeleton header: hanya tampil saat loading */
+.tl .tl-head-skel { display: none; }
 .tl.is-loading .tl-head-skel { display: block; margin-bottom: 10px; }
-.tl.is-loading .tl-title, .tl.is-loading .tl-note { display: none; }
+.tl.is-loading .tl-title,
+.tl.is-loading .tl-note { display: none; }
 
 .tl-skel__bar {
     display: block; height: 10px; border-radius: 999px;

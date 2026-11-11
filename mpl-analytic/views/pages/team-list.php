@@ -51,5 +51,6 @@ $teamDetailUrl = '/player-list?team={id}';
         </div>
     </div>
 </div>
-
+<script src="<?= $assetBase ?>/js/api-client.js"></script>
+<script src="<?= $assetBase ?>/js/pages/team-list.js"></script>
 <?php require BASE_PATH . '/views/layouts/footer.php'; ?>
