@@ -27,20 +27,19 @@ class MatchService{
         $games = $this->matchModel->getGamesByMatchId($matchId);
         $gamesData = [];
 
-        // Ambil statistik pemain untuk setiap game
+        // Ambil data game beserta statistik pemain dan bans
         foreach ($games as $game) {
             $gameId = (string) $game['game_id'];
 
             $gamesData[] = [
-                'game_id' => $gameId,
-                'game_number' => (int) $game['game_number'],
+                'game_id'        => $gameId,
+                'game_number'    => (int) $game['game_number'],
                 'winner_team_id' => $game['winner_team_id'] !== null
                     ? (int) $game['winner_team_id']
                     : null,
-                'player_stats' =>
-                    $this->matchModel->getPlayerStatsByGameId($gameId),
-                'gold_timeline' =>
-                    $this->matchModel->getGoldTimelineByGameId($gameId),
+                'bans'           => $this->matchModel->getBansByGameId($gameId),
+                'player_stats'   => $this->matchModel->getPlayerStatsByGameId($gameId),
+                'gold_timeline'  => $this->matchModel->getGoldTimelineByGameId($gameId),
             ];
         }
 
@@ -76,6 +75,7 @@ class MatchService{
 
             'status' => $match['status'],
             'source' => $match['source'],
+            'games'  => $gamesData,
         ];
     }
 
@@ -92,7 +92,7 @@ class MatchService{
             return null;
         }
 
-        // Ambil seluruh draft
+        // Ambil seluruh draft (bans & picks)
         $rawDrafts = $this->matchModel->getDraftsByMatchId($matchId);
         $draftsGrouped = [];
 
@@ -108,10 +108,13 @@ class MatchService{
             }
 
             $draftsGrouped[$gameNumber]['draft_sequence'][] = [
-                'turn' => (int) $draft['turn'],
-                'team_name' => $draft['team_name'],
-                'draft_type' => $draft['draft_type'],
-                'hero_name' => $draft['hero_name'],
+                'turn'          => (int) $draft['turn'],
+                'team_id'       => isset($draft['team_id']) ? (int) $draft['team_id'] : null,
+                'team_name'     => $draft['team_name'],
+                'draft_type'    => $draft['draft_type'],
+                'hero_id'       => isset($draft['hero_id']) ? (int) $draft['hero_id'] : null,
+                'hero_name'     => $draft['hero_name'],
+                'hero_icon_url' => $draft['hero_icon_url'] ?? null,
             ];
         }
 

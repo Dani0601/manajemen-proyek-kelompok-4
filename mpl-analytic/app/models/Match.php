@@ -88,7 +88,12 @@ class MatchModel
             SELECT
                 p.player_id,
                 p.player_name,
+                p.player_photo_url,
+                p.player_photo_url AS photo_url,
+                gp.team_id,
+                h.hero_id,
                 h.hero_name,
+                h.hero_url AS hero_icon_url,
                 gp.kills,
                 gp.deaths,
                 gp.assists,
@@ -110,7 +115,62 @@ class MatchModel
             ':game_id' => $gameId
         ]);
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($rows as &$r) {
+            $r['player_id']      = (int)$r['player_id'];
+            $r['team_id']        = (int)$r['team_id'];
+            $r['hero_id']        = $r['hero_id'] !== null ? (int)$r['hero_id'] : null;
+            $r['kills']          = (int)$r['kills'];
+            $r['deaths']         = (int)$r['deaths'];
+            $r['assists']        = (int)$r['assists'];
+            $r['gold']           = (int)$r['gold'];
+            $r['damage']         = (int)$r['damage'];
+            $r['damage_taken']   = (int)$r['damage_taken'];
+            $r['turret_damage']  = (int)$r['turret_damage'];
+        }
+        unset($r);
+
+        return $rows;
+    }
+
+
+// Mengambil daftar hero yang diban dalam satu game.
+
+    public function getBansByGameId(string $gameId): array
+    {
+        $sql = "
+            SELECT
+                gb.game_ban_id,
+                gb.ban_turn,
+                gb.team_id,
+                t.team_name,
+                gb.side,
+                gb.hero_id,
+                h.hero_name,
+                h.hero_url AS hero_icon_url
+            FROM game_bans gb
+            INNER JOIN teams t
+                ON gb.team_id = t.team_id
+            INNER JOIN heroes h
+                ON gb.hero_id = h.hero_id
+            WHERE gb.game_id = :game_id
+            ORDER BY gb.ban_turn ASC
+        ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            ':game_id' => $gameId
+        ]);
+
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($rows as &$r) {
+            $r['ban_turn'] = (int)$r['ban_turn'];
+            $r['team_id']  = (int)$r['team_id'];
+            $r['hero_id']  = (int)$r['hero_id'];
+        }
+        unset($r);
+
+        return $rows;
     }
 
 
@@ -144,10 +204,33 @@ class MatchModel
         $sql = "
             SELECT
                 g.game_number,
-                ROW_NUMBER() OVER(PARTITION BY g.game_id ORDER BY gp.game_pick_id) AS turn,
+                gb.ban_turn AS turn,
+                gb.team_id,
+                t.team_name,
+                'ban' AS draft_type,
+                h.hero_id,
+                h.hero_name,
+                h.hero_url AS hero_icon_url
+            FROM game_bans gb
+            INNER JOIN games g
+                ON gb.game_id = g.game_id
+            INNER JOIN teams t
+                ON gb.team_id = t.team_id
+            INNER JOIN heroes h
+                ON gb.hero_id = h.hero_id
+            WHERE g.match_id = :match_id1
+
+            UNION ALL
+
+            SELECT
+                g.game_number,
+                (ROW_NUMBER() OVER(PARTITION BY g.game_id ORDER BY gp.game_pick_id) + 10) AS turn,
+                gp.team_id,
                 t.team_name,
                 'pick' AS draft_type,
-                h.hero_name
+                h.hero_id,
+                h.hero_name,
+                h.hero_url AS hero_icon_url
             FROM game_picks gp
             INNER JOIN games g
                 ON gp.game_id = g.game_id
@@ -155,17 +238,28 @@ class MatchModel
                 ON gp.team_id = t.team_id
             INNER JOIN heroes h
                 ON gp.hero_id = h.hero_id
-            WHERE g.match_id = :match_id
+            WHERE g.match_id = :match_id2
+
             ORDER BY
-                g.game_number ASC,
+                game_number ASC,
                 turn ASC
         ";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
-            ':match_id' => $matchId
+            ':match_id1' => $matchId,
+            ':match_id2' => $matchId
         ]);
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($rows as &$r) {
+            $r['game_number'] = (int)$r['game_number'];
+            $r['turn']        = (int)$r['turn'];
+            $r['team_id']     = (int)$r['team_id'];
+            $r['hero_id']     = (int)$r['hero_id'];
+        }
+        unset($r);
+
+        return $rows;
     }
 }
