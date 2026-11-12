@@ -145,4 +145,3 @@ class HeroService
         return $this->hero->search($query, $role);
     }
 }
-
