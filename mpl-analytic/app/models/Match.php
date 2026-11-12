@@ -262,4 +262,60 @@ class MatchModel
 
         return $rows;
     }
+
+    /**
+     * Mengambil item build 6 slot per pemain dalam satu game.
+     */
+    public function getItemsByGameId(string $gameId): array
+    {
+        $sql = "
+            SELECT
+                gi.player_id,
+                gi.item_slot,
+                gi.item_id,
+                mi.item_name,
+                gi.item_url
+            FROM game_items gi
+            LEFT JOIN master_items mi
+                ON gi.item_id = mi.item_id
+            WHERE gi.game_id = :game_id
+            ORDER BY gi.player_id ASC, gi.item_slot ASC
+        ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            ':game_id' => $gameId
+        ]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Mengambil susunan emblem dan rune/talent per pemain dalam satu game.
+     */
+    public function getEmblemsByGameId(string $gameId): array
+    {
+        $sql = "
+            SELECT
+                ge.player_id,
+                ge.emblem_id,
+                ge.emblem_url,
+                ge.rune1_id,
+                ge.rune1_url,
+                ge.rune2_id,
+                ge.rune2_url,
+                ge.rune3_id,
+                ge.rune3_url
+            FROM game_emblems ge
+            WHERE ge.game_id = :game_id
+            ORDER BY ge.player_id ASC
+        ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            ':game_id' => $gameId
+        ]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
