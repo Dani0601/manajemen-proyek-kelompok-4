@@ -25,9 +25,9 @@
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(
-        result.message || `HTTP ${response.status}`
-      );
+        const err = new Error(result.message || `HTTP ${response.status}`);
+        err.status = response.status;
+        throw err;
     }
 
     if (result.success === false) {

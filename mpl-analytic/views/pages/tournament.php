@@ -18,6 +18,7 @@ $assetBase = htmlspecialchars(ASSET_BASE, ENT_QUOTES, 'UTF-8');
 $seasonId = max(1, (int) ($_GET['season'] ?? 1));
 $seasonNumber = 18;
 $seasonLabel = 'MPL ID Season ' . $seasonNumber;
+$teamDetailUrl = 'team-detail?id={id}';
 
 $loading = static fn(string $label) =>
     '<div class="tr-skeleton" role="status" aria-live="polite">'
@@ -37,8 +38,7 @@ $loading = static fn(string $label) =>
 
     <!-- JADWAL -->
     <section class="tr-panel" id="tr-panel-jadwal" aria-label="Jadwal pertandingan">
-        <p class="tr-note" id="tr-schedule-note"></p>
-        <h2 class="tr-section-title">Jadwal Pertandingan Musim ke-<span data-season-no><?= $seasonNumber ?></span></h2>
+        <h2 class="tr-section-title">Jadwal Pertandingan Musim ke-<span data-season-no><?= $seasonNumber ?></span></h2> 
         <div id="tr-week-nav" class="tr-wk">
             <div class="tr-skel-wk" aria-hidden="true">
                 <span class="tr-skel__bar" style="width:50px"></span>
@@ -95,7 +95,6 @@ $loading = static fn(string $label) =>
     <!-- KLASEMEN LENGKAP -->
     <section class="tr-panel" id="tr-panel-klasemen" aria-label="Klasemen" hidden>
         <div class="mb-4">
-            <h2 class="tr-section-title fw-bold text-uppercase">Klasemen Season <span data-season-no><?= $seasonNumber ?></span></h2>
             <p id="tr-standings-leader" class="mt-0 mb-0" style="font-size: 14px; font-weight: 500; color: #000;"></p>
         </div>
 
@@ -138,39 +137,38 @@ $loading = static fn(string $label) =>
             </dl>
         </section>
     </section>
-    <script>
-        (function () {
-            var titles = {
-                jadwal: 'Jadwal Pertandingan',
-                hasil: 'Hasil Pertandingan',
-                klasemen: 'Klasemen'
-            };
+    <section class="tr-panel" id="tr-panel-tim" aria-label="Daftar Tim" hidden>
+        <div class="tl is-loading"
+            data-asset-base="<?= $assetBase ?>"
+            data-season-id="<?= $seasonId ?>"
+            data-season-number="<?= $seasonNumber ?>"
+            data-detail-url="<?= htmlspecialchars($teamDetailUrl, ENT_QUOTES, 'UTF-8') ?>">
 
-            function apply() {
-                var h = (location.hash || '#jadwal').replace('#', '');
+            <div id="tl-list">
+                <div class="tl-grid" role="status" aria-live="polite" aria-label="Memuat daftar tim">
+                    <?php for ($i = 0; $i < 6; $i++): ?>
+                    <div class="tl-skel__card">
+                        <div class="tl-skel__top"><span class="tl-skel__bar" style="width:120px"></span></div>
+                        <div class="tl-skel__stats">
+                            <span class="tl-skel__bar"></span><span class="tl-skel__bar"></span>
+                            <span class="tl-skel__bar"></span><span class="tl-skel__bar"></span>
+                        </div>
+                    </div>
+                    <?php endfor; ?>
+                </div>
+                <div class="tl-skel__status">
+                    <span class="tl-skel__spinner" aria-hidden="true"></span> Memuat Halaman
+                </div>
+            </div>
+        </div>
 
-                // 1. ganti judul h1
-                var t = document.getElementById('tr-head-title');
-                if (t && titles[h]) t.textContent = titles[h];
-
-                // 2. tampilkan panel yang sesuai
-                ['jadwal', 'hasil', 'klasemen'].forEach(function (n) {
-                    var p = document.getElementById('tr-panel-' + n);
-                    if (p) p.hidden = (n !== h);
-                });
-                if (h === 'jadwal' && window.TournamentSchedule) {
-                    window.TournamentSchedule.init();
-                }
-            }
-
-            apply();                                      // jalan saat halaman dibuka
-            window.addEventListener('hashchange', apply); // jalan saat pindah tab
-        })();
-    </script>
+    </section>
 </div>
 
 <script src="<?= $assetBase ?>/js/api-client.js"></script>
 <script src="<?= $assetBase ?>/js/pages/match-results.js"></script>
 <script src="<?= $assetBase ?>/js/pages/tournament-schedule.js"></script>
 <script src="<?= $assetBase ?>/js/pages/tournament-standings.js"></script>
+<script src="<?= $assetBase ?>/js/pages/tournament-tabs.js"></script>
+<script src="<?= $assetBase ?>/js/pages/team-list.js"></script>
 <?php require BASE_PATH . '/views/layouts/footer.php'; ?>

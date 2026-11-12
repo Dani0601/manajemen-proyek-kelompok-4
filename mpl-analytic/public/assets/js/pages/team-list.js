@@ -29,20 +29,34 @@
     const num = (v) => (v === null || v === undefined || v === '') ? null : Number(v);
 
     // Petakan respons API -> format tampilan (nama field bisa disesuaikan setelah cek Postman)
-    function normalize(t) {
-        const played = num(t.total_matches ?? t.matches_played ?? t.match_played);
-        const wins = num(t.match_wins ?? t.wins);
-        const losses = num(t.match_losses ?? t.losses);
-        let rate = num(t.win_rate);
+    function normalize(team, payload) {
+        console.log('NORMALIZE', team.team_name, payload);
+        // Tahan terhadap 3 bentuk: {data:{stats}}, {stats}, atau {data:{data:{stats}}}
+        const body = payload?.stats ? payload
+            : payload?.data?.stats ? payload.data
+            : payload?.data?.data?.stats ? payload.data.data
+            : null;
+
+        const m = body?.stats?.matches;
+        const t = body?.team || team;
+
+        const played = num(m?.total);
+        const wins = num(m?.wins);
+        const losses = num(m?.losses);
+        let rate = num(m?.win_rate);
         if (rate === null && played > 0 && wins !== null) rate = (wins / played) * 100;
 
+        const logo = t.logo_url && !t.logo_url.includes('default.png')
+            ? t.logo_url
+            : (TEAM_LOGOS[t.team_name] || null);
+
         return {
-            id: t.team_id,
-            name: displayName(t),
-            fullName: t.team_name,
-            logo: (t.logo_url && !t.logo_url.includes('default.png')) ? t.logo_url : (TEAM_LOGOS[t.team_name] || null),
+            id: team.team_id ?? team.id,
+            name: displayName(team),
+            fullName: team.team_name,
+            logo,
             played, wins, losses, rate,
-            hasData: t.has_data !== false && played !== null
+            hasData: !!m && played !== null && played > 0
         };
     }
 
@@ -90,17 +104,33 @@
 
         root.classList.add('is-loading');
         try {
-            const seasonId = parseInt(root.dataset.seasonId, 10) || 1;
-            const response = await window.ApiClient.getTeams(seasonId); // service dari FE 2
-            const raw = Array.isArray(response) ? response : (response.data || []);
+            // Tahap 1: daftar tim
+            const response = await window.ApiClient.getTeams();
+            const teams = Array.isArray(response) ? response : (response?.data || []);
 
-            if (raw.length === 0) {
+            if (teams.length === 0) {
                 list.innerHTML = stateHTML('Data tim belum tersedia', 'Belum ada tim yang dapat ditampilkan saat ini.');
                 return;
             }
 
+            // Tahap 2: statistik tiap tim (paralel). Satu gagal tidak membatalkan yang lain.
+            const results = await Promise.allSettled(
+                teams.map(t => window.ApiClient.getTeamStats(t.team_id ?? t.id))
+            );
+
+            // Semua gagal = masalah jaringan/server, bukan "tim tanpa data"
+            if (results.every(r => r.status === 'rejected')) {
+                throw new Error('Semua request statistik tim gagal');
+            }
+
+            const cards = teams.map((t, i) => {
+                const r = results[i];
+                const stats = r.status === 'fulfilled' ? r.value : null;
+                return normalize(t, stats);
+            });
+
             const tpl = root.dataset.detailUrl || '#';
-            list.innerHTML = `<div class="tl-grid">${raw.map(normalize).map(t => cardHTML(t, tpl)).join('')}</div>`;
+            list.innerHTML = `<div class="tl-grid">${cards.map(c => cardHTML(c, tpl)).join('')}</div>`;
         } catch (error) {
             console.error('[Team List] Error:', error);
             list.innerHTML = stateHTML('Gagal memuat daftar tim', 'Periksa koneksi internet Anda lalu coba lagi.', true);

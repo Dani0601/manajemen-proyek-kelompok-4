@@ -58,7 +58,7 @@ $navItems = [
             ['label' => 'Jadwal', 'key' => 'jadwal', 'path' => '/tournament#jadwal'],
             ['label' => 'Klasemen', 'key' => 'klasemen', 'path' => '/tournament#klasemen'],
             ['label' => 'Hasil Pertandingan', 'key' => 'hasil', 'path' => '/tournament#hasil'],
-            ['label' => 'Daftar Tim', 'key' => 'tim', 'path' => '/team-list'],
+            ['label' => 'Daftar Tim', 'key' => 'tim', 'path' => '/tournament#tim'],
         ],
     ],
     [
