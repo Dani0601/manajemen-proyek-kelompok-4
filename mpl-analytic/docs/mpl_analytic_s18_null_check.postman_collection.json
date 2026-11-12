@@ -1,0 +1,1034 @@
+{
+  "info": {
+    "_postman_id": "ee4c3372-fb26-4ed4-a52d-81d6df2c5d72",
+    "name": "MPL Analytic API - Season 18 Null Check (Data-Driven)",
+    "description": "Postman Collection data-driven khusus Season 18 MPL Indonesia untuk memastikan tidak ada data NULL di seluruh ID.\n\nCara Penggunaan di Postman:\n1. Buka Runner (Collection Runner)\n2. Pilih Folder yang ingin dites\n3. Di bagian 'Select Data File', pilih file CSV yang sesuai:\n   - Folder Heroes -> docs/data_hero_ids.csv (133 hero)\n   - Folder Players -> docs/data_player_ids.csv (60 player)\n   - Folder Teams -> docs/data_team_ids.csv (9 team)\n   - Folder Matches -> docs/data_match_ids.csv (72 match)\n   - Folder Games -> docs/data_game_ids.csv (132 game)\n   - Folder Season 18 Tournament -> langsung Run (1 iterasi)\n4. Klik Run untuk mengeksekusi semua iterasi secara otomatis.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost/manajemen-proyek-kelompok-4/mpl-analytic/public",
+      "type": "string",
+      "description": "Base URL Backend API"
+    },
+    {
+      "key": "seasonId",
+      "value": "1",
+      "type": "string",
+      "description": "ID Season 18 di database"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 - Season 18 Dashboard & Tournaments (No CSV needed)",
+      "description": "Pemeriksaan data Season 18 pada endpoint Dashboard dan Tournament agar tidak ada null.",
+      "item": [
+        {
+          "name": "GET /api/dashboard?season=1 - Dashboard Season 18",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Data dashboard tidak null', () => {",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.data, 'data').to.not.be.null;",
+                  "    pm.expect(res.data.season, 'data.season').to.not.be.null;",
+                  "    pm.expect(res.data.season.season_id, 'season_id').to.equal(1);",
+                  "    pm.expect(res.data.top_pick_rate, 'top_pick_rate').to.be.an('array');",
+                  "    pm.expect(res.data.top_ban_rate, 'top_ban_rate').to.be.an('array');",
+                  "    pm.expect(res.data.top_win_rate, 'top_win_rate').to.be.an('array');",
+                  "    pm.expect(res.data.schedule, 'schedule').to.be.an('array');",
+                  "});",
+                  "pm.test('Hero meta di dashboard tidak ada data null', () => {",
+                  "    const picks = pm.response.json().data.top_pick_rate || [];",
+                  "    picks.forEach((h, i) => {",
+                  "        pm.expect(h.hero_id, `pick[${i}].hero_id`).to.not.be.null;",
+                  "        pm.expect(h.hero_name, `pick[${i}].hero_name`).to.not.be.null.and.not.equal('');",
+                  "        pm.expect(h.hero_url, `pick[${i}].hero_url`).to.not.be.null.and.not.equal('');",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard?season={{seasonId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard"
+              ],
+              "query": [
+                {
+                  "key": "season",
+                  "value": "{{seasonId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/tournaments/1 - Detail Turnamen Season 18",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Data turnamen tidak null', () => {",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.data, 'data').to.not.be.null;",
+                  "    pm.expect(res.data.season_id, 'season_id').to.equal(1);",
+                  "    pm.expect(res.data.season_name, 'season_name').to.not.be.null.and.not.equal('');",
+                  "    pm.expect(res.data.league, 'league').to.not.be.null.and.not.equal('');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tournaments/{{seasonId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tournaments",
+                "{{seasonId}}"
+              ],
+              "query": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/tournaments/1/standings - Klasemen Season 18",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Standings Season 18 lengkap 9 tim', () => {",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.data, 'data').to.not.be.null;",
+                  "    pm.expect(res.data.standings, 'standings').to.be.an('array').with.lengthOf(9);",
+                  "});",
+                  "pm.test('Setiap tim di standings tidak ada yang null', () => {",
+                  "    const standings = pm.response.json().data.standings || [];",
+                  "    standings.forEach((t, i) => {",
+                  "        pm.expect(t.team_id, `team[${i}].team_id`).to.not.be.null;",
+                  "        pm.expect(t.team_name, `team[${i}].team_name`).to.not.be.null.and.not.equal('');",
+                  "        pm.expect(t.matches_played, `team[${i}].matches_played`).to.not.be.null;",
+                  "        pm.expect(t.matches_won, `team[${i}].matches_won`).to.not.be.null;",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tournaments/{{seasonId}}/standings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tournaments",
+                "{{seasonId}}",
+                "standings"
+              ],
+              "query": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/tournaments/1/schedule - Jadwal Pertandingan Season 18",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Jadwal Season 18 lengkap 72 pertandingan', () => {",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.data, 'data').to.not.be.null;",
+                  "    pm.expect(res.data.schedule, 'schedule').to.be.an('array').with.lengthOf(72);",
+                  "});",
+                  "pm.test('Setiap jadwal pertandingan memiliki data valid (bukan null)', () => {",
+                  "    const schedule = pm.response.json().data.schedule || [];",
+                  "    schedule.forEach((s, i) => {",
+                  "        pm.expect(s.schedule_id, `s[${i}].schedule_id`).to.not.be.null.and.not.equal('');",
+                  "        pm.expect(s.team1_id, `s[${i}].team1_id`).to.not.be.null;",
+                  "        pm.expect(s.team2_id, `s[${i}].team2_id`).to.not.be.null;",
+                  "        pm.expect(s.week, `s[${i}].week`).to.not.be.null;",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tournaments/{{seasonId}}/schedule",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tournaments",
+                "{{seasonId}}",
+                "schedule"
+              ],
+              "query": []
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "02 - Heroes Null Check (Data: data_hero_ids.csv)",
+      "description": "Pemeriksaan null data untuk seluruh 133 hero. Jalankan dengan data file docs/data_hero_ids.csv.",
+      "item": [
+        {
+          "name": "GET /api/heroes/:heroId - Detail Hero",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Data master hero tidak null', () => {",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.data, 'data').to.not.be.null;",
+                  "    pm.expect(res.data.hero_id, 'hero_id').to.not.be.null;",
+                  "    pm.expect(res.data.hero_name, 'hero_name').to.not.be.null.and.not.equal('');",
+                  "    pm.expect(res.data.role, 'role').to.not.be.null.and.not.equal('');",
+                  "    pm.expect(res.data.hero_url, 'hero_url').to.not.be.null.and.not.equal('');",
+                  "});",
+                  "pm.test('Detail statistik hero tidak null', () => {",
+                  "    const res = pm.response.json();",
+                  "    if (res.data.detail) {",
+                  "        pm.expect(res.data.detail.hero_name, 'detail.hero_name').to.not.be.null;",
+                  "        pm.expect(res.data.detail.hero_url, 'detail.hero_url').to.not.be.null.and.not.equal('');",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/heroes/{{heroId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "heroes",
+                "{{heroId}}"
+              ],
+              "query": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/heroes/:heroId/builds - Build Item, Emblem, Spell",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Data build hero terdefinisi', () => {",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.data, 'data').to.not.be.null;",
+                  "    pm.expect(res.data.hero, 'hero').to.not.be.null;",
+                  "    pm.expect(res.data.items, 'items').to.be.an('array');",
+                  "    pm.expect(res.data.emblems, 'emblems').to.be.an('array');",
+                  "    pm.expect(res.data.spells, 'spells').to.be.an('array');",
+                  "});",
+                  "pm.test('Item build tidak ada field nama atau slot yang null', () => {",
+                  "    const items = pm.response.json().data.items || [];",
+                  "    items.forEach((item, i) => {",
+                  "        pm.expect(item.item_name, `item[${i}].item_name`).to.not.be.null.and.not.equal('');",
+                  "        pm.expect(item.position, `item[${i}].position`).to.not.be.null;",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/heroes/{{heroId}}/builds",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "heroes",
+                "{{heroId}}",
+                "builds"
+              ],
+              "query": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/heroes/:heroId/counters - Counter, Strong Against, Synergy",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Data counter terdefinisi sebagai array', () => {",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.data, 'data').to.not.be.null;",
+                  "    pm.expect(res.data.hero, 'hero').to.not.be.null;",
+                  "    pm.expect(res.data.counters, 'counters').to.be.an('array');",
+                  "    pm.expect(res.data.strong_against, 'strong_against').to.be.an('array');",
+                  "    pm.expect(res.data.synergy, 'synergy').to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/heroes/{{heroId}}/counters",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "heroes",
+                "{{heroId}}",
+                "counters"
+              ],
+              "query": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/heroes/:heroId/skills - Skill & Skill Order",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Hero memiliki skills array tidak kosong', () => {",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.data, 'data').to.not.be.null;",
+                  "    pm.expect(res.data.skills, 'skills').to.be.an('array').and.not.be.empty;",
+                  "});",
+                  "pm.test('Setiap skill memiliki nama dan icon valid', () => {",
+                  "    const skills = pm.response.json().data.skills || [];",
+                  "    skills.forEach((s, i) => {",
+                  "        pm.expect(s.skill_name, `skill[${i}].skill_name`).to.not.be.null.and.not.equal('');",
+                  "        pm.expect(s.skill_icon_url, `skill[${i}].skill_icon_url`).to.not.be.null.and.not.equal('');",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/heroes/{{heroId}}/skills",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "heroes",
+                "{{heroId}}",
+                "skills"
+              ],
+              "query": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/heroes/:heroId/stats - Statistik Hero",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Stats hero tidak null', () => {",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.data, 'data').to.not.be.null;",
+                  "    pm.expect(res.data.hero, 'hero').to.not.be.null;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/heroes/{{heroId}}/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "heroes",
+                "{{heroId}}",
+                "stats"
+              ],
+              "query": []
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "03 - Players Null Check (Data: data_player_ids.csv)",
+      "description": "Pemeriksaan null data untuk seluruh 60 pemain profesional MPL. Jalankan dengan file docs/data_player_ids.csv.",
+      "item": [
+        {
+          "name": "GET /api/players/:playerId - Profil Player",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Data profil player tidak null', () => {",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.data, 'data').to.not.be.null;",
+                  "    pm.expect(res.data.player_id, 'player_id').to.not.be.null;",
+                  "    pm.expect(res.data.player_name, 'player_name').to.not.be.null.and.not.equal('');",
+                  "    pm.expect(res.data.team_id, 'team_id').to.not.be.null;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/players/{{playerId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "players",
+                "{{playerId}}"
+              ],
+              "query": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/players/:playerId/stats - Statistik Player",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Statistik player tidak null', () => {",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.data, 'data').to.not.be.null;",
+                  "    pm.expect(res.data.player, 'player').to.not.be.null;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/players/{{playerId}}/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "players",
+                "{{playerId}}",
+                "stats"
+              ],
+              "query": []
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "04 - Teams Null Check (Data: data_team_ids.csv)",
+      "description": "Pemeriksaan null data untuk seluruh 9 tim MPL Season 18. Jalankan dengan file docs/data_team_ids.csv.",
+      "item": [
+        {
+          "name": "GET /api/teams/:teamId - Profil Tim",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Data tim tidak null', () => {",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.data, 'data').to.not.be.null;",
+                  "    pm.expect(res.data.team_id, 'team_id').to.not.be.null;",
+                  "    pm.expect(res.data.team_name, 'team_name').to.not.be.null.and.not.equal('');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/teams/{{teamId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "teams",
+                "{{teamId}}"
+              ],
+              "query": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/teams/:teamId/players - Roster Pemain Tim",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Daftar pemain tim tidak kosong', () => {",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.data, 'data').to.not.be.null;",
+                  "    pm.expect(res.data.players, 'players').to.be.an('array').and.not.be.empty;",
+                  "});",
+                  "pm.test('Setiap pemain dalam roster memiliki id dan nama', () => {",
+                  "    const players = pm.response.json().data.players || [];",
+                  "    players.forEach((p, i) => {",
+                  "        pm.expect(p.player_id, `player[${i}].player_id`).to.not.be.null;",
+                  "        pm.expect(p.player_name, `player[${i}].player_name`).to.not.be.null.and.not.equal('');",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/teams/{{teamId}}/players",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "teams",
+                "{{teamId}}",
+                "players"
+              ],
+              "query": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/teams/:teamId/stats - Statistik Tim",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Statistik tim tidak null', () => {",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.data, 'data').to.not.be.null;",
+                  "    pm.expect(res.data.team, 'team').to.not.be.null;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/teams/{{teamId}}/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "teams",
+                "{{teamId}}",
+                "stats"
+              ],
+              "query": []
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "05 - Matches Null Check Season 18 (Data: data_match_ids.csv)",
+      "description": "Pemeriksaan null data untuk seluruh 72 pertandingan Season 18. Jalankan dengan file docs/data_match_ids.csv.",
+      "item": [
+        {
+          "name": "GET /api/matches/:matchId - Detail Match Season 18",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Data match tidak null', () => {",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.data, 'data').to.not.be.null;",
+                  "    pm.expect(res.data.match_id, 'match_id').to.not.be.null.and.not.equal('');",
+                  "    pm.expect(res.data.season_id, 'season_id').to.equal(1);",
+                  "    pm.expect(res.data.team1, 'team1').to.not.be.null;",
+                  "    pm.expect(res.data.team2, 'team2').to.not.be.null;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/matches/{{matchId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "matches",
+                "{{matchId}}"
+              ],
+              "query": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/matches/:matchId/games - Game List dalam Match",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Game array dalam match terdefinisi', () => {",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.data, 'data').to.not.be.null;",
+                  "    pm.expect(res.data.games, 'games').to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/matches/{{matchId}}/games",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "matches",
+                "{{matchId}}",
+                "games"
+              ],
+              "query": []
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "06 - Games Null Check Season 18 (Data: data_game_ids.csv)",
+      "description": "Pemeriksaan null data untuk seluruh 132 game Season 18 (Picks, Players, Emblems, Items). Jalankan dengan file docs/data_game_ids.csv.",
+      "item": [
+        {
+          "name": "GET /api/games/:gameId - Detail Lengkap Game",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Data game tidak null', () => {",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.data, 'data').to.not.be.null;",
+                  "    pm.expect(res.data.game, 'data.game').to.not.be.null;",
+                  "    pm.expect(res.data.game.game_id, 'game_id').to.not.be.null.and.not.equal('');",
+                  "    pm.expect(res.data.game.match_id, 'match_id').to.not.be.null.and.not.equal('');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/games/{{gameId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "games",
+                "{{gameId}}"
+              ],
+              "query": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/games/:gameId/picks - Picks Hero dalam Game",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Picks game tidak kosong (tepat 10 pick hero)', () => {",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.data, 'data').to.not.be.null;",
+                  "    pm.expect(res.data.picks, 'picks').to.be.an('array').with.lengthOf(10);",
+                  "});",
+                  "pm.test('Setiap pick hero memiliki hero_id dan team_id (bukan null)', () => {",
+                  "    const picks = pm.response.json().data.picks || [];",
+                  "    picks.forEach((p, i) => {",
+                  "        pm.expect(p.hero_id, `pick[${i}].hero_id`).to.not.be.null;",
+                  "        pm.expect(p.team_id, `pick[${i}].team_id`).to.not.be.null;",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/games/{{gameId}}/picks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "games",
+                "{{gameId}}",
+                "picks"
+              ],
+              "query": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/games/:gameId/players - Statistik 10 Player Game",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Players game lengkap 10 pemain', () => {",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.data, 'data').to.not.be.null;",
+                  "    pm.expect(res.data.players, 'players').to.be.an('array').with.lengthOf(10);",
+                  "});",
+                  "pm.test('Setiap player game memiliki data hero_id, kills, deaths, assists (bukan null)', () => {",
+                  "    const players = pm.response.json().data.players || [];",
+                  "    players.forEach((p, i) => {",
+                  "        pm.expect(p.player_id, `player[${i}].player_id`).to.not.be.null;",
+                  "        pm.expect(p.hero_id, `player[${i}].hero_id`).to.not.be.null;",
+                  "        pm.expect(p.kills, `player[${i}].kills`).to.not.be.null;",
+                  "        pm.expect(p.deaths, `player[${i}].deaths`).to.not.be.null;",
+                  "        pm.expect(p.assists, `player[${i}].assists`).to.not.be.null;",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/games/{{gameId}}/players",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "games",
+                "{{gameId}}",
+                "players"
+              ],
+              "query": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/games/:gameId/emblems - Emblem Pemain Game",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Emblems game terdefinisi sebagai array', () => {",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.data, 'data').to.not.be.null;",
+                  "    pm.expect(res.data.emblems, 'emblems').to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/games/{{gameId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "games",
+                "{{gameId}}",
+                "emblems"
+              ],
+              "query": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/games/:gameId/items - Item Pemain Game",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Items game terdefinisi sebagai array', () => {",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.data, 'data').to.not.be.null;",
+                  "    pm.expect(res.data.items, 'items').to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/games/{{gameId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "games",
+                "{{gameId}}",
+                "items"
+              ],
+              "query": []
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
