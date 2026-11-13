@@ -2,6 +2,7 @@
 
 <?php
 require_once __DIR__ . '/../models/Match.php';
+require_once __DIR__ . '/../models/Team.php';
 
 class MatchService{
     private MatchModel $matchModel;
@@ -95,17 +96,19 @@ class MatchService{
             'match_time' => $match['match_time'] ?? null,
 
             'team1' => [
-                'team_id' => (int) $match['team1_id'],
+                'team_id'   => (int) $match['team1_id'],
                 'team_name' => $match['team1_name'],
-                'score' => $match['team1_score'] !== null
+                'logo_url'  => Team::resolveLogoUrl($match['team1_name']),
+                'score'     => $match['team1_score'] !== null
                     ? (int) $match['team1_score']
                     : null,
             ],
 
             'team2' => [
-                'team_id' => (int) $match['team2_id'],
+                'team_id'   => (int) $match['team2_id'],
                 'team_name' => $match['team2_name'],
-                'score' => $match['team2_score'] !== null
+                'logo_url'  => Team::resolveLogoUrl($match['team2_name']),
+                'score'     => $match['team2_score'] !== null
                     ? (int) $match['team2_score']
                     : null,
             ],
