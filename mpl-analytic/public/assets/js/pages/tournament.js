@@ -102,11 +102,14 @@
         pageTitle.textContent = 'HASIL PERTANDINGAN';
         pageNote.textContent = ''; // Anda bisa isi logic untuk mengambil pertandingan terdekat di sini
       } else if (cleanKey === 'jadwal') {
-        pageTitle.textContent = 'JADWAL MPL INDONESIA';
+        pageTitle.textContent = 'JADWAL PERTANDINGAN MPL INDONESIA SEASON 18';
         pageNote.textContent = ''; 
       } else if (cleanKey === 'klasemen') {
-        pageTitle.textContent = 'KLASEMEN MPL INDONESIA';
+        pageTitle.textContent = 'KLASEMEN MPL INDONESIA SEASON 18';
         pageNote.textContent = ''; 
+      } else if (cleanKey === 'tim') {
+        pageTitle.textContent = 'DAFTAR TIM MPL INDONESIA SEASON 18';
+        pageNote.textContent = 'Daftar tim, statistik pertandingan, dan performa tiap tim di MPL Indonesia Season 18';
       }
     }
     // Update status tab (jika ada tombol tab di dalam halaman)
@@ -144,7 +147,7 @@
 
   function initTabFromHash() {
     const hash = window.location.hash.replace('#', '').trim();
-    if (hash && ['jadwal', 'hasil', 'klasemen'].includes(hash)) {
+    if (hash && ['jadwal', 'hasil', 'klasemen', 'tim'].includes(hash)) {
       setTab(hash, false);
     } else {
       setTab('jadwal', false); // Default ke panel jadwal
