@@ -274,7 +274,8 @@ class MatchModel
                 gi.item_slot,
                 gi.item_id,
                 mi.item_name,
-                gi.item_url
+
+                COALESCE(NULLIF(gi.item_url, ''), mi.item_url) AS item_url
             FROM game_items gi
             LEFT JOIN master_items mi
                 ON gi.item_id = mi.item_id
