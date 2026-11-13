@@ -15,7 +15,7 @@ class Team
     // Menggunakan CDN ImageKit / wsrv resmi yang konsisten dengan frontend
     // =========================================================================
 
-    private static function resolveLogoUrl(string $teamName): ?string
+    public static function resolveLogoUrl(string $teamName): ?string
     {
         $map = [
             'ONIC'                  => 'https://wsrv.nl/?url=https://ik.imagekit.io/nloe8dhf7w/mplid/s14/teams/onic-b-256.png',
