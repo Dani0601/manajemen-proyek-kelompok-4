@@ -24,6 +24,7 @@ $backUrl = htmlspecialchars($baseUrl . '/tournament#tim', ENT_QUOTES, 'UTF-8');
     class="td"
     id="team-detail"
     data-asset-base="<?= $assetBase ?>"
+    data-base-url="<?= htmlspecialchars($baseUrl, ENT_QUOTES, 'UTF-8') ?>"
     data-team-id="<?= $teamId ?>"
     data-state="loading"
 >

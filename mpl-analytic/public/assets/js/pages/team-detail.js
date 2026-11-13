@@ -5,7 +5,7 @@
   if (!root || !window.ApiClient) return;
 
   const assetBase = root.dataset.assetBase || "";
-
+  const baseUrl = (window.APP_CONFIG && window.APP_CONFIG.baseUrl) || root.dataset.baseUrl || "";
   // Ikon diambil langsung dari path vektor Figma Detail_Team.svg (stroke #192F53, 1.8)
   // viewBox per ikon mengikuti kotak asli di Figma.
   const ICONS = {
@@ -224,7 +224,7 @@
   }
 
   // Kartu pemain sesuai Figma: foto kotak, nama dan peran di overlay gradien navy
-  function renderRoster(players) {
+    function renderRoster(players) {
     if (!el.roster) return;
     if (players.length === 0) {
       el.roster.innerHTML = `<li class="td-empty">Roster belum tersedia</li>`;
@@ -232,14 +232,18 @@
     }
     el.roster.innerHTML = players.map((p) => `
       <li class="td-player">
-        <div class="td-player__media">
-          <img class="td-player__photo" src="${escapeHTML(p.photo)}" alt="${escapeHTML(p.name)}"
-               loading="lazy" onerror="this.onerror=null;this.hidden=true">
-          <div class="td-player__overlay">
-            <span class="td-player__name">${escapeHTML(p.name)}</span>
-            ${p.role ? `<span class="td-player__role">${escapeHTML(p.role)}</span>` : ""}
+        <a class="td-player__link"
+           href="${escapeHTML(baseUrl)}/player-detail?id=${encodeURIComponent(p.id)}"
+           aria-label="Lihat detail ${escapeHTML(p.name)}">
+          <div class="td-player__media">
+            <img class="td-player__photo" src="${escapeHTML(p.photo)}" alt="${escapeHTML(p.name)}"
+                 loading="lazy" onerror="this.onerror=null;this.hidden=true">
+            <div class="td-player__overlay">
+              <span class="td-player__name">${escapeHTML(p.name)}</span>
+              ${p.role ? `<span class="td-player__role">${escapeHTML(p.role)}</span>` : ""}
+            </div>
           </div>
-        </div>
+        </a>
       </li>`).join("");
   }
 

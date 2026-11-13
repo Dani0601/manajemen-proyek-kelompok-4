@@ -1,0 +1,295 @@
+/* ==========================================================================
+   Detail Player MPL ID
+   Prefix: pd-   |   Halaman: /player-detail?id={player_id}
+   ========================================================================== */
+
+/* ---------- Variabel & wadah ---------- */
+.pd {
+    --pd-navy: #172B4D;
+    --pd-blue: #2F6FED;
+    --pd-line: #000;
+    --pd-muted: #475569;
+
+    width: min(100%, 1005px);   /* tidak bisa ditimpa oleh lebar kontainer luar */
+    margin-left: auto;
+    margin-right: auto;
+    padding: 16px 0 48px;
+    color: #000;
+}
+
+/* ---------- Header: tombol kembali + nama pemain ---------- */
+.pd-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+.pd .pd-header__title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: #000;
+}
+.pd-header__back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    color: #000;
+    text-decoration: none;
+}
+.pd-header__back:focus-visible {
+    outline: 2px solid var(--pd-blue);
+    outline-offset: 2px;
+}
+
+/* ---------- Pesan state (loading, kosong, error) ---------- */
+.pd-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 220px;
+    margin: 0;
+    padding: 24px 16px;
+    background: #fff;
+    border: 1px solid var(--pd-line);
+    border-radius: 4px;
+    color: var(--pd-muted);
+    font-size: 14px;
+    text-align: center;
+}
+.pd[data-state="error"] .pd-message { color: #b91c1c; }
+
+/* ---------- Banner: foto kiri, logo + nama tim kanan (Figma) ---------- */
+.pd-banner {
+    position: relative;
+    aspect-ratio: 10 / 2;
+    margin-bottom: 20px;
+    overflow: hidden;
+    border-radius: 0;
+    background:
+        radial-gradient(circle at 92% 50%, rgba(80, 140, 255, .28) 0, transparent 38%),
+        linear-gradient(100deg, #081634 0%, #0b2a6e 55%, #0a1f52 100%);
+}
+.pd-banner__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.pd-banner__fallback {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding-left: 38%;           /* sisakan ruang untuk foto di kiri */
+    padding-right: 4%;
+    gap: 5%;
+}
+.pd-banner__divider {
+    flex: 0 0 1px;
+    align-self: stretch;
+    margin: 12% 0;
+    background: rgba(255, 255, 255, .45);
+}
+.pd-banner__logo {
+    flex: 0 0 auto;
+    width: auto;
+    height: 52%;
+    max-width: 18%;
+    object-fit: contain;
+}
+.pd-banner__text { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.pd .pd-banner__team {
+    margin: 0;
+    font-size: clamp(20px, 4.4vw, 44px);
+    font-style: italic;
+    font-weight: 800;
+    line-height: 1.05;
+    color: #fff;
+}
+.pd-banner__pill {
+    display: inline-flex;
+    align-self: flex-start;
+    margin: 0;
+    transform: skewX(-18deg);
+    border: 1px solid #3b82f6;
+    font-size: clamp(8px, 1.4vw, 13px);
+    font-weight: 600;
+    letter-spacing: .12em;
+    color: #fff;
+}
+.pd-banner__pill span { padding: 3px 12px; }
+.pd-banner__pill-b { background: #1d6bff; }
+/* Foto di atas logo, kepala nyaris menyentuh tepi atas */
+.pd-banner__photo {
+    position: absolute;
+    left: 9%;
+    bottom: 0;
+    height: 102%;
+    width: auto;
+    max-width: 18%;
+    object-fit: contain;
+    object-position: left bottom;
+}
+
+/* ---------- Section ---------- */
+.pd-section { margin-bottom: 24px; }
+.pd .pd-section__title {
+    margin: 0 0 10px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #000;
+}
+
+/* Daftar kosong tidak menampilkan garis sebelum data masuk */
+.pd-cards:empty,
+.pd-list:empty,
+.pd-heroes:empty { display: none; }
+
+/* ---------- Ikon (stroke tetap tipis di semua ukuran) ---------- */
+.pd-icon { display: block; width: 100%; height: 100%; stroke: #172B4D; stroke-width: 1.6px; stroke-linecap: round; stroke-linejoin: round; }
+.pd-icon path { vector-effect: non-scaling-stroke; }
+
+/* ---------- Statistik Utama: dua kotak ---------- */
+.pd-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.pd-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    max-width: 296px;
+    justify-self: center;
+    min-height: 120px;
+    padding: 16px 18px;
+    background: #fff;
+    border: 1px solid var(--pd-line);
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .2);
+    border: 1px solid #010101; border-bottom: 3px solid #2F6FED;
+}
+.pd-card__icon { flex: 0 0 56px; width: 56px; height: 40px; }
+.pd-card__text { display: flex; flex-direction: column; align-items: flex-end; flex: 1; min-width: 0; text-align: right; }
+.pd-card__label { font-size: 14px; font-weight: 500; line-height: 1.3; }
+.pd-card__value { font-size: 28px; font-weight: 800; line-height: 1.2; }
+/* ---------- Statistik Performa: daftar baris ---------- */
+.pd-list,
+.pd-heroes {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background: #fff;
+    border: 1px solid var(--pd-line);
+    border-radius: 4px;
+}
+.pd-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-height: 64px;
+    padding: 10px 20px;
+    border-top: 1px solid var(--pd-line);
+}
+.pd-row:first-child { border-top: 0; }
+.pd-row__icon { flex: 0 0 40px; width: 40px; height: 36px; }
+.pd-row__label { flex: 1; min-width: 0; font-size: 15px; font-weight: 500; }
+.pd-row__value { flex: 0 0 auto; font-size: 15px; font-weight: 700; }
+
+/* ---------- Hero Favorit ---------- */
+.pd-hero { border-top: 1px solid var(--pd-line); }
+.pd-hero:first-child { border-top: 0; }
+.pd-hero__link {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 16px;
+    color: inherit;
+    text-decoration: none;
+}
+.pd-hero__link:hover { background: #f1f5f9; }
+.pd-hero__link:focus-visible {
+    outline: 2px solid var(--pd-blue);
+    outline-offset: -2px;
+}
+.pd-hero__icon {
+    flex: 0 0 48px;
+    width: 48px;
+    height: 48px;
+    background: var(--pd-navy);
+    border-radius: 4px;
+    object-fit: cover;
+}
+.pd-hero__info { display: flex; flex-direction: column; flex: 1; gap: 2px; min-width: 0; }
+.pd-hero__name { font-size: 15px; font-weight: 700; }
+.pd-hero__meta { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--pd-muted); }
+.pd-hero__chev { flex: 0 0 auto; width: 20px; height: 20px; }
+
+/* ---------- Data kosong di dalam section ---------- */
+.pd-empty {
+    padding: 20px 16px;
+    font-size: 13px;
+    color: var(--pd-muted);
+    text-align: center;
+}
+
+/* ---------- Mobile 360-430 px ---------- */
+@media (max-width: 767px) {
+    .pd { padding: 12px 14px 32px; }
+
+    .pd-banner__fallback { padding-left: 40%; gap: 4%; }
+    .pd-banner__pill span { padding: 2px 8px; }
+
+    .pd-cards { gap: 12px; }
+    .pd-card { gap: 8px; min-height: 96px; padding: 12px; border: 1px solid #010101; border-bottom: 3px solid #2F6FED;}
+    .pd-card__icon { flex-basis: 36px; width: 36px; height: 28px; }
+    .pd-card__label { font-size: 12px; }
+    .pd-card__value { font-size: 22px; }
+    .pd-hero__meta { gap: 2px 10px; font-size: 11px; }
+
+    .pd-row { gap: 12px; min-height: 56px; padding: 8px 14px; }
+    .pd-row__icon { flex-basis: 28px; width: 28px; height: 28px; }
+    .pd-row__label,
+    .pd-row__value { font-size: 14px; }
+
+    .pd-hero__link { gap: 10px; padding: 10px 12px; }
+    .pd-hero__icon { flex-basis: 40px; width: 40px; height: 40px; }
+    .pd-hero__stats { display: flex; flex-direction: column; gap: 2px; }
+}
+
+/* ---------- Skeleton loading ---------- */
+.pd-skel { display: none; flex-direction: column; gap: 14px; }
+.pd[data-state="loading"] .pd-skel { display: flex; }
+
+.pd-skel__bar {
+    display: block;
+    width: 100%;
+    height: 12px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
+    background-size: 200% 100%;
+    animation: pd-shimmer 1.2s infinite linear;
+}
+@keyframes pd-shimmer { to { background-position: -200% 0; } }
+
+.pd-skel__banner { aspect-ratio: 576 / 171; border-radius: 4px; background: #e5e7eb; }
+.pd-skel__cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.pd-skel__box { height: 110px; background: #fff; border: 1px solid #cbd5e1; border-radius: 4px; }
+.pd-skel__list { background: #fff; border: 1px solid #cbd5e1; border-radius: 4px; }
+.pd-skel__row { display: flex; align-items: center; height: 56px; padding: 0 20px; border-top: 1px solid #e5e7eb; }
+.pd-skel__row:first-child { border-top: 0; }
+.pd-skel__row .pd-skel__bar { width: 40%; }
+.pd-skel__status { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 6px; font-size: 11px; color: var(--pd-navy); }
+.pd-skel__spinner {
+    width: 14px; height: 14px;
+    border: 2px solid #d1d5db; border-top-color: var(--pd-navy); border-radius: 50%;
+    animation: pd-spin .8s linear infinite;
+}
+@keyframes pd-spin { to { transform: rotate(360deg); } }
+
+/* ---------- Layar "Data belum tersedia" ---------- */
+.pd[data-state="empty"] .pd-message { flex-direction: column; gap: 6px; }
+.pd-empty-state__icon { width: 44px; height: 44px; padding: 10px; margin-bottom: 4px; background: #cbd5e1; border-radius: 50%; }
+.pd-empty-state__icon .pd-icon { stroke: #fff; }
+.pd-empty-state__title { font-size: 15px; color: #000; }
+.pd-empty-state__sub { font-size: 12px; color: var(--pd-muted); }
