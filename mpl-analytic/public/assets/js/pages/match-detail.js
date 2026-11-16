@@ -31,7 +31,7 @@
     })[c]);
   }
   const fmtNum = (n) =>
-    n === null || n === undefined ? "-" : new Intl.NumberFormat("id-ID").format(n)
+    n === null || n === undefined ? "-" : new Intl.NumberFormat("en-US").format(n)
     // 54200 -> "54.2k". Dipakai untuk kartu ringkasan Gold, Damage, Damage Taken.
   const fmtK = (n) =>
     n === null || n === undefined ? "-" : `${(n / 1000).toFixed(1)}k`;
@@ -42,7 +42,7 @@
   function fmtDuration(v) {
     if (v === null || v === undefined || Number.isNaN(Number(v))) return "-";
     const s = Math.round(Number(v));
-    return `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+    return `${String(Math.floor(s / 60)).padStart(2, "0")} : ${String(s % 60).padStart(2, "0")}`;
   }
 
   function getMatchId() {
@@ -129,7 +129,7 @@
 
     return `
       <section class="md-hpanel" aria-label="${escapeHTML(team.code)} ${escapeHTML(label)}">
-        <header class="md-hpanel__head">${logo}<span>${escapeHTML(team.code || team.name)} (${escapeHTML(label)})</span></header>
+        <header class="md-hpanel__head">${logo}<span>${escapeHTML(team.code || team.name)} ( ${escapeHTML(label)} )</span></header>
         ${body}
       </section>`;
   }
@@ -142,8 +142,8 @@
     el.panelHero.innerHTML = `
       <div class="md-hgrid">
         ${heroPanel(t1, "Ban", bansOf(t1))}
-        ${heroPanel(t2, "Ban", bansOf(t2))}
         ${heroPanel(t1, "Pick", picksOf(0))}
+        ${heroPanel(t2, "Ban", bansOf(t2))}
         ${heroPanel(t2, "Pick", picksOf(1))}
       </div>`;
   }
@@ -164,10 +164,10 @@
           <span class="md-s__build">
             <img class="md-s__hero" src="${escapeHTML(p.hero.icon)}" alt="${escapeHTML(p.hero.name)}"
                  loading="lazy" onerror="this.onerror=null;this.style.visibility='hidden'">
-            ${p.items.map((i) => `
+            <span class="md-s__items">${p.items.map((i) => `
               <img class="md-s__item" src="${escapeHTML(i.icon)}" alt="${escapeHTML(i.name)}"
                    title="${escapeHTML(i.name)}" loading="lazy"
-                   onerror="this.onerror=null;this.style.visibility='hidden'">`).join("")}
+                   onerror="this.onerror=null;this.style.visibility='hidden'">`).join("")}</span>
           </span>
         </td>`,
       kda3: (p) => `<td>${p.kills}/${p.deaths}/${p.assists}</td>`,
@@ -186,16 +186,20 @@
     let order = ["player", "hero", "kda3", "kda", "gold", "dmg", "taken"];
     if (mirror) order = [...order].reverse();
 
-    const thead = order.map((k) => `<th>${heads[k]}</th>`).join("");
+    const logo = team.logo
+      ? `<img class="md-s__tlogo" src="${escapeHTML(team.logo)}" alt="" onerror="this.style.display='none'">` : "";
+    const nameTag = `<span class="md-s__tname">${mirror ? "" : logo}${escapeHTML(team.code || team.name)}${mirror ? logo : ""}</span>`;
+    const thead = order.map((k) => `<th class="c-${k}">${heads[k]}</th>`).join("");
     const rows = players
-      .map((p) => `<tr>${order.map((k) => cell[k](p)).join("")}</tr>`)
+      .map((p) => `<tr>${order.map((k) => cell[k](p).replace(/<td(\s+class="([^"]*)")?/, (m, a, c) => `<td class="${c ? c + " " : ""}c-${k}"`)).join("")}</tr>`)
       .join("");
 
     return `
       <section class="md-s__team${mirror ? " is-mirror" : ""}" aria-label="${escapeHTML(team.code || team.name)}">
         <header class="md-s__head">
-          <span>${escapeHTML(team.code || team.name)}</span>
-          <span>Kills ${sum(players, "kills")}</span>
+          ${mirror
+            ? `<span>${sum(players, "kills")} Kills</span>${nameTag}`
+            : `${nameTag}<span>Kills ${sum(players, "kills")}</span>`}
         </header>
         <div class="md-s__scroll">
           <table class="md-s__table">
@@ -284,10 +288,26 @@
   });
   el.tabs.forEach((btn) => btn.addEventListener("click", () => setTab(btn.dataset.tab)));
   if (el.back) {
+    // Kembali ke halaman asal (mis. Detail Tim di posisi daftar match).
+    // Tidak hanya mengandalkan history.back(): di sebagian peramban mobile ia bisa gagal,
+    // jadi ada cadangan membuka alamat asal yang disimpan halaman sebelumnya.
     el.back.addEventListener("click", (e) => {
-      if (document.referrer.startsWith(window.location.origin) && history.length > 1) {
-        e.preventDefault();
+      e.preventDefault();
+      let target = el.back.href; // cadangan terakhir: /team-list
+      try {
+        const ret = sessionStorage.getItem("mpl:returnTo");
+        const ref = document.referrer.split("#")[0];
+        if (ret && new URL(ret, window.location.href).origin === window.location.origin && (!ref || ref === ret)) {
+          target = ret;
+        }
+      } catch (_) { /* sessionStorage tidak tersedia */ }
+
+      const cameFromApp = document.referrer.startsWith(window.location.origin) && history.length > 1;
+      if (cameFromApp) {
         history.back();
+        setTimeout(() => { if (document.body.contains(root)) window.location.assign(target); }, 500);
+      } else {
+        window.location.assign(target);
       }
     });
   }

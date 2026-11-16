@@ -155,3 +155,76 @@
 .md-s__team.is-mirror .md-s__table td { text-align: right; }
 .md-s__team.is-mirror .md-s__who { flex-direction: row-reverse; }
 .md-s__team.is-mirror .md-s__build { flex-direction: row-reverse; }
+
+/* ==========================================================================
+   Perbaikan sesuai Figma mobile (Detail hasil match - statistik & hero)
+   ========================================================================== */
+/* Pemilih game & tab: sudut membulat */
+.md-game, .md-tab { border-radius: 8px; }
+
+/* Kartu ringkasan: ikon di atas, label, nilai (3 per baris, lalu 2) */
+.md-s__cards { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; margin-bottom: 12px; }
+.md-s__card { grid-column: span 2; flex-direction: column; justify-content: center; gap: 2px; padding: 6px 8px; text-align: center; border-radius: 6px; }
+.md-s__text { align-items: center; gap: 1px; }
+.md-s__icon { width: 18px; height: 18px; }
+.md-s__label { font-size: 9px; font-weight: 600; color: #172B4D; }
+.md-s__value { font-size: 9px; font-weight: 600; }
+
+/* Tabel pemain: 7 kolom muat di 360 px, TANPA scroll horizontal */
+.md-s__team { border-color: #172B4D; border-radius: 4px; }
+.md-s__head { align-items: center; padding: 6px 8px; font-size: 12px; }
+.md-s__tname { display: inline-flex; align-items: center; gap: 6px; }
+.md-s__tlogo { width: 22px; height: 22px; object-fit: contain; background: #fff; border-radius: 4px; padding: 1px; }
+.md-s__scroll { overflow: hidden; }
+.md-s__table { table-layout: fixed; width: 100%; min-width: 0; font-size: 8px; }
+.md-s__table th, .md-s__table td { padding: 5px 1px; text-align: center; white-space: nowrap; overflow: hidden; }
+.md-s__table thead th { background: #e5e7eb; color: #172B4D; font-weight: 600; }
+.md-s__table td { font-weight: 600; color: #172B4D; }
+.md .md-s__team .md-s__table th.c-player { width: 23%; }
+.md .md-s__team .md-s__table th.c-hero   { width: 21%; }
+.md .md-s__team .md-s__table th.c-kda3   { width: 10%; }
+.md .md-s__team .md-s__table th.c-kda    { width: 9%; }
+.md .md-s__team .md-s__table th.c-gold   { width: 11%; }
+.md .md-s__team .md-s__table th.c-dmg    { width: 12%; }
+.md .md-s__team .md-s__table th.c-taken  { width: 14%; }
+.md-s__table .c-player { text-align: left; padding-left: 4px; white-space: normal; }
+.md-s__team:not(.is-mirror) .md-s__table .c-hero { text-align: left; padding-left: 2px; }
+.md-s__team:not(.is-mirror) .md-s__build { justify-content: flex-start; }
+.md-s__team.is-mirror .md-s__table .c-hero { text-align: right; padding-right: 2px; }
+.md-s__team.is-mirror .md-s__build { justify-content: flex-start; }
+.md-s__team.is-mirror .c-player { text-align: right; padding-left: 1px; padding-right: 4px; }
+.md-s__team.is-mirror .md-s__table th, .md-s__team.is-mirror .md-s__table td { text-align: center; }
+.md-s__team.is-mirror .md-s__table .c-player { text-align: right; }
+.md-s__who { display: flex; align-items: center; gap: 3px; min-width: 0; }
+.md-s__who span { min-width: 0; overflow-wrap: normal; word-break: normal; line-height: 1.15; font-size: 7px; }
+.md-s__photo { width: 18px; height: 18px; border-radius: 3px; flex: none; }
+.md-s__build { display: flex; align-items: center; justify-content: center; gap: 2px; }
+.md-s__team.is-mirror .md-s__build { flex-direction: row-reverse; }
+.md-s__hero { width: 24px; height: 24px; }
+.md-s__items { display: grid; grid-template-columns: repeat(3, 10px); gap: 1px; }
+.md-s__item { width: 10px; height: 10px; }
+
+/* Tab Hero: satu kolom — BTR Ban, BTR Pick, TLID Ban, TLID Pick */
+.md-hgrid { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+.md-hpanel { border-color: #172B4D; border-radius: 4px; }
+.md-hpanel__head { padding: 5px 8px; font-size: 12px; }
+.md-hlist { padding: 10px 8px; gap: 4px; }
+.md-hcell__icon { max-width: 44px; border-radius: 6px; }
+.md-hcell__name { font-size: 8px; white-space: normal; overflow-wrap: anywhere; line-height: 1.15;
+  display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; }
+
+@media (min-width: 768px) {
+  .md-s__cards { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .md-s__card { grid-column: auto; flex-direction: row; text-align: left; gap: 8px; padding: 8px 10px; }
+  .md-s__text { align-items: flex-start; }
+  .md-s__icon { width: 22px; height: 22px; } .md-s__label { font-size: 10px; font-weight: 400; } .md-s__value { font-size: 13px; }
+  .md-s__table { font-size: 11px; } .md-s__table th, .md-s__table td { padding: 8px 4px; }
+  .md-s__who span { font-size: 11px; } .md-s__photo { width: 28px; height: 28px; }
+  .md-s__hero { width: 28px; height: 28px; }
+  .md-s__items { display: flex; gap: 3px; } .md-s__item { width: 18px; height: 18px; }
+  .md-hgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 18px; }
+  .md-hcell__name { font-size: 9px; }
+}
+
+/* Tombol kembali: area sentuh 44px dan selalu di atas elemen lain */
+.md-header__back { position: relative; z-index: 2; width: 44px; height: 44px; margin-left: -8px; }
