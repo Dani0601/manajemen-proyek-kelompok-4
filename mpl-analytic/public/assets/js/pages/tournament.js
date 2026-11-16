@@ -186,11 +186,7 @@
     const matchId = match.matchId ?? '';
     
     // Ambil jam pertandingan (misal: "15:00") dari matchDate
-    let matchTime = "--:--";
-    if (match.matchDate) {
-      const timePart = match.matchDate.split('T')[1] || match.matchDate.split(' ')[1];
-      if (timePart) matchTime = timePart.slice(0, 5);
-    }
+    const matchTime = match.matchTime || "--:--";
 
     return `
       <a class="tr-res" href="#match-${escapeHTML(matchId)}" data-match-id="${escapeHTML(matchId)}">
