@@ -247,6 +247,152 @@
       </li>`).join("");
   }
 
+  //match tim
+  // ===== Pertandingan tim =====
+  // Sumber: GET /api/teams/{id}/matches (ApiClient.getTeamMatches)
+  const MONTHS = ["JAN", "FEB", "MAR", "APR", "MEI", "JUN", "JUL", "AGT", "SEP", "OKT", "NOV", "DES"];
+
+  const matchEl = {
+    list: document.getElementById("td-matches"),
+    message: document.getElementById("td-matches-message"),
+  };
+
+  // "2026-08-15" -> "15 AGT"
+  function formatShortDate(value) {
+    const d = new Date(`${String(value).slice(0, 10)}T00:00:00`);
+    return Number.isNaN(d.getTime()) ? "" : `${d.getDate()} ${MONTHS[d.getMonth()]}`;
+  }
+
+  // Petakan respons API ke bentuk yang dipakai tampilan.
+  // a = tim yang dibuka (selalu kiri), b = lawan (kanan).
+  function normalizeTeamMatches(body) {
+    const list = Array.isArray(body?.matches) ? body.matches : [];
+
+    const side = (t) => ({
+      id: Number(t?.team_id),
+      code: t?.team_code || window.TeamAssets.code(t),
+      name: t?.team_name || "",
+      logo: window.TeamAssets.logo(t),
+      score: t?.score ?? 0,
+    });
+
+    return list
+      .map((m) => {
+        const hasWinner = m.winner_team_id !== null && m.winner_team_id !== undefined;
+        const finished = m.status === "completed" || hasWinner;
+
+        let result = null;
+        if (finished) {
+          if (m.result === "win") result = "win";
+          else if (m.result === "loss") result = "lose";
+          else if (hasWinner) result = Number(m.winner_team_id) === Number(m.team?.team_id) ? "win" : "lose";
+        }
+
+        return {
+          id: m.match_id,
+          week: m.week ?? null,
+          rawDate: m.match_date || "",
+          date: formatShortDate(m.match_date),
+          time: m.match_time ? String(m.match_time).slice(0, 5) : "",
+          a: side(m.team),
+          b: side(m.opponent),
+          finished,
+          result,
+        };
+      })
+      // Terlama dulu, sesuai Figma (Week 1 di atas)
+      .sort((x, y) =>
+        String(x.rawDate).localeCompare(String(y.rawDate)) ||
+        String(x.id).localeCompare(String(y.id), undefined, { numeric: true }));
+  }
+
+  // Ambil semua halaman kalau pertandingan lebih dari satu halaman
+  async function fetchAllTeamMatches(teamId) {
+    const LIMIT = 50;
+    let page = 1;
+    let totalPages = 1;
+    let all = [];
+    do {
+      const r = await window.ApiClient.getTeamMatches(teamId, page, LIMIT);
+      const body = r?.matches ? r : r?.data;
+      all = all.concat(body?.matches || []);
+      totalPages = Number(body?.pagination?.total_pages) || 1;
+      page += 1;
+    } while (page <= totalPages && page <= 10);
+    return { matches: all };
+  }
+
+  function teamBlock(t) {
+    return `
+      <span class="td-match__team">
+        <img class="td-match__logo" src="${escapeHTML(t.logo)}" alt="${escapeHTML(t.name)}"
+             loading="lazy" onerror="this.onerror=null;this.style.visibility='hidden'">
+        <span class="td-match__code">${escapeHTML(t.code)}</span>
+      </span>`;
+  }
+
+  function matchItem(m) {
+    const score = m.finished ? `${escapeHTML(m.a.score)} - ${escapeHTML(m.b.score)}` : "Vs";
+    const when = [m.date, m.time].filter(Boolean).join(" - ");
+    const badge = m.result
+      ? `<span class="td-match__badge td-match__badge--${m.result}">${m.result === "win" ? "WIN" : "LOSE"}</span>`
+      : `<span class="td-match__badge td-match__badge--none"></span>`;
+
+    return `
+      <li class="td-match">
+        <a class="td-match__link"
+           href="${escapeHTML(baseUrl)}/match-detail?id=${encodeURIComponent(m.id)}"
+           aria-label="Lihat detail pertandingan ${escapeHTML(m.a.code)} lawan ${escapeHTML(m.b.code)}">
+          <span class="td-match__teams">
+            ${teamBlock(m.a)}
+            <span class="td-match__score">${score}</span>
+            ${teamBlock(m.b)}
+          </span>
+          <span class="td-match__info">
+            <span class="td-match__week">${m.week ? `WEEK ${escapeHTML(m.week)}` : ""}</span>
+            <span class="td-match__date">${escapeHTML(when)}</span>
+          </span>
+          ${badge}
+          <svg class="td-match__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 5l7 7-7 7"></path>
+          </svg>
+        </a>
+      </li>`;
+  }
+
+  function setMatchesMessage(text) {
+    if (matchEl.message) {
+      matchEl.message.hidden = !text;
+      matchEl.message.textContent = text || "";
+    }
+    if (matchEl.list) matchEl.list.hidden = !!text;
+  }
+
+  function renderMatches(matches) {
+    if (!matchEl.list) return;
+    if (matches.length === 0) {
+      setMatchesMessage("Belum ada pertandingan untuk tim ini.");
+      return;
+    }
+    // Kolom kiri diisi penuh dulu, baru kolom kanan (sesuai Figma desktop)
+    matchEl.list.style.setProperty("--td-rows", Math.ceil(matches.length / 2));
+    matchEl.list.innerHTML = matches.map(matchItem).join("");
+    setMatchesMessage("");
+  }
+
+  // Dipisah dari load(): kegagalan daftar pertandingan tidak boleh menutup halaman tim
+  async function loadMatches(teamId) {
+    if (!matchEl.list || !window.ApiClient.getTeamMatches) return;
+    setMatchesMessage("Memuat pertandingan...");
+    try {
+      renderMatches(normalizeTeamMatches(await fetchAllTeamMatches(teamId)));
+    } catch (err) {
+      console.error("[TeamDetail] matches", err);
+      setMatchesMessage("Gagal memuat pertandingan. Muat ulang halaman untuk mencoba lagi.");
+    }
+  }
+
   async function load() {
     const teamId = getTeamId();
     if (!teamId) {
@@ -269,6 +415,7 @@
       renderGameStats(team.games);
       renderRoster(team.players);
       setState("ready");
+      loadMatches(team.id);
     } catch (err) {
       console.error("[TeamDetail]", err);
       setState(
