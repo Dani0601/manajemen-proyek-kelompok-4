@@ -137,3 +137,13 @@
 @media (min-width: 1440px) {
   .td { max-width: 1240px; }
 }
+
+.td-player__link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+}
+.td-player__link:focus-visible {
+    outline: 2px solid #2F6FED;
+    outline-offset: 2px;
+}

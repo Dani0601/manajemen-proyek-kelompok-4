@@ -132,6 +132,9 @@ async function getHeroDetail(heroId) {
   async function getTeamStats(teamId) {
     return request(`/teams/${encodeURIComponent(teamId)}/stats`);
   }
+  async function getPlayerStats(playerId) {
+    return request(`/players/${encodeURIComponent(playerId)}/stats`);
+  }
 
 
   window.ApiClient = {
@@ -146,6 +149,7 @@ async function getHeroDetail(heroId) {
     getTournamentStandings,
     getTeams,
     getTeamStats,
+    getPlayerStats,
     baseUrl: "http://menpro.test/manajemen-proyek-kelompok-4/mpl-analytic/public",
     // Tambahkan di dalam objek window.ApiClient
     searchHeroes: async function(query = '', role = '') {
