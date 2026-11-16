@@ -143,8 +143,27 @@
 .hd-pill { display: inline-block; justify-self: start; margin: 0; padding: 6px 12px; border-radius: 999px; background: var(--hd-navy); color: #fff; font-size: 11px; font-weight: 500; line-height: 1.25; }
 .hd-counter__list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
 .hd-counter-row { display: grid; grid-template-columns: 28px minmax(0, 76px) minmax(24px, 1fr) auto; align-items: center; gap: 8px; }
-.hd-counter-row__image { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
-.hd-counter-row .hd-avatar { border-radius: 50%; font-size: 11px; }
+
+/* [DIUBAH] Foto hero counter: selalu bulat 28x28, tidak ikut tertarik baris grid
+   atau aturan global img (height:auto / max-width:100%) */
+.hd-counter-row__image,
+.hd-counter-row .hd-avatar {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    min-height: 28px;
+    max-width: 28px;
+    max-height: 28px;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center top;   /* wajah hero biasanya di bagian atas */
+    display: block;
+    flex: none;
+}
+.hd-counter-row .hd-avatar { display: flex; font-size: 11px; }
+.hd-counter-row__image { align-self: center; justify-self: center; }
+
 .hd-counter-row__name { font-size: 11px; font-weight: 600; color: var(--hd-navy); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .hd-counter-row__value { font-size: 11px; font-weight: 600; }
 
