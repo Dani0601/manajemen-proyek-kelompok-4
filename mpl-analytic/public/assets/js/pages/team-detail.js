@@ -257,6 +257,30 @@
     message: document.getElementById("td-matches-message"),
   };
 
+  // Saat membuka Detail Match, simpan alamat halaman ini + posisi scroll.
+  // Tombol back di Detail Match memakainya agar kembali persis ke daftar match (desktop & mobile).
+  const RETURN_URL_KEY = "mpl:returnTo";
+  const RETURN_Y_KEY = "mpl:returnScroll";
+  if ("scrollRestoration" in history) history.scrollRestoration = "manual"; // pemulihan dikerjakan di bawah
+  if (matchEl.list) {
+    matchEl.list.addEventListener("click", (e) => {
+      if (!e.target.closest(".td-match__link")) return;
+      try {
+        sessionStorage.setItem(RETURN_URL_KEY, window.location.href.split("#")[0]);
+        sessionStorage.setItem(RETURN_Y_KEY, String(Math.round(window.scrollY)));
+      } catch (_) { /* abaikan */ }
+    });
+  }
+  // Daftar match dimuat async, jadi scroll baru bisa dipulihkan setelah daftarnya tampil.
+  function restoreScroll() {
+    try {
+      const y = Number(sessionStorage.getItem(RETURN_Y_KEY));
+      if (!y || sessionStorage.getItem(RETURN_URL_KEY) !== window.location.href.split("#")[0]) return;
+      sessionStorage.removeItem(RETURN_Y_KEY);
+      requestAnimationFrame(() => window.scrollTo(0, y));
+    } catch (_) { /* abaikan */ }
+  }
+
   // "2026-08-15" -> "15 AGT"
   function formatShortDate(value) {
     const d = new Date(`${String(value).slice(0, 10)}T00:00:00`);
@@ -379,6 +403,7 @@
     matchEl.list.style.setProperty("--td-rows", Math.ceil(matches.length / 2));
     matchEl.list.innerHTML = matches.map(matchItem).join("");
     setMatchesMessage("");
+    restoreScroll();
   }
 
   // Dipisah dari load(): kegagalan daftar pertandingan tidak boleh menutup halaman tim
