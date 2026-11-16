@@ -135,6 +135,21 @@ async function getHeroDetail(heroId) {
   async function getPlayerStats(playerId) {
     return request(`/players/${encodeURIComponent(playerId)}/stats`);
   }
+  async function getTeamMatches(teamId, page = 1, limit = 20) {
+    return request(`/teams/${encodeURIComponent(teamId)}/matches?page=${page}&limit=${limit}`);
+  }
+  async function getMatchDetail(matchId) {
+    return request(`/matches/${encodeURIComponent(matchId)}`);
+  }
+
+  async function getGameDetail(gameId) {
+    return request(`/games/${encodeURIComponent(gameId)}`);
+  }
+
+  // Opsional, tidak dipakai kartu 12.2
+  async function getMatchDrafts(matchId) {
+    return request(`/matches/${encodeURIComponent(matchId)}/drafts`);
+  }
 
 
   window.ApiClient = {
@@ -150,6 +165,10 @@ async function getHeroDetail(heroId) {
     getTeams,
     getTeamStats,
     getPlayerStats,
+    getTeamMatches,
+    getMatchDetail,
+    getGameDetail,
+    getMatchDrafts,
     baseUrl: "http://menpro.test/manajemen-proyek-kelompok-4/mpl-analytic/public",
     // Tambahkan di dalam objek window.ApiClient
     searchHeroes: async function(query = '', role = '') {

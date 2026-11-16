@@ -10,7 +10,8 @@ require BASE_PATH . '/views/layouts/navbar.php';
 $assetBase = htmlspecialchars(ASSET_BASE, ENT_QUOTES, 'UTF-8');
 $teamId = (int) ($_GET['id'] ?? 0);
 $backUrl = htmlspecialchars($baseUrl . '/tournament#tim', ENT_QUOTES, 'UTF-8');
-
+$seasonId = max(1, (int) ($_GET['season'] ?? 1));
+$seasonNumber = 18;
 /*
  * KONTRAK UNTUK FE2:
  * - Sumber data: GET /api/teams/{id}/stats (ApiClient.getTeamStats)
@@ -26,6 +27,7 @@ $backUrl = htmlspecialchars($baseUrl . '/tournament#tim', ENT_QUOTES, 'UTF-8');
     data-asset-base="<?= $assetBase ?>"
     data-base-url="<?= htmlspecialchars($baseUrl, ENT_QUOTES, 'UTF-8') ?>"
     data-team-id="<?= $teamId ?>"
+    data-season-id="<?= $seasonId ?>"
     data-state="loading"
 >
     <header class="td-header">
@@ -64,9 +66,19 @@ $backUrl = htmlspecialchars($baseUrl . '/tournament#tim', ENT_QUOTES, 'UTF-8');
             <h3 id="td-roster-title" class="td-section__title">Roster</h3>
             <ul id="td-roster" class="td-roster"></ul>
         </section>
+
+            <section class="td-section" aria-labelledby="td-matches-title">
+                <h3 id="td-matches-title" class="td-section__title td-section__title--center">
+                    Pertandingan Season <?= $seasonNumber ?>
+                </h3>
+                <p id="td-matches-message" class="td-matches__message" role="status" aria-live="polite">
+                    Memuat pertandingan...
+                </p>
+                <ul id="td-matches" class="td-matches" hidden></ul>
+            </section>
     </div>
 </div>
-
+<script src="<?= $assetBase ?>/js/pages/team-assets.js"></script>
 <script src="<?= $assetBase ?>/js/api-client.js"></script>
 
 <?php require BASE_PATH . '/views/layouts/footer.php'; ?>
