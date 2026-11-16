@@ -154,6 +154,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     name: skill.skill_name || "",
                     type: skill.skill_type || "",
                     icon: skill.skill_icon_url || skill.skill_url || "",
+                    description: skill.description ||"",
                     position: skill.skill_position || 0
                 })).sort((a, b) => a.position - b.position);
             }
@@ -311,16 +312,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 }).join('');
 
                 emblemContainer.innerHTML = `
-                    <div class = "hd-setup">
+                    
                         <!-- BAGIAN KIRI: Ikon Emblem Utama -->
                         ${emblemIconHtml} 
                         <!-- BAGIAN KANAN: Teks dan Talent yang dikelompokkan -->
                         <div class="hd-setup__text">
                             <p class="hd-setup__label">EMBLEM SETUP</p>
                             <p class="hd-setup__name">${emblemName}</p>
-                            ${talentsHtml ? `<ul class="hd-talents">${talentsHtml}</ul>` : ''}
                         </div>
-                    </div>
+                        ${talentsHtml ? `<ul class="hd-talents">${talentsHtml}</ul>` : ''}
                 `;
             }
 
@@ -342,32 +342,73 @@ document.addEventListener("DOMContentLoaded", () => {
                 `;
             }
         }
+const SKILL_LABELS = { "Passive": "Pasif", "Skill 1": "Skill 1", "Skill 2": "Skill 2", "Ultimate": "Ultimate" };
+
+const skillDetail = {
+    box:  document.getElementById("hd-skill-detail"),
+    name: document.getElementById("hd-skill-detail-name"),
+    type: document.getElementById("hd-skill-detail-type"),
+    text: document.getElementById("hd-skill-detail-text")
+};
+
+function showSkillDetail(skill) {
+    skillDetail.name.textContent = skill.name;
+    skillDetail.type.textContent = SKILL_LABELS[skill.type] || skill.type;
+    skillDetail.text.textContent = skill.description || "Deskripsi skill ini belum tersedia.";
+    skillDetail.box.hidden = false;
+}
 
         // Sub-Render: Skill Hero
-        function renderSkills(skills) {
-            if (!skillContainer) return;
-            if (!skills || skills.length === 0) {
-                showState("skills", "empty");
-                return;
-            }
-            clearState("skills");
-            const SKILL_LABELS = { "Passive": "Pasif", "Skill 1": "Skill 1", "Skill 2": "Skill 2", "Ultimate": "Ultimate" };
-            const assetBase = container.dataset.assetBase || '';
+    function renderSkills(skills) {
+    if (!skillContainer) return;
+    if (!skills || skills.length === 0) {
+        skillDetail.box.hidden = true;
+        showState("skills", "empty");
+        return;
+    }
+    clearState("skills");
+    const assetBase = container.dataset.assetBase || '';
+    const fallbackIcon = `${assetBase}/images/default-skill.png`;
 
-            let skillsHtml = skills.map(skill => {
-                const imgSrc = skill.icon ? skill.icon : `${assetBase}/images/default-skill.png`;
-                const label = SKILL_LABELS[skill.type] || skill.type;
+    const buttons = skills.map((skill, index) => {
+        const label = SKILL_LABELS[skill.type] || skill.type;
 
-                return `
-                    <li class="hd-skill">
-                        <img src="${imgSrc}" alt="${skill.name}" title="${skill.name}" class="hd-skill__media" onerror="this.src='${assetBase}/images/default-skill.png'" loading="lazy">
-                        <span class="hd-skill__label">${label}</span>
-                    </li>
-                `;
-            }).join("");
+        const img = document.createElement("img");
+        img.className = "hd-skill__media";
+        img.src = skill.icon || fallbackIcon;
+        img.alt = "";
+        img.addEventListener("error", () => { img.src = fallbackIcon; }, { once: true });
 
-            skillContainer.innerHTML = skillsHtml;
-        }
+        const caption = document.createElement("span");
+        caption.className = "hd-skill__label";
+        caption.textContent = label;
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "hd-skill__btn";
+        button.setAttribute("aria-pressed", "false");
+        button.append(img, caption);
+        button.addEventListener("click", () => selectSkill(index));
+        return button;
+    });
+
+    function selectSkill(index) {
+        buttons.forEach((b, i) => {
+            b.classList.toggle("is-active", i === index);
+            b.setAttribute("aria-pressed", String(i === index));
+        });
+        showSkillDetail(skills[index]);
+    }
+
+    skillContainer.replaceChildren(...buttons.map(b => {
+        const li = document.createElement("li");
+        li.className = "hd-skill";
+        li.append(b);
+        return li;
+    }));
+
+    selectSkill(0);
+}
 
         // Sub-Render: Official Ratings
         function renderRatings(ratings) {
