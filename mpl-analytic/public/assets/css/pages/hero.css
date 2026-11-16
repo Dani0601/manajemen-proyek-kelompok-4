@@ -15,6 +15,15 @@
 .hl-card { display: grid; gap: 2px; min-width: 0; color: inherit; text-decoration: none; }
 .hl-card:focus-visible { outline: 3px solid #2F6FED; outline-offset: 2px; border-radius: 8px; }
 .hl-card__img { width: 100%; aspect-ratio: 1; border-radius: 8px; object-fit: cover; background: var(--hl-navy); }
+
+.hl-card__img[src*="/images/heroes/hero_"],
+.hl-card__img[src*="mlbb-image.scoregg.com/m/33/p/"] { object-view-box: inset(14.79%); }
+
+/* [BARU] Cadangan untuk browser yang belum mendukung object-view-box */
+@supports not (object-view-box: inset(0)) {
+    .hl-card__img[src*="/images/heroes/hero_"],
+    .hl-card__img[src*="mlbb-image.scoregg.com/m/33/p/"] { transform: scale(1.42); clip-path: inset(14.79% round 5.6px); }
+}
 .hl-card__img--fb { display: grid; place-items: center; color: #fff; font-weight: 700; font-size: 20px; }
 .hl-card__name { margin-top: 2px; font-size: 11px; font-weight: 700; color: var(--hl-navy); line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .hl-card__role { font-size: 9px; font-weight: 500; color: var(--hl-grey); line-height: 1.2; min-height: 1em; }

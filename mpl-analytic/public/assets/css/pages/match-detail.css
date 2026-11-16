@@ -1,0 +1,230 @@
+/* ==========================================================================
+   Detail Hasil Match   |   Prefix: md-   |   /match-detail?id={match_id}
+   ========================================================================== */
+.md { --md-navy: #172B4D; --md-blue: #2F6FED; --md-line: #000; --md-muted: #475569;
+      width: min(100%, 1005px); margin: 0 auto; padding: 16px 0 48px; color: #000; }
+
+/* Header halaman */
+.md-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.md-header__back { display: inline-flex; width: 32px; height: 32px; align-items: center; justify-content: center; color: #000; text-decoration: none; }
+.md-header__back:focus-visible { outline: 2px solid var(--md-blue); outline-offset: 2px; }
+.md .md-header__title { margin: 0; font-size: 16px; font-weight: 600; color: #000; }
+
+/* Pesan state */
+.md-message { display: flex; align-items: center; justify-content: center; min-height: 220px; margin: 0; padding: 24px 16px;
+    background: #fff; border: 1px solid var(--md-line); border-radius: 4px; color: var(--md-muted); font-size: 14px; text-align: center; }
+.md[data-state="error"] .md-message { color: #b91c1c; }
+.md-message[hidden], .md-skel[hidden], .md-content[hidden], .md-panel[hidden], .md-games[hidden] { display: none; }
+
+/* Banner dua tim: terang di atas, navy di bawah */
+.md-hero { display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: 12px;
+    padding: 14px 8% 14px; border-radius: 4px; background: linear-gradient(180deg, #ffffff 0%, #dbe3f0 35%, var(--md-navy) 100%); }
+.md-hero__team { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; }
+.md-hero__logo { width: 56px; height: 56px; object-fit: contain; }
+.md-hero__code { font-size: 12px; font-weight: 700; color: #fff; }
+.md-hero__score { align-self: start; padding-top: 4px; font-size: 14px; font-weight: 700; color: var(--md-navy); white-space: nowrap; }
+.md-when { margin: 8px 0 12px; font-size: 12px; font-weight: 600; text-align: center; }
+
+/* Pemilih game */
+.md-games { display: flex; justify-content: center; flex-wrap: wrap; gap: 14px; margin-bottom: 12px; }
+.md-game { min-width: 120px; padding: 6px 14px; background: #fff; border: 1px solid var(--md-line); border-radius: 4px;
+    font: inherit; font-size: 12px; font-weight: 600; color: #000; cursor: pointer; }
+.md-game.is-active { background: var(--md-navy); border-color: var(--md-navy); color: #fff; }
+
+/* Tab Statistik dan Hero */
+.md-tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-bottom: 14px; }
+.md-tab { padding: 6px 12px; background: #fff; border: 1px solid var(--md-line); border-radius: 4px;
+    font: inherit; font-size: 12px; font-weight: 600; color: #000; cursor: pointer; }
+.md-tab.is-active { background: var(--md-navy); border-color: var(--md-navy); color: #fff; }
+.md-game:focus-visible, .md-tab:focus-visible { outline: 2px solid var(--md-blue); outline-offset: 2px; }
+
+.md-placeholder { margin: 0; padding: 40px 16px; text-align: center; font-size: 13px; color: var(--md-muted); border: 1px dashed #94a3b8; border-radius: 4px; }
+
+/* Skeleton */
+.md-skel { display: flex; flex-direction: column; gap: 14px; }
+.md-skel__banner, .md-skel__block, .md-skel__btns span, .md-skel__bar {
+    background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%); background-size: 200% 100%; animation: md-shimmer 1.2s infinite linear; }
+.md-skel__banner { height: 130px; border-radius: 4px; }
+.md-skel__bar { display: block; height: 12px; border-radius: 999px; }
+.md-skel__btns { display: flex; justify-content: center; gap: 14px; }
+.md-skel__btns span { width: 120px; height: 30px; border-radius: 4px; }
+.md-skel__btns--2 span { width: 48%; }
+.md-skel__block { height: 280px; border-radius: 4px; }
+.md-skel__status { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 11px; color: var(--md-navy); }
+.md-skel__spinner { width: 14px; height: 14px; border: 2px solid #d1d5db; border-top-color: var(--md-navy); border-radius: 50%; animation: md-spin .8s linear infinite; }
+@keyframes md-shimmer { to { background-position: -200% 0; } }
+@keyframes md-spin { to { transform: rotate(360deg); } }
+
+/* ---------- Tab Hero: 4 panel (Ban dan Pick tiap tim) ---------- */
+.md-hgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 18px; }
+.md-hpanel { min-width: 0; background: #fff; border: 1px solid var(--md-line); border-radius: 2px; overflow: hidden; }
+.md-hpanel__head {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 10px; background: var(--md-navy); color: #fff;
+    font-size: 12px; font-weight: 700;
+}
+.md-hpanel__logo { width: 20px; height: 20px; object-fit: contain; }
+.md-hlist { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; margin: 0; padding: 12px 10px; list-style: none; }
+.md-hcell { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; }
+.md-hcell__icon { width: 100%; max-width: 52px; aspect-ratio: 1; object-fit: cover; border-radius: 4px; background: #e5e7eb; }
+.md-hcell__name { max-width: 100%; font-size: 9px; font-weight: 600; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Data kosong per panel */
+.md-nodata { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 24px 12px; text-align: center; font-size: 10px; color: var(--md-muted); }
+.md-nodata strong { font-size: 11px; color: #000; }
+.md-nodata__icon { width: 28px; height: 28px; margin-bottom: 4px; border-radius: 50%; background: #cbd5e1; }
+
+/* Mobile 360-430 px */
+@media (max-width: 767px) {
+    .md { padding: 12px 14px 32px; }
+    .md-hero { padding: 12px 6% 12px; }
+    .md-hero__logo { width: 44px; height: 44px; }
+    .md-games { gap: 8px; }
+    .md-game { min-width: 0; flex: 1 1 0; }
+    .md-tabs { gap: 10px; }
+}
+
+/* ===== Tab Statistik ===== */
+.md-s__card {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid #cbd5e1; border-radius: 6px;
+  min-width: 0;
+}
+.md-s__icon { width: 22px; height: 22px; flex: none; display: block; object-fit: contain; }
+.md-s__icon svg { width: 100%; height: 100%; display: block; }
+.md-s__text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.md-s__label { font-size: 10px; color: #475569; white-space: nowrap; }
+.md-s__value { font-size: 13px; color: #172B4D; white-space: nowrap; }
+
+
+.md-s__team {
+  margin-bottom: 12px;
+  border: 1px solid #cbd5e1; border-radius: 6px;
+  overflow: hidden;
+}
+.md-s__head {
+  display: flex; justify-content: space-between;
+  padding: 8px 10px;
+  background: #172B4D; color: #fff;
+  font-size: 13px; font-weight: 700;
+}
+/* hanya tabel yang bergeser di 360 px, halaman tidak */
+.md-s__scroll { overflow-x: auto; }
+.md-s__table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.md-s__table th,
+.md-s__table td { padding: 6px 8px; text-align: left; white-space: nowrap; }
+.md-s__table th { color: #475569; font-weight: 600; }
+.md-s__table tbody tr { border-top: 1px solid #e2e8f0; }
+.md-s__table .md-hcell__icon { width: 28px; height: 28px; border-radius: 4px; object-fit: cover; display: block; }
+.md-s__cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-bottom: 12px; }
+@media (min-width: 768px) {
+  .md-s__cards { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
+
+.md-s__who { display: inline-flex; align-items: center; gap: 6px; }
+.md-s__photo { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; object-position: top; flex: none; }
+.md-s__build { display: inline-flex; align-items: center; gap: 3px; }
+.md-s__hero { width: 28px; height: 28px; border-radius: 4px; object-fit: cover; flex: none; }
+.md-s__item { width: 18px; height: 18px; border-radius: 50%; object-fit: cover; flex: none; }
+
+.md-s__table { table-layout: fixed; width: 100%; min-width: 560px; }
+.md-s__table th,
+.md-s__table td { overflow: hidden; }
+
+/* Tim 1: Pemain | Hero | K/D/A | KDA | Gold | DMG | Taken */
+.md-s__team:not(.is-mirror) th:nth-child(1) { width: 17%; }
+.md-s__team:not(.is-mirror) th:nth-child(2) { width: 33%; }
+.md-s__team:not(.is-mirror) th:nth-child(3) { width: 10%; }
+.md-s__team:not(.is-mirror) th:nth-child(4) { width: 8%; }
+.md-s__team:not(.is-mirror) th:nth-child(5),
+.md-s__team:not(.is-mirror) th:nth-child(6),
+.md-s__team:not(.is-mirror) th:nth-child(7) { width: 10.67%; }
+
+/* Tim 2 (cermin): Taken | DMG | Gold | KDA | K/D/A | Hero | Pemain */
+.md-s__team.is-mirror th:nth-child(1),
+.md-s__team.is-mirror th:nth-child(2),
+.md-s__team.is-mirror th:nth-child(3) { width: 10.67%; }
+.md-s__team.is-mirror th:nth-child(4) { width: 8%; }
+.md-s__team.is-mirror th:nth-child(5) { width: 10%; }
+.md-s__team.is-mirror th:nth-child(6) { width: 33%; }
+.md-s__team.is-mirror th:nth-child(7) { width: 17%; }
+
+/* Tim 2: rata kanan agar tampak sebagai cermin */
+.md-s__team.is-mirror .md-s__table th,
+.md-s__team.is-mirror .md-s__table td { text-align: right; }
+.md-s__team.is-mirror .md-s__who { flex-direction: row-reverse; }
+.md-s__team.is-mirror .md-s__build { flex-direction: row-reverse; }
+
+/* ==========================================================================
+   Perbaikan sesuai Figma mobile (Detail hasil match - statistik & hero)
+   ========================================================================== */
+/* Pemilih game & tab: sudut membulat */
+.md-game, .md-tab { border-radius: 8px; }
+
+/* Kartu ringkasan: ikon di atas, label, nilai (3 per baris, lalu 2) */
+.md-s__cards { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; margin-bottom: 12px; }
+.md-s__card { grid-column: span 2; flex-direction: column; justify-content: center; gap: 2px; padding: 6px 8px; text-align: center; border-radius: 6px; }
+.md-s__text { align-items: center; gap: 1px; }
+.md-s__icon { width: 18px; height: 18px; }
+.md-s__label { font-size: 9px; font-weight: 600; color: #172B4D; }
+.md-s__value { font-size: 9px; font-weight: 600; }
+
+/* Tabel pemain: 7 kolom muat di 360 px, TANPA scroll horizontal */
+.md-s__team { border-color: #172B4D; border-radius: 4px; }
+.md-s__head { align-items: center; padding: 6px 8px; font-size: 12px; }
+.md-s__tname { display: inline-flex; align-items: center; gap: 6px; }
+.md-s__tlogo { width: 22px; height: 22px; object-fit: contain; background: #fff; border-radius: 4px; padding: 1px; }
+.md-s__scroll { overflow: hidden; }
+.md-s__table { table-layout: fixed; width: 100%; min-width: 0; font-size: 8px; }
+.md-s__table th, .md-s__table td { padding: 5px 1px; text-align: center; white-space: nowrap; overflow: hidden; }
+.md-s__table thead th { background: #e5e7eb; color: #172B4D; font-weight: 600; }
+.md-s__table td { font-weight: 600; color: #172B4D; }
+.md .md-s__team .md-s__table th.c-player { width: 23%; }
+.md .md-s__team .md-s__table th.c-hero   { width: 21%; }
+.md .md-s__team .md-s__table th.c-kda3   { width: 10%; }
+.md .md-s__team .md-s__table th.c-kda    { width: 9%; }
+.md .md-s__team .md-s__table th.c-gold   { width: 11%; }
+.md .md-s__team .md-s__table th.c-dmg    { width: 12%; }
+.md .md-s__team .md-s__table th.c-taken  { width: 14%; }
+.md-s__table .c-player { text-align: left; padding-left: 4px; white-space: normal; }
+.md-s__team:not(.is-mirror) .md-s__table .c-hero { text-align: left; padding-left: 2px; }
+.md-s__team:not(.is-mirror) .md-s__build { justify-content: flex-start; }
+.md-s__team.is-mirror .md-s__table .c-hero { text-align: right; padding-right: 2px; }
+.md-s__team.is-mirror .md-s__build { justify-content: flex-start; }
+.md-s__team.is-mirror .c-player { text-align: right; padding-left: 1px; padding-right: 4px; }
+.md-s__team.is-mirror .md-s__table th, .md-s__team.is-mirror .md-s__table td { text-align: center; }
+.md-s__team.is-mirror .md-s__table .c-player { text-align: right; }
+.md-s__who { display: flex; align-items: center; gap: 3px; min-width: 0; }
+.md-s__who span { min-width: 0; overflow-wrap: normal; word-break: normal; line-height: 1.15; font-size: 7px; }
+.md-s__photo { width: 18px; height: 18px; border-radius: 3px; flex: none; }
+.md-s__build { display: flex; align-items: center; justify-content: center; gap: 2px; }
+.md-s__team.is-mirror .md-s__build { flex-direction: row-reverse; }
+.md-s__hero { width: 24px; height: 24px; }
+.md-s__items { display: grid; grid-template-columns: repeat(3, 10px); gap: 1px; }
+.md-s__item { width: 10px; height: 10px; }
+
+/* Tab Hero: satu kolom — BTR Ban, BTR Pick, TLID Ban, TLID Pick */
+.md-hgrid { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+.md-hpanel { border-color: #172B4D; border-radius: 4px; }
+.md-hpanel__head { padding: 5px 8px; font-size: 12px; }
+.md-hlist { padding: 10px 8px; gap: 4px; }
+.md-hcell__icon { max-width: 44px; border-radius: 6px; }
+.md-hcell__name { font-size: 8px; white-space: normal; overflow-wrap: anywhere; line-height: 1.15;
+  display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; }
+
+@media (min-width: 768px) {
+  .md-s__cards { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .md-s__card { grid-column: auto; flex-direction: row; text-align: left; gap: 8px; padding: 8px 10px; }
+  .md-s__text { align-items: flex-start; }
+  .md-s__icon { width: 22px; height: 22px; } .md-s__label { font-size: 10px; font-weight: 400; } .md-s__value { font-size: 13px; }
+  .md-s__table { font-size: 11px; } .md-s__table th, .md-s__table td { padding: 8px 4px; }
+  .md-s__who span { font-size: 11px; } .md-s__photo { width: 28px; height: 28px; }
+  .md-s__hero { width: 28px; height: 28px; }
+  .md-s__items { display: flex; gap: 3px; } .md-s__item { width: 18px; height: 18px; }
+  .md-hgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 18px; }
+  .md-hcell__name { font-size: 9px; }
+}
+
+/* Tombol kembali: area sentuh 44px dan selalu di atas elemen lain */
+.md-header__back { position: relative; z-index: 2; width: 44px; height: 44px; margin-left: -8px; }

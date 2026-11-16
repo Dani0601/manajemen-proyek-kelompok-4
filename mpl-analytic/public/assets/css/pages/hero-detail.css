@@ -58,7 +58,13 @@
 /* Emblem & battle spell */
 .hd-build__side { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .hd-setup { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 12px 12px; padding: 12px; border-radius:8px;}
-.hd-setup--emblem { border-color: var(--hd-navy); align-items: flex-start; border: 1.5px solid; }
+.hd-setup--emblem {
+    border: 1.5px solid var(--hd-navy);
+    background: #F5F5F5;      
+    box-shadow: var(--hd-shadow);   
+    align-items: start;              
+    row-gap: 12px;                       
+}
 .hd-setup--spell { border-color: var(--hd-navy); border: 1.5px solid; }
 .hd-setup__icon { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: var(--hd-navy); }
 .hd-setup__label { margin: 0; font-size: 13px; font-weight: 500; text-transform: uppercase; line-height: 1.2; }
@@ -69,12 +75,46 @@
 .hd-talents { display: flex; gap: 6px; margin: 4px 0 0 0; padding: 0; list-style: none; }
 .hd-talent { width: 28px; height: 28px; border-radius: 8px; background: #000; overflow: hidden; }
 .hd-talent img { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* Emblem: talent turun ke baris kedua, selebar kartu */
+.hd-setup--emblem {
+    align-items: start;   /* ikon & teks rata atas */
+    row-gap: 12px;        /* jarak antara baris ikon/teks dan baris talent */
+}
+.hd-setup--emblem .hd-talents {
+    grid-column: 1 / -1;  /* mulai dari garis kolom pertama sampai terakhir */
+    margin: 0;            /* hapus margin atas lama (4px) */
+}
+/* Ikon emblem sedikit lebih besar dari ikon battle spell */
+.hd-setup--emblem .hd-setup__icon { width: 44px; height: 44px; }
+/* Label dikecilkan agar "EMBLEM SETUP" muat satu baris di layar sempit */
+.hd-setup--emblem .hd-setup__label { font-size: 11px; }
+/* Talent lebih besar dan lebih mudah dilihat */
+.hd-setup--emblem .hd-talents { gap: 8px; }
+.hd-setup--emblem .hd-talent  { width: 34px; height: 34px; border-radius: 10px; }
 
 /* Skill */
 .hd-skills { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; }
 .hd-skill { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; }
 .hd-skill__media { width: min(100%, 48px); aspect-ratio: 1; }
 .hd-skill__label { font-size: 10px; color: var(--hd-navy); text-align: center; }
+/* Ikon skill = tombol. Aktif = bingkai biru + label tebal. */
+.hd-skill__btn {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    width: 100%; min-height: 44px; padding: 4px;
+    background: none; border: 2px solid transparent; border-radius: 12px;
+    color: inherit; font: inherit; cursor: pointer;
+}
+.hd-skill__btn:hover { background: rgba(23, 43, 77, 0.06); }
+.hd-skill__btn:focus-visible { outline: 2px solid var(--hd-blue); outline-offset: 2px; }
+.hd-skill__btn.is-active { border-color: var(--hd-blue); }
+.hd-skill__btn.is-active .hd-skill__label { font-weight: 600; }
+
+/* Kotak penjelasan skill yang dipilih */
+.hd-skill-detail { margin-top: 12px; padding: 12px 14px; border: 1.5px solid var(--hd-navy); border-radius: 12px; background: #fff; }
+.hd-skill-detail__head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-bottom: 6px; }
+.hd-skill-detail__name { margin: 0; font-size: 16px; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; color: var(--hd-navy); overflow-wrap: anywhere; }
+.hd-skill-detail__badge { padding: 2px 12px; border-radius: 999px; background: var(--hd-navy); color: #fff; font-size: 11px; font-weight: 500; white-space: nowrap; }
+.hd-skill-detail__text { margin: 0; font-size: 13px; line-height: 1.55; color: var(--hd-navy); overflow-wrap: anywhere; }
 
 /* Official ratings */
 .hd-ratings { display: grid; gap: 4px; margin: 0; }
@@ -103,8 +143,27 @@
 .hd-pill { display: inline-block; justify-self: start; margin: 0; padding: 6px 12px; border-radius: 999px; background: var(--hd-navy); color: #fff; font-size: 11px; font-weight: 500; line-height: 1.25; }
 .hd-counter__list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
 .hd-counter-row { display: grid; grid-template-columns: 28px minmax(0, 76px) minmax(24px, 1fr) auto; align-items: center; gap: 8px; }
-.hd-counter-row__image { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
-.hd-counter-row .hd-avatar { border-radius: 50%; font-size: 11px; }
+
+/* [DIUBAH] Foto hero counter: selalu bulat 28x28, tidak ikut tertarik baris grid
+   atau aturan global img (height:auto / max-width:100%) */
+.hd-counter-row__image,
+.hd-counter-row .hd-avatar {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    min-height: 28px;
+    max-width: 28px;
+    max-height: 28px;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center top;   /* wajah hero biasanya di bagian atas */
+    display: block;
+    flex: none;
+}
+.hd-counter-row .hd-avatar { display: flex; font-size: 11px; }
+.hd-counter-row__image { align-self: center; justify-self: center; }
+
 .hd-counter-row__name { font-size: 11px; font-weight: 600; color: var(--hd-navy); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .hd-counter-row__value { font-size: 11px; font-weight: 600; }
 
@@ -199,7 +258,10 @@ a.hd-empty__button { display: inline-flex; align-items: center; justify-content:
     .hd-skill__media { width: min(100%, 56px); }
     .hd-skills { grid-template-columns: repeat(4, minmax(0, 120px)); justify-content: space-around; }
     .hd-skill__label { font-size: 11px; }
-
+    .hd-skill-detail { padding: 16px 20px; }
+    .hd-skill-detail__name { font-size: 18px; }
+    .hd-skill-detail__text { font-size: 14px; }
+    .hd-setup--emblem .hd-setup__label { font-size: 13px; }
     .hd-ratings-section { display: grid; }   /* Official Ratings hanya di desain mobile */
 
 

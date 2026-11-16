@@ -32,6 +32,12 @@
     const teamBName = match.team_b?.team_name ?? match.team2_name ?? match.teamB?.name ?? "Tim tidak diketahui";
     const scoreB = match.team_b?.score ?? match.team2_score ?? match.teamB?.score ?? 0;
 
+    const rawTime = match.match_time ?? match.time ?? null;
+    const rawDate = match.match_date ?? match.date ?? null;
+    const embedded = rawDate && /[T ]\d{2}:\d{2}/.test(rawDate)
+      ? String(rawDate).split(/[T ]/)[1]
+      : null;
+    const matchTime = String(rawTime ?? embedded ?? "").slice(0, 5);
     // Menentukan winnerTeamId jika backend mengirimkannya secara terpisah atau menghitungnya dari skor
     let winnerId = match.winner_team_id ?? match.winnerTeamId ?? null;
     if (winnerId == null && (scoreA > 0 || scoreB > 0)) {
@@ -51,6 +57,7 @@
     return {
       matchId: match.match_id ?? match.schedule_id ?? match.id ?? null,
       matchDate: match.match_date ?? match.date ?? null,
+      matchTime: matchTime,
       week: weekNumber,
       teamA: {
         id: teamAId,

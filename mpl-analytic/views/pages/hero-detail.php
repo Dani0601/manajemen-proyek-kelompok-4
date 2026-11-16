@@ -71,6 +71,15 @@ $heroId = (int) ($_GET['id'] ?? 0);
             <ul id="hd-skills" class="hd-skills"></ul>
             <div class="hd-state-slot" hidden></div>
         </div>
+            <!-- NEW: kotak penjelasan skill yang dipilih -->
+        <div id="hd-skill-detail" class="hd-skill-detail" aria-live="polite" hidden>
+            <div class="hd-skill-detail__head">
+                <h3 id="hd-skill-detail-name" class="hd-skill-detail__name"></h3>
+                <span id="hd-skill-detail-type" class="hd-skill-detail__badge"></span>
+            </div>
+            <p id="hd-skill-detail-text" class="hd-skill-detail__text"></p>
+        </div>
+        <!-- /NEW -->
     </section>
 
 
