@@ -25,9 +25,9 @@
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(
-        result.message || `HTTP ${response.status}`
-      );
+        const err = new Error(result.message || `HTTP ${response.status}`);
+        err.status = response.status;
+        throw err;
     }
 
     if (result.success === false) {
@@ -120,6 +120,18 @@ async function getHeroDetail(heroId) {
       if (!heroId) throw new Error('Hero ID diperlukan untuk getHeroCounters');
       return request(`/heroes/${heroId}/counters`);
   }
+  async function getTournamentStandings(seasonId = 1) {
+    return request(
+      `/tournaments/${encodeURIComponent(seasonId)}/standings`
+    );
+  }
+  async function getTeams() {
+    return request(`/teams`);
+  }
+
+  async function getTeamStats(teamId) {
+    return request(`/teams/${encodeURIComponent(teamId)}/stats`);
+  }
 
 
   window.ApiClient = {
@@ -131,6 +143,9 @@ async function getHeroDetail(heroId) {
     getPlayerComparison,
     getPlayerList,
     getHeroes,
+    getTournamentStandings,
+    getTeams,
+    getTeamStats,
     baseUrl: "http://menpro.test/manajemen-proyek-kelompok-4/mpl-analytic/public",
     // Tambahkan di dalam objek window.ApiClient
     searchHeroes: async function(query = '', role = '') {

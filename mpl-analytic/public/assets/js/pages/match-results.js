@@ -24,7 +24,6 @@
 
   // Menormalisasi data satu pertandingan dari API.
   function normalizeMatch(match) {
-    console.log("Data API Pertandingan:", match);
     const teamAId = match.team_a?.team_id ?? match.team1_id ?? match.teamA?.id ?? null;
     const teamAName = match.team_a?.team_name ?? match.team1_name ?? match.teamA?.name ?? "Tim tidak diketahui";
     const scoreA = match.team_a?.score ?? match.team1_score ?? match.teamA?.score ?? 0;

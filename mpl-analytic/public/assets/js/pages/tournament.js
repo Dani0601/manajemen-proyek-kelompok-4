@@ -56,12 +56,7 @@
       return String(value);
     }
 
-    return new Intl.DateTimeFormat('id-ID', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    }).format(date);
+    return new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long' }).format(date);
   }
 
   function getTeamName(team) {
@@ -105,10 +100,16 @@
     if (pageTitle && pageNote) {
       if (cleanKey === 'hasil') {
         pageTitle.textContent = 'HASIL PERTANDINGAN';
-        pageNote.textContent = 'Pertandingan MPL Indonesia Season 18 selanjutnya : Evos vs RRQ pada hari Jumat, 16 Oktober 2026 pukul 15:00.';
+        pageNote.textContent = ''; // Anda bisa isi logic untuk mengambil pertandingan terdekat di sini
       } else if (cleanKey === 'jadwal') {
-        pageTitle.textContent = 'JADWAL MPL INDONESIA SEASON 18';
-        pageNote.textContent = ''; // Kosongkan catatan jika ada
+        pageTitle.textContent = 'JADWAL PERTANDINGAN MPL INDONESIA SEASON 18';
+        pageNote.textContent = ''; 
+      } else if (cleanKey === 'klasemen') {
+        pageTitle.textContent = 'KLASEMEN MPL INDONESIA SEASON 18';
+        pageNote.textContent = ''; 
+      } else if (cleanKey === 'tim') {
+        pageTitle.textContent = 'DAFTAR TIM MPL INDONESIA SEASON 18';
+        pageNote.textContent = 'Daftar tim, statistik pertandingan, dan performa tiap tim di MPL Indonesia Season 18';
       }
     }
     // Update status tab (jika ada tombol tab di dalam halaman)
@@ -128,11 +129,25 @@
       const isTarget = panel.id === 'tr-panel-' + cleanKey;
       panel.hidden = !isTarget;
     });
+
+    // ==========================================
+    // INI ADALAH PEMICU UNTUK MENGAMBIL DATA API
+    // ==========================================
+    if (cleanKey === 'jadwal' && window.TournamentSchedule) {
+        // Panggil file tournament-schedule.js untuk tarik data
+        window.TournamentSchedule.init(); 
+    } 
+    else if (cleanKey === 'hasil') {
+        // Panggil fungsi hasil pertandingan lama
+        if (typeof loadMatchResults === 'function') {
+            loadMatchResults();
+        }
+    }
   }
 
   function initTabFromHash() {
     const hash = window.location.hash.replace('#', '').trim();
-    if (hash && ['jadwal', 'hasil', 'klasemen'].includes(hash)) {
+    if (hash && ['jadwal', 'hasil', 'klasemen', 'tim'].includes(hash)) {
       setTab(hash, false);
     } else {
       setTab('jadwal', false); // Default ke panel jadwal
@@ -296,7 +311,7 @@
   async function loadMatchResults() {
     const container = getResultsContainer();
     if (!container) return;
-
+    document.querySelector('.tr')?.classList.add('is-loading');
     if (!window.MatchResults || typeof window.MatchResults.getMatchResults !== 'function') {
       showResultsMessage('Gagal memuat hasil pertandingan', 'Modul pengambilan data belum tersedia.');
       return;
@@ -313,6 +328,8 @@
     } catch (error) {
       console.error('[Tournament] Gagal memuat hasil pertandingan:', error);
       showResultsMessage('Gagal memuat hasil', 'Terjadi kesalahan saat mengambil data. Silakan muat ulang halaman.');
+    }finally {
+        document.querySelector('.tr')?.classList.remove('is-loading');
     }
   }
 
