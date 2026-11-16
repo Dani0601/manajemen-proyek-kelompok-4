@@ -22,6 +22,7 @@ class Tournament {
                     m.match_id,
                     m.season_id,
                     m.match_date,
+                    m.match_time,
                     t1.team_id AS team_a_id,
                     t1.team_name AS team_a_name,
                     t1.team_code AS team_a_code,
@@ -36,7 +37,7 @@ class Tournament {
                 JOIN teams t2 ON m.team2_id = t2.team_id
                 JOIN seasons s ON m.season_id = s.season_id
                 WHERE (s.season_id = :season_id OR s.season_number = :season_id_num)
-                ORDER BY m.match_date ASC
+                ORDER BY m.match_date ASC, m.match_time ASC
                 {$limitClause}";
 
         $stmt = $this->db->prepare($sql);

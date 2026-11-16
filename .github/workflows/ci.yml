@@ -1,0 +1,64 @@
+name: CI – Build & Lint
+
+# Dijalankan otomatis setiap kali ada push ke branch mana pun
+# atau saat pull request dibuka / diperbarui ke branch main.
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    name: PHP Syntax Check (Build) & Code Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout kode repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Setup environment PHP (8.1)
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.1"
+          extensions: mbstring, pdo, pdo_mysql
+          coverage: none
+
+      # 3. Tahap Build (Wajib Lolos): Memastikan seluruh file PHP valid secara sintaks (tidak ada parse error)
+      #    Jika ada syntax error, step ini exit 1 dan Pull Request TIDAK boleh digabung (Blocked).
+      - name: Check PHP syntax (Build)
+        run: |
+          echo "=== Memeriksa sintaks PHP di seluruh project ==="
+          errors=0
+          while IFS= read -r -d '' file; do
+            if ! php -l "$file"; then
+              errors=$((errors + 1))
+            fi
+          done < <(find mpl-analytic -type f -name "*.php" -print0)
+
+          if [ $errors -ne 0 ]; then
+            echo "GAGAL: Ditemukan $errors berkas PHP yang memiliki kesalahan sintaks!"
+            exit 1
+          fi
+          echo "SUKSES: Semua berkas PHP lolos syntax check."
+
+      # 4. Tahap Lint (Peringatan): Memeriksa gaya penulisan kode (PSR-12)
+      #    Menggunakan continue-on-error: true sesuai aturan materi Pertemuan 11
+      #    (Diberi peringatan, tetapi boleh dilanjutkan / tidak memblokir merge).
+      - name: Run PHP Code Sniffer (Lint)
+        continue-on-error: true
+        run: |
+          echo "=== Mengunduh PHP_CodeSniffer ==="
+          curl -sL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar -o phpcs.phar
+          chmod +x phpcs.phar
+
+          echo "=== Memeriksa gaya penulisan kode (PSR-12) ==="
+          ./phpcs.phar \
+            --standard=PSR12 \
+            --extensions=php \
+            --ignore=mpl-analytic/database/*,mpl-analytic/public/assets/* \
+            mpl-analytic/app mpl-analytic/routes mpl-analytic/public/index.php \
+            || true
+          echo "=== Lint selesai (peringatan dicatat dan tidak memblokir merge) ==="

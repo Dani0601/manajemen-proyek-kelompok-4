@@ -1664,15 +1664,40 @@ paths:
                   stats:
                     player_id: 2
                     total_games: 21
+                    wins: 8
+                    losses: 13
+                    win_rate: 38.1
+                    avg_duration_seconds: 1104
+                    avg_duration: '18:24'
                     total_kills: '90'
                     total_deaths: '37'
                     total_assists: '63'
                     avg_kills: '4.29'
+                    avg_kills_per_game: 4.29
                     avg_deaths: '1.76'
+                    avg_deaths_per_game: 1.76
                     avg_assists: '3.00'
                     avg_kda: '4.14'
                     avg_gold_per_game: '14111'
                     avg_damage_per_game: '50255'
+                    game_stats:
+                      total: 21
+                      wins: 8
+                      losses: 13
+                      win_rate: 38.1
+                      avg_duration_seconds: 1104
+                      avg_duration: '18:24'
+                      avg_kills_per_game: 4.29
+                      avg_deaths_per_game: 1.76
+                  game_stats:
+                    total: 21
+                    wins: 8
+                    losses: 13
+                    win_rate: 38.1
+                    avg_duration_seconds: 1104
+                    avg_duration: '18:24'
+                    avg_kills_per_game: 4.29
+                    avg_deaths_per_game: 1.76
         '400':
           description: Validasi parameter player_id gagal (bukan angka positif).
           content:

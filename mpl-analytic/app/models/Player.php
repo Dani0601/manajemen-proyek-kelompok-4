@@ -135,6 +135,13 @@ class Player {
         $sql = "SELECT 
                     gp.player_id,
                     COUNT(DISTINCT gp.game_id) AS total_games,
+                    SUM(CASE WHEN g.winner_team_id = gp.team_id THEN 1 ELSE 0 END) AS wins,
+                    SUM(CASE WHEN g.winner_team_id IS NOT NULL AND g.winner_team_id <> gp.team_id THEN 1 ELSE 0 END) AS losses,
+                    ROUND(
+                        (SUM(CASE WHEN g.winner_team_id = gp.team_id THEN 1 ELSE 0 END) * 100.0) / NULLIF(COUNT(DISTINCT gp.game_id), 0),
+                        2
+                    ) AS win_rate,
+                    ROUND(AVG(g.duration_seconds), 0) AS avg_duration_seconds,
                     SUM(gp.kills) AS total_kills,
                     SUM(gp.deaths) AS total_deaths,
                     SUM(gp.assists) AS total_assists,
@@ -148,6 +155,7 @@ class Player {
                     ROUND(AVG(gp.gold), 0) AS avg_gold_per_game,
                     ROUND(AVG(gp.damage), 0) AS avg_damage_per_game
                 FROM game_players gp
+                LEFT JOIN games g ON gp.game_id = g.game_id
                 WHERE gp.player_id = :player_id
                 GROUP BY gp.player_id";
 

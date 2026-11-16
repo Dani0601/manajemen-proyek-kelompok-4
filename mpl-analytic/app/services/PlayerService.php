@@ -149,9 +149,51 @@ class PlayerService
         }
         unset($hero);
 
+        if (!empty($stats)) {
+            $totalGames     = (int) ($stats['total_games'] ?? 0);
+            $wins           = (int) ($stats['wins'] ?? 0);
+            $losses         = (int) ($stats['losses'] ?? 0);
+            $winRate        = $totalGames > 0
+                ? (float) ($stats['win_rate'] ?? round(($wins / $totalGames) * 100, 2))
+                : 0.0;
+            $avgDurationSec = (int) ($stats['avg_duration_seconds'] ?? 0);
+            $minutes        = floor($avgDurationSec / 60);
+            $seconds        = str_pad((string) ($avgDurationSec % 60), 2, '0', STR_PAD_LEFT);
+            $formattedDuration = "{$minutes}:{$seconds}";
+            $avgKills       = (float) ($stats['avg_kills'] ?? 0);
+            $avgDeaths      = (float) ($stats['avg_deaths'] ?? 0);
+
+            // Statistik Game (sesuai spesifikasi & UI card Statistik Game)
+            $stats['total_games']          = $totalGames;
+            $stats['wins']                 = $wins;
+            $stats['game_wins']            = $wins;
+            $stats['losses']               = $losses;
+            $stats['game_losses']          = $losses;
+            $stats['win_rate']             = $winRate;
+            $stats['avg_duration_seconds'] = $avgDurationSec;
+            $stats['avg_duration']         = $formattedDuration;
+            $stats['avg_kills']            = $avgKills;
+            $stats['avg_kills_per_game']   = $avgKills;
+            $stats['avg_deaths']           = $avgDeaths;
+            $stats['avg_deaths_per_game']  = $avgDeaths;
+
+            $gameStats = [
+                'total'                => $totalGames,
+                'wins'                 => $wins,
+                'losses'               => $losses,
+                'win_rate'             => $winRate,
+                'avg_duration_seconds' => $avgDurationSec,
+                'avg_duration'         => $formattedDuration,
+                'avg_kills_per_game'   => $avgKills,
+                'avg_deaths_per_game'  => $avgDeaths,
+            ];
+            $stats['game_stats'] = $gameStats;
+        }
+
         return [
             'player'           => $player,
             'stats'            => $stats,
+            'game_stats'       => $stats['game_stats'] ?? null,
             'most_used_heroes' => $mostUsedHeroes,
         ];
     }
