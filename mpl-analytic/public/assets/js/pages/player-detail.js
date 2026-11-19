@@ -251,13 +251,11 @@
            aria-label="Lihat detail hero ${escapeHTML(h.name)}">
           <img class="pd-hero__icon" src="${escapeHTML(h.icon)}" alt="" loading="lazy"
                onerror="this.onerror=null;this.style.visibility='hidden'">
-          <span class="pd-hero__info">
-            <span class="pd-hero__name">${escapeHTML(h.name)}</span>
-            <span class="pd-hero__meta">
-              <span>Dipilih: ${escapeHTML(h.picks)}</span>
-              <span>Rasio Menang: ${escapeHTML(percent(h.winRate))}</span>
-              <span>KDA: ${escapeHTML(decimal(h.kda))}</span>
-            </span>
+          <span class="pd-hero__name">${escapeHTML(h.name)}</span>
+          <span class="pd-hero__meta">
+            <span class="pd-hero__picks">Dipilih: ${escapeHTML(h.picks)}</span>
+            <span class="pd-hero__win">Rasio Menang: ${escapeHTML(percent(h.winRate))}</span>
+            <span class="pd-hero__kda">KDA: ${escapeHTML(decimal(h.kda))}</span>
           </span>
           <svg class="pd-hero__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
