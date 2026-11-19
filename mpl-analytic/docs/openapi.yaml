@@ -1,14 +1,22 @@
 openapi: 3.0.3
 info:
   title: MPL Analytic API
-  version: 1.3.0
+  version: 1.4.0
   description: 'Spesifikasi OpenAPI komprehensif untuk backend RESTful MPL Analytic
     berbasis PHP Native (MPL Indonesia Season 18).
 
-    Dilengkapi dengan seluruh endpoint kompetisi aktif (Season 18), tim (master, roster
-    pemain tim, statistik tim), pemain (master, komparasi head-to-head, detail, statistik
-    pemain, riwayat game), hero, match, game, klasemen, jadwal, serta rincian error
-    handling lengkap.'
+    Mendukung endpoint Season 18, tim, pemain, hero, match, game, klasemen, jadwal,
+    serta fitur terbaru Card 13-16:
+
+    - Card 13: Riwayat draft pick & ban per game (/api/games/{game_id}/drafts)
+
+    - Card 14: Pick Rate hero season berjalan & Hero Tren (/api/meta & /api/meta/trends)
+
+    - Card 15: Riwayat transfer pemain per tim (/api/teams/{team_id}/transfers & /api/transfers)
+
+    - Card 16: Hero favorit pro player (most used heroes) beserta rekomendasi build
+    item, emblem, dan battle spell di /api/players/{player_id}/stats, serta build
+    katalog hero di /api/heroes/{hero_id}/builds'
 servers:
 - url: http://localhost/manajemen-proyek-kelompok-4/mpl-analytic/public
   description: Apache / Laragon Server (Development Utama)
@@ -205,6 +213,30 @@ paths:
                     hero_icon_url: https://cdn.mplanalytic.com/heroes/belerick.png
                     win_rate: 52.2
                     pick_rate: 50.7576
+                    ban_rate: 72.4
+                  has_trend_data: true
+                  total_games_analyzed: 66
+                  hero_trends:
+                  - hero_id: 1
+                    hero_name: Dyrroth
+                    hero_icon_url: https://cdn.mplanalytic.com/heroes/dyrroth.png
+                    total_picked: 45
+                    pick_rate: 68.18
+                    win_rate: 57.78
+                    ban_rate: 15.15
+                  - hero_id: 75
+                    hero_name: Bruno
+                    hero_icon_url: https://cdn.mplanalytic.com/heroes/bruno.png
+                    total_picked: 38
+                    pick_rate: 57.58
+                    win_rate: 52.63
+                    ban_rate: 22.73
+                  - hero_id: 4
+                    hero_name: Belerick
+                    hero_icon_url: https://cdn.mplanalytic.com/heroes/belerick.png
+                    total_picked: 33
+                    pick_rate: 50.0
+                    win_rate: 51.52
                     ban_rate: 72.4
         '404':
           description: Data statistik tidak ditemukan untuk season yang diminta.
@@ -975,73 +1007,97 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuccessResponse'
-              example:
-                success: true
-                message: Build hero berhasil diambil.
-                data:
-                  hero:
-                    hero_id: 1
-                    hero_name: Dyrroth
-                    role: Fighter
-                    hero_slug: dyrroth
-                    hero_url: https://akmwebstatic.yuanzhanapp.com/web/madmin/image_1604bdeb797af75682b7e3ae3728e3db.png
-                    created_at: '2026-10-29 23:20:21'
-                    updated_at: '2026-10-30 13:25:17'
-                  items:
-                  - hero_build_item_id: 1394
-                    position: 1
-                    item_source_id: null
-                    item_name: Tough Boots
-                    item_url: https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_e7045efd7cf5bcb488594a7eac3ab4e2.png
-                    build_count: 11
-                    total_builds: 32
-                    share_percent: '34.3800'
-                    power_spike: '0'
-                    snapshot_at: '2026-10-06 13:09:27'
-                  - hero_build_item_id: 1395
-                    position: 2
-                    item_source_id: null
-                    item_name: War Axe
-                    item_url: https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage_2_1_60_2/100_fa1f5745cf88227722a9ff22c95c0bc4.png
-                    build_count: 23
-                    total_builds: 32
-                    share_percent: '71.8800'
-                    power_spike: '1'
-                    snapshot_at: '2026-10-06 13:09:27'
-                  emblems:
-                  - hero_build_emblem_id: 232
-                    emblem_name: View Dyrroth guide How to counter Dyrroth LOCK THIS
-                      IN BEFORE THE MATCH EMBLEM Fighter
-                    emblem_icon_url: https://static.wikia.nocookie.net/mobile-legends/images/b/ba/Custom_Fighter_Emblem.png/revision/latest?cb=20240110091232
-                    build_count: 18
-                    total_builds: 32
-                    snapshot_at: '2026-10-06 13:09:27'
-                    emblem_url: https://static.wikia.nocookie.net/mobile-legends/images/b/ba/Custom_Fighter_Emblem.png/revision/latest?cb=20240110091232
-                  talents:
-                  - hero_build_talent_id: 694
-                    position: 1
-                    talent_name: Thrill
-                    talent_icon_url: https://static.wikia.nocookie.net/mobile-legends/images/2/2e/Thrill.png/revision/latest?cb=20240215060116
-                    build_count: 13
-                    total_builds: 32
-                    snapshot_at: '2026-10-06 13:09:27'
-                    talent_url: https://static.wikia.nocookie.net/mobile-legends/images/2/2e/Thrill.png/revision/latest?cb=20240215060116
-                  spells:
-                  - hero_build_spell_id: 309
-                    spell_name: Flicker
-                    spell_icon_url: https://static.wikia.nocookie.net/mobile-legends/images/1/1e/Flicker.png/revision/latest?cb=20210818154536
-                    share_percent: '28.0000'
-                    build_count: 32
-                    snapshot_at: '2026-10-06 13:09:27'
-                    spell_url: https://static.wikia.nocookie.net/mobile-legends/images/1/1e/Flicker.png/revision/latest?cb=20210818154536
-                  situational_swaps:
-                  - hero_build_swap_id: 196
-                    condition_text: VS MAGIC
-                    item_name: Oracle
-                    share_percent: '31.0000'
-                    snapshot_at: '2026-10-06 13:09:27'
-                    item_url: https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_bc24b55abbbec6da408eb0ea5c37cad4.png
-                    item_icon_url: https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_bc24b55abbbec6da408eb0ea5c37cad4.png
+              examples:
+                BuildTersedia:
+                  summary: Rekomendasi build item, emblem, talent, dan battle spell
+                    tersedia
+                  value:
+                    success: true
+                    message: Build hero berhasil diambil.
+                    data:
+                      hero:
+                        hero_id: 1
+                        hero_name: Dyrroth
+                        role: Fighter
+                        hero_slug: dyrroth
+                        hero_url: https://akmwebstatic.yuanzhanapp.com/web/madmin/image_1604bdeb797af75682b7e3ae3728e3db.png
+                        created_at: '2026-10-29 23:20:21'
+                        updated_at: '2026-10-30 13:25:17'
+                      items:
+                      - hero_build_item_id: 1394
+                        position: 1
+                        item_source_id: null
+                        item_name: Tough Boots
+                        item_url: https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_e7045efd7cf5bcb488594a7eac3ab4e2.png
+                        build_count: 11
+                        total_builds: 32
+                        share_percent: '34.3800'
+                        power_spike: '0'
+                        snapshot_at: '2026-10-06 13:09:27'
+                      - hero_build_item_id: 1395
+                        position: 2
+                        item_source_id: null
+                        item_name: War Axe
+                        item_url: https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage_2_1_60_2/100_fa1f5745cf88227722a9ff22c95c0bc4.png
+                        build_count: 23
+                        total_builds: 32
+                        share_percent: '71.8800'
+                        power_spike: '1'
+                        snapshot_at: '2026-10-06 13:09:27'
+                      emblems:
+                      - hero_build_emblem_id: 232
+                        emblem_name: View Dyrroth guide How to counter Dyrroth LOCK
+                          THIS IN BEFORE THE MATCH EMBLEM Fighter
+                        emblem_icon_url: https://static.wikia.nocookie.net/mobile-legends/images/b/ba/Custom_Fighter_Emblem.png/revision/latest?cb=20240110091232
+                        build_count: 18
+                        total_builds: 32
+                        snapshot_at: '2026-10-06 13:09:27'
+                        emblem_url: https://static.wikia.nocookie.net/mobile-legends/images/b/ba/Custom_Fighter_Emblem.png/revision/latest?cb=20240110091232
+                      talents:
+                      - hero_build_talent_id: 694
+                        position: 1
+                        talent_name: Thrill
+                        talent_icon_url: https://static.wikia.nocookie.net/mobile-legends/images/2/2e/Thrill.png/revision/latest?cb=20240215060116
+                        build_count: 13
+                        total_builds: 32
+                        snapshot_at: '2026-10-06 13:09:27'
+                        talent_url: https://static.wikia.nocookie.net/mobile-legends/images/2/2e/Thrill.png/revision/latest?cb=20240215060116
+                      spells:
+                      - hero_build_spell_id: 309
+                        spell_name: Flicker
+                        spell_icon_url: https://static.wikia.nocookie.net/mobile-legends/images/1/1e/Flicker.png/revision/latest?cb=20210818154536
+                        share_percent: '28.0000'
+                        build_count: 32
+                        snapshot_at: '2026-10-06 13:09:27'
+                        spell_url: https://static.wikia.nocookie.net/mobile-legends/images/1/1e/Flicker.png/revision/latest?cb=20210818154536
+                      situational_swaps:
+                      - hero_build_swap_id: 196
+                        condition_text: VS MAGIC
+                        item_name: Oracle
+                        share_percent: '31.0000'
+                        snapshot_at: '2026-10-06 13:09:27'
+                        item_url: https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_bc24b55abbbec6da408eb0ea5c37cad4.png
+                        item_icon_url: https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_bc24b55abbbec6da408eb0ea5c37cad4.png
+                DataBuildKosong:
+                  summary: Hero baru / tanpa data build (kembalikan data kosong tanpa
+                    error server - Card 16)
+                  value:
+                    success: true
+                    message: Data rekomendasi build belum tersedia untuk hero ini.
+                    data:
+                      hero:
+                        hero_id: 140
+                        hero_name: New Hero
+                        hero_slug: new-hero
+                        role: Fighter
+                        hero_url: https://cdn.mplanalytic.com/heroes/new_hero.png
+                        created_at: '2026-11-18 10:00:00'
+                        updated_at: '2026-11-18 10:00:00'
+                      items: []
+                      emblems: []
+                      talents: []
+                      spells: []
+                      situational_swaps: []
         '400':
           description: Validasi parameter hero_id gagal (bukan angka positif).
           content:
@@ -1638,66 +1694,190 @@ paths:
     get:
       tags:
       - Players
-      summary: Statistik akumulasi performa pemain (kills, deaths, assists, KDA, gold,
-        damage) di Season 18
+      summary: Statistik akumulasi performa pemain dan hero favorit (most used heroes)
+        beserta rekomendasi build (Card 16)
       operationId: getPlayerStats
       parameters:
       - $ref: '#/components/parameters/PlayerId'
       responses:
         '200':
-          description: Statistik pemain berhasil diambil.
+          description: Statistik pemain dan hero favorit (most used heroes) berhasil
+            diambil.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuccessResponse'
-              example:
-                success: true
-                message: Statistik pemain berhasil diambil.
-                data:
-                  player:
-                    player_id: 2
-                    player_name: ALBERTTT
-                    player_photo_url: https://cdn.jsdelivr.net/gh/Dani0601/manajemen-proyek-kelompok-4@BEDani/mpl-analytic/public/assets/images/players/alberttt.png
-                    team_id: 1
-                    team_name: EVOS
-                    photo_url: https://cdn.jsdelivr.net/gh/Dani0601/manajemen-proyek-kelompok-4@BEDani/mpl-analytic/public/assets/images/players/alberttt.png
-                  stats:
-                    player_id: 2
-                    total_games: 21
-                    wins: 8
-                    losses: 13
-                    win_rate: 38.1
-                    avg_duration_seconds: 1104
-                    avg_duration: '18:24'
-                    total_kills: '90'
-                    total_deaths: '37'
-                    total_assists: '63'
-                    avg_kills: '4.29'
-                    avg_kills_per_game: 4.29
-                    avg_deaths: '1.76'
-                    avg_deaths_per_game: 1.76
-                    avg_assists: '3.00'
-                    avg_kda: '4.14'
-                    avg_gold_per_game: '14111'
-                    avg_damage_per_game: '50255'
-                    game_stats:
-                      total: 21
-                      wins: 8
-                      losses: 13
-                      win_rate: 38.1
-                      avg_duration_seconds: 1104
-                      avg_duration: '18:24'
-                      avg_kills_per_game: 4.29
-                      avg_deaths_per_game: 1.76
-                  game_stats:
-                    total: 21
-                    wins: 8
-                    losses: 13
-                    win_rate: 38.1
-                    avg_duration_seconds: 1104
-                    avg_duration: '18:24'
-                    avg_kills_per_game: 4.29
-                    avg_deaths_per_game: 1.76
+              examples:
+                StatistikLengkapDenganMostUsedHeroes:
+                  summary: Pemain memiliki data statistik game dan daftar hero favorit
+                    (most used heroes) beserta build rekomendasi
+                  value:
+                    success: true
+                    message: Statistik performa pemain berhasil diambil.
+                    data:
+                      player:
+                        player_id: 2
+                        player_name: ALBERTTT
+                        player_photo_url: https://cdn.jsdelivr.net/gh/Dani0601/manajemen-proyek-kelompok-4@BEDani/mpl-analytic/public/assets/images/players/alberttt.png
+                        photo_url: https://cdn.jsdelivr.net/gh/Dani0601/manajemen-proyek-kelompok-4@BEDani/mpl-analytic/public/assets/images/players/alberttt.png
+                        team_id: 1
+                        team_name: EVOS
+                      stats:
+                        total_games: 21
+                        wins: 8
+                        game_wins: 8
+                        losses: 13
+                        game_losses: 13
+                        win_rate: 38.1
+                        avg_kills: 4.29
+                        avg_kills_per_game: 4.29
+                        avg_deaths: 1.76
+                        avg_deaths_per_game: 1.76
+                        avg_assists: 3.0
+                        avg_kda: 4.14
+                        avg_duration: '18:24'
+                        avg_duration_seconds: 1104
+                        avg_gold_per_game: 14111
+                        avg_damage_per_game: 50255
+                      game_stats:
+                        total: 21
+                        wins: 8
+                        losses: 13
+                        win_rate: 38.1
+                        avg_duration: '18:24'
+                        avg_duration_seconds: 1104
+                        avg_kills_per_game: 4.29
+                        avg_deaths_per_game: 1.76
+                      most_used_heroes:
+                      - hero_id: 25
+                        hero_name: Ling
+                        hero_icon_url: https://cdn.mplanalytic.com/heroes/ling.png
+                        role: Assassin
+                        pick_count: 12
+                        wins: 9
+                        losses: 3
+                        win_rate: 75.0
+                        avg_kills: 5.2
+                        avg_deaths: 1.5
+                        avg_assists: 4.1
+                        avg_kda: 6.2
+                        build:
+                          items:
+                          - item_id: 1
+                            item_name: Tough Boots
+                            item_icon_url: https://cdn.mplanalytic.com/items/tough_boots.png
+                            position: 1
+                          - item_id: 2
+                            item_name: Berserker's Fury
+                            item_icon_url: https://cdn.mplanalytic.com/items/berserkers_fury.png
+                            position: 2
+                          - item_id: 3
+                            item_name: Endless Battle
+                            item_icon_url: https://cdn.mplanalytic.com/items/endless_battle.png
+                            position: 3
+                          - item_id: 4
+                            item_name: Blade of Despair
+                            item_icon_url: https://cdn.mplanalytic.com/items/blade_of_despair.png
+                            position: 4
+                          - item_id: 5
+                            item_name: Malefic Roar
+                            item_icon_url: https://cdn.mplanalytic.com/items/malefic_roar.png
+                            position: 5
+                          - item_id: 6
+                            item_name: Immortality
+                            item_icon_url: https://cdn.mplanalytic.com/items/immortality.png
+                            position: 6
+                          emblem:
+                            emblem_id: 3
+                            emblem_name: Custom Assassin Emblem
+                            emblem_icon_url: https://cdn.mplanalytic.com/emblems/assassin.png
+                            talents:
+                            - talent_name: Thrill
+                              talent_icon_url: https://cdn.mplanalytic.com/talents/thrill.png
+                              tier: 1
+                            - talent_name: Seasoned Hunter
+                              talent_icon_url: https://cdn.mplanalytic.com/talents/seasoned_hunter.png
+                              tier: 2
+                            - talent_name: Killing Spree
+                              talent_icon_url: https://cdn.mplanalytic.com/talents/killing_spree.png
+                              tier: 3
+                          battle_spell:
+                            spell_id: 1
+                            spell_name: Retribution
+                            spell_icon_url: https://cdn.mplanalytic.com/spells/retribution.png
+                      - hero_id: 12
+                        hero_name: Hayabusa
+                        hero_icon_url: https://cdn.mplanalytic.com/heroes/hayabusa.png
+                        role: Assassin
+                        pick_count: 8
+                        wins: 5
+                        losses: 3
+                        win_rate: 62.5
+                        avg_kills: 4.8
+                        avg_deaths: 2.1
+                        avg_assists: 3.9
+                        avg_kda: 4.14
+                        build:
+                          items:
+                          - item_id: 7
+                            item_name: Swift Boots
+                            item_icon_url: https://cdn.mplanalytic.com/items/swift_boots.png
+                            position: 1
+                          - item_id: 8
+                            item_name: Hunter Strike
+                            item_icon_url: https://cdn.mplanalytic.com/items/hunter_strike.png
+                            position: 2
+                          - item_id: 4
+                            item_name: Blade of Despair
+                            item_icon_url: https://cdn.mplanalytic.com/items/blade_of_despair.png
+                            position: 3
+                          - item_id: 5
+                            item_name: Malefic Roar
+                            item_icon_url: https://cdn.mplanalytic.com/items/malefic_roar.png
+                            position: 4
+                          - item_id: 9
+                            item_name: Rose Gold Meteor
+                            item_icon_url: https://cdn.mplanalytic.com/items/rose_gold_meteor.png
+                            position: 5
+                          - item_id: 6
+                            item_name: Immortality
+                            item_icon_url: https://cdn.mplanalytic.com/items/immortality.png
+                            position: 6
+                          emblem:
+                            emblem_id: 3
+                            emblem_name: Custom Assassin Emblem
+                            emblem_icon_url: https://cdn.mplanalytic.com/emblems/assassin.png
+                            talents:
+                            - talent_name: Rupture
+                              talent_icon_url: https://cdn.mplanalytic.com/talents/rupture.png
+                              tier: 1
+                            - talent_name: Master Assassin
+                              talent_icon_url: https://cdn.mplanalytic.com/talents/master_assassin.png
+                              tier: 2
+                            - talent_name: Lethal Ignition
+                              talent_icon_url: https://cdn.mplanalytic.com/talents/lethal_ignition.png
+                              tier: 3
+                          battle_spell:
+                            spell_id: 1
+                            spell_name: Retribution
+                            spell_icon_url: https://cdn.mplanalytic.com/spells/retribution.png
+                PemainTanpaDataGame:
+                  summary: 'Pemain belum memiliki riwayat pertandingan / hero (Card
+                    16: kembalikan data kosong tanpa error server)'
+                  value:
+                    success: true
+                    message: Statistik performa pemain berhasil diambil.
+                    data:
+                      player:
+                        player_id: 99
+                        player_name: ROOKIE
+                        player_photo_url: null
+                        photo_url: null
+                        team_id: 1
+                        team_name: EVOS
+                      stats: null
+                      game_stats: null
+                      most_used_heroes: []
         '400':
           description: Validasi parameter player_id gagal (bukan angka positif).
           content:
@@ -1745,6 +1925,12 @@ paths:
                 data: null
                 error:
                   code: METHOD_NOT_ALLOWED
+      description: Mengambil akumulasi performa pemain profesional MPL Season 18 (kills,
+        deaths, assists, KDA, gold, damage, statistik game) serta data hero favorit
+        / paling sering dipakai (most_used_heroes) yang dilengkapi dengan rekomendasi
+        build (item, emblem, dan Battle Spell) pada setiap hero tersebut (Card 16).
+        Jika pemain belum memiliki riwayat statistik atau game, mengembalikan array
+        kosong/null dengan status 200 OK tanpa error server.
   /api/players/{player_id}/games:
     get:
       tags:
@@ -2842,6 +3028,386 @@ paths:
                 data: null
                 error:
                   code: NOT_IMPLEMENTED
+  /api/games/{game_id}/drafts:
+    get:
+      tags:
+      - Games
+      summary: Riwayat draft pick dan ban per game individual Season 18 (Card 13)
+      description: Mengambil data urutan giliran pick dan ban (pick_ban_turn) dari
+        kedua tim pada suatu game pertandingan. Mendukung penanganan game tanpa data
+        draft (mengembalikan array kosong dengan status 200).
+      operationId: getGameDrafts
+      parameters:
+      - $ref: '#/components/parameters/GameId'
+      responses:
+        '200':
+          description: Riwayat draft pick dan ban game berhasil diambil.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              examples:
+                AdaDataDraft:
+                  summary: Game memiliki riwayat draft pick dan ban lengkap
+                  value:
+                    success: true
+                    message: Data draft game berhasil diambil.
+                    data:
+                      game_id: MPL-S18-RRQ-ONIC-G1
+                      total_drafts: 4
+                      drafts:
+                      - draft_id: 1
+                        game_id: MPL-S18-RRQ-ONIC-G1
+                        pick_ban_turn: 1
+                        type: ban
+                        team_id: 1
+                        team_name: RRQ Hoshi
+                        team_side: blue
+                        hero_id: 4
+                        hero_name: Belerick
+                        hero_image_url: https://cdn.mplanalytic.com/heroes/belerick.png
+                      - draft_id: 2
+                        game_id: MPL-S18-RRQ-ONIC-G1
+                        pick_ban_turn: 2
+                        type: ban
+                        team_id: 2
+                        team_name: Fnatic ONIC
+                        team_side: red
+                        hero_id: 84
+                        hero_name: Yve
+                        hero_image_url: https://cdn.mplanalytic.com/heroes/yve.png
+                      - draft_id: 3
+                        game_id: MPL-S18-RRQ-ONIC-G1
+                        pick_ban_turn: 3
+                        type: pick
+                        team_id: 1
+                        team_name: RRQ Hoshi
+                        team_side: blue
+                        hero_id: 1
+                        hero_name: Dyrroth
+                        hero_image_url: https://akmwebstatic.yuanzhanapp.com/web/madmin/image_1604bdeb797af75682b7e3ae3728e3db.png
+                      - draft_id: 4
+                        game_id: MPL-S18-RRQ-ONIC-G1
+                        pick_ban_turn: 4
+                        type: pick
+                        team_id: 2
+                        team_name: Fnatic ONIC
+                        team_side: red
+                        hero_id: 75
+                        hero_name: Bruno
+                        hero_image_url: https://cdn.mplanalytic.com/heroes/bruno.png
+                GameTanpaDraft:
+                  summary: Game belum memiliki data draft (dikembalikan array kosong
+                    tanpa error)
+                  value:
+                    success: true
+                    message: Data draft game belum tersedia.
+                    data:
+                      game_id: MPL-S18-RRQ-ONIC-G2
+                      total_drafts: 0
+                      drafts: []
+        '400':
+          description: Validasi parameter game_id gagal.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: game_id wajib diisi.
+                data: null
+                error:
+                  code: INVALID_GAME_ID
+        '404':
+          description: Game tidak ditemukan.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Game tidak ditemukan.
+                data: null
+                error:
+                  code: GAME_NOT_FOUND
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
+  /api/meta/trends:
+    get:
+      tags:
+      - Meta
+      summary: Statistik Pick Rate hero season berjalan dan Hero Tren (Card 14)
+      description: Menghitung Pick Rate hero khusus untuk season MPL berjalan (US-14),
+        diurutkan berdasarkan frekuensi penggunaan. Jika season tanpa data pertandingan,
+        mengembalikan penanda data tren belum tersedia (bukan error server).
+      operationId: getMetaHeroTrends
+      parameters:
+      - name: season
+        in: query
+        required: false
+        description: 'ID season kompetisi MPL (default: season berjalan 18)'
+        schema:
+          type: integer
+          example: 18
+      responses:
+        '200':
+          description: Data statistik tren pick rate hero berhasil diambil.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              examples:
+                DataTrenTersedia:
+                  summary: Data tren hero pada season berjalan tersedia
+                  value:
+                    success: true
+                    message: Data tren hero season berjalan berhasil diambil.
+                    data:
+                      season: 18
+                      has_trend_data: true
+                      total_games_analyzed: 66
+                      hero_trends:
+                      - hero_id: 1
+                        hero_name: Dyrroth
+                        hero_icon_url: https://cdn.mplanalytic.com/heroes/dyrroth.png
+                        total_picked: 45
+                        pick_rate: 68.18
+                        win_rate: 57.78
+                        ban_rate: 15.15
+                      - hero_id: 75
+                        hero_name: Bruno
+                        hero_icon_url: https://cdn.mplanalytic.com/heroes/bruno.png
+                        total_picked: 38
+                        pick_rate: 57.58
+                        win_rate: 52.63
+                        ban_rate: 22.73
+                SeasonTanpaDataPertandingan:
+                  summary: 'Season berjalan tanpa data pertandingan (AC US-14: kembalikan
+                    penanda bukan error server)'
+                  value:
+                    success: true
+                    message: Data tren belum tersedia untuk musim ini.
+                    data:
+                      season: 19
+                      has_trend_data: false
+                      total_games_analyzed: 0
+                      hero_trends: []
+        '400':
+          description: Parameter season tidak valid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Parameter season harus berupa angka positif.
+                data: null
+                error:
+                  code: INVALID_SEASON_ID
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
+  /api/teams/{team_id}/transfers:
+    get:
+      tags:
+      - Teams
+      summary: Riwayat transfer pemain per tim MPL Season 18 (Card 15)
+      description: Mengambil riwayat transfer pemain masuk (incoming) dan pemain keluar
+        (outgoing) untuk tim tertentu pada MPL Season 18 tanpa parameter season. Mengembalikan
+        array kosong jika belum ada riwayat transfer (200 OK).
+      operationId: getTeamTransfers
+      parameters:
+      - $ref: '#/components/parameters/TeamId'
+      responses:
+        '200':
+          description: Riwayat transfer tim berhasil diambil.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              examples:
+                AdaDataTransfer:
+                  summary: Tim memiliki riwayat pemain masuk dan pemain keluar
+                  value:
+                    success: true
+                    message: Riwayat transfer tim berhasil diambil.
+                    data:
+                      team_id: 1
+                      team_name: EVOS Glory
+                      team_logo_url: https://cdn.mplanalytic.com/teams/evos.png
+                      total_transfers_in: 1
+                      total_transfers_out: 1
+                      transfers_in:
+                      - transfer_id: 101
+                        player_id: 2
+                        player_name: ALBERTTT
+                        player_role: Jungler
+                        player_photo_url: https://cdn.jsdelivr.net/gh/Dani0601/manajemen-proyek-kelompok-4@BEDani/mpl-analytic/public/assets/images/players/alberttt.png
+                        from_team_id: 2
+                        from_team_name: Fnatic ONIC
+                        from_team_logo_url: https://cdn.mplanalytic.com/teams/onic.png
+                        to_team_id: 1
+                        to_team_name: EVOS Glory
+                        to_team_logo_url: https://cdn.mplanalytic.com/teams/evos.png
+                        transfer_date: '2026-08-15'
+                        transfer_type: in
+                      transfers_out:
+                      - transfer_id: 102
+                        player_id: 15
+                        player_name: VAN
+                        player_role: Jungler
+                        player_photo_url: null
+                        from_team_id: 1
+                        from_team_name: EVOS Glory
+                        from_team_logo_url: https://cdn.mplanalytic.com/teams/evos.png
+                        to_team_id: 5
+                        to_team_name: Bigetron Alpha
+                        to_team_logo_url: https://cdn.mplanalytic.com/teams/btr.png
+                        transfer_date: '2026-08-10'
+                        transfer_type: out
+                DataTransferKosong:
+                  summary: Tim belum memiliki data transfer (array kosong tanpa error)
+                  value:
+                    success: true
+                    message: Riwayat transfer tim berhasil diambil.
+                    data:
+                      team_id: 3
+                      team_name: RRQ Hoshi
+                      team_logo_url: https://cdn.mplanalytic.com/teams/rrq.png
+                      total_transfers_in: 0
+                      total_transfers_out: 0
+                      transfers_in: []
+                      transfers_out: []
+        '400':
+          description: Validasi parameter team_id gagal.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                InvalidTEAM_ID:
+                  summary: team_id bernilai 0 atau negatif
+                  value:
+                    success: false
+                    message: team_id harus lebih besar dari 0.
+                    data: null
+                    error:
+                      code: INVALID_TEAM_ID
+                InvalidInteger:
+                  summary: team_id bukan integer
+                  value:
+                    success: false
+                    message: team_id harus berupa angka.
+                    data: null
+                    error:
+                      code: INVALID_INTEGER
+        '404':
+          description: Tim tidak ditemukan.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Tim tidak ditemukan.
+                data: null
+                error:
+                  code: TEAM_NOT_FOUND
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
+  /api/transfers:
+    get:
+      tags:
+      - Teams
+      summary: Daftar seluruh riwayat transfer pemain MPL Season 18 (Card 15)
+      description: Mengambil master daftar riwayat pergerakan bursa transfer seluruh
+        pemain profesional MPL Season 18 dengan dukungan paginasi.
+      operationId: getAllTransfers
+      parameters:
+      - name: page
+        in: query
+        required: false
+        description: 'Nomor halaman transfer (default: 1)'
+        schema:
+          type: integer
+          example: 1
+      - name: limit
+        in: query
+        required: false
+        description: 'Jumlah transfer per halaman (default: 20)'
+        schema:
+          type: integer
+          example: 20
+      responses:
+        '200':
+          description: Daftar riwayat transfer pemain berhasil diambil.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                success: true
+                message: Data transfer pemain berhasil diambil.
+                data:
+                  transfers:
+                  - transfer_id: 101
+                    player_id: 2
+                    player_name: ALBERTTT
+                    player_role: Jungler
+                    player_photo_url: https://cdn.jsdelivr.net/gh/Dani0601/manajemen-proyek-kelompok-4@BEDani/mpl-analytic/public/assets/images/players/alberttt.png
+                    from_team_id: 2
+                    from_team_name: Fnatic ONIC
+                    from_team_logo_url: https://cdn.mplanalytic.com/teams/onic.png
+                    to_team_id: 1
+                    to_team_name: EVOS Glory
+                    to_team_logo_url: https://cdn.mplanalytic.com/teams/evos.png
+                    transfer_date: '2026-08-15'
+                  pagination:
+                    current_page: 1
+                    per_page: 20
+                    total_data: 1
+                    total_pages: 1
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
 components:
   parameters:
     HeroId:
