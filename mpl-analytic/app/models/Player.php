@@ -16,6 +16,7 @@ class Player {
                     p.player_id, 
                     p.player_name,
                     p.player_photo_url,
+                    p.status,
                     (
                         SELECT t.team_id
                         FROM game_players gp
@@ -35,6 +36,7 @@ class Player {
                         LIMIT 1
                     ) AS team_name
                 FROM players p
+                WHERE p.status = 'active'
                 ORDER BY p.player_name ASC
                 LIMIT :limit OFFSET :offset";
                 
@@ -90,6 +92,7 @@ class Player {
                     p.player_id, 
                     p.player_name,
                     p.player_photo_url,
+                    p.status,
                     (
                         SELECT t.team_id
                         FROM game_players gp

@@ -141,12 +141,14 @@
         avgKills: games.avg_kills_per_game ?? null,
         avgDeaths: games.avg_deaths_per_game ?? null,
       },
-      players: (data?.players || []).map((p) => ({
-        id: p.player_id,
-        name: p.player_name || "",
-        photo: p.player_photo_url || p.photo_url || "",
-        role: p.role || p.player_role || p.position || "",
-      })),
+      players: (data?.players || [])
+        .filter((p) => p.status !== "inactive")
+        .map((p) => ({
+          id: p.player_id,
+          name: p.player_name || "",
+          photo: p.player_photo_url || p.photo_url || "",
+          role: p.role || p.player_role || p.position || "",
+        })),
     };
   }
 
