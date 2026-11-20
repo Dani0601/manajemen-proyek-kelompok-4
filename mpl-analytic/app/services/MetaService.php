@@ -4,9 +4,82 @@ require_once __DIR__ . '/../models/HeroStats.php';
 
 class MetaService {
     private $heroStatsModel;
+    private $db;
 
     public function __construct($db) {
+        $this->db = $db;
         $this->heroStatsModel = new HeroStats($db);
+    }
+
+    /**
+     * Card 14.1 — Pick Rate hero season berjalan, diurutkan berdasarkan frekuensi penggunaan.
+     * Mengembalikan data kosong (bukan error) jika season belum punya data pertandingan.
+     */
+    public function getHeroTrendsBySeason($seasonId = 17): array {
+        // Resolve season
+        $seasonStmt = $this->db->prepare(
+            "SELECT season_id FROM seasons WHERE season_id = :s1 OR season_number = :s2 LIMIT 1"
+        );
+        $seasonStmt->execute([':s1' => $seasonId, ':s2' => $seasonId]);
+        $resolved = $seasonStmt->fetchColumn();
+        $targetSeasonId = $resolved !== false ? (int)$resolved : (int)$seasonId;
+
+        // Total game di season
+        $totalStmt = $this->db->prepare(
+            "SELECT COUNT(g.game_id) AS total_games
+             FROM games g
+             JOIN matches m ON g.match_id = m.match_id
+             WHERE m.season_id = :sid"
+        );
+        $totalStmt->execute([':sid' => $targetSeasonId]);
+        $totalGames = (int)($totalStmt->fetchColumn() ?: 0);
+
+        // Jika belum ada data pertandingan → kembalikan indikator tren belum tersedia
+        if ($totalGames === 0) {
+            return [
+                'season_id'          => $targetSeasonId,
+                'total_games'        => 0,
+                'has_trend_data'     => false,
+                'heroes'             => [],
+            ];
+        }
+
+        // Pick rate per hero (dari hero_season_stats yang sudah pre-computed)
+        $sql = "SELECT
+                    h.hero_id,
+                    h.hero_name,
+                    COALESCE(hss.pick_count, 0)  AS total_picked,
+                    COALESCE(hss.pick_rate, 0)   AS pick_rate,
+                    COALESCE(hss.win_rate, 0)    AS win_rate
+                FROM heroes h
+                LEFT JOIN hero_season_stats hss
+                    ON hss.hero_id = h.hero_id AND hss.season_id = :sid
+                WHERE COALESCE(hss.pick_count, 0) > 0
+                ORDER BY hss.pick_count DESC";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':sid' => $targetSeasonId]);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $heroes = [];
+        foreach ($rows as $row) {
+            $iconName = strtolower(str_replace([' ', "'"], ['_', ''], $row['hero_name']));
+            $heroes[] = [
+                'hero_id'       => (int)$row['hero_id'],
+                'hero_name'     => $row['hero_name'],
+                'hero_icon_url' => 'https://cdn.mplanalytic.com/heroes/' . $iconName . '.png',
+                'total_picked'  => (int)$row['total_picked'],
+                'pick_rate'     => (float)$row['pick_rate'],
+                'win_rate'      => (float)$row['win_rate'],
+            ];
+        }
+
+        return [
+            'season_id'      => $targetSeasonId,
+            'total_games'    => $totalGames,
+            'has_trend_data' => true,
+            'heroes'         => $heroes,
+        ];
     }
 
     public function getTopHeroesSummary($seasonId = 17) {

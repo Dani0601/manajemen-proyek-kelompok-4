@@ -43,6 +43,29 @@ class MetaController {
     }
 
     /**
+     * GET /api/meta/trends
+     * Card 14.1 — Pick rate hero season berjalan, diurutkan berdasarkan frekuensi penggunaan.
+     * Season tanpa data → 200 OK dengan has_trend_data: false (bukan error server).
+     */
+    public function trends() {
+        try {
+            $seasonId = isset($_GET['season']) ? (int)$_GET['season'] : 17;
+
+            $data = $this->metaService->getHeroTrendsBySeason($seasonId);
+
+            jsonResponse($data, 'Data tren hero berhasil diambil.');
+
+        } catch (Exception $e) {
+            jsonResponse(
+                null,
+                'Terjadi kesalahan pada server: ' . $e->getMessage(),
+                500,
+                ['error' => ['code' => 'INTERNAL_SERVER_ERROR']]
+            );
+        }
+    }
+
+    /**
      * Alias backward-compat untuk getDashboardSummary
      */
     public function getDashboardSummary() {
