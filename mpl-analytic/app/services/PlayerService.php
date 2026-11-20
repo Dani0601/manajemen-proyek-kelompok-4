@@ -146,6 +146,14 @@ class PlayerService
             $hero['win_rate'] = $hero['pick_count'] > 0
                 ? round(($hero['wins'] / $hero['pick_count']) * 100, 2)
                 : 0.0;
+
+            // Card 16.1 — Enrich dengan data build (item, emblem, battle_spell)
+            $heroId = (int)$hero['hero_id'];
+            $hero['recommended_build'] = [
+                'items'         => $this->playerModel->getHeroBuildItems($heroId),
+                'emblem'        => $this->playerModel->getHeroEmblems($heroId)[0] ?? null,
+                'battle_spells' => $this->playerModel->getHeroSpells($heroId),
+            ];
         }
         unset($hero);
 
