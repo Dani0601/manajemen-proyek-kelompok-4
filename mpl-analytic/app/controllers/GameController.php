@@ -227,6 +227,29 @@ class GameController
 
     /*
     |--------------------------------------------------------------------------
+    | GET /api/games/{game_id}/drafts (Card 13.1)
+    |--------------------------------------------------------------------------
+    */
+
+    public function drafts(string $gameId): void
+    {
+        try {
+            $data = $this->service->getDrafts($gameId);
+
+            $message = !empty($data['drafts'])
+                ? 'Data draft game berhasil diambil.'
+                : 'Data draft game belum tersedia.';
+
+            jsonResponse($data, $message);
+
+        } catch (RuntimeException $e) {
+            $this->handleGameException($e);
+        }
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
     | GAME EXCEPTION
     |--------------------------------------------------------------------------
     */
