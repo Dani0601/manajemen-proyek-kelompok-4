@@ -124,6 +124,26 @@ class GameService
 
     /*
     |--------------------------------------------------------------------------
+    | GET DRAFTS (Card 13.1)
+    |--------------------------------------------------------------------------
+    */
+
+    public function getDrafts(string $gameId): array
+    {
+        $this->ensureGameExists($gameId);
+
+        $drafts = $this->gameModel->getDrafts($gameId);
+
+        return [
+            'game_id'      => $gameId,
+            'total_drafts' => count($drafts),
+            'drafts'       => $drafts,
+        ];
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
     | GET PICKS
     |--------------------------------------------------------------------------
     */

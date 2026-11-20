@@ -152,6 +152,70 @@ class Game
 
     /**
      * =========================================================
+     * GAME DRAFTS (Card 13.1)
+     * =========================================================
+     * Mengambil urutan pick dan ban dalam satu game
+     */
+    public function getDrafts(string $gameId): array
+    {
+        $sql = "
+            SELECT
+                gb.game_ban_id AS draft_id,
+                gb.game_id,
+                gb.ban_turn AS pick_ban_turn,
+                gb.team_id,
+                t.team_name,
+                CASE WHEN gb.side = 'team1' THEN 'blue' ELSE 'red' END AS team_side,
+                'ban' AS type,
+                h.hero_id,
+                h.hero_name,
+                h.hero_url AS hero_image_url
+            FROM game_bans gb
+            JOIN teams t ON gb.team_id = t.team_id
+            JOIN heroes h ON gb.hero_id = h.hero_id
+            WHERE gb.game_id = :g1
+
+            UNION ALL
+
+            SELECT
+                gp.game_pick_id AS draft_id,
+                gp.game_id,
+                (ROW_NUMBER() OVER(ORDER BY gp.game_pick_id) + COALESCE((SELECT MAX(ban_turn) FROM game_bans WHERE game_id = :g2), 0)) AS pick_ban_turn,
+                gp.team_id,
+                t.team_name,
+                CASE WHEN gp.side = 'team1' THEN 'blue' ELSE 'red' END AS team_side,
+                'pick' AS type,
+                h.hero_id,
+                h.hero_name,
+                h.hero_url AS hero_image_url
+            FROM game_picks gp
+            JOIN teams t ON gp.team_id = t.team_id
+            JOIN heroes h ON gp.hero_id = h.hero_id
+            WHERE gp.game_id = :g3
+
+            ORDER BY pick_ban_turn ASC
+        ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            ':g1' => $gameId,
+            ':g2' => $gameId,
+            ':g3' => $gameId
+        ]);
+
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($rows as &$r) {
+            $r['pick_ban_turn'] = (int)$r['pick_ban_turn'];
+            $r['team_id']       = (int)$r['team_id'];
+            $r['hero_id']       = (int)$r['hero_id'];
+        }
+        unset($r);
+
+        return $rows;
+    }
+
+    /**
+     * =========================================================
      * GAME PICKS
      * =========================================================
      */
