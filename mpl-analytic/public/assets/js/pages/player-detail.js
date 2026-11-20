@@ -244,10 +244,10 @@
       el.heroes.innerHTML = `<li class="pd-empty">Data hero belum tersedia</li>`;
       return;
     }
-
+    const from = encodeURIComponent(window.location.pathname + window.location.search);
     el.heroes.innerHTML = list.map((h) => `
       <li class="pd-hero">
-        <a class="pd-hero__link" href="${escapeHTML(baseUrl)}/hero-detail?id=${encodeURIComponent(h.id)}"
+        <a class="pd-hero__link" href="${escapeHTML(baseUrl)}/hero-detail?id=${encodeURIComponent(h.id)}&from=${from}""
            aria-label="Lihat detail hero ${escapeHTML(h.name)}">
           <img class="pd-hero__icon" src="${escapeHTML(h.icon)}" alt="" loading="lazy"
                onerror="this.onerror=null;this.style.visibility='hidden'">

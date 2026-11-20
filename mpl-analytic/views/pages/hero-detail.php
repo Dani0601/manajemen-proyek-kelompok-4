@@ -6,7 +6,17 @@ $pageJs = 'hero-detail.js';
 
 require BASE_PATH . '/views/layouts/header.php';
 require BASE_PATH . '/views/layouts/navbar.php';
-
+$backUrl = $baseUrl . '/hero';
+$from = (string) ($_GET['from'] ?? '');
+if (
+    $from !== ''
+    && strpos($from, $baseUrl . '/') === 0      // harus di dalam situs ini
+    && strpos($from, '//') !== 0                // bukan URL protokol-relatif
+    && !preg_match('/[\r\n\\\\]/', $from)       // tanpa karakter berbahaya
+) {
+    $backUrl = $from;
+}
+$backUrl = htmlspecialchars($backUrl, ENT_QUOTES, 'UTF-8');
 $assetBase = htmlspecialchars(ASSET_BASE, ENT_QUOTES, 'UTF-8');
 $heroId = (int) ($_GET['id'] ?? 0);
 
@@ -26,7 +36,7 @@ $heroId = (int) ($_GET['id'] ?? 0);
     data-hero-id="<?= $heroId ?>"
 >
     <header class="hd-header">
-        <a class="hd-header__back" href="<?= htmlspecialchars($baseUrl . '/hero', ENT_QUOTES, 'UTF-8') ?>" aria-label="Kembali ke daftar hero">
+        <a class="hd-header__back" href="<?= $backUrl ?>" aria-label="Kembali">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                  stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M20 12H4M10 6l-6 6 6 6"></path>
