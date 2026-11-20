@@ -1134,6 +1134,59 @@ if (
 
 /*
 |--------------------------------------------------------------------------
+| TRANSFERS
+|--------------------------------------------------------------------------
+|
+| GET /api/transfers                        → semua transfer (paginasi)
+| GET /api/teams/{id}/transfers             → transfer per tim (in & out)
+| GET /api/players/{id}/transfers           → riwayat transfer per pemain
+|
+*/
+
+// GET /api/transfers
+if (
+    $method === 'GET' &&
+    isset($segments[0], $segments[1]) &&
+    $segments[0] === 'api' &&
+    $segments[1] === 'transfers' &&
+    !isset($segments[2])
+) {
+    $controller = loadController('TransferController.php', 'TransferController');
+    $controller->index();
+    exit;
+}
+
+// GET /api/teams/{id}/transfers
+if (
+    $method === 'GET' &&
+    isset($segments[0], $segments[1], $segments[2], $segments[3]) &&
+    $segments[0] === 'api' &&
+    $segments[1] === 'teams' &&
+    $segments[3] === 'transfers' &&
+    !isset($segments[4])
+) {
+    $controller = loadController('TransferController.php', 'TransferController');
+    $controller->byTeam((int)$segments[2]);
+    exit;
+}
+
+// GET /api/players/{id}/transfers
+if (
+    $method === 'GET' &&
+    isset($segments[0], $segments[1], $segments[2], $segments[3]) &&
+    $segments[0] === 'api' &&
+    $segments[1] === 'players' &&
+    $segments[3] === 'transfers' &&
+    !isset($segments[4])
+) {
+    $controller = loadController('TransferController.php', 'TransferController');
+    $controller->byPlayer((int)$segments[2]);
+    exit;
+}
+
+
+/*
+|--------------------------------------------------------------------------
 | ENDPOINT TIDAK DITEMUKAN
 |--------------------------------------------------------------------------
 */

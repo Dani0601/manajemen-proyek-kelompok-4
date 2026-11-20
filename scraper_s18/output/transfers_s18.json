@@ -1,0 +1,204 @@
+{
+  "scraped_at": "2026-11-19T22:14:02.653388",
+  "total": 22,
+  "transfers": [
+    {
+      "player_name": "DEMONKITE",
+      "from_team_name": "Echo",
+      "to_team_name": "RRQ Hoshi",
+      "transfer_type": "buyout",
+      "transfer_date": "2026-08-01",
+      "source_raw": "manual|buyout|esports.id",
+      "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
+    },
+    {
+      "player_name": "DRIANW",
+      "from_team_name": "ONIC",
+      "to_team_name": "EVOS",
+      "transfer_type": "free_transfer",
+      "transfer_date": "2026-07-15",
+      "source_raw": "manual|transfer|skor.id",
+      "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
+    },
+    {
+      "player_name": "ALBERTTT",
+      "from_team_name": "RRQ Hoshi",
+      "to_team_name": "EVOS",
+      "transfer_type": "free_transfer",
+      "transfer_date": "2026-07-15",
+      "source_raw": "manual|transfer|liquipedia",
+      "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
+    },
+    {
+      "player_name": "MUEZZA",
+      "from_team_name": "Dewa United Esports",
+      "to_team_name": "EVOS",
+      "transfer_type": "free_transfer",
+      "transfer_date": "2026-07-15",
+      "source_raw": "manual|transfer|double-xp.net",
+      "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
+    },
+    {
+      "player_name": "KELRA",
+      "from_team_name": "Blacklist International",
+      "to_team_name": "ONIC",
+      "transfer_type": "loan",
+      "transfer_date": "2026-07-01",
+      "source_raw": "manual|loan|public_news",
+      "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
+    },
+    {
+      "player_name": "IVANN",
+      "from_team_name": "Team Rey",
+      "to_team_name": "Alter Ego",
+      "transfer_type": "free_transfer",
+      "transfer_date": "2026-07-15",
+      "source_raw": "manual|transfer|double-xp.net",
+      "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
+    },
+    {
+      "player_name": "ANDORYUUU",
+      "from_team_name": "Omega Esports",
+      "to_team_name": "Natus Vincere",
+      "transfer_type": "free_transfer",
+      "transfer_date": "2026-07-15",
+      "source_raw": "manual|transfer|liquipedia",
+      "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
+    },
+    {
+      "player_name": "KARSS",
+      "from_team_name": "Rebellion Esports",
+      "to_team_name": "Natus Vincere",
+      "transfer_type": "free_transfer",
+      "transfer_date": "2026-07-15",
+      "source_raw": "manual|transfer|liquipedia",
+      "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
+    },
+    {
+      "player_name": "EXCELLENT99",
+      "from_team_name": "KINGS Esports",
+      "to_team_name": "RRQ Hoshi",
+      "transfer_type": "free_transfer",
+      "transfer_date": "2026-08-01",
+      "source_raw": "manual|transfer|kitanotice.com",
+      "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
+    },
+    {
+      "player_name": "AUDYTZY",
+      "from_team_name": "Free Agent",
+      "to_team_name": "Geek Fam ID",
+      "transfer_type": "free_transfer",
+      "transfer_date": "2026-08-01",
+      "source_raw": "manual|join|skor.id",
+      "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
+    },
+    {
+      "player_name": "KEVEN",
+      "from_team_name": "Free Agent",
+      "to_team_name": "Team Liquid ID",
+      "transfer_type": "free_transfer",
+      "transfer_date": "2026-08-01",
+      "source_raw": "manual|join|dotesports",
+      "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
+    },
+    {
+      "player_name": "CLAYYY",
+      "from_team_name": "Free Agent",
+      "to_team_name": "RRQ Hoshi",
+      "transfer_type": "free_transfer",
+      "transfer_date": "2026-08-01",
+      "source_raw": "manual|return_active|public_news",
+      "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
+    },
+    {
+      "player_name": "APRHO",
+      "from_team_name": "Natus Vincere Junior",
+      "to_team_name": "Natus Vincere",
+      "transfer_type": "free_transfer",
+      "transfer_date": "2026-07-15",
+      "source_raw": "manual|promotion|liquipedia",
+      "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
+    },
+    {
+      "player_name": "JIIZEE",
+      "from_team_name": "Natus Vincere Junior",
+      "to_team_name": "Natus Vincere",
+      "transfer_type": "free_transfer",
+      "transfer_date": "2026-07-15",
+      "source_raw": "manual|promotion|liquipedia",
+      "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
+    },
+    {
+      "player_name": "JOSHUAA",
+      "from_team_name": "Natus Vincere Junior",
+      "to_team_name": "Natus Vincere",
+      "transfer_type": "free_transfer",
+      "transfer_date": "2026-07-15",
+      "source_raw": "manual|promotion|liquipedia",
+      "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
+    },
+    {
+      "player_name": "ZEONN",
+      "from_team_name": "Natus Vincere Junior",
+      "to_team_name": "Natus Vincere",
+      "transfer_type": "free_transfer",
+      "transfer_date": "2026-07-15",
+      "source_raw": "manual|promotion|liquipedia",
+      "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
+    },
+    {
+      "player_name": "KYOUU",
+      "from_team_name": "Team Liquid ID",
+      "to_team_name": "Free Agent",
+      "transfer_type": "free_transfer",
+      "transfer_date": "2026-08-28",
+      "source_raw": "manual|farewell|skor.id",
+      "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
+    },
+    {
+      "player_name": "KABUKI",
+      "from_team_name": "Team Liquid ID",
+      "to_team_name": "Free Agent",
+      "transfer_type": "free_transfer",
+      "transfer_date": "2026-08-28",
+      "source_raw": "manual|farewell|skor.id",
+      "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
+    },
+    {
+      "player_name": "FAVIANNN",
+      "from_team_name": "Team Liquid ID",
+      "to_team_name": "Free Agent",
+      "transfer_type": "free_transfer",
+      "transfer_date": "2026-08-28",
+      "source_raw": "manual|farewell|skor.id",
+      "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
+    },
+    {
+      "player_name": "FAVIANNN",
+      "from_team_name": "Free Agent",
+      "to_team_name": "RRQ Hoshi",
+      "transfer_type": "free_transfer",
+      "transfer_date": "2026-09-16",
+      "source_raw": "manual|mid_season|confirmed",
+      "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
+    },
+    {
+      "player_name": "KILLUAA",
+      "from_team_name": "Free Agent",
+      "to_team_name": "ONIC",
+      "transfer_type": "free_transfer",
+      "transfer_date": "2026-09-01",
+      "source_raw": "manual|mid_season|rotation",
+      "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
+    },
+    {
+      "player_name": "HAZLE",
+      "from_team_name": "Geek Fam ID",
+      "to_team_name": "Dewa United Esports",
+      "transfer_type": "free_transfer",
+      "transfer_date": "2026-09-05",
+      "source_raw": "manual|mid_season|esports.id",
+      "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
+    }
+  ]
+}
