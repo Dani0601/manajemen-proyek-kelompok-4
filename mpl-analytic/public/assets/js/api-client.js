@@ -156,6 +156,11 @@ async function getHeroDetail(heroId) {
     return request(`/matches/${encodeURIComponent(matchId)}/drafts`);
   }
 
+  //hero tren pada dashboard
+  async function getMetaTrends(season) {
+    const q = season ? `?season=${encodeURIComponent(season)}` : "";
+    return request(`/meta/trends${q}`);
+  }
 
   window.ApiClient = {
     getDashboard,
@@ -174,6 +179,7 @@ async function getHeroDetail(heroId) {
     getMatchDetail,
     getGameDetail,
     getMatchDrafts,
+    getMetaTrends,
     getGameDrafts,
     baseUrl: "http://menpro.test/manajemen-proyek-kelompok-4/mpl-analytic/public",
     // Tambahkan di dalam objek window.ApiClient
