@@ -49,7 +49,7 @@ class MetaController {
      */
     public function trends() {
         try {
-            $seasonId = isset($_GET['season']) ? (int)$_GET['season'] : 17;
+            $seasonId = isset($_GET['season']) ? (int)$_GET['season'] : 18;
 
             $data = $this->metaService->getHeroTrendsBySeason($seasonId);
 
