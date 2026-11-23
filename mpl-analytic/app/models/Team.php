@@ -197,13 +197,15 @@ class Team
         $sqlPlayers = "SELECT DISTINCT
                            p.player_id,
                            p.player_name,
-                           p.player_photo_url
+                           p.player_photo_url,
+                           p.status
                        FROM game_players gp
                        JOIN players p ON gp.player_id = p.player_id
                        JOIN games g   ON gp.game_id  = g.game_id
                        JOIN matches m ON g.match_id   = m.match_id
                        WHERE m.season_id = :season_id
                          AND gp.team_id  = :team_id
+                         AND p.status = 'active'
                        ORDER BY p.player_name ASC";
 
         $stmtPlayers = $this->db->prepare($sqlPlayers);

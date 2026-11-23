@@ -3628,6 +3628,12 @@ components:
           type: string
           nullable: true
           example: https://cdn.jsdelivr.net/gh/Dani0601/manajemen-proyek-kelompok-4@BEDani/mpl-analytic/public/assets/images/players/alberttt.png
+        status:
+          type: string
+          enum:
+            - active
+            - inactive
+          example: active
     Item:
       type: object
       properties:
