@@ -244,20 +244,18 @@
       el.heroes.innerHTML = `<li class="pd-empty">Data hero belum tersedia</li>`;
       return;
     }
-
+    const from = encodeURIComponent(window.location.pathname + window.location.search);
     el.heroes.innerHTML = list.map((h) => `
       <li class="pd-hero">
-        <a class="pd-hero__link" href="${escapeHTML(baseUrl)}/hero-detail?id=${encodeURIComponent(h.id)}"
+        <a class="pd-hero__link" href="${escapeHTML(baseUrl)}/hero-detail?id=${encodeURIComponent(h.id)}&from=${from}""
            aria-label="Lihat detail hero ${escapeHTML(h.name)}">
           <img class="pd-hero__icon" src="${escapeHTML(h.icon)}" alt="" loading="lazy"
                onerror="this.onerror=null;this.style.visibility='hidden'">
-          <span class="pd-hero__info">
-            <span class="pd-hero__name">${escapeHTML(h.name)}</span>
-            <span class="pd-hero__meta">
-              <span>Dipilih: ${escapeHTML(h.picks)}</span>
-              <span>Rasio Menang: ${escapeHTML(percent(h.winRate))}</span>
-              <span>KDA: ${escapeHTML(decimal(h.kda))}</span>
-            </span>
+          <span class="pd-hero__name">${escapeHTML(h.name)}</span>
+          <span class="pd-hero__meta">
+            <span class="pd-hero__picks">Dipilih: ${escapeHTML(h.picks)}</span>
+            <span class="pd-hero__win">Rasio Menang: ${escapeHTML(percent(h.winRate))}</span>
+            <span class="pd-hero__kda">KDA: ${escapeHTML(decimal(h.kda))}</span>
           </span>
           <svg class="pd-hero__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
