@@ -915,6 +915,128 @@
               "body": "\r\n{\n    \"success\": false,\n    \"message\": \"Method tidak diizinkan.\",\n    \"data\": null,\n    \"error\": {\n        \"code\": \"METHOD_NOT_ALLOWED\"\n    }\n}"
             }
           ]
+        },
+        {
+          "name": "[200] GET /api/meta/trends - Tren Hero Season Berjalan",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[200] Status code adalah 200 OK\", function () { pm.response.to.have.status(200); });\n",
+                  "pm.test(\"[Header] Content-Type adalah JSON\", function () { pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"); });\n",
+                  "pm.test(\"[Response] Struktur data tren hero valid\", function () {\n",
+                  "    var res = pm.response.json();\n",
+                  "    pm.expect(res.success).to.be.true;\n",
+                  "    pm.expect(res.data).to.have.property('season_id');\n",
+                  "    pm.expect(res.data).to.have.property('total_games');\n",
+                  "    pm.expect(res.data).to.have.property('has_trend_data');\n",
+                  "    pm.expect(res.data.heroes).to.be.an('array');\n",
+                  "});\n"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/meta/trends?season={{seasonId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "meta",
+                "trends"
+              ],
+              "query": [
+                {
+                  "key": "season",
+                  "value": "{{seasonId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "[200] GET /api/meta/trends - Season Kosong Tanpa Data (has_trend_data: false)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[200] Status code adalah 200 OK\", function () { pm.response.to.have.status(200); });\n",
+                  "pm.test(\"[Response] Penanda has_trend_data adalah false\", function () {\n",
+                  "    var res = pm.response.json();\n",
+                  "    pm.expect(res.success).to.be.true;\n",
+                  "    pm.expect(res.data.has_trend_data).to.be.false;\n",
+                  "    pm.expect(res.data.heroes).to.be.an('array').that.is.empty;\n",
+                  "});\n"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/meta/trends?season=99",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "meta",
+                "trends"
+              ],
+              "query": [
+                {
+                  "key": "season",
+                  "value": "99"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "[405] POST /api/meta/trends - Error Method Not Allowed",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[405] Status code adalah 405 Method Not Allowed\", function () { pm.response.to.have.status(405); });\n",
+                  "pm.test(\"[Response] Error code METHOD_NOT_ALLOWED\", function () {\n",
+                  "    var res = pm.response.json();\n",
+                  "    pm.expect(res.success).to.be.false;\n",
+                  "    pm.expect(res.error.code).to.eql('METHOD_NOT_ALLOWED');\n",
+                  "});\n"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/meta/trends",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "meta",
+                "trends"
+              ]
+            }
+          },
+          "response": []
         }
       ]
     },
@@ -5651,7 +5773,8 @@
                   "    var j = pm.response.json();\n",
                   "    pm.expect(j.data, \"data\").to.not.be.null;\n",
                   "    pm.expect(j.data.player, \"player\").to.not.be.null;\n",
-                  "});\n"
+                  "});\n",
+                  "pm.test(\"[Card 16.1] Hero favorit memiliki recommended_build (items, emblem, battle_spells)\", function () {\n    var res = pm.response.json();\n    if (res.data && res.data.most_used_heroes && res.data.most_used_heroes.length > 0) {\n        var h = res.data.most_used_heroes[0];\n        pm.expect(h).to.have.property('recommended_build');\n        pm.expect(h.recommended_build).to.have.property('items');\n        pm.expect(h.recommended_build).to.have.property('emblem');\n        pm.expect(h.recommended_build).to.have.property('battle_spells');\n    }\n});\n"
                 ],
                 "type": "text/javascript"
               }
@@ -11252,6 +11375,123 @@
               "body": "\r\n{\n    \"success\": false,\n    \"message\": \"Method tidak diizinkan.\",\n    \"data\": null,\n    \"error\": {\n        \"code\": \"METHOD_NOT_ALLOWED\"\n    }\n}"
             }
           ]
+        },
+        {
+          "name": "[200] GET /api/games/:gameId/drafts - Berhasil Data Draft Pick & Ban Game",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[200] Status code adalah 200 OK\", function () { pm.response.to.have.status(200); });\n",
+                  "pm.test(\"[Response] Struktur data draft pick dan ban valid\", function () {\n",
+                  "    var res = pm.response.json();\n",
+                  "    pm.expect(res.success).to.be.true;\n",
+                  "    pm.expect(res.data).to.have.property('game_id');\n",
+                  "    pm.expect(res.data).to.have.property('total_drafts');\n",
+                  "    pm.expect(res.data.drafts).to.be.an('array');\n",
+                  "    if (res.data.drafts.length > 0) {\n",
+                  "        var d = res.data.drafts[0];\n",
+                  "        pm.expect(d).to.have.property('pick_ban_turn');\n",
+                  "        pm.expect(d).to.have.property('type');\n",
+                  "        pm.expect(d).to.have.property('team_name');\n",
+                  "        pm.expect(d).to.have.property('hero_name');\n",
+                  "    }\n",
+                  "});\n"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/games/{{gameId}}/drafts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "games",
+                "{{gameId}}",
+                "drafts"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "[404] GET /api/games/:gameId/drafts - Error Game Tidak Ditemukan",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[404] Status code adalah 404 Not Found\", function () { pm.response.to.have.status(404); });\n",
+                  "pm.test(\"[Response] Error code GAME_NOT_FOUND\", function () {\n",
+                  "    var res = pm.response.json();\n",
+                  "    pm.expect(res.success).to.be.false;\n",
+                  "    pm.expect(res.error.code).to.eql('GAME_NOT_FOUND');\n",
+                  "});\n"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/games/invalid_game_xyz/drafts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "games",
+                "invalid_game_xyz",
+                "drafts"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "[405] POST /api/games/:gameId/drafts - Error Method Not Allowed",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[405] Status code adalah 405 Method Not Allowed\", function () { pm.response.to.have.status(405); });\n",
+                  "pm.test(\"[Response] Error code METHOD_NOT_ALLOWED\", function () {\n",
+                  "    var res = pm.response.json();\n",
+                  "    pm.expect(res.success).to.be.false;\n",
+                  "    pm.expect(res.error.code).to.eql('METHOD_NOT_ALLOWED');\n",
+                  "});\n"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/games/{{gameId}}/drafts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "games",
+                "{{gameId}}",
+                "drafts"
+              ]
+            }
+          },
+          "response": []
         }
       ]
     },
@@ -11743,7 +11983,244 @@
       ]
     },
     {
-      "name": "10 - Negative and Security Tests",
+      "name": "10 - Transfers",
+      "item": [
+        {
+          "name": "[200] GET /api/transfers - Berhasil Daftar Transfer (Pagination)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[200] Status code adalah 200 OK\", function () { pm.response.to.have.status(200); });\n",
+                  "pm.test(\"[Header] Content-Type adalah JSON\", function () { pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"); });\n",
+                  "pm.test(\"[Response] Struktur data transfer pemain valid\", function () {\n",
+                  "    var res = pm.response.json();\n",
+                  "    pm.expect(res.success).to.be.true;\n",
+                  "    pm.expect(res.data).to.have.property('transfers');\n",
+                  "    pm.expect(res.data.transfers).to.be.an('array');\n",
+                  "    pm.expect(res.data).to.have.property('pagination');\n",
+                  "    pm.expect(res.data.pagination.total_data).to.be.a('number');\n",
+                  "});\n"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/transfers?page=1&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "transfers"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "[200] GET /api/teams/:teamId/transfers - Berhasil Riwayat Transfer Per Tim (In & Out)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[200] Status code adalah 200 OK\", function () { pm.response.to.have.status(200); });\n",
+                  "pm.test(\"[Response] Struktur transfer tim (in & out) valid\", function () {\n",
+                  "    var res = pm.response.json();\n",
+                  "    pm.expect(res.success).to.be.true;\n",
+                  "    pm.expect(res.data).to.have.property('team');\n",
+                  "    pm.expect(res.data).to.have.property('transfers_in');\n",
+                  "    pm.expect(res.data).to.have.property('transfers_out');\n",
+                  "    pm.expect(res.data.transfers_in).to.be.an('array');\n",
+                  "    pm.expect(res.data.transfers_out).to.be.an('array');\n",
+                  "});\n"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/teams/{{teamId}}/transfers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "teams",
+                "{{teamId}}",
+                "transfers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "[200] GET /api/players/:playerId/transfers - Berhasil Riwayat Transfer Per Pemain",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[200] Status code adalah 200 OK\", function () { pm.response.to.have.status(200); });\n",
+                  "pm.test(\"[Response] Struktur riwayat transfer pemain valid\", function () {\n",
+                  "    var res = pm.response.json();\n",
+                  "    pm.expect(res.success).to.be.true;\n",
+                  "    pm.expect(res.data).to.have.property('player');\n",
+                  "    pm.expect(res.data).to.have.property('history');\n",
+                  "    pm.expect(res.data.history).to.be.an('array');\n",
+                  "});\n"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/players/{{playerId}}/transfers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "players",
+                "{{playerId}}",
+                "transfers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "[404] GET /api/teams/:teamId/transfers - Error Tim Tidak Ditemukan",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[404] Status code adalah 404 Not Found\", function () { pm.response.to.have.status(404); });\n",
+                  "pm.test(\"[Response] Error code TEAM_NOT_FOUND\", function () {\n",
+                  "    var res = pm.response.json();\n",
+                  "    pm.expect(res.success).to.be.false;\n",
+                  "    pm.expect(res.error.code).to.eql('TEAM_NOT_FOUND');\n",
+                  "});\n"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/teams/99999/transfers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "teams",
+                "99999",
+                "transfers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "[404] GET /api/players/:playerId/transfers - Error Pemain Tidak Ditemukan",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[404] Status code adalah 404 Not Found\", function () { pm.response.to.have.status(404); });\n",
+                  "pm.test(\"[Response] Error code PLAYER_NOT_FOUND\", function () {\n",
+                  "    var res = pm.response.json();\n",
+                  "    pm.expect(res.success).to.be.false;\n",
+                  "    pm.expect(res.error.code).to.eql('PLAYER_NOT_FOUND');\n",
+                  "});\n"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/players/99999/transfers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "players",
+                "99999",
+                "transfers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "[405] POST /api/transfers - Error Method Not Allowed",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"[405] Status code adalah 405 Method Not Allowed\", function () { pm.response.to.have.status(405); });\n",
+                  "pm.test(\"[Response] Error code METHOD_NOT_ALLOWED\", function () {\n",
+                  "    var res = pm.response.json();\n",
+                  "    pm.expect(res.success).to.be.false;\n",
+                  "    pm.expect(res.error.code).to.eql('METHOD_NOT_ALLOWED');\n",
+                  "});\n"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/transfers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "transfers"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "11 - Negative and Security Tests",
       "item": [
         {
           "name": "[404] GET /api/unknown-endpoint - Route Global Tidak Ditemukan",

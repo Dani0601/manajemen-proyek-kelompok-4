@@ -82,7 +82,10 @@ document.addEventListener("DOMContentLoaded", () => {
             
             // CONTOH SEMENTARA menggunakan fetch standar jika ApiClient belum siap:
             const response = await window.ApiClient.getPlayerList();
-            allPlayersData = response.data || response;
+            const rawPlayers = response.data || response;
+            allPlayersData = (Array.isArray(rawPlayers) ? rawPlayers : []).filter(
+                p => p.status !== 'inactive'
+            );
 
             // Ekstraksi Tim Unik (Logika Anda yang sudah bagus)
             const uniqueTeams = [...new Set(allPlayersData.map(p => p.team_name).filter(Boolean))];

@@ -5,6 +5,7 @@
 SELECT
     h.hero_id,
     h.hero_name,
+    h.hero_url,
     COALESCE(hss.pick_count, 0)  AS total_picked,
     COALESCE(hss.win_count, 0)   AS total_wins,
     COALESCE(hss.pick_rate, 0)   AS pick_rate,
