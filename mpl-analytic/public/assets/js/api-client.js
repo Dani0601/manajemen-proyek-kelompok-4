@@ -146,6 +146,11 @@ async function getHeroDetail(heroId) {
     return request(`/games/${encodeURIComponent(gameId)}`);
   }
 
+  // Card 13.1: draft pick & ban satu game. Respons: { game_id, total_drafts, drafts: [...] }
+  async function getGameDrafts(gameId) {
+    return request(`/games/${encodeURIComponent(gameId)}/drafts`);
+  }
+
   // Opsional, tidak dipakai kartu 12.2
   async function getMatchDrafts(matchId) {
     return request(`/matches/${encodeURIComponent(matchId)}/drafts`);
@@ -169,6 +174,7 @@ async function getHeroDetail(heroId) {
     getMatchDetail,
     getGameDetail,
     getMatchDrafts,
+    getGameDrafts,
     baseUrl: "http://menpro.test/manajemen-proyek-kelompok-4/mpl-analytic/public",
     // Tambahkan di dalam objek window.ApiClient
     searchHeroes: async function(query = '', role = '') {
