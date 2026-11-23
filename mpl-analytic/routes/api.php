@@ -170,6 +170,39 @@ if ($uri === 'api/meta') {
     }
 }
 
+/*
+|--------------------------------------------------------------------------
+| META TRENDS  (Card 14.1)
+|--------------------------------------------------------------------------
+|
+| GET /api/meta/trends  — Pick rate hero season berjalan
+|
+*/
+
+if ($uri === 'api/meta/trends') {
+
+    $controller = loadController(
+        'MetaController.php',
+        'MetaController'
+    );
+
+    if (method_exists($controller, 'trends')) {
+        $controller->trends();
+    } else {
+        jsonResponse(
+            null,
+            'Endpoint belum diimplementasikan.',
+            501,
+            [
+                'error' => [
+                    'code' => 'NOT_IMPLEMENTED'
+                ]
+            ]
+        );
+    }
+}
+
+
 
 /*
 |--------------------------------------------------------------------------
