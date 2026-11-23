@@ -36,7 +36,53 @@
     list.innerHTML = items.map(([n, v], i) => row(i + 1, n, v, max)).join("");
   }
 
-  Object.entries(MOCK).forEach(([id, items]) => renderGroup(id, items));
+  const box = panel.querySelector("[data-dash-panel]");
+  const slot = box ? box.querySelector(".dash-state-slot") : null;
 
-  window.HeroTrend = { renderGroup };
+  function skelRow() {
+    return `
+      <div class="dash-trend-skel__row">
+        <span class="dash-skeleton dash-skeleton--dot"></span>
+        <span class="dash-skeleton dash-trend-skel__thumb"></span>
+        <span class="dash-skeleton dash-skeleton--line"></span>
+        <span class="dash-skeleton dash-skeleton--line"></span>
+        <span class="dash-skeleton dash-skeleton--line"></span>
+      </div>`;
+  }
+
+  function skelGroup() {
+    return `
+      <div class="dash-trend-skel__group">
+        <span class="dash-skeleton dash-skeleton--line dash-trend-skel__title"></span>
+        ${skelRow().repeat(5)}
+      </div>`;
+  }
+
+  function setState(name) {
+    if (!box || !slot) return;
+    box.classList.toggle("is-stated", name !== "ready");
+    panel.dataset.state = name;
+    slot.hidden = name === "ready";
+
+    if (name === "loading") {
+      slot.innerHTML = `<div class="dash-trend-skel" role="status" aria-label="Memuat Hero Tren">${skelGroup().repeat(3)}</div>`;
+    } else if (name === "empty") {
+      slot.innerHTML = `
+        <div class="dash-trend-empty" role="status">
+          <span class="dash-trend-empty__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round">
+              <path d="M7 18v-6M12 18V7M17 18v-9"/>
+            </svg>
+          </span>
+          <strong class="dash-trend-empty__title">Data tren belum tersedia</strong>
+          <span class="dash-trend-empty__text">Hero tren pada pertandingan ini belum tersedia</span>
+        </div>`;
+    } else {
+      slot.innerHTML = "";
+    }
+  }
+
+
+  Object.entries(MOCK).forEach(([id, items]) => renderGroup(id, items));
+  window.HeroTrend = { renderGroup, setState };
 })();

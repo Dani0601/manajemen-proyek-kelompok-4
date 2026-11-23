@@ -1122,3 +1122,44 @@
     .dash-trend__name { font-size: 13px; }
     .dash-trend__bar { height: 10px; }
 }
+
+/* ===== Hero Tren: skeleton & data kosong ===== */
+.dash-trend-skel { display: flex; flex-direction: column; gap: 18px; }
+.dash-trend-skel__group { display: grid; gap: 10px; }
+.dash-trend-skel__title { width: 90px; height: 8px; margin-bottom: 2px; }
+.dash-trend-skel__row {
+    display: grid;
+    grid-template-columns: 20px 40px minmax(0, 52px) minmax(0, 1fr) 40px;
+    align-items: center;
+    gap: 8px;
+}
+.dash-trend-skel__row .dash-skeleton--dot { width: 18px; height: 18px; }
+.dash-trend-skel__thumb { width: 40px; height: 40px; border-radius: 8px; }
+.dash-trend-skel__row .dash-skeleton--line { width: 100%; }
+
+@media (max-width: 575.98px) {
+    .dash-trend-skel__row { grid-template-columns: 18px 34px minmax(0, 40px) minmax(0, 1fr) 34px; gap: 6px; }
+    .dash-trend-skel__thumb { width: 34px; height: 34px; }
+}
+
+/* Kosong: kotak tinggi, isi di tengah (Figma) */
+.dash-trend.is-stated { padding: 0; }
+.dash-trend.is-stated > .dash-state-slot { width: 100%; }
+.dash-trend-empty {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 6px; min-height: 420px; padding: 24px 16px; text-align: center;
+}
+.dash-trend-empty__icon {
+    display: flex; align-items: center; justify-content: center;
+    width: 48px; height: 48px; margin-bottom: 6px;
+    border-radius: 50%; background: #D9D9D9;
+}
+.dash-trend-empty__icon svg { width: 24px; height: 24px; }
+.dash-trend-empty__title { margin: 0; font-size: 12px; font-weight: 700; color: var(--color-navy); }
+.dash-trend-empty__text { margin: 0; font-size: 11px; font-weight: 500; color: var(--color-navy); }
+
+@media (min-width: 768px) {
+    .dash-trend-empty { min-height: 360px; }
+    .dash-trend-empty__title { font-size: 14px; }
+    .dash-trend-empty__text { font-size: 12px; }
+}
