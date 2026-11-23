@@ -22,7 +22,7 @@
   };
 
   // durations: { [game_id]: nilai duration dari GET /games/{id} }
-  const state = { match: null, game: 0, tab: "stats", durations: {} };
+  const state = { match: null, game: 0, tab: "stats", durations: {}, drafts: {} };
 
   // ===== Util =====
   function escapeHTML(value) {
@@ -145,8 +145,125 @@
         ${heroPanel(t1, "Pick", picksOf(0))}
         ${heroPanel(t2, "Ban", bansOf(t2))}
         ${heroPanel(t2, "Pick", picksOf(1))}
-      </div>`;
+      </div>
+      <section id="md-draft" class="md-draft" aria-labelledby="md-draft-title"></section>`;
+    loadDraft(game);
   }
+
+  // ===== Data Draft Pick (card 13.1): GET /api/games/{id}/drafts =====
+  // Field BE: pick_ban_turn, type (ban|pick), team_id, team_name, team_side (blue|red),
+  //           hero_id, hero_name, hero_image_url
+  const SIDE_LABEL = { blue: "Tim Biru", red: "Tim Merah" };
+
+  function normalizeDrafts(payload) {
+    const rows = Array.isArray(payload && payload.drafts) ? payload.drafts : [];
+    return rows
+      .map((d) => ({
+        turn: Number(d.pick_ban_turn) || 0,
+        type: String(d.type).toLowerCase() === "pick" ? "pick" : "ban",
+        teamId: d.team_id === null || d.team_id === undefined ? null : Number(d.team_id),
+        teamName: d.team_name || "",
+        side: d.team_side === "red" ? "red" : "blue",
+        hero: { name: d.hero_name || "", icon: d.hero_image_url || "" },
+      }))
+      .sort((a, b) => a.turn - b.turn); // urutan mengikuti pick_ban_turn
+  }
+
+  // Empat fase seperti desain: Ban 1-6, Pick 1-6, Ban 7-10, Pick 7-10
+  function draftPhases(rows) {
+    const bans = rows.filter((r) => r.type === "ban");
+    const picks = rows.filter((r) => r.type === "pick");
+    return [
+      { title: "Fase Ban pertama", kind: "Ban", items: bans.slice(0, 6) },
+      { title: "Fase Pick pertama", kind: "Pick", items: picks.slice(0, 6) },
+      { title: "Fase Ban kedua", kind: "Ban", items: bans.slice(6) },
+      { title: "Fase Pick kedua", kind: "Pick", items: picks.slice(6) },
+    ].filter((p) => p.items.length);
+  }
+
+  function teamCode(teamId, fallback) {
+    const t = state.match.teams.find((x) => x.id === teamId);
+    return (t && (t.code || t.name)) || fallback || "-";
+  }
+
+  function draftLegend(rows) {
+    const seen = new Map();
+    rows.forEach((r) => { if (!seen.has(r.teamId)) seen.set(r.teamId, r); });
+    return [...seen.values()]
+      .sort((a, b) => (a.side === "blue" ? -1 : 1) - (b.side === "blue" ? -1 : 1))
+      .map((r) => `<span class="md-dlegend__item"><i class="md-dot md-dot--${r.side}"></i>${escapeHTML(teamCode(r.teamId, r.teamName))} ( ${SIDE_LABEL[r.side]} )</span>`)
+      .join("");
+  }
+
+  function draftCell(r, no, label) {
+    return `
+      <li class="md-dcell">
+        <span class="md-dcell__no md-dcell__no--${r.side}">${no}</span>
+        <span class="md-dcell__side md-dcell__side--${r.side}">${SIDE_LABEL[r.side]}</span>
+        <img class="md-dcell__icon" src="${escapeHTML(r.hero.icon)}" alt="" loading="lazy"
+             onerror="this.onerror=null;this.style.visibility='hidden'">
+        <span class="md-dcell__name">${escapeHTML(r.hero.name)}</span>
+        <span class="md-dcell__kind">${label}</span>
+      </li>`;
+  }
+
+  function draftHTML(entry) {
+    const title = '<h2 id="md-draft-title" class="md-draft__title">Data Draft Pick</h2>';
+    if (entry.status === "loading") {
+      return `${title}<p class="md-dmsg" role="status"><span class="md-skel__spinner"></span>Memuat data draft...</p>`;
+    }
+    if (entry.status === "empty") {
+      return `${title}<p class="md-dmsg" role="status">Data draft belum tersedia</p>`;
+    }
+    if (entry.status === "error") {
+      return `${title}<div class="md-dmsg md-dmsg--error" role="alert">
+        <span>Gagal memuat data draft. Periksa koneksi Anda lalu coba lagi.</span>
+        <button type="button" class="md-dmsg__retry" data-draft-retry>Coba Lagi</button></div>`;
+    }
+    const legend = draftLegend(entry.rows);
+    let no = 0;
+    const count = { Ban: 0, Pick: 0 };
+    const phases = draftPhases(entry.rows).map((ph) => `
+      <section class="md-dphase" aria-label="${ph.title}">
+        <header class="md-dphase__head">
+          <span>${ph.title} ( ${ph.items.length} ${ph.kind} )</span>
+          <span class="md-dlegend">${legend}</span>
+        </header>
+        <ol class="md-dlist">
+          ${ph.items.map((r) => draftCell(r, ++no, `${ph.kind} ${++count[ph.kind]}`)).join("")}
+        </ol>
+      </section>`).join("");
+    return title + phases;
+  }
+
+  function paintDraft(game) {
+    const host = document.getElementById("md-draft");
+    const active = state.match && state.match.games[state.game];
+    if (!host || !active || active.id !== game.id) return; // pengguna sudah pindah game
+    host.innerHTML = draftHTML(state.drafts[game.id] || { status: "empty" });
+  }
+
+  async function loadDraft(game, force = false) {
+    if (!game.id) { state.drafts[game.id] = { status: "empty" }; paintDraft(game); return; }
+    if (state.drafts[game.id] && !force) { paintDraft(game); return; }
+
+    state.drafts[game.id] = { status: "loading" };
+    paintDraft(game);
+    try {
+      const rows = normalizeDrafts(await window.ApiClient.getGameDrafts(game.id));
+      state.drafts[game.id] = rows.length ? { status: "ready", rows } : { status: "empty" };
+    } catch (err) {
+      console.warn("[MatchDetail] draft", err);
+      state.drafts[game.id] = { status: "error" };
+    }
+    paintDraft(game);
+  }
+
+  el.panelHero.addEventListener("click", (e) => {
+    if (!e.target.closest("[data-draft-retry]")) return;
+    const game = state.match && state.match.games[state.game];
+    if (game) loadDraft(game, true);
+  });
 
   // ===== Tab Statistik =====
   function statsTeamTable(team, players, mirror = false) {
