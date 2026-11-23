@@ -174,7 +174,15 @@
 .pd-card__label { font-size: 16px; font-weight: 500; line-height: 1.3; }
 .pd-card__value { font-size: 28px; font-weight: 700; line-height: 1.2; }
 /* ---------- Statistik Performa: daftar baris ---------- */
-.pd-list,
+.pd-list{
+    margin: 0;
+    padding: 0;
+    border-radius: 4px;
+    list-style: none;
+    background: #fff;
+    border: 1px solid #010101; 
+    border-bottom: 3px solid #2F6FED;
+}
 .pd-heroes {
     margin: 0;
     padding: 0;
@@ -203,7 +211,7 @@
 
 .pd-hero__link {
     display: grid;
-    grid-template-columns: 48px minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1fr) 28px;
+    grid-template-columns: 48px minmax(0, 1fr) minmax(0, 1.8fr) minmax(0, 1fr) 28px;
     grid-template-rows: auto auto;
     align-items: center;
     column-gap: 16px;
@@ -239,7 +247,7 @@
     grid-column: 2;
     grid-row: 2;
     align-self: start;
-    font-size: 14px;
+    font-size: 15px;
     color: #000;
 }
 .pd-hero__win,
@@ -305,12 +313,13 @@
     /* Tiga kolom proporsional: ikut melebar saat layar dilebarkan */
     .pd-hero__meta {
         display: grid;
-        grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.5fr) minmax(0, 1fr);
+        grid-template-columns: auto auto auto;
+        justify-content: space-between;
         align-items: center;
         grid-column: 2;
         grid-row: 2;
         min-width: 0;
-        font-size: 7px;
+        font-size: 10px;
 
     }
     .pd-hero__picks,
@@ -321,15 +330,18 @@
         display: block;
         align-self: auto;
         box-sizing: border-box;
-        min-width: 0;
+        min-width: auto;
         margin: 0;
-        padding: 0 .4em;
+        padding: 0 .6em;
         border: 0;
         font-size: inherit;
         text-align: center;
         white-space: nowrap;
         color: #000;
     }
+    .pd-hero__picks { padding-left: 0; text-align: left; }
+    .pd-hero__win   { text-align: center; }
+    .pd-hero__kda   { text-align: center; }
     .pd-hero__win,
     .pd-hero__kda { border-left: 1px solid #000; }
 }
