@@ -11,7 +11,7 @@ $assetBase = htmlspecialchars(ASSET_BASE, ENT_QUOTES, 'UTF-8');
 $playerId = (int) ($_GET['id'] ?? 0);
 $baseUrlAttr = htmlspecialchars($baseUrl, ENT_QUOTES, 'UTF-8');
 // Sementara ke daftar tim. JS mengganti ke team-detail?id={team_id} setelah data masuk.
-$backUrl = htmlspecialchars($baseUrl . '/team-list', ENT_QUOTES, 'UTF-8');
+$backUrl = htmlspecialchars($baseUrl . '/tournament#tim', ENT_QUOTES, 'UTF-8');
 
 /*
  * KONTRAK UNTUK FE2:

@@ -21,8 +21,7 @@
     panelHero: document.getElementById("md-panel-hero"),
   };
 
-  // durations: { [game_id]: nilai duration dari GET /games/{id} }
-  const state = { match: null, game: 0, tab: "stats", durations: {}, drafts: {} };
+  const state = { match: null, game: 0, tab: "stats", drafts: {} };
 
   // ===== Util =====
   function escapeHTML(value) {
@@ -37,13 +36,6 @@
     n === null || n === undefined ? "-" : `${(n / 1000).toFixed(1)}k`;
   
   const sum = (list, key) => list.reduce((t, p) => t + (p[key] ?? 0), 0);
-
-  // Satuan duration belum terkonfirmasi (masih null). Asumsi sementara: detik.
-  function fmtDuration(v) {
-    if (v === null || v === undefined || Number.isNaN(Number(v))) return "-";
-    const s = Math.round(Number(v));
-    return `${String(Math.floor(s / 60)).padStart(2, "0")} : ${String(s % 60).padStart(2, "0")}`;
-  }
 
   function getMatchId() {
     const id = new URLSearchParams(window.location.search).get("id") ?? root.dataset.matchId;
@@ -343,7 +335,6 @@
 
     const pair = (key, f = fmtNum) => `${f(sum(p1, key))} - ${f(sum(p2, key))}`;
     const values = {
-      duration: fmtDuration(state.durations[game.id]),
       kill: pair("kills"),
       gold: pair("gold", fmtK),
       damage: pair("damage", fmtK),
@@ -366,24 +357,10 @@
       ${statsTeamTable(t2, p2, true)}`;
   }
 
-  // Durasi hanya ada di GET /games/{id}. Gagal memuat bukan error: durasi tetap "-".
-  async function loadDuration(game) {
-    if (!game.id || game.id in state.durations) return;
-    try {
-      const detail = await window.ApiClient.getGameDetail(game.id);
-      state.durations[game.id] = detail?.duration ?? null;
-      const active = state.match && state.match.games[state.game];
-      if (active && active.id === game.id) renderStatsPanel(active); // abaikan kalau sudah pindah game
-    } catch (err) {
-      console.warn("[MatchDetail] durasi", err);
-    }
-  }
-
   function renderPanels() {
     const game = state.match.games[state.game];
     renderStatsPanel(game);
     renderHeroPanel(game);
-    loadDuration(game);
   }
 
   // ===== Interaksi =====
@@ -404,25 +381,37 @@
     if (btn) setActiveGame(Number(btn.dataset.game));
   });
   el.tabs.forEach((btn) => btn.addEventListener("click", () => setTab(btn.dataset.tab)));
+  // Tujuan tombol kembali. Selalu halaman yang ada, tidak pernah /team-list.
+  // 1) alamat Detail Tim yang disimpan saat match diklik, asal tim itu salah satu peserta match ini
+  // 2) Detail Tim dari tim pertama match ini
+  // 3) tab Tim di halaman Tournament
+  function backTarget() {
+    const base = (root.dataset.baseUrl || "").replace(/\/$/, "");
+    const ids = state.match ? state.match.teams.map((t) => t.id).filter((id) => id !== null).map(String) : [];
+    try {
+      const ret = sessionStorage.getItem("mpl:returnTo");
+      if (ret) {
+        const u = new URL(ret, window.location.href);
+        const isTeamDetail = u.origin === window.location.origin && /\/team-detail\/?$/.test(u.pathname);
+        if (isTeamDetail && (ids.length === 0 || ids.includes(u.searchParams.get("id")))) return u.href;
+      }
+    } catch (_) { /* sessionStorage tidak tersedia */ }
+    if (ids[0]) return `${base}/team-detail?id=${encodeURIComponent(ids[0])}`;
+    return `${base}/tournament#tim`;
+  }
+
   if (el.back) {
-    // Kembali ke halaman asal (mis. Detail Tim di posisi daftar match).
-    // Tidak hanya mengandalkan history.back(): di sebagian peramban mobile ia bisa gagal,
-    // jadi ada cadangan membuka alamat asal yang disimpan halaman sebelumnya.
+    // Jika halaman sebelumnya memang tujuannya, pakai history.back() (scroll terjaga).
+    // Selain itu langsung buka alamat tujuan. Tidak bergantung pada document.referrer,
+    // yang sering kosong atau berbeda di peramban mobile.
     el.back.addEventListener("click", (e) => {
       e.preventDefault();
-      let target = el.back.href; // cadangan terakhir: /team-list
-      try {
-        const ret = sessionStorage.getItem("mpl:returnTo");
-        const ref = document.referrer.split("#")[0];
-        if (ret && new URL(ret, window.location.href).origin === window.location.origin && (!ref || ref === ret)) {
-          target = ret;
-        }
-      } catch (_) { /* sessionStorage tidak tersedia */ }
-
-      const cameFromApp = document.referrer.startsWith(window.location.origin) && history.length > 1;
-      if (cameFromApp) {
+      const target = backTarget();
+      const ref = document.referrer.split("#")[0];
+      const cameFromTarget = ref !== "" && ref === target.split("#")[0] && history.length > 1;
+      if (cameFromTarget) {
         history.back();
-        setTimeout(() => { if (document.body.contains(root)) window.location.assign(target); }, 500);
+        setTimeout(() => { if (document.body.contains(root)) window.location.assign(target); }, 800);
       } else {
         window.location.assign(target);
       }
