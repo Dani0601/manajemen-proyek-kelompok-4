@@ -147,11 +147,16 @@ class PlayerService
                 ? round(($hero['wins'] / $hero['pick_count']) * 100, 2)
                 : 0.0;
 
-            // Card 16.1 — Enrich dengan data build (item, emblem, battle_spell)
+            // Card 16.1 — Enrich dengan data build (item, emblem + talents, battle_spell)
             $heroId = (int)$hero['hero_id'];
+            $emblem = $this->playerModel->getHeroEmblems($heroId)[0] ?? null;
+            if ($emblem !== null) {
+                $emblem['talents'] = $this->playerModel->getHeroTalents($heroId);
+            }
+
             $hero['recommended_build'] = [
                 'items'         => $this->playerModel->getHeroBuildItems($heroId),
-                'emblem'        => $this->playerModel->getHeroEmblems($heroId)[0] ?? null,
+                'emblem'        => $emblem,
                 'battle_spells' => $this->playerModel->getHeroSpells($heroId),
             ];
         }
