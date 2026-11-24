@@ -25,6 +25,11 @@ $heroPanels = [
     ['id' => 'br', 'list' => 'top-ban-rate',  'title' => 'Top 5 Most Banned (BR)'],
     ['id' => 'pr', 'list' => 'top-pick-rate', 'title' => 'Top 5 Pick Rate (PR)'],
 ];
+$trendGroups = [
+    ['id' => 'wr', 'title' => 'Top 5 Overpowered (WR)', 'legend' => 'Win Rate',  'tone' => 'blue'],
+    ['id' => 'br', 'title' => 'Top 5 Most Banned (BR)', 'legend' => 'Ban Rate',  'tone' => 'orange'],
+    ['id' => 'pr', 'title' => 'Top 5 Pick Rate (PR)',   'legend' => 'Pick Rate', 'tone' => 'green'],
+];
 ?>
 
 <div
@@ -77,6 +82,28 @@ $heroPanels = [
                 </div>
             </section>
         <?php endforeach; ?>
+
+        <!-- HERO TREN (data turnamen MPL, season berjalan) -->
+        <section class="dash-section" data-dash-section="trend" aria-labelledby="trend-title">
+            <div class="dash-section__header">
+                <h2 id="trend-title" class="dash-section__title">Hero Tren</h2>
+            </div>
+
+            <div class="dash-panel dash-trend" data-dash-panel>
+                <?php foreach ($trendGroups as $g): ?>
+                    <div class="dash-trend__group dash-trend__group--<?= $g['tone'] ?>">
+                        <div class="dash-trend__head">
+                            <h3 class="dash-trend__title"><?= htmlspecialchars($g['title'], ENT_QUOTES, 'UTF-8') ?></h3>
+                            <span class="dash-trend__legend"><?= htmlspecialchars($g['legend'], ENT_QUOTES, 'UTF-8') ?></span>
+                        </div>
+                        <ol id="trend-<?= $g['id'] ?>" class="dash-trend__list"
+                            aria-label="<?= htmlspecialchars($g['title'], ENT_QUOTES, 'UTF-8') ?>"></ol>
+                    </div>
+                <?php endforeach; ?>
+
+                <div class="dash-state-slot" hidden></div>
+            </div>
+        </section>
 
         <!-- GRAFIK WR vs BR (Chart.js, data dari API) -->
         <section class="dash-section" data-dash-section="chart" aria-labelledby="chart-title">
@@ -150,5 +177,5 @@ $heroPanels = [
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 
 <script src="<?= htmlspecialchars(ASSET_BASE, ENT_QUOTES, 'UTF-8') ?>/js/api-client.js?v=<?= (int) @filemtime(BASE_PATH . '/public/assets/js/api-client.js') ?>"></script>
-
+<script src="<?= htmlspecialchars(ASSET_BASE, ENT_QUOTES, 'UTF-8') ?>/js/pages/hero-trend.js?v=<?= (int) @filemtime(BASE_PATH . '/public/assets/js/pages/hero-trend.js') ?>"></script>
 <?php require BASE_PATH . '/views/layouts/footer.php'; ?>

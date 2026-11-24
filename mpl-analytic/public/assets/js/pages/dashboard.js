@@ -244,13 +244,15 @@ function renderHeroes(container, heroes, rateKey, prefix) {
           <div class="dash-hero__media">
             <span class="dash-hero__rank">${index + 1}</span>
 
-            <img
-              src="${imageUrl}"
-              alt="${heroName}"
-              class="dash-hero__image"
-              loading="lazy"
-              onerror="this.onerror=null;this.src='${HERO_PLACEHOLDER}';"
-            >
+            <span class="dash-hero__clip">
+              <img
+                src="${imageUrl}"
+                alt="${heroName}"
+                class="dash-hero__image"
+                loading="lazy"
+                onerror="this.onerror=null;this.src='${HERO_PLACEHOLDER}';"
+              >
+            </span>
           </div>
 
           <div
