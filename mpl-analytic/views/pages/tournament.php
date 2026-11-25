@@ -19,6 +19,7 @@ $seasonId = max(1, (int) ($_GET['season'] ?? 1));
 $seasonNumber = 18;
 $seasonLabel = 'MPL ID Season ' . $seasonNumber;
 $teamDetailUrl = 'team-detail?id={id}';
+$matchDetailUrl = 'match-detail?id={id}';
 
 $loading = static fn(string $label) =>
     '<div class="tr-skeleton" role="status" aria-live="polite">'
@@ -27,7 +28,7 @@ $loading = static fn(string $label) =>
     . '</div>';
 ?>
 
-<div class="tr is-loading" data-asset-base="<?= $assetBase ?>" data-view="jadwal" data-season-id="<?= $seasonId ?>" data-season-number="<?= $seasonNumber ?>">
+<div class="tr is-loading" data-asset-base="<?= $assetBase ?>" data-view="jadwal" data-season-id="<?= $seasonId ?>" data-season-number="<?= $seasonNumber ?>" data-match-url="<?= htmlspecialchars($matchDetailUrl, ENT_QUOTES, 'UTF-8') ?>">
     <header class="tr-head">
         <span class="tr-skel__bar tr-head-skel" style="width:60%"></span>
         <span class="tr-skel__bar tr-head-skel" style="width:100%; margin-top:0"></span>
@@ -120,20 +121,20 @@ $loading = static fn(string $label) =>
         <!-- Cara Membaca Tabel (Legend) -->
         <section class="tr-legend shadow-sm" aria-labelledby="tr-legend-title">
             <div class="tr-legend-header">
-                <h3 id="tr-legend-title">Cara Membaca Tabel Klasemen</h3>
+                <h3 id="tr-legend-title">CARA MEMBACA TABEL</h3>
             </div>
             <dl>
-                <dt>Poin</dt>
+                <dt>POIN</dt>
                 <dd>Poin pertandingan</dd>
                 
-                <dt>M-K (WL)</dt>
-                <dd>Kemenangan dan kekalahan pertandingan</dd>
+                <dt>M-K</dt>
+                <dd>Pertandingan menang dan kalah</dd>
                 
                 <dt>+/-</dt>
                 <dd>Selisih skor bersih dalam pertandingan</dd>
                 
                 <dt>PTD</dt>
-                <dd>Kemenangan dan kekalahan game dalam pertandingan</dd>
+                <dd>Kemenangan dan kekalahan pertandingan</dd>
             </dl>
         </section>
     </section>
