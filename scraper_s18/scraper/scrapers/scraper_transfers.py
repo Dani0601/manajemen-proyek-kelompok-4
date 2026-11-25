@@ -37,16 +37,13 @@ log = logging.getLogger(__name__)
 # Config
 # ---------------------------------------------------------------------------
 LIQUIPEDIA_URL = "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
+LIQUIPEDIA_API_URL = "https://liquipedia.net/mobilelegends/api.php"
+LIQUIPEDIA_PAGE = "MPL/Indonesia/Season_18"
 HEADERS = {
-    "User-Agent": (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/120.0.0.0 Safari/537.36"
-    ),
-    "Accept-Language": "id-ID,id;q=0.9,en-US;q=0.8",
-    "Referer": "https://www.google.com/",
+    "User-Agent": "MPLAnalyticProject/1.0 (academic-project)",
+    "Accept": "application/json",
 }
-DELAY_BETWEEN_REQUESTS = 3   # detik (hormati robots.txt Liquipedia)
+DELAY_BETWEEN_REQUESTS = 3   # detik (hormati rate limit Liquipedia API)
 OUTPUT_DIR = "scraper_s18/output"
 
 
@@ -54,34 +51,43 @@ OUTPUT_DIR = "scraper_s18/output"
 # Team name normalization (Liquipedia name -> nama di tabel teams)
 # ---------------------------------------------------------------------------
 TEAM_ALIASES = {
-    "evos esports":        "EVOS",
-    "evos":                "EVOS",
-    "rrq hoshi":           "RRQ Hoshi",
-    "rrq":                 "RRQ Hoshi",
-    "natus vincere id":    "Natus Vincere",
-    "navi":                "Natus Vincere",
-    "alter ego":           "Alter Ego",
-    "ae":                  "Alter Ego",
-    "team liquid id":      "Team Liquid ID",
-    "tlid":                "Team Liquid ID",
-    "geek fam id":         "Geek Fam ID",
-    "geek fam":            "Geek Fam ID",
-    "geek":                "Geek Fam ID",
-    "dewa united":         "Dewa United Esports",
-    "dewa":                "Dewa United Esports",
-    "bigetron by vitality":"Bigetron by Vitality",
-    "bigetron":            "Bigetron by Vitality",
-    "btr":                 "Bigetron by Vitality",
-    "onic":                "ONIC",
-    "fnatic onic":         "ONIC",
-    "free agent":          None,
-    "retired":             None,
-    "":                    None,
+    "evos esports":           "EVOS",
+    "evos":                   "EVOS",
+    "rrq hoshi":              "RRQ Hoshi",
+    "rrq":                    "RRQ Hoshi",
+    "natus vincere id":       "Natus Vincere",
+    "natus vincere":          "Natus Vincere",
+    "navi":                   "Natus Vincere",
+    "alter ego":              "Alter Ego",
+    "ae":                     "Alter Ego",
+    "team liquid id":         "Team Liquid ID",
+    "tlid":                   "Team Liquid ID",
+    "geek fam id":            "Geek Fam ID",
+    "geek fam":               "Geek Fam ID",
+    "geek":                   "Geek Fam ID",
+    "dewa united esports":    "Dewa United Esports",
+    "dewa united":            "Dewa United Esports",
+    "dewa":                   "Dewa United Esports",
+    "bigetron by vitality":   "Bigetron by Vitality",
+    "bigetron":               "Bigetron by Vitality",
+    "btr":                    "Bigetron by Vitality",
+    "onic":                   "ONIC",
+    "fnatic onic":            "ONIC",
+    "team liquid academy id": "Team Liquid ID Academy",
+    "tlaid":                  "Team Liquid ID Academy",
+    "navi junior":            "Natus Vincere Junior",
+    "nvjr":                   "Natus Vincere Junior",
+    "geek fam id jr":         "Geek Fam Jr",
+    "gfjr":                   "Geek Fam Jr",
+    "none":                   "Free Agent",
+    "free agent":             "Free Agent",
+    "retired":                "Retired",
+    "":                       "Free Agent",
 }
 
-def normalize_team(name: str) -> str | None:
+def normalize_team(name: str) -> str:
     if not name:
-        return None
+        return "Free Agent"
     key = name.lower().strip()
     return TEAM_ALIASES.get(key, name.strip())
 
@@ -103,79 +109,135 @@ def parse_transfer_type(raw: str) -> str:
 # ---------------------------------------------------------------------------
 # Scraper
 # ---------------------------------------------------------------------------
+def _extract_team_cell(cell) -> tuple[str, str]:
+    """Ekstrak nama tim bersih dan teks mentah dari cell OldTeam / NewTeam."""
+    if not cell:
+        return "Free Agent", ""
+    raw_text = cell.get_text(" ", strip=True)
+    if not raw_text or raw_text.lower() == "none":
+        return "Free Agent", raw_text
+
+    # Ambil nama tim lengkap dari atribut title pada link <a> atau alt pada <img>
+    team_names = []
+    for a in cell.find_all("a"):
+        t = (a.get("title") or a.get_text(strip=True) or "").strip()
+        if t and t not in team_names:
+            team_names.append(t)
+    if not team_names:
+        for img in cell.find_all("img"):
+            alt = (img.get("alt") or "").strip()
+            if alt and alt not in team_names:
+                team_names.append(alt)
+
+    base_name = normalize_team(team_names[0]) if team_names else normalize_team(re.sub(r"\s*\(.*?\)", "", raw_text).strip())
+
+    # Pertahankan penanda (Inactive) jika hanya pindah ke status inactive tanpa loan
+    if "(inactive)" in raw_text.lower() and "loan" not in raw_text.lower() and base_name != "Free Agent":
+        return f"{base_name} (Inactive)", raw_text
+
+    return base_name, raw_text
+
+
+def _parse_liquipedia_date(date_raw: str) -> str | None:
+    """Parse tanggal Liquipedia seperti '2026-08-12' atau '2026-06-??'."""
+    if not date_raw:
+        return None
+    cleaned = date_raw.strip().replace("??", "01")
+    for fmt in ("%Y-%m-%d", "%d %B %Y", "%B %Y", "%b %Y"):
+        try:
+            return datetime.strptime(cleaned, fmt).strftime("%Y-%m-%d")
+        except ValueError:
+            continue
+    m = re.search(r"\b(202\d)\b", cleaned)
+    return f"{m.group(1)}-01-01" if m else None
+
+
 def scrape_liquipedia() -> list[dict]:
     if not HAS_REQUESTS:
         log.warning("requests/beautifulsoup4 tidak terinstall, skip scraping.")
         return []
 
-    log.info("Mencoba akses: %s", LIQUIPEDIA_URL)
+    params = {
+        "action": "parse",
+        "page": LIQUIPEDIA_PAGE,
+        "prop": "text",
+        "format": "json",
+    }
+    log.info("Mencoba akses Liquipedia MediaWiki API: %s (page=%s)", LIQUIPEDIA_API_URL, LIQUIPEDIA_PAGE)
     try:
-        resp = requests.get(LIQUIPEDIA_URL, headers=HEADERS, timeout=15)
+        resp = requests.get(LIQUIPEDIA_API_URL, params=params, headers=HEADERS, timeout=20)
         log.info("Status: %d", resp.status_code)
         if resp.status_code != 200:
-            log.warning("Liquipedia mengembalikan %d, fallback ke data manual.", resp.status_code)
+            log.warning("Liquipedia API mengembalikan %d, fallback ke data manual.", resp.status_code)
             return []
+        payload = resp.json()
+        if "error" in payload or "parse" not in payload:
+            log.warning("Liquipedia API error: %s, fallback ke data manual.", payload.get("error"))
+            return []
+        html_content = payload["parse"]["text"]["*"]
     except Exception as e:
-        log.warning("Gagal akses Liquipedia: %s", e)
+        log.warning("Gagal akses Liquipedia API: %s", e)
         return []
 
-    soup = BeautifulSoup(resp.text, "html.parser")
+    soup = BeautifulSoup(html_content, "html.parser")
     transfers = []
+    seen_keys = set()
 
-    # Liquipedia biasanya menaruh tabel transfer di section "Roster Changes"
-    # atau tabel dengan class "wikitable".
-    # Cari semua tabel wikitable yang mengandung kolom Player / Team
-    tables = soup.find_all("table", class_=lambda c: c and "wikitable" in c)
-    log.info("Ditemukan %d wikitable", len(tables))
+    # Liquipedia menyimpan "Roster moves during the off-season" & "during the season"
+    # di dalam <div class="OffSeasonOverview"> dengan struktur divTable / divRow
+    overview_divs = soup.find_all("div", class_="OffSeasonOverview")
+    log.info("Ditemukan %d section OffSeasonOverview", len(overview_divs))
 
-    for tbl in tables:
-        headers = [th.get_text(strip=True).lower() for th in tbl.find_all("th")]
-        log.debug("Table headers: %s", headers)
-        if not any(k in " ".join(headers) for k in ["player", "pemain"]):
-            continue
+    for div in overview_divs:
+        for row in div.find_all("div", class_="divRow"):
+            date_el = row.find("div", class_="Date")
+            name_el = row.find("div", class_="Name")
+            old_el = row.find("div", class_="OldTeam")
+            new_el = row.find("div", class_="NewTeam")
 
-        for row in tbl.find_all("tr")[1:]:
-            cells = row.find_all(["td", "th"])
-            if len(cells) < 3:
+            if not name_el:
                 continue
-            texts = [c.get_text(separator=" ", strip=True) for c in cells]
 
-            # Coba petakan kolom secara heuristik
-            player_name = texts[0] if len(texts) > 0 else ""
-            from_team   = texts[1] if len(texts) > 1 else ""
-            to_team     = texts[2] if len(texts) > 2 else ""
-            ttype_raw   = texts[3] if len(texts) > 3 else ""
-            date_raw    = texts[4] if len(texts) > 4 else ""
+            transfer_date = _parse_liquipedia_date(date_el.get_text(strip=True) if date_el else "")
+            from_team, old_raw = _extract_team_cell(old_el)
+            to_team, new_raw = _extract_team_cell(new_el)
 
-            # Parse tanggal: berbagai format seperti "Aug 2026", "2026-08-15"
-            transfer_date = None
-            for fmt in ("%Y-%m-%d", "%d %B %Y", "%B %Y", "%b %Y"):
-                try:
-                    transfer_date = datetime.strptime(date_raw.strip(), fmt).strftime("%Y-%m-%d")
-                    break
-                except ValueError:
+            # Lewati perubahan internal di tim aktif yang sama (misal ganti role/lane)
+            if from_team == to_team:
+                continue
+
+            combined_raw = f"{old_raw} -> {new_raw}"
+            if "loan" in combined_raw.lower():
+                ttype = "loan"
+            elif from_team == "Free Agent" or to_team == "Free Agent" or "(inactive)" in combined_raw.lower():
+                ttype = "free_transfer"
+            else:
+                ttype = "free_transfer"
+
+            # Satu baris di Liquipedia bisa berisi lebih dari satu pemain
+            player_links = [a.get_text(strip=True) for a in name_el.find_all("a") if a.get_text(strip=True)]
+            if not player_links:
+                fallback_name = name_el.get_text(" ", strip=True)
+                if fallback_name:
+                    player_links = [fallback_name]
+
+            for player_name in player_links:
+                uniq_key = (player_name.lower(), from_team.lower(), to_team.lower(), transfer_date or "")
+                if uniq_key in seen_keys:
                     continue
-            if not transfer_date:
-                # Ambil tahun 4 digit jika ada
-                m = re.search(r"\b(202\d)\b", date_raw)
-                transfer_date = f"{m.group(1)}-01-01" if m else None
+                seen_keys.add(uniq_key)
 
-            if not player_name:
-                continue
+                transfers.append({
+                    "player_name":    player_name,
+                    "from_team_name": from_team,
+                    "to_team_name":   to_team,
+                    "transfer_type":  ttype,
+                    "transfer_date":  transfer_date,
+                    "source_raw":     f"liquipedia_api|{combined_raw}",
+                    "liquipedia_ref": LIQUIPEDIA_URL,
+                })
 
-            transfers.append({
-                "player_name":    player_name,
-                "from_team_name": normalize_team(from_team) or from_team,
-                "to_team_name":   normalize_team(to_team) or to_team,
-                "transfer_type":  parse_transfer_type(ttype_raw),
-                "transfer_date":  transfer_date,
-                "source_raw":     f"liquipedia|{ttype_raw}",
-                "liquipedia_ref": LIQUIPEDIA_URL,
-            })
-
-        time.sleep(DELAY_BETWEEN_REQUESTS + random.uniform(0, 1))
-
-    log.info("Berhasil scrape %d transfer dari Liquipedia.", len(transfers))
+    log.info("Berhasil scrape %d transfer dari Liquipedia API.", len(transfers))
     return transfers
 
 
