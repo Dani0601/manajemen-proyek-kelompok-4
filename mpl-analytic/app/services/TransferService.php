@@ -32,12 +32,20 @@ class TransferService
                 'team_id'    => (int) $row['from_team_id'],
                 'team_name'  => $row['from_team_name'],
                 'team_code'  => $row['from_team_code'] ?? null,
-            ] : null,
+            ] : (!empty($row['from_team_name']) ? [
+                'team_id'    => null,
+                'team_name'  => $row['from_team_name'],
+                'team_code'  => null,
+            ] : null),
             'to_team'          => $row['to_team_id'] ? [
                 'team_id'    => (int) $row['to_team_id'],
                 'team_name'  => $row['to_team_name'],
                 'team_code'  => $row['to_team_code'] ?? null,
-            ] : null,
+            ] : (!empty($row['to_team_name']) ? [
+                'team_id'    => null,
+                'team_name'  => $row['to_team_name'],
+                'team_code'  => null,
+            ] : null),
             'transfer_type'    => $row['transfer_type'],    // buyout | loan | free_transfer | unknown
             'transfer_date'    => $row['transfer_date'],
             'liquipedia_ref'   => $row['liquipedia_ref'],

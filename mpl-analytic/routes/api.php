@@ -258,6 +258,13 @@ if (
         exit;
     }
 
+    // GET /api/teams/{id}/transfers
+    if (isset($segments[3]) && $segments[3] === 'transfers' && !isset($segments[4])) {
+        $transferController = loadController('TransferController.php', 'TransferController');
+        $transferController->byTeam($teamId);
+        exit;
+    }
+
     // GET /api/teams/{id}
     if (!isset($segments[3])) {
         $controller->show($teamId);
@@ -552,6 +559,13 @@ if (
         } else {
             jsonResponse(null, 'Endpoint belum diimplementasikan.', 501, ['error' => ['code' => 'NOT_IMPLEMENTED']]);
         }
+        exit;
+    }
+
+    // GET /api/players/{id}/transfers
+    if (isset($segments[3]) && $segments[3] === 'transfers' && !isset($segments[4])) {
+        $transferController = loadController('TransferController.php', 'TransferController');
+        $transferController->byPlayer($playerId);
         exit;
     }
 
@@ -1153,34 +1167,6 @@ if (
 ) {
     $controller = loadController('TransferController.php', 'TransferController');
     $controller->index();
-    exit;
-}
-
-// GET /api/teams/{id}/transfers
-if (
-    $method === 'GET' &&
-    isset($segments[0], $segments[1], $segments[2], $segments[3]) &&
-    $segments[0] === 'api' &&
-    $segments[1] === 'teams' &&
-    $segments[3] === 'transfers' &&
-    !isset($segments[4])
-) {
-    $controller = loadController('TransferController.php', 'TransferController');
-    $controller->byTeam((int)$segments[2]);
-    exit;
-}
-
-// GET /api/players/{id}/transfers
-if (
-    $method === 'GET' &&
-    isset($segments[0], $segments[1], $segments[2], $segments[3]) &&
-    $segments[0] === 'api' &&
-    $segments[1] === 'players' &&
-    $segments[3] === 'transfers' &&
-    !isset($segments[4])
-) {
-    $controller = loadController('TransferController.php', 'TransferController');
-    $controller->byPlayer((int)$segments[2]);
     exit;
 }
 

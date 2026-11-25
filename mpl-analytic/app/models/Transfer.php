@@ -65,14 +65,18 @@ class Transfer
                 p.player_photo_url,
                 pt.from_team_id,
                 pt.from_team_name,
+                ft.team_code  AS from_team_code,
                 pt.to_team_id,
                 pt.to_team_name,
+                tt.team_code  AS to_team_code,
                 pt.transfer_type,
                 pt.transfer_date,
                 pt.liquipedia_ref,
                 pt.scraped_at
             FROM   player_transfers pt
-            LEFT JOIN players p ON pt.player_id = p.player_id
+            LEFT JOIN players p  ON pt.player_id    = p.player_id
+            LEFT JOIN teams  ft  ON pt.from_team_id = ft.team_id
+            LEFT JOIN teams  tt  ON pt.to_team_id   = tt.team_id
             WHERE  pt.from_team_id = :tid OR pt.to_team_id = :tid2
             ORDER  BY pt.transfer_date DESC, pt.transfer_id DESC
         ";
@@ -97,16 +101,20 @@ class Transfer
                 p.player_photo_url,
                 pt.from_team_id,
                 pt.from_team_name,
+                ft.team_code  AS from_team_code,
                 pt.to_team_id,
                 pt.to_team_name,
+                tt.team_code  AS to_team_code,
                 pt.transfer_type,
                 pt.transfer_date,
                 pt.liquipedia_ref,
                 pt.scraped_at
             FROM   player_transfers pt
-            LEFT JOIN players p ON pt.player_id = p.player_id
+            LEFT JOIN players p  ON pt.player_id    = p.player_id
+            LEFT JOIN teams  ft  ON pt.from_team_id = ft.team_id
+            LEFT JOIN teams  tt  ON pt.to_team_id   = tt.team_id
             WHERE  pt.player_id = :pid
-            ORDER  BY pt.transfer_date DESC
+            ORDER  BY pt.transfer_date DESC, pt.transfer_id DESC
         ";
 
         $stmt = $this->db->prepare($sql);
