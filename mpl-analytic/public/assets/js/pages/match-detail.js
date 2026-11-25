@@ -401,19 +401,26 @@
   }
 
   if (el.back) {
-    // Jika halaman sebelumnya memang tujuannya, pakai history.back() (scroll terjaga).
-    // Selain itu langsung buka alamat tujuan. Tidak bergantung pada document.referrer,
-    // yang sering kosong atau berbeda di peramban mobile.
+    // Kembali ke halaman terakhir (Hasil, Jadwal, atau Detail Tim) lewat riwayat browser.
+    // backTarget() dipakai hanya bila tidak ada halaman sebelumnya di situs ini
+    // (halaman dibuka langsung, tab baru, atau berasal dari situs lain).
     el.back.addEventListener("click", (e) => {
+      // Ctrl/Cmd+klik atau klik tengah tetap membuka tab baru seperti biasa
+      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
       e.preventDefault();
-      const target = backTarget();
-      const ref = document.referrer.split("#")[0];
-      const cameFromTarget = ref !== "" && ref === target.split("#")[0] && history.length > 1;
-      if (cameFromTarget) {
+
+      let sameSite = false;
+      try {
+        const ref = new URL(document.referrer);
+        sameSite = ref.origin === window.location.origin && ref.pathname !== window.location.pathname;
+      } catch (_) { /* referrer kosong */ }
+
+      if (sameSite && history.length > 1) {
         history.back();
-        setTimeout(() => { if (document.body.contains(root)) window.location.assign(target); }, 800);
+        // Jaga-jaga bila riwayat tidak bergerak (misalnya tab ini baru dibuka)
+        setTimeout(() => { if (document.body.contains(root)) window.location.assign(backTarget()); }, 800);
       } else {
-        window.location.assign(target);
+        window.location.assign(backTarget());
       }
     });
   }
