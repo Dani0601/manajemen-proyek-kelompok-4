@@ -56,13 +56,13 @@
     ] },
   };
 
-  function icon(name, color = "#192F53") {
+  function icon(name, color = "#000") {
     const def = ICONS[name];
     if (!def) return "";
     const paths = def.d
       .map((d) => `<path d="${d}"/>`)
       .join("");
-    return `<svg class="td-icon" viewBox="${def.vb}" fill="none" stroke="${color}" stroke-width="1.8"
+    return `<svg class="td-icon" viewBox="${def.vb}" fill="none" stroke="#000" stroke-width="1.8"
       stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" preserveAspectRatio="xMidYMid meet">${paths}</svg>`;
   }
 
