@@ -152,6 +152,47 @@ def _parse_liquipedia_date(date_raw: str) -> str | None:
     return f"{m.group(1)}-01-01" if m else None
 
 
+ORG_ROOTS = {
+    "EVOS": "EVOS", "EVOS Icon": "EVOS", "EVOS Holy": "EVOS",
+    "RRQ Hoshi": "RRQ", "RRQ Tora": "RRQ", "RRQ Sena": "RRQ",
+    "Team Liquid ID": "TLID", "Team Liquid ID Academy": "TLID",
+    "Natus Vincere": "NAVI", "Natus Vincere Junior": "NAVI",
+    "Geek Fam ID": "GEEK", "Geek Fam Jr": "GEEK",
+    "Dewa United Esports": "DEWA", "Dewa United Heka": "DEWA",
+    "Bigetron by Vitality": "BTR", "Bigetron Academy": "BTR", "Bigetron MY by VIT": "BTR", "Team Vitality": "BTR",
+    "ONIC": "ONIC", "ONIC Prime": "ONIC", "ONIC Prodigy": "ONIC",
+}
+
+
+def _classify_transfer_type(from_team: str, to_team: str, old_raw: str, new_raw: str) -> str:
+    """Klasifikasikan jenis transfer berdasarkan data Liquipedia:
+    - loan: hanya jika 'Loan' ada di kolom New (sedang dipinjamkan), bukan pengembalian dari loan.
+    - free_transfer: Free Agent, perpindahan internal satu organisasi (Inactive / Akademi), atau selesai loan kembali ke tim induk.
+    - unknown: transfer antar-organisasi berbeda yang tidak mencantumkan status buyout/free di Liquipedia.
+    """
+    if "loan" in new_raw.lower():
+        return "loan"
+
+    if from_team == "Free Agent" or to_team == "Free Agent":
+        return "free_transfer"
+
+    from_base = from_team.replace(" (Inactive)", "").strip()
+    to_base = to_team.replace(" (Inactive)", "").strip()
+
+    from_org = ORG_ROOTS.get(from_base, from_base)
+    to_org = ORG_ROOTS.get(to_base, to_base)
+
+    # Perpindahan internal satu organisasi (aktif <-> inactive, atau tim utama <-> akademi/MDL)
+    if from_org == to_org:
+        return "free_transfer"
+
+    # Pengembalian dari loan ke tim induk (misal AC / TLID (Loan/Inactive) -> TLID (Inactive))
+    if "loan" in old_raw.lower() and "(inactive)" in to_team.lower():
+        return "free_transfer"
+
+    return "unknown"
+
+
 def scrape_liquipedia() -> list[dict]:
     if not HAS_REQUESTS:
         log.warning("requests/beautifulsoup4 tidak terinstall, skip scraping.")
@@ -207,12 +248,7 @@ def scrape_liquipedia() -> list[dict]:
                 continue
 
             combined_raw = f"{old_raw} -> {new_raw}"
-            if "loan" in combined_raw.lower():
-                ttype = "loan"
-            elif from_team == "Free Agent" or to_team == "Free Agent" or "(inactive)" in combined_raw.lower():
-                ttype = "free_transfer"
-            else:
-                ttype = "free_transfer"
+            ttype = _classify_transfer_type(from_team, to_team, old_raw, new_raw)
 
             # Satu baris di Liquipedia bisa berisi lebih dari satu pemain
             player_links = [a.get_text(strip=True) for a in name_el.find_all("a") if a.get_text(strip=True)]

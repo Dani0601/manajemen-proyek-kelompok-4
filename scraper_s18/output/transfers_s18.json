@@ -1,5 +1,5 @@
 {
-  "scraped_at": "2026-11-25T21:22:31.551465",
+  "scraped_at": "2026-11-25T22:09:11.859875",
   "total": 84,
   "transfers": [
     {
@@ -204,7 +204,7 @@
       "player_name": "Faviannn",
       "from_team_name": "AC Esports",
       "to_team_name": "Team Liquid ID (Inactive)",
-      "transfer_type": "loan",
+      "transfer_type": "free_transfer",
       "transfer_date": "2026-08-04",
       "source_raw": "liquipedia_api|AC / TLID (Loan/Inactive) -> TLID (Inactive)",
       "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
@@ -213,7 +213,7 @@
       "player_name": "AeronnShikii",
       "from_team_name": "AC Esports",
       "to_team_name": "Team Liquid ID (Inactive)",
-      "transfer_type": "loan",
+      "transfer_type": "free_transfer",
       "transfer_date": "2026-08-04",
       "source_raw": "liquipedia_api|AC / TLID (Loan/Inactive) -> TLID (Inactive)",
       "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
@@ -267,7 +267,7 @@
       "player_name": "Widy",
       "from_team_name": "RRQ Tora",
       "to_team_name": "Team Liquid ID (Inactive)",
-      "transfer_type": "loan",
+      "transfer_type": "free_transfer",
       "transfer_date": "2026-08-02",
       "source_raw": "liquipedia_api|RRQT / TLID (Loan/Inactive) -> TLID (Inactive)",
       "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
@@ -285,7 +285,7 @@
       "player_name": "Ivann",
       "from_team_name": "Team Rey",
       "to_team_name": "Alter Ego (Inactive)",
-      "transfer_type": "loan",
+      "transfer_type": "free_transfer",
       "transfer_date": "2026-08-01",
       "source_raw": "liquipedia_api|REY / AE (Loan/Inactive) -> AE (Inactive)",
       "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
@@ -384,7 +384,7 @@
       "player_name": "Adi",
       "from_team_name": "AC Esports",
       "to_team_name": "RRQ Hoshi",
-      "transfer_type": "free_transfer",
+      "transfer_type": "unknown",
       "transfer_date": "2026-07-24",
       "source_raw": "liquipedia_api|AC -> RRQ",
       "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
@@ -411,7 +411,7 @@
       "player_name": "Pheww",
       "from_team_name": "EVOS",
       "to_team_name": "Team Falcons PH (Inactive)",
-      "transfer_type": "loan",
+      "transfer_type": "free_transfer",
       "transfer_date": "2026-07-17",
       "source_raw": "liquipedia_api|EVOS / FLCP (Loan/Inactive) -> FLCP (Inactive)",
       "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
@@ -447,7 +447,7 @@
       "player_name": "Caleb",
       "from_team_name": "Team Rey",
       "to_team_name": "RRQ Hoshi",
-      "transfer_type": "free_transfer",
+      "transfer_type": "unknown",
       "transfer_date": "2026-07-11",
       "source_raw": "liquipedia_api|REY -> RRQ",
       "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
@@ -465,7 +465,7 @@
       "player_name": "Luke",
       "from_team_name": "EVOS",
       "to_team_name": "Bigetron by Vitality",
-      "transfer_type": "loan",
+      "transfer_type": "unknown",
       "transfer_date": "2026-07-09",
       "source_raw": "liquipedia_api|EVOS / BTR (Loan/Inactive) -> BTR",
       "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
@@ -492,7 +492,7 @@
       "player_name": "Lynchh",
       "from_team_name": "Bigetron MY by VIT",
       "to_team_name": "Bigetron by Vitality (Inactive)",
-      "transfer_type": "loan",
+      "transfer_type": "free_transfer",
       "transfer_date": "2026-06-01",
       "source_raw": "liquipedia_api|BTRM / BTR (Loan/Inactive) -> BTR (Inactive)",
       "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
@@ -510,7 +510,7 @@
       "player_name": "Dolynn",
       "from_team_name": "Dewa United Esports",
       "to_team_name": "Bigetron Academy (Inactive)",
-      "transfer_type": "loan",
+      "transfer_type": "free_transfer",
       "transfer_date": "2026-06-20",
       "source_raw": "liquipedia_api|DEWA / BTRAC (Loan/Inactive) -> BTRAC (Inactive)",
       "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
@@ -546,7 +546,7 @@
       "player_name": "SwayLow",
       "from_team_name": "Invictus Gaming",
       "to_team_name": "EVOS (Inactive)",
-      "transfer_type": "loan",
+      "transfer_type": "free_transfer",
       "transfer_date": "2026-06-15",
       "source_raw": "liquipedia_api|iG / EVOS (Loan/Inactive) -> EVOS (Inactive)",
       "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
@@ -654,7 +654,7 @@
       "player_name": "Hazle",
       "from_team_name": "Invictus Gaming (Inactive)",
       "to_team_name": "Dewa United Esports",
-      "transfer_type": "free_transfer",
+      "transfer_type": "unknown",
       "transfer_date": "2026-08-27",
       "source_raw": "liquipedia_api|iG (Inactive) -> DEWA",
       "liquipedia_ref": "https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18"
