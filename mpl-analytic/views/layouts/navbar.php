@@ -67,8 +67,8 @@ $navItems = [
         'icon' => 'Footman.png',
     ],
     [
-        'label' => 'Match Analitik',
-        'path' => '/meta',
+        'label' => 'Daftar Transfer',
+        'path' => '/transfer',
         'icon' => 'Bar Chart.png',
     ],
 ];
