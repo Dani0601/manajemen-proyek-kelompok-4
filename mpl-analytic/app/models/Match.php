@@ -9,6 +9,11 @@ class MatchModel
         $this->db = $dbConnection;
     }
 
+    public function getDb(): PDO
+    {
+        return $this->db;
+    }
+
 
 // 1. Mengambil informasi dasar pertandingan.
 // Target: GET /api/matches/{match_id}
