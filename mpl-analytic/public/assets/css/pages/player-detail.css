@@ -211,67 +211,25 @@
 
 .pd-hero__link {
     display: grid;
-    grid-template-columns: 48px minmax(0, 1fr) minmax(0, 1.8fr) minmax(0, 1fr) 28px;
+    grid-template-columns: 56px minmax(0, 1fr) 24px;
     grid-template-rows: auto auto;
     align-items: center;
-    column-gap: 16px;
-    min-height: 70px;
-    padding: 10px 16px;
+    column-gap: 14px;
+    padding: 14px 16px 8px;
     color: inherit;
     text-decoration: none;
 }
 .pd-hero__link:hover { background: #f1f5f9; }
-.pd-hero__link:focus-visible {
-    outline: 2px solid var(--pd-blue);
-    outline-offset: -2px;
+.pd-hero__link:focus-visible { outline: 2px solid var(--pd-blue); outline-offset: -2px; }
+.pd-hero__icon { grid-column: 1; grid-row: 1 / 3; width: 56px; height: 56px; background: var(--pd-navy); object-fit: cover; }
+.pd-hero__name { grid-column: 2; grid-row: 1; align-self: end; font-size: 17px; font-weight: 700; line-height: 1.2; }
+.pd-hero__meta {
+    grid-column: 2; grid-row: 2; align-self: start;
+    display: flex; flex-wrap: wrap; column-gap: 18px; row-gap: 0;
+    font-size: 16px; color: #96999E; min-width: 0;
 }
-.pd-hero__icon {
-    grid-column: 1;
-    grid-row: 1 / 3;
-    width: 48px;
-    height: 48px;
-    background: var(--pd-navy);
-    border-radius: 0px;
-    object-fit: cover;
-}
-.pd-hero__name {
-    grid-column: 2;
-    grid-row: 1;
-    align-self: end;
-    font-size: 15px;
-    font-weight: 650;
-    line-height: 1.2;
-}
-.pd-hero__meta { display: contents; }
-.pd-hero__picks {
-    grid-column: 2;
-    grid-row: 2;
-    align-self: start;
-    font-size: 15px;
-    color: #000;
-}
-.pd-hero__win,
-.pd-hero__kda {
-    grid-row: 1 / 3;
-    align-self: stretch;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 2px 0;
-    font-size: 15px;
-    text-align: center;
-    color: #000;
-    border-left: 1px solid #000;     /* garis pemisah antar kolom */
-}
-.pd-hero__win { grid-column: 3; }
-.pd-hero__kda { grid-column: 4; }
-.pd-hero__chev {
-    grid-column: 5;
-    grid-row: 1 / 3;
-    justify-self: end;
-    width: 20px;
-    height: 20px;
-}
+.pd-hero__picks, .pd-hero__win, .pd-hero__kda { white-space: nowrap; }
+.pd-hero__chev { grid-column: 3; grid-row: 1 / 3; justify-self: end; width: 20px; height: 20px; color: #000; }
 
 /* ---------- Data kosong di dalam section ---------- */
 .pd-empty {
@@ -280,6 +238,41 @@
     color: var(--pd-muted);
     text-align: center;
 }
+
+/* ---------- Rekomendasi Build (card 16.2) ---------- */
+.pd-build {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 210px 170px;
+    gap: 10px;
+    padding: 6px 12px 14px;
+}
+.pd-build--empty { display: block; }
+.pd-build__card {
+    min-width: 0; padding: 8px 10px;
+    background: #F5F5F5; border: 1px solid var(--pd-navy); border-radius: 8px;
+    box-shadow: 0 2px 3px rgba(23, 43, 77, .25);
+}
+.pd-build__title { margin: 0 0 8px; font-size: 18px; font-weight: 400; color: var(--pd-navy); }
+.pd-build__items {
+    display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px;
+    margin: 0; padding: 0; list-style: none;
+}
+.pd-build__item { display: flex; flex-direction: column; align-items: center; gap: 3px; min-width: 0; text-align: center; }
+.pd-build__img { width: 100%; max-width: 52px; aspect-ratio: 1; object-fit: cover; border-radius: 50%; background: var(--pd-navy); }
+.pd-build__name { font-size: 9px; font-weight: 600; line-height: 1.15; color: var(--pd-navy); overflow-wrap: anywhere; }
+.pd-build__name--lg { font-size: 12px; }
+.pd-build__label { margin: 0 0 6px; font-size: 12px; font-weight: 400; text-transform: uppercase; }
+.pd-build__label--red { color: #ED2F2F; }
+.pd-build__label--green { color: #24D321; }
+.pd-build__emblem { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.pd-build__emblem-img { flex: 0 0 auto; width: 48px; height: 48px; object-fit: contain; border-radius: 50%; }
+.pd-build__emblem-text { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.pd-build__talents { display: flex; gap: 6px; }
+.pd-build__talent { width: 24px; height: 24px; object-fit: contain; border-radius: 50%; }
+.pd-build__spells { display: flex; flex-direction: column; gap: 6px; }
+.pd-build__spell { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.pd-build__spell-img { flex: 0 0 auto; width: 48px; height: 48px; object-fit: cover; border-radius: 50%; }
+.pd-build__empty { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 12px 8px; text-align: center; }
 
 /* ---------- Mobile 360-430 px ---------- */
 @media (max-width: 767px) {
@@ -300,50 +293,22 @@
     .pd-row__value { font-size: 14px; }
     
 
+    /* ----- Rekomendasi Build (mobile) ----- */
+    .pd-build { grid-template-columns: 1fr 1fr; gap: 8px; padding: 4px 10px 12px; }
+    .pd-build__card--items { grid-column: 1 / -1; }
+    .pd-build__title { font-size: 14px; }
+    .pd-build__items { gap: 4px; }
+    .pd-build__name { font-size: 8px; }
+    .pd-build__name--lg { font-size: 11px; }
+    .pd-build__emblem-img, .pd-build__spell-img { width: 36px; height: 36px; }
+    .pd-build__talent { width: 20px; height: 20px; }
+    .pd-build--empty { display: block; }
+
     /* ----- Hero Favorit (mobile) ----- */
-    .pd-hero__link {
-        grid-template-columns: 40px minmax(0, 1fr) 14px;
-        column-gap: 7px;
-        min-height: 0;
-        padding: 8px 10px;
-    }
-    .pd-hero__icon { width: 40px; height: 40px; }
-    .pd-hero__name { font-size: 13px; align-items: first baseline; }
-
-    /* Tiga kolom proporsional: ikut melebar saat layar dilebarkan */
-    .pd-hero__meta {
-        display: grid;
-        grid-template-columns: auto auto auto;
-        justify-content: space-between;
-        align-items: center;
-        grid-column: 2;
-        grid-row: 2;
-        min-width: 0;
-        font-size: 10px;
-
-    }
-    .pd-hero__picks,
-    .pd-hero__win,
-    .pd-hero__kda {
-        grid-column: auto;
-        grid-row: auto;
-        display: block;
-        align-self: auto;
-        box-sizing: border-box;
-        min-width: auto;
-        margin: 0;
-        padding: 0 .6em;
-        border: 0;
-        font-size: inherit;
-        text-align: center;
-        white-space: nowrap;
-        color: #000;
-    }
-    .pd-hero__picks { padding-left: 0; text-align: left; }
-    .pd-hero__win   { text-align: center; }
-    .pd-hero__kda   { text-align: center; }
-    .pd-hero__win,
-    .pd-hero__kda { border-left: 1px solid #000; }
+    .pd-hero__link { grid-template-columns: 44px minmax(0, 1fr) 18px; column-gap: 10px; padding: 10px 10px 6px; }
+    .pd-hero__icon { width: 44px; height: 44px; }
+    .pd-hero__name { font-size: 14px; }
+    .pd-hero__meta { font-size: 11px; column-gap: 10px; }
 }
 /* ---------- Skeleton loading ---------- */
 .pd-skel { display: none; flex-direction: column; gap: 14px; }
@@ -381,4 +346,3 @@
 .pd-empty-state__icon .pd-icon { stroke: #fff; }
 .pd-empty-state__title { font-size: 15px; color: #000; }
 .pd-empty-state__sub { font-size: 12px; color: var(--pd-muted); }
-

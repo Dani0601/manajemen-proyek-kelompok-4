@@ -114,6 +114,27 @@
     }
   }
 
+  // Card 16.2: rekomendasi build dari API (items, emblem + talents, battle_spells)
+  function normalizeBuild(b) {
+    if (!b || typeof b !== "object") return null;
+    const items = (Array.isArray(b.items) ? b.items : [])
+      .filter((i) => i && i.item_icon_url)
+      .map((i) => ({ name: i.item_name || "", icon: i.item_icon_url }));
+    const e = b.emblem && b.emblem.emblem_icon_url ? b.emblem : null;
+    const emblem = e ? {
+      name: e.emblem_name || "Emblem",
+      icon: e.emblem_icon_url,
+      talents: (Array.isArray(e.talents) ? e.talents : [])
+        .filter((t) => t && t.talent_icon_url)
+        .map((t) => ({ name: t.talent_name || "", icon: t.talent_icon_url })),
+    } : null;
+    const spells = (Array.isArray(b.battle_spells) ? b.battle_spells : [])
+      .filter((x) => x && x.spell_icon_url)
+      .map((x) => ({ name: x.spell_name || "", icon: x.spell_icon_url }));
+    if (!items.length && !emblem && !spells.length) return null;
+    return { items, emblem, spells };
+  }
+
   function normalizePlayer(payload) {
     const p = payload?.player || {};
     const s = payload?.stats || {};
@@ -142,6 +163,7 @@
           picks: num(h.pick_count) ?? 0,
           winRate: num(h.win_rate),
           kda: num(h.avg_kda),
+          build: normalizeBuild(h.recommended_build),
         }))
         .sort((a, b) => b.picks - a.picks),
       hasData: totalGames !== null && totalGames > 0,
@@ -247,7 +269,7 @@
     const from = encodeURIComponent(window.location.pathname + window.location.search);
     el.heroes.innerHTML = list.map((h) => `
       <li class="pd-hero">
-        <a class="pd-hero__link" href="${escapeHTML(baseUrl)}/hero-detail?id=${encodeURIComponent(h.id)}&from=${from}""
+        <a class="pd-hero__link" href="${escapeHTML(baseUrl)}/hero-detail?id=${encodeURIComponent(h.id)}&from=${from}"
            aria-label="Lihat detail hero ${escapeHTML(h.name)}">
           <img class="pd-hero__icon" src="${escapeHTML(h.icon)}" alt="" loading="lazy"
                onerror="this.onerror=null;this.style.visibility='hidden'">
@@ -262,7 +284,58 @@
             <path d="M9 5l7 7-7 7"></path>
           </svg>
         </a>
+        ${buildHTML(h)}
       </li>`).join("");
+  }
+
+  // Ikon emblem/talent/spell di DB berasal dari wikia (menolak hotlink dengan referrer),
+  // jadi pakai no-referrer seperti hero-detail, dan gambar default bila tetap gagal.
+  function imgTag(cls, src, fallback = "default-item.png") {
+    const fb = `${assetBase}/images/${fallback}`;
+    return `<img class="${cls}" src="${escapeHTML(src)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='${escapeHTML(fb)}'">`;
+  }
+
+  // Rekomendasi Build: 6 item, EMBLEM SETUP, BATTLE SPELL
+  function buildHTML(h) {
+    const b = h.build;
+    const title = `Rekomendasi Build (${escapeHTML(h.name)})`;
+    if (!b) {
+      return `
+        <div class="pd-build pd-build--empty"><div class="pd-build__card">
+          <h4 class="pd-build__title">${title}</h4>
+          <div class="pd-build__empty">${emptyHTML(
+            "Data rekomendasi build belum tersedia",
+            "Rekomendasi build untuk hero ini belum ditambahkan"
+          )}</div>
+        </div></div>`;
+    }
+    const items = b.items.slice(0, 6).map((i) => `
+      <li class="pd-build__item">${imgTag("pd-build__img", i.icon)}<span class="pd-build__name">${escapeHTML(i.name)}</span></li>`).join("");
+    const emblem = b.emblem ? `
+      <div class="pd-build__card pd-build__card--emblem">
+        <h5 class="pd-build__label pd-build__label--red">Emblem Setup</h5>
+        <div class="pd-build__emblem">
+          ${imgTag("pd-build__emblem-img", b.emblem.icon, "default-emblem.png")}
+          <span class="pd-build__emblem-text">
+            <span class="pd-build__name pd-build__name--lg">${escapeHTML(b.emblem.name)}</span>
+            <span class="pd-build__talents">${b.emblem.talents.slice(0, 3).map((t) => imgTag("pd-build__talent", t.icon, "default-skill.png")).join("")}</span>
+          </span>
+        </div>
+      </div>` : "";
+    const spells = b.spells.length ? `
+      <div class="pd-build__card pd-build__card--spell">
+        <h5 class="pd-build__label pd-build__label--green">Battle Spell</h5>
+        <div class="pd-build__spells">${b.spells.map((x) => `
+          <span class="pd-build__spell">${imgTag("pd-build__spell-img", x.icon, "default-skill.png")}<span class="pd-build__name pd-build__name--lg">${escapeHTML(x.name)}</span></span>`).join("")}</div>
+      </div>` : "";
+    return `
+      <div class="pd-build">
+        <div class="pd-build__card pd-build__card--items">
+          <h4 class="pd-build__title">${title}</h4>
+          ${items ? `<ul class="pd-build__items">${items}</ul>` : ""}
+        </div>
+        ${emblem}${spells}
+      </div>`;
   }
 
   async function load() {
