@@ -204,7 +204,10 @@ class MatchModel
         $sql = "
             SELECT
                 g.game_number,
-                gb.ban_turn AS turn,
+                CASE
+                    WHEN gb.ban_turn <= 6 THEN gb.ban_turn
+                    ELSE gb.ban_turn + 6
+                END AS turn,
                 gb.team_id,
                 t.team_name,
                 'ban' AS draft_type,
@@ -223,22 +226,45 @@ class MatchModel
             UNION ALL
 
             SELECT
-                g.game_number,
-                (ROW_NUMBER() OVER(PARTITION BY g.game_id ORDER BY gp.game_pick_id) + 10) AS turn,
-                gp.team_id,
-                t.team_name,
+                p.game_number,
+                CASE
+                    WHEN p.side = 'team1' AND p.side_pick_no = 1 THEN 7
+                    WHEN p.side = 'team2' AND p.side_pick_no = 1 THEN 8
+                    WHEN p.side = 'team2' AND p.side_pick_no = 2 THEN 9
+                    WHEN p.side = 'team1' AND p.side_pick_no = 2 THEN 10
+                    WHEN p.side = 'team1' AND p.side_pick_no = 3 THEN 11
+                    WHEN p.side = 'team2' AND p.side_pick_no = 3 THEN 12
+                    WHEN p.side = 'team2' AND p.side_pick_no = 4 THEN 17
+                    WHEN p.side = 'team1' AND p.side_pick_no = 4 THEN 18
+                    WHEN p.side = 'team1' AND p.side_pick_no = 5 THEN 19
+                    WHEN p.side = 'team2' AND p.side_pick_no = 5 THEN 20
+                    ELSE 20 + p.side_pick_no
+                END AS turn,
+                p.team_id,
+                p.team_name,
                 'pick' AS draft_type,
-                h.hero_id,
-                h.hero_name,
-                h.hero_url AS hero_icon_url
-            FROM game_picks gp
-            INNER JOIN games g
-                ON gp.game_id = g.game_id
-            INNER JOIN teams t
-                ON gp.team_id = t.team_id
-            INNER JOIN heroes h
-                ON gp.hero_id = h.hero_id
-            WHERE g.match_id = :match_id2
+                p.hero_id,
+                p.hero_name,
+                p.hero_icon_url
+            FROM (
+                SELECT
+                    g.game_number,
+                    gp.side,
+                    gp.team_id,
+                    t.team_name,
+                    h.hero_id,
+                    h.hero_name,
+                    h.hero_url AS hero_icon_url,
+                    ROW_NUMBER() OVER (PARTITION BY gp.game_id, gp.side ORDER BY gp.game_pick_id) AS side_pick_no
+                FROM game_picks gp
+                INNER JOIN games g
+                    ON gp.game_id = g.game_id
+                INNER JOIN teams t
+                    ON gp.team_id = t.team_id
+                INNER JOIN heroes h
+                    ON gp.hero_id = h.hero_id
+                WHERE g.match_id = :match_id2
+            ) p
 
             ORDER BY
                 game_number ASC,
