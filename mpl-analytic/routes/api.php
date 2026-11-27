@@ -259,6 +259,13 @@ if (
         exit;
     }
 
+    // GET /api/teams/{id}/transfers
+    if (isset($segments[3]) && $segments[3] === 'transfers' && !isset($segments[4])) {
+        $transferController = loadController('TransferController.php', 'TransferController');
+        $transferController->byTeam($teamId);
+        exit;
+    }
+
     // GET /api/teams/{id}
     if (!isset($segments[3])) {
         $controller->show($teamId);
@@ -553,6 +560,13 @@ if (
         } else {
             jsonResponse(null, 'Endpoint belum diimplementasikan.', 501, ['error' => ['code' => 'NOT_IMPLEMENTED']]);
         }
+        exit;
+    }
+
+    // GET /api/players/{id}/transfers
+    if (isset($segments[3]) && $segments[3] === 'transfers' && !isset($segments[4])) {
+        $transferController = loadController('TransferController.php', 'TransferController');
+        $transferController->byPlayer($playerId);
         exit;
     }
 
@@ -1088,6 +1102,31 @@ if (
     );
 }
 
+
+
+/*
+|--------------------------------------------------------------------------
+| TRANSFERS
+|--------------------------------------------------------------------------
+|
+| GET /api/transfers                        → semua transfer (paginasi)
+| GET /api/teams/{id}/transfers             → transfer per tim (in & out)
+| GET /api/players/{id}/transfers           → riwayat transfer per pemain
+|
+*/
+
+// GET /api/transfers
+if (
+    $method === 'GET' &&
+    isset($segments[0], $segments[1]) &&
+    $segments[0] === 'api' &&
+    $segments[1] === 'transfers' &&
+    !isset($segments[2])
+) {
+    $controller = loadController('TransferController.php', 'TransferController');
+    $controller->index();
+    exit;
+}
 
 
 /*
