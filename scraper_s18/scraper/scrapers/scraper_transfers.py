@@ -95,15 +95,15 @@ def normalize_team(name: str) -> str:
 def parse_transfer_type(raw: str) -> str:
     """Mapping teks Liquipedia / sumber umum ke ENUM transfer_type."""
     if not raw:
-        return "unknown"
+        return "transfer"
     r = raw.lower()
-    if "buyout" in r or "beli putus" in r or "purchased" in r:
-        return "buyout"
+    if "transfer" in r or "beli putus" in r or "purchased" in r:
+        return "transfer"
     if "loan" in r or "pinjam" in r or "dipinjam" in r:
         return "loan"
     if "free" in r or "bebas" in r or "expired" in r or "habis kontrak" in r:
-        return "free_transfer"
-    return "unknown"
+        return "transfer"
+    return "transfer"
 
 
 # ---------------------------------------------------------------------------
@@ -165,32 +165,14 @@ ORG_ROOTS = {
 
 
 def _classify_transfer_type(from_team: str, to_team: str, old_raw: str, new_raw: str) -> str:
-    """Klasifikasikan jenis transfer berdasarkan data Liquipedia:
-    - loan: hanya jika 'Loan' ada di kolom New (sedang dipinjamkan), bukan pengembalian dari loan.
-    - free_transfer: Free Agent, perpindahan internal satu organisasi (Inactive / Akademi), atau selesai loan kembali ke tim induk.
-    - unknown: transfer antar-organisasi berbeda yang tidak mencantumkan status buyout/free di Liquipedia.
+    """Klasifikasikan jenis transfer menjadi 'loan' atau 'transfer' saja:
+    - loan: jika 'Loan' ada di kolom New (sedang dipinjamkan).
+    - transfer: semua perpindahan permanen, free agent, akademi, atau pengembalian loan.
     """
     if "loan" in new_raw.lower():
         return "loan"
 
-    if from_team == "Free Agent" or to_team == "Free Agent":
-        return "free_transfer"
-
-    from_base = from_team.replace(" (Inactive)", "").strip()
-    to_base = to_team.replace(" (Inactive)", "").strip()
-
-    from_org = ORG_ROOTS.get(from_base, from_base)
-    to_org = ORG_ROOTS.get(to_base, to_base)
-
-    # Perpindahan internal satu organisasi (aktif <-> inactive, atau tim utama <-> akademi/MDL)
-    if from_org == to_org:
-        return "free_transfer"
-
-    # Pengembalian dari loan ke tim induk (misal AC / TLID (Loan/Inactive) -> TLID (Inactive))
-    if "loan" in old_raw.lower() and "(inactive)" in to_team.lower():
-        return "free_transfer"
-
-    return "unknown"
+    return "transfer"
 
 
 def scrape_liquipedia() -> list[dict]:
@@ -284,30 +266,30 @@ def scrape_liquipedia() -> list[dict]:
 MANUAL_TRANSFERS = [
     # Pre-season & Roster Lock Transfers MPL ID Season 18
     {"player_name": "DEMONKITE",    "from_team_name": "Aurora Gaming PH",        "to_team_name": "RRQ Hoshi",           "transfer_type": "loan",          "transfer_date": "2026-07-15", "source_raw": "manual|loan|liquipedia",         "liquipedia_ref": LIQUIPEDIA_URL},
-    {"player_name": "MUEZZA",       "from_team_name": "Dewa United Esports",     "to_team_name": "EVOS",                "transfer_type": "free_transfer", "transfer_date": "2026-07-15", "source_raw": "manual|transfer|double-xp.net",  "liquipedia_ref": LIQUIPEDIA_URL},
-    {"player_name": "RYZAA",        "from_team_name": "Bigetron by Vitality",    "to_team_name": "EVOS",                "transfer_type": "free_transfer", "transfer_date": "2026-08-12", "source_raw": "manual|transfer|liquipedia",     "liquipedia_ref": LIQUIPEDIA_URL},
-    {"player_name": "IVANN",        "from_team_name": "Team Rey",                "to_team_name": "Alter Ego",           "transfer_type": "free_transfer", "transfer_date": "2026-07-15", "source_raw": "manual|loan_return|liquipedia",  "liquipedia_ref": LIQUIPEDIA_URL},
-    {"player_name": "KARSS",        "from_team_name": "Rebellion Esports",       "to_team_name": "Natus Vincere",       "transfer_type": "free_transfer", "transfer_date": "2026-07-15", "source_raw": "manual|transfer|liquipedia",     "liquipedia_ref": LIQUIPEDIA_URL},
-    {"player_name": "CLAYYY",       "from_team_name": "Free Agent",              "to_team_name": "RRQ Hoshi",           "transfer_type": "free_transfer", "transfer_date": "2026-08-01", "source_raw": "manual|return_active|detik.com", "liquipedia_ref": LIQUIPEDIA_URL},
+    {"player_name": "MUEZZA",       "from_team_name": "Dewa United Esports",     "to_team_name": "EVOS",                "transfer_type": "transfer", "transfer_date": "2026-07-15", "source_raw": "manual|transfer|double-xp.net",  "liquipedia_ref": LIQUIPEDIA_URL},
+    {"player_name": "RYZAA",        "from_team_name": "Bigetron by Vitality",    "to_team_name": "EVOS",                "transfer_type": "transfer", "transfer_date": "2026-08-12", "source_raw": "manual|transfer|liquipedia",     "liquipedia_ref": LIQUIPEDIA_URL},
+    {"player_name": "IVANN",        "from_team_name": "Team Rey",                "to_team_name": "Alter Ego",           "transfer_type": "transfer", "transfer_date": "2026-07-15", "source_raw": "manual|loan_return|liquipedia",  "liquipedia_ref": LIQUIPEDIA_URL},
+    {"player_name": "KARSS",        "from_team_name": "Rebellion Esports",       "to_team_name": "Natus Vincere",       "transfer_type": "transfer", "transfer_date": "2026-07-15", "source_raw": "manual|transfer|liquipedia",     "liquipedia_ref": LIQUIPEDIA_URL},
+    {"player_name": "CLAYYY",       "from_team_name": "Free Agent",              "to_team_name": "RRQ Hoshi",           "transfer_type": "transfer", "transfer_date": "2026-08-01", "source_raw": "manual|return_active|detik.com", "liquipedia_ref": LIQUIPEDIA_URL},
     {"player_name": "KAYN",         "from_team_name": "Dewa United Esports",     "to_team_name": "Twisted Minds PH",    "transfer_type": "loan",          "transfer_date": "2026-08-01", "source_raw": "manual|loan|skor.id",            "liquipedia_ref": LIQUIPEDIA_URL},
 
     # Promosi dari Akademi/Junior (MDL)
-    {"player_name": "KEVEN",        "from_team_name": "Team Liquid ID Academy",  "to_team_name": "Team Liquid ID",      "transfer_type": "free_transfer", "transfer_date": "2026-08-01", "source_raw": "manual|promotion|double-xp.net", "liquipedia_ref": LIQUIPEDIA_URL},
-    {"player_name": "APRHO",        "from_team_name": "Natus Vincere Junior",    "to_team_name": "Natus Vincere",       "transfer_type": "free_transfer", "transfer_date": "2026-07-15", "source_raw": "manual|promotion|liquipedia",    "liquipedia_ref": LIQUIPEDIA_URL},
-    {"player_name": "JIIZEE",       "from_team_name": "Natus Vincere Junior",    "to_team_name": "Natus Vincere",       "transfer_type": "free_transfer", "transfer_date": "2026-07-15", "source_raw": "manual|promotion|liquipedia",    "liquipedia_ref": LIQUIPEDIA_URL},
-    {"player_name": "JOSHUAA",      "from_team_name": "Natus Vincere Junior",    "to_team_name": "Natus Vincere",       "transfer_type": "free_transfer", "transfer_date": "2026-07-15", "source_raw": "manual|promotion|liquipedia",    "liquipedia_ref": LIQUIPEDIA_URL},
-    {"player_name": "ZEONN",        "from_team_name": "Natus Vincere Junior",    "to_team_name": "Natus Vincere",       "transfer_type": "free_transfer", "transfer_date": "2026-07-15", "source_raw": "manual|promotion|liquipedia",    "liquipedia_ref": LIQUIPEDIA_URL},
+    {"player_name": "KEVEN",        "from_team_name": "Team Liquid ID Academy",  "to_team_name": "Team Liquid ID",      "transfer_type": "transfer", "transfer_date": "2026-08-01", "source_raw": "manual|promotion|double-xp.net", "liquipedia_ref": LIQUIPEDIA_URL},
+    {"player_name": "APRHO",        "from_team_name": "Natus Vincere Junior",    "to_team_name": "Natus Vincere",       "transfer_type": "transfer", "transfer_date": "2026-07-15", "source_raw": "manual|promotion|liquipedia",    "liquipedia_ref": LIQUIPEDIA_URL},
+    {"player_name": "JIIZEE",       "from_team_name": "Natus Vincere Junior",    "to_team_name": "Natus Vincere",       "transfer_type": "transfer", "transfer_date": "2026-07-15", "source_raw": "manual|promotion|liquipedia",    "liquipedia_ref": LIQUIPEDIA_URL},
+    {"player_name": "JOSHUAA",      "from_team_name": "Natus Vincere Junior",    "to_team_name": "Natus Vincere",       "transfer_type": "transfer", "transfer_date": "2026-07-15", "source_raw": "manual|promotion|liquipedia",    "liquipedia_ref": LIQUIPEDIA_URL},
+    {"player_name": "ZEONN",        "from_team_name": "Natus Vincere Junior",    "to_team_name": "Natus Vincere",       "transfer_type": "transfer", "transfer_date": "2026-07-15", "source_raw": "manual|promotion|liquipedia",    "liquipedia_ref": LIQUIPEDIA_URL},
 
     # Mid-season Transfers, Promotions & Inactive Shifts
-    {"player_name": "DRIANW",       "from_team_name": "EVOS",                    "to_team_name": "EVOS Icon",           "transfer_type": "free_transfer", "transfer_date": "2026-08-26", "source_raw": "manual|mdl_move|liquipedia",     "liquipedia_ref": LIQUIPEDIA_URL},
-    {"player_name": "AUDYTZY",      "from_team_name": "Geek Fam ID",             "to_team_name": "Free Agent",          "transfer_type": "free_transfer", "transfer_date": "2026-08-26", "source_raw": "manual|inactive|skor.id",        "liquipedia_ref": LIQUIPEDIA_URL},
-    {"player_name": "FRENZYY",      "from_team_name": "Geek Fam Jr",             "to_team_name": "Geek Fam ID",         "transfer_type": "free_transfer", "transfer_date": "2026-08-26", "source_raw": "manual|promotion|skor.id",       "liquipedia_ref": LIQUIPEDIA_URL},
-    {"player_name": "HAZLE",        "from_team_name": "Geek Fam ID",             "to_team_name": "Dewa United Esports", "transfer_type": "free_transfer", "transfer_date": "2026-08-27", "source_raw": "manual|mid_season|liquipedia",   "liquipedia_ref": LIQUIPEDIA_URL},
-    {"player_name": "KYOUU",        "from_team_name": "Team Liquid ID",          "to_team_name": "Free Agent",          "transfer_type": "free_transfer", "transfer_date": "2026-08-28", "source_raw": "manual|inactive|double-xp.net",  "liquipedia_ref": LIQUIPEDIA_URL},
-    {"player_name": "FAVIANNN",     "from_team_name": "Team Liquid ID",          "to_team_name": "Free Agent",          "transfer_type": "free_transfer", "transfer_date": "2026-08-28", "source_raw": "manual|farewell|skor.id",        "liquipedia_ref": LIQUIPEDIA_URL},
-    {"player_name": "EXCELLENT99",  "from_team_name": "KINGS Esports",           "to_team_name": "RRQ Hoshi",           "transfer_type": "free_transfer", "transfer_date": "2026-09-10", "source_raw": "manual|mid_season|duniagames",   "liquipedia_ref": LIQUIPEDIA_URL},
-    {"player_name": "FAVIANNN",     "from_team_name": "Free Agent",              "to_team_name": "RRQ Hoshi",           "transfer_type": "free_transfer", "transfer_date": "2026-09-16", "source_raw": "manual|mid_season|liquipedia",   "liquipedia_ref": LIQUIPEDIA_URL},
-    {"player_name": "KILLUAA",      "from_team_name": "ONIC Prodigy",            "to_team_name": "ONIC",                "transfer_type": "free_transfer", "transfer_date": "2026-09-16", "source_raw": "manual|promotion|liquipedia",    "liquipedia_ref": LIQUIPEDIA_URL},
+    {"player_name": "DRIANW",       "from_team_name": "EVOS",                    "to_team_name": "EVOS Icon",           "transfer_type": "transfer", "transfer_date": "2026-08-26", "source_raw": "manual|mdl_move|liquipedia",     "liquipedia_ref": LIQUIPEDIA_URL},
+    {"player_name": "AUDYTZY",      "from_team_name": "Geek Fam ID",             "to_team_name": "Free Agent",          "transfer_type": "transfer", "transfer_date": "2026-08-26", "source_raw": "manual|inactive|skor.id",        "liquipedia_ref": LIQUIPEDIA_URL},
+    {"player_name": "FRENZYY",      "from_team_name": "Geek Fam Jr",             "to_team_name": "Geek Fam ID",         "transfer_type": "transfer", "transfer_date": "2026-08-26", "source_raw": "manual|promotion|skor.id",       "liquipedia_ref": LIQUIPEDIA_URL},
+    {"player_name": "HAZLE",        "from_team_name": "Geek Fam ID",             "to_team_name": "Dewa United Esports", "transfer_type": "transfer", "transfer_date": "2026-08-27", "source_raw": "manual|mid_season|liquipedia",   "liquipedia_ref": LIQUIPEDIA_URL},
+    {"player_name": "KYOUU",        "from_team_name": "Team Liquid ID",          "to_team_name": "Free Agent",          "transfer_type": "transfer", "transfer_date": "2026-08-28", "source_raw": "manual|inactive|double-xp.net",  "liquipedia_ref": LIQUIPEDIA_URL},
+    {"player_name": "FAVIANNN",     "from_team_name": "Team Liquid ID",          "to_team_name": "Free Agent",          "transfer_type": "transfer", "transfer_date": "2026-08-28", "source_raw": "manual|farewell|skor.id",        "liquipedia_ref": LIQUIPEDIA_URL},
+    {"player_name": "EXCELLENT99",  "from_team_name": "KINGS Esports",           "to_team_name": "RRQ Hoshi",           "transfer_type": "transfer", "transfer_date": "2026-09-10", "source_raw": "manual|mid_season|duniagames",   "liquipedia_ref": LIQUIPEDIA_URL},
+    {"player_name": "FAVIANNN",     "from_team_name": "Free Agent",              "to_team_name": "RRQ Hoshi",           "transfer_type": "transfer", "transfer_date": "2026-09-16", "source_raw": "manual|mid_season|liquipedia",   "liquipedia_ref": LIQUIPEDIA_URL},
+    {"player_name": "KILLUAA",      "from_team_name": "ONIC Prodigy",            "to_team_name": "ONIC",                "transfer_type": "transfer", "transfer_date": "2026-09-16", "source_raw": "manual|promotion|liquipedia",    "liquipedia_ref": LIQUIPEDIA_URL},
 ]
 
 
@@ -328,7 +310,7 @@ def generate_sql(transfers: list[dict]) -> str:
             f"  ({to_sql_value(t['player_name'])}, "
             f"{to_sql_value(t.get('from_team_name'))}, "
             f"{to_sql_value(t.get('to_team_name'))}, "
-            f"{to_sql_value(t.get('transfer_type', 'unknown'))}, "
+            f"{to_sql_value(t.get('transfer_type', 'transfer'))}, "
             f"{to_sql_value(t.get('transfer_date'))}, "
             f"(SELECT season_id FROM seasons WHERE season_number = 18 LIMIT 1), "
             f"{to_sql_value(t.get('liquipedia_ref'))}, "

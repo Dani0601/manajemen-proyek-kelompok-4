@@ -46,7 +46,7 @@ class TransferService
                 'team_name'  => $row['to_team_name'],
                 'team_code'  => null,
             ] : null),
-            'transfer_type'    => $row['transfer_type'],    // buyout | loan | free_transfer | unknown
+            'transfer_type'    => $row['transfer_type'],    // transfer | loan
             'transfer_date'    => $row['transfer_date'],
             'liquipedia_ref'   => $row['liquipedia_ref'],
             'scraped_at'       => $row['scraped_at'],
@@ -54,17 +54,25 @@ class TransferService
     }
 
     // -----------------------------------------------------------------------
-    // GET /api/transfers — semua transfer dengan paginasi
+    // GET /api/transfers — semua transfer dengan paginasi dan filter opsional
     // -----------------------------------------------------------------------
-    public function getAllTransfers(int $page = 1, int $limit = 20): array
-    {
-        $offset    = ($page - 1) * $limit;
-        $rows      = $this->transferModel->getAllTransfers($limit, $offset);
-        $total     = $this->transferModel->countAllTransfers();
-        $totalPages = (int) ceil($total / $limit);
+    public function getAllTransfers(
+        int $page = 1,
+        int $limit = 5,
+        ?int $teamId = null,
+        ?string $transferType = null
+    ): array {
+        $offset     = ($page - 1) * $limit;
+        $rows       = $this->transferModel->getAllTransfers($limit, $offset, $teamId, $transferType);
+        $total      = $this->transferModel->countAllTransfers($teamId, $transferType);
+        $totalPages = $total > 0 ? (int) ceil($total / $limit) : 0;
 
         return [
             'transfers'  => array_values(array_map([$this, 'formatRow'], $rows)),
+            'filters'    => [
+                'team_id'       => $teamId,
+                'transfer_type' => $transferType,
+            ],
             'pagination' => [
                 'current_page' => $page,
                 'per_page'     => $limit,

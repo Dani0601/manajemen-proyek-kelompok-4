@@ -12,8 +12,8 @@ CREATE TABLE IF NOT EXISTS `player_transfers` (
   `from_team_name`   VARCHAR(150) NOT NULL COMMENT 'Nama tim asal (dari scraping)',
   `to_team_id`       INT UNSIGNED DEFAULT NULL,
   `to_team_name`     VARCHAR(150) NOT NULL COMMENT 'Nama tim tujuan (dari scraping)',
-  `transfer_type`    ENUM('buyout', 'loan', 'free_transfer', 'unknown') NOT NULL DEFAULT 'unknown'
-                     COMMENT 'Jenis transfer: buyout (dibeli putus), loan (pinjaman), free_transfer (kontrak habis/bebas)',
+  `transfer_type`    ENUM('transfer', 'loan') NOT NULL DEFAULT 'transfer'
+                     COMMENT 'Jenis transfer: transfer (perpindahan permanen/bebas/akademi) atau loan (pinjaman)',
   `transfer_date`    DATE DEFAULT NULL COMMENT 'Tanggal efektif transfer',
   `season_id`        INT UNSIGNED DEFAULT NULL COMMENT 'Musim saat transfer terjadi (opsional)',
   `liquipedia_ref`   VARCHAR(500) DEFAULT NULL COMMENT 'URL sumber Liquipedia',

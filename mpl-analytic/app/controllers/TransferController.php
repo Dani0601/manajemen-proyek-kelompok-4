@@ -16,14 +16,37 @@ class TransferController
 
     // -----------------------------------------------------------------------
     // GET /api/transfers
+    // Query params: page (default 1), limit (default 5), team_id, transfer_type (transfer|loan)
     // -----------------------------------------------------------------------
     public function index(): never
     {
         $page  = isset($_GET['page'])  ? max(1, (int) $_GET['page'])  : 1;
-        $limit = isset($_GET['limit']) ? min(100, max(1, (int) $_GET['limit'])) : 20;
+        $limit = isset($_GET['limit']) ? min(100, max(1, (int) $_GET['limit'])) : 5;
+
+        $teamId = null;
+        if (isset($_GET['team_id']) && $_GET['team_id'] !== '') {
+            $rawTeamId = $_GET['team_id'];
+            if (!ctype_digit((string) $rawTeamId) || (int) $rawTeamId <= 0) {
+                jsonResponse(null, 'Parameter team_id harus berupa bilangan bulat positif.', 400, [
+                    'error' => ['code' => 'INVALID_TEAM_ID'],
+                ]);
+            }
+            $teamId = (int) $rawTeamId;
+        }
+
+        $transferType = null;
+        if (isset($_GET['transfer_type']) && $_GET['transfer_type'] !== '') {
+            $rawType = strtolower(trim((string) $_GET['transfer_type']));
+            if (!in_array($rawType, ['transfer', 'loan'], true)) {
+                jsonResponse(null, 'Parameter transfer_type hanya boleh bernilai transfer atau loan.', 400, [
+                    'error' => ['code' => 'INVALID_TRANSFER_TYPE'],
+                ]);
+            }
+            $transferType = $rawType;
+        }
 
         try {
-            $data = $this->transferService->getAllTransfers($page, $limit);
+            $data = $this->transferService->getAllTransfers($page, $limit, $teamId, $transferType);
             jsonResponse($data, 'Data transfer pemain berhasil diambil.');
         } catch (Throwable $e) {
             error_log('TransferController::index - ' . $e->getMessage());

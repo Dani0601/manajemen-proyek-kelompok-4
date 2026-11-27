@@ -3237,7 +3237,7 @@ paths:
         15.1)
       description: 'Mengambil riwayat transfer pemain yang berkaitan dengan tim tertentu:
         daftar pemain masuk (transfers_in) dan pemain keluar (transfers_out). Jenis
-        transfer mencakup: buyout, loan, dan free_transfer. Tanpa filter season—menampilkan
+        transfer mencakup: transfer dan loan. Tanpa filter season—menampilkan
         semua data yang ter-scrape. Jika tim tidak memiliki riwayat transfer, mengembalikan
         array kosong (200 OK).'
       operationId: getTeamTransfers
@@ -3292,7 +3292,7 @@ paths:
                           team_id: 9
                           team_name: ONIC
                           team_code: ONIC
-                        transfer_type: free_transfer
+                        transfer_type: transfer
                         transfer_date: '2026-07-01'
                         liquipedia_ref: https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18
                         scraped_at: '2026-11-19 21:00:00'
@@ -3356,9 +3356,9 @@ paths:
         15.1)
       description: Mengambil master daftar riwayat bursa transfer seluruh pemain profesional
         MPL Indonesia Season 18 yang di-scrape dari Liquipedia. Setiap entri transfer
-        memuat identitas pemain, tim asal, tim tujuan, jenis transfer (buyout / loan
-        / free_transfer), tanggal transfer, dan sumber Liquipedia. Mendukung paginasi
-        melalui query parameter page & limit.
+        memuat identitas pemain, tim asal, tim tujuan, jenis transfer (transfer / loan),
+        tanggal transfer, dan sumber Liquipedia. Mendukung paginasi (default 5 per halaman)
+        serta filter berdasarkan team_id dan transfer_type.
       operationId: getAllTransfers
       parameters:
       - name: page
@@ -3371,10 +3371,29 @@ paths:
       - name: limit
         in: query
         required: false
-        description: 'Jumlah per halaman (default: 20, max: 100)'
+        description: 'Jumlah per halaman (default: 5, max: 100)'
         schema:
           type: integer
-          example: 20
+          default: 5
+          example: 5
+      - name: team_id
+        in: query
+        required: false
+        description: Filter berdasarkan ID tim (mencakup transfer masuk maupun keluar tim tersebut)
+        schema:
+          type: integer
+          minimum: 1
+          example: 1
+      - name: transfer_type
+        in: query
+        required: false
+        description: Filter berdasarkan jenis transfer (transfer atau loan)
+        schema:
+          type: string
+          enum:
+          - transfer
+          - loan
+          example: loan
       responses:
         '200':
           description: Daftar riwayat transfer pemain berhasil diambil.
@@ -3397,7 +3416,7 @@ paths:
                       team_id: 2
                       team_name: RRQ Hoshi
                       team_code: RRQ
-                    transfer_type: buyout
+                    transfer_type: transfer
                     transfer_date: '2026-08-01'
                     liquipedia_ref: https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18
                     scraped_at: '2026-11-19 21:00:00'
@@ -3415,11 +3434,26 @@ paths:
                     transfer_date: '2026-07-01'
                     liquipedia_ref: https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18
                     scraped_at: '2026-11-19 21:00:00'
+                  filters:
+                    team_id: null
+                    transfer_type: null
                   pagination:
                     current_page: 1
-                    per_page: 20
-                    total_data: 18
-                    total_pages: 1
+                    per_page: 5
+                    total_data: 84
+                    total_pages: 17
+        '400':
+          description: Parameter filter tidak valid (team_id bukan integer positif atau transfer_type bukan transfer/loan).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Parameter transfer_type hanya boleh bernilai transfer atau loan.
+                data: null
+                error:
+                  code: INVALID_TRANSFER_TYPE
         '405':
           description: Method HTTP tidak diizinkan (hanya GET didukung).
           content:
@@ -3439,7 +3473,7 @@ paths:
       summary: Riwayat transfer seorang pemain MPL Season 18 (Card 15.1)
       description: Mengambil seluruh riwayat perpindahan klub seorang pemain profesional
         MPL Indonesia yang ter-scrape dari Liquipedia, dilengkapi dengan jenis transfer
-        (buyout / loan / free_transfer) dan tanggal transfer.
+        (transfer / loan) dan tanggal transfer.
       operationId: getPlayerTransfers
       parameters:
       - $ref: '#/components/parameters/PlayerId'
@@ -3473,7 +3507,7 @@ paths:
                           team_id: 2
                           team_name: RRQ Hoshi
                           team_code: RRQ
-                        transfer_type: buyout
+                        transfer_type: transfer
                         transfer_date: '2026-08-01'
                         liquipedia_ref: https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18
                         scraped_at: '2026-11-19 21:00:00'
