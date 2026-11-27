@@ -204,38 +204,6 @@ if ($uri === 'api/meta/trends') {
 
 
 
-/*
-|--------------------------------------------------------------------------
-| SEASONS
-|--------------------------------------------------------------------------
-|
-| GET /api/seasons
-|
-*/
-
-if ($uri === 'api/seasons') {
-
-    $controller = loadController(
-        'MetaController.php',
-        'MetaController'
-    );
-
-    if (method_exists($controller, 'seasons')) {
-        $controller->seasons();
-    } else {
-        jsonResponse(
-            null,
-            'Endpoint belum diimplementasikan.',
-            501,
-            [
-                'error' => [
-                    'code' => 'NOT_IMPLEMENTED'
-                ]
-            ]
-        );
-    }
-}
-
 
 /*
 |--------------------------------------------------------------------------
@@ -288,6 +256,13 @@ if (
     // GET /api/teams/{id}/matches
     if (isset($segments[3]) && $segments[3] === 'matches') {
         $controller->matches($teamId);
+        exit;
+    }
+
+    // GET /api/teams/{id}/transfers
+    if (isset($segments[3]) && $segments[3] === 'transfers' && !isset($segments[4])) {
+        $transferController = loadController('TransferController.php', 'TransferController');
+        $transferController->byTeam($teamId);
         exit;
     }
 
@@ -585,6 +560,13 @@ if (
         } else {
             jsonResponse(null, 'Endpoint belum diimplementasikan.', 501, ['error' => ['code' => 'NOT_IMPLEMENTED']]);
         }
+        exit;
+    }
+
+    // GET /api/players/{id}/transfers
+    if (isset($segments[3]) && $segments[3] === 'transfers' && !isset($segments[4])) {
+        $transferController = loadController('TransferController.php', 'TransferController');
+        $transferController->byPlayer($playerId);
         exit;
     }
 
@@ -1121,63 +1103,28 @@ if (
 }
 
 
+
 /*
 |--------------------------------------------------------------------------
-| ITEMS
+| TRANSFERS
 |--------------------------------------------------------------------------
 |
-| GET /api/items
-| GET /api/items/{id}
+| GET /api/transfers                        → semua transfer (paginasi)
+| GET /api/teams/{id}/transfers             → transfer per tim (in & out)
+| GET /api/players/{id}/transfers           → riwayat transfer per pemain
 |
 */
 
-if (
-    $method === 'GET' &&
-    $uri === 'api/items'
-) {
-
-    $controller = loadController(
-        'ItemController.php',
-        'ItemController'
-    );
-
-    $controller->index();
-    exit;
-}
-
-
+// GET /api/transfers
 if (
     $method === 'GET' &&
     isset($segments[0], $segments[1]) &&
     $segments[0] === 'api' &&
-    $segments[1] === 'items'
+    $segments[1] === 'transfers' &&
+    !isset($segments[2])
 ) {
-
-    if (!isset($segments[2])) {
-
-        jsonResponse(
-            null,
-            'Endpoint item tidak ditemukan.',
-            404,
-            [
-                'error' => [
-                    'code' => 'ENDPOINT_NOT_FOUND',
-                ],
-            ]
-        );
-    }
-
-    $itemId = validatePositiveInteger(
-        $segments[2],
-        'item_id'
-    );
-
-    $controller = loadController(
-        'ItemController.php',
-        'ItemController'
-    );
-
-    $controller->show($itemId);
+    $controller = loadController('TransferController.php', 'TransferController');
+    $controller->index();
     exit;
 }
 

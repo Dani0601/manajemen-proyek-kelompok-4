@@ -51,6 +51,9 @@ tags:
     build, dan talent emblem
 - name: Items
   description: Master data item peralatan dalam game dan atribut spesifik
+- name: Transfers
+  description: Riwayat transfer pemain profesional MPL Indonesia Season 18 yang di-scrape
+    dari Liquipedia (Card 15.1). Mendukung query per tim, per pemain, dan master list.
 paths:
   /api/dashboard:
     get:
@@ -250,59 +253,6 @@ paths:
                 data: null
                 error:
                   code: META_DATA_NOT_FOUND
-        '405':
-          description: Method HTTP tidak diizinkan (hanya GET didukung).
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                success: false
-                message: Method tidak diizinkan.
-                data: null
-                error:
-                  code: METHOD_NOT_ALLOWED
-        '501':
-          description: Fitur/Endpoint belum diimplementasikan di backend.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                success: false
-                message: Endpoint belum diimplementasikan.
-                data: null
-                error:
-                  code: NOT_IMPLEMENTED
-  /api/seasons:
-    get:
-      tags:
-      - Meta
-      summary: Master data seluruh musim turnamen (seasons)
-      operationId: listSeasons
-      responses:
-        '200':
-          description: Daftar musim berhasil diambil.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SuccessResponse'
-              example:
-                success: true
-                message: Data seasons berhasil diambil.
-                data:
-                - season_id: 1
-                  league: MPL Indonesia
-                  season_number: 18
-                  phase: Regular Season
-                  start_date: null
-                  end_date: null
-                - season_id: 4
-                  league: MPL Indonesia
-                  season_number: 17
-                  phase: Regular Season
-                  start_date: null
-                  end_date: null
         '405':
           description: Method HTTP tidak diizinkan (hanya GET didukung).
           content:
@@ -2910,124 +2860,6 @@ paths:
                 data: null
                 error:
                   code: METHOD_NOT_ALLOWED
-  /api/items:
-    get:
-      tags:
-      - Items
-      summary: Master katalog semua item peralatan dalam game
-      operationId: listItems
-      responses:
-        '200':
-          description: Master data item berhasil diambil.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SuccessResponse'
-              example:
-                success: true
-                message: Master data item berhasil diambil.
-                data:
-                - item_id: 1
-                  item_name: Blade of Despair
-                  category: Attack
-                  cost: 3010
-        '405':
-          description: Method HTTP tidak diizinkan (hanya GET didukung).
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                success: false
-                message: Method tidak diizinkan.
-                data: null
-                error:
-                  code: METHOD_NOT_ALLOWED
-        '501':
-          description: Fitur/Endpoint belum diimplementasikan di backend.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                success: false
-                message: Endpoint belum diimplementasikan.
-                data: null
-                error:
-                  code: NOT_IMPLEMENTED
-  /api/items/{item_id}:
-    get:
-      tags:
-      - Items
-      summary: Detail satu item perlengkapan
-      operationId: getItemDetail
-      parameters:
-      - $ref: '#/components/parameters/ItemId'
-      responses:
-        '200':
-          description: Detail item berhasil diambil.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SuccessResponse'
-              example:
-                success: true
-                message: Detail item berhasil diambil.
-                data:
-                  item_id: 1
-                  item_name: Blade of Despair
-                  category: Attack
-                  cost: 3010
-                  attributes:
-                    physical_attack: 160
-                    movement_spd: 5%
-        '400':
-          description: Validasi parameter item_id gagal (bukan angka positif).
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              examples:
-                InvalidInteger:
-                  summary: item_id bukan tipe integer
-                  value:
-                    success: false
-                    message: item_id harus berupa angka.
-                    data: null
-                    error:
-                      code: INVALID_INTEGER
-                InvalidITEM_ID:
-                  summary: item_id bernilai 0 atau negatif
-                  value:
-                    success: false
-                    message: item_id harus lebih besar dari 0.
-                    data: null
-                    error:
-                      code: INVALID_ITEM_ID
-        '405':
-          description: Method HTTP tidak diizinkan (hanya GET didukung).
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                success: false
-                message: Method tidak diizinkan.
-                data: null
-                error:
-                  code: METHOD_NOT_ALLOWED
-        '501':
-          description: Fitur/Endpoint belum diimplementasikan di backend.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                success: false
-                message: Endpoint belum diimplementasikan.
-                data: null
-                error:
-                  code: NOT_IMPLEMENTED
   /api/games/{game_id}/drafts:
     get:
       tags:
@@ -3229,11 +3061,14 @@ paths:
   /api/teams/{team_id}/transfers:
     get:
       tags:
-      - Teams
-      summary: Riwayat transfer pemain per tim MPL Season 18 (Card 15)
-      description: Mengambil riwayat transfer pemain masuk (incoming) dan pemain keluar
-        (outgoing) untuk tim tertentu pada MPL Season 18 tanpa parameter season. Mengembalikan
-        array kosong jika belum ada riwayat transfer (200 OK).
+      - Transfers
+      summary: Riwayat transfer pemain masuk dan keluar per tim MPL Season 18 (Card
+        15.1)
+      description: 'Mengambil riwayat transfer pemain yang berkaitan dengan tim tertentu:
+        daftar pemain masuk (transfers_in) dan pemain keluar (transfers_out). Jenis
+        transfer mencakup: transfer dan loan. Tanpa filter season—menampilkan
+        semua data yang ter-scrape. Jika tim tidak memiliki riwayat transfer, mengembalikan
+        array kosong (200 OK).'
       operationId: getTeamTransfers
       parameters:
       - $ref: '#/components/parameters/TeamId'
@@ -3245,81 +3080,79 @@ paths:
               schema:
                 $ref: '#/components/schemas/SuccessResponse'
               examples:
-                AdaDataTransfer:
-                  summary: Tim memiliki riwayat pemain masuk dan pemain keluar
+                AdaTransfer:
+                  summary: Tim memiliki riwayat transfer pemain masuk dan keluar
                   value:
                     success: true
                     message: Riwayat transfer tim berhasil diambil.
                     data:
-                      team_id: 1
-                      team_name: EVOS Glory
-                      team_logo_url: https://cdn.mplanalytic.com/teams/evos.png
-                      total_transfers_in: 1
-                      total_transfers_out: 1
+                      team:
+                        team_id: 9
+                        team_name: ONIC
+                        team_code: ONIC
+                      total_transfers_in: 2
+                      total_transfers_out: 0
                       transfers_in:
-                      - transfer_id: 101
-                        player_id: 2
-                        player_name: ALBERTTT
-                        player_role: Jungler
-                        player_photo_url: https://cdn.jsdelivr.net/gh/Dani0601/manajemen-proyek-kelompok-4@BEDani/mpl-analytic/public/assets/images/players/alberttt.png
-                        from_team_id: 2
-                        from_team_name: Fnatic ONIC
-                        from_team_logo_url: https://cdn.mplanalytic.com/teams/onic.png
-                        to_team_id: 1
-                        to_team_name: EVOS Glory
-                        to_team_logo_url: https://cdn.mplanalytic.com/teams/evos.png
-                        transfer_date: '2026-08-15'
-                        transfer_type: in
-                      transfers_out:
-                      - transfer_id: 102
-                        player_id: 15
-                        player_name: VAN
-                        player_role: Jungler
-                        player_photo_url: null
-                        from_team_id: 1
-                        from_team_name: EVOS Glory
-                        from_team_logo_url: https://cdn.mplanalytic.com/teams/evos.png
-                        to_team_id: 5
-                        to_team_name: Bigetron Alpha
-                        to_team_logo_url: https://cdn.mplanalytic.com/teams/btr.png
-                        transfer_date: '2026-08-10'
-                        transfer_type: out
-                DataTransferKosong:
+                      - transfer_id: 11
+                        player:
+                          player_id: 45
+                          player_name: KELRA
+                          player_photo_url: https://cdn.jsdelivr.net/gh/Dani0601/manajemen-proyek-kelompok-4@BEDani/mpl-analytic/public/assets/images/players/kelra.png
+                        from_team: null
+                        to_team:
+                          team_id: 9
+                          team_name: ONIC
+                          team_code: ONIC
+                        transfer_type: loan
+                        transfer_date: '2026-07-01'
+                        liquipedia_ref: https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18
+                        scraped_at: '2026-11-19 21:00:00'
+                        direction: in
+                      - transfer_id: 9
+                        player:
+                          player_id: 42
+                          player_name: KAIRI
+                          player_photo_url: https://cdn.jsdelivr.net/gh/Dani0601/manajemen-proyek-kelompok-4@BEDani/mpl-analytic/public/assets/images/players/kairi.png
+                        from_team:
+                          team_id: 9
+                          team_name: ONIC
+                          team_code: ONIC
+                        to_team:
+                          team_id: 9
+                          team_name: ONIC
+                          team_code: ONIC
+                        transfer_type: transfer
+                        transfer_date: '2026-07-01'
+                        liquipedia_ref: https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18
+                        scraped_at: '2026-11-19 21:00:00'
+                        direction: in
+                      transfers_out: []
+                TimTanpaTransfer:
                   summary: Tim belum memiliki data transfer (array kosong tanpa error)
                   value:
                     success: true
                     message: Riwayat transfer tim berhasil diambil.
                     data:
-                      team_id: 3
-                      team_name: RRQ Hoshi
-                      team_logo_url: https://cdn.mplanalytic.com/teams/rrq.png
+                      team:
+                        team_id: 8
+                        team_name: Bigetron by Vitality
+                        team_code: BTR
                       total_transfers_in: 0
                       total_transfers_out: 0
                       transfers_in: []
                       transfers_out: []
         '400':
-          description: Validasi parameter team_id gagal.
+          description: Parameter team_id tidak valid.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-              examples:
-                InvalidTEAM_ID:
-                  summary: team_id bernilai 0 atau negatif
-                  value:
-                    success: false
-                    message: team_id harus lebih besar dari 0.
-                    data: null
-                    error:
-                      code: INVALID_TEAM_ID
-                InvalidInteger:
-                  summary: team_id bukan integer
-                  value:
-                    success: false
-                    message: team_id harus berupa angka.
-                    data: null
-                    error:
-                      code: INVALID_INTEGER
+              example:
+                success: false
+                message: team_id harus berupa angka positif.
+                data: null
+                error:
+                  code: INVALID_TEAM_ID
         '404':
           description: Tim tidak ditemukan.
           content:
@@ -3347,26 +3180,49 @@ paths:
   /api/transfers:
     get:
       tags:
-      - Teams
-      summary: Daftar seluruh riwayat transfer pemain MPL Season 18 (Card 15)
-      description: Mengambil master daftar riwayat pergerakan bursa transfer seluruh
-        pemain profesional MPL Season 18 dengan dukungan paginasi.
+      - Transfers
+      summary: Daftar seluruh riwayat transfer pemain MPL Indonesia Season 18 (Card
+        15.1)
+      description: Mengambil master daftar riwayat bursa transfer seluruh pemain profesional
+        MPL Indonesia Season 18 yang di-scrape dari Liquipedia. Setiap entri transfer
+        memuat identitas pemain, tim asal, tim tujuan, jenis transfer (transfer / loan),
+        tanggal transfer, dan sumber Liquipedia. Mendukung paginasi (default 5 per halaman)
+        serta filter berdasarkan team_id dan transfer_type.
       operationId: getAllTransfers
       parameters:
       - name: page
         in: query
         required: false
-        description: 'Nomor halaman transfer (default: 1)'
+        description: 'Halaman (default: 1)'
         schema:
           type: integer
           example: 1
       - name: limit
         in: query
         required: false
-        description: 'Jumlah transfer per halaman (default: 20)'
+        description: 'Jumlah per halaman (default: 5, max: 100)'
         schema:
           type: integer
-          example: 20
+          default: 5
+          example: 5
+      - name: team_id
+        in: query
+        required: false
+        description: Filter berdasarkan ID tim (mencakup transfer masuk maupun keluar tim tersebut)
+        schema:
+          type: integer
+          minimum: 1
+          example: 1
+      - name: transfer_type
+        in: query
+        required: false
+        description: Filter berdasarkan jenis transfer (transfer atau loan)
+        schema:
+          type: string
+          enum:
+          - transfer
+          - loan
+          example: loan
       responses:
         '200':
           description: Daftar riwayat transfer pemain berhasil diambil.
@@ -3379,23 +3235,148 @@ paths:
                 message: Data transfer pemain berhasil diambil.
                 data:
                   transfers:
-                  - transfer_id: 101
-                    player_id: 2
-                    player_name: ALBERTTT
-                    player_role: Jungler
-                    player_photo_url: https://cdn.jsdelivr.net/gh/Dani0601/manajemen-proyek-kelompok-4@BEDani/mpl-analytic/public/assets/images/players/alberttt.png
-                    from_team_id: 2
-                    from_team_name: Fnatic ONIC
-                    from_team_logo_url: https://cdn.mplanalytic.com/teams/onic.png
-                    to_team_id: 1
-                    to_team_name: EVOS Glory
-                    to_team_logo_url: https://cdn.mplanalytic.com/teams/evos.png
-                    transfer_date: '2026-08-15'
+                  - transfer_id: 1
+                    player:
+                      player_id: 7
+                      player_name: DEMONKITE
+                      player_photo_url: https://cdn.jsdelivr.net/gh/Dani0601/manajemen-proyek-kelompok-4@BEDani/mpl-analytic/public/assets/images/players/demonkite.png
+                    from_team: null
+                    to_team:
+                      team_id: 2
+                      team_name: RRQ Hoshi
+                      team_code: RRQ
+                    transfer_type: transfer
+                    transfer_date: '2026-08-01'
+                    liquipedia_ref: https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18
+                    scraped_at: '2026-11-19 21:00:00'
+                  - transfer_id: 11
+                    player:
+                      player_id: 45
+                      player_name: KELRA
+                      player_photo_url: https://cdn.jsdelivr.net/gh/Dani0601/manajemen-proyek-kelompok-4@BEDani/mpl-analytic/public/assets/images/players/kelra.png
+                    from_team: null
+                    to_team:
+                      team_id: 9
+                      team_name: ONIC
+                      team_code: ONIC
+                    transfer_type: loan
+                    transfer_date: '2026-07-01'
+                    liquipedia_ref: https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18
+                    scraped_at: '2026-11-19 21:00:00'
+                  filters:
+                    team_id: null
+                    transfer_type: null
                   pagination:
                     current_page: 1
-                    per_page: 20
-                    total_data: 1
-                    total_pages: 1
+                    per_page: 5
+                    total_data: 84
+                    total_pages: 17
+        '400':
+          description: Parameter filter tidak valid (team_id bukan integer positif atau transfer_type bukan transfer/loan).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Parameter transfer_type hanya boleh bernilai transfer atau loan.
+                data: null
+                error:
+                  code: INVALID_TRANSFER_TYPE
+        '405':
+          description: Method HTTP tidak diizinkan (hanya GET didukung).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Method tidak diizinkan.
+                data: null
+                error:
+                  code: METHOD_NOT_ALLOWED
+  /api/players/{player_id}/transfers:
+    get:
+      tags:
+      - Transfers
+      summary: Riwayat transfer seorang pemain MPL Season 18 (Card 15.1)
+      description: Mengambil seluruh riwayat perpindahan klub seorang pemain profesional
+        MPL Indonesia yang ter-scrape dari Liquipedia, dilengkapi dengan jenis transfer
+        (transfer / loan) dan tanggal transfer.
+      operationId: getPlayerTransfers
+      parameters:
+      - $ref: '#/components/parameters/PlayerId'
+      responses:
+        '200':
+          description: Riwayat transfer pemain berhasil diambil.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              examples:
+                PemainAdaTransfer:
+                  summary: Pemain memiliki riwayat transfer
+                  value:
+                    success: true
+                    message: Riwayat transfer pemain berhasil diambil.
+                    data:
+                      player:
+                        player_id: 7
+                        player_name: DEMONKITE
+                        player_photo_url: https://cdn.jsdelivr.net/gh/Dani0601/manajemen-proyek-kelompok-4@BEDani/mpl-analytic/public/assets/images/players/demonkite.png
+                      total: 1
+                      transfers:
+                      - transfer_id: 1
+                        player:
+                          player_id: 7
+                          player_name: DEMONKITE
+                          player_photo_url: https://cdn.jsdelivr.net/gh/Dani0601/manajemen-proyek-kelompok-4@BEDani/mpl-analytic/public/assets/images/players/demonkite.png
+                        from_team: null
+                        to_team:
+                          team_id: 2
+                          team_name: RRQ Hoshi
+                          team_code: RRQ
+                        transfer_type: transfer
+                        transfer_date: '2026-08-01'
+                        liquipedia_ref: https://liquipedia.net/mobilelegends/MPL/Indonesia/Season_18
+                        scraped_at: '2026-11-19 21:00:00'
+                PemainTanpaTransfer:
+                  summary: Pemain belum memiliki riwayat transfer (array kosong, bukan
+                    error)
+                  value:
+                    success: true
+                    message: Riwayat transfer pemain berhasil diambil.
+                    data:
+                      player:
+                        player_id: 1
+                        player_name: RENDYYY
+                        player_photo_url: null
+                      total: 0
+                      transfers: []
+        '400':
+          description: Parameter player_id tidak valid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: player_id harus berupa angka positif.
+                data: null
+                error:
+                  code: INVALID_PLAYER_ID
+        '404':
+          description: Pemain tidak ditemukan.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: Pemain tidak ditemukan.
+                data: null
+                error:
+                  code: PLAYER_NOT_FOUND
         '405':
           description: Method HTTP tidak diizinkan (hanya GET didukung).
           content:
@@ -3462,15 +3443,6 @@ components:
       schema:
         type: string
         example: s18_w01_m01_g01
-    ItemId:
-      name: item_id
-      in: path
-      required: true
-      description: ID unik item perlengkapan (integer positif)
-      schema:
-        type: integer
-        minimum: 1
-        example: 1
   schemas:
     SuccessResponse:
       type: object

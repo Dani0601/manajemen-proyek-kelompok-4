@@ -44,7 +44,11 @@ jobs:
           fi
           echo "SUKSES: Semua berkas PHP lolos syntax check."
 
-      # 4. Tahap Lint (Peringatan): Memeriksa gaya penulisan kode (PSR-12)
+      # 4. Tahap Test (Wajib Lolos): Menjalankan unit & smoke test PHP
+      - name: Run PHP Unit Tests
+        run: php mpl-analytic/tests/unit_test.php
+
+      # 5. Tahap Lint (Peringatan): Memeriksa gaya penulisan kode (PSR-12)
       #    Menggunakan continue-on-error: true sesuai aturan materi Pertemuan 11
       #    (Diberi peringatan, tetapi boleh dilanjutkan / tidak memblokir merge).
       - name: Run PHP Code Sniffer (Lint)
@@ -58,7 +62,6 @@ jobs:
           ./phpcs.phar \
             --standard=PSR12 \
             --extensions=php \
-            --ignore=mpl-analytic/database/*,mpl-analytic/public/assets/* \
-            mpl-analytic/app mpl-analytic/routes mpl-analytic/public/index.php \
-            || true
+            --ignore=mpl-analytic/database/*,mpl-analytic/public/assets/*,mpl-analytic/tests/* \
+            mpl-analytic/app mpl-analytic/routes mpl-analytic/public/index.php
           echo "=== Lint selesai (peringatan dicatat dan tidak memblokir merge) ==="
