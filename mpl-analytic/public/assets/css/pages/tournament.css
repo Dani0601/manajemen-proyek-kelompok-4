@@ -139,6 +139,40 @@
   .tr-res__name, .tr-res__score { font-size: 12px; } .tr-chev { display: flex; align-items: center; justify-content: center; width: 40px; }
 }
 
+/* ===== Klasemen: muat di mobile 360px tanpa scroll samping ===== */
+@media (max-width: 767px) {
+  .tr-table { font-size: 11px; }
+  .tr-table th,
+  .tr-table td { padding: 8px 3px; }
+  .tr-table thead th { font-size: 11px; padding-block: 10px; }
+
+  /* Kolom rank dibuat sempit */
+  .tr-table th:first-child,
+  .tr-table td:first-child { width: 28px; padding-left: 6px; padding-right: 2px; }
+  .tr-table__rank { font-size: 11px; }
+
+  /* Logo & nama tim lebih kecil, nama boleh turun baris */
+  .tr-table .tr-table__team { padding-left: 4px; }
+  .tr-table .tr-logo { width: 24px; height: 24px; padding: 1px; border-radius: 4px; }
+  .tr-table__teamwrap { gap: 6px; max-width: 120px; }
+  .tr-table__teamwrap > span:last-child {
+    white-space: normal;      /* menimpa nowrap dari td */
+    line-height: 1.2;
+    overflow: visible;
+    text-overflow: clip;
+    word-break: break-word;
+  }
+}
+
+/* Layar sangat kecil (<= 360px) */
+@media (max-width: 360px) {
+  .tr-table { font-size: 10.5px; }
+  .tr-table th,
+  .tr-table td { padding-inline: 2px; }
+  .tr-table .tr-logo { width: 22px; height: 22px; }
+  .tr-table__teamwrap { max-width: 100px; gap: 4px; }
+}
+
 /* ===== Skeleton loading Klasemen ===== */
 .tr-skel { display: flex; flex-direction: column; gap: 8px; }
 .tr-skel__box {
@@ -264,7 +298,7 @@
 .tl-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; padding: 14px 28px 16px; text-align: center; }
 .tl-stat__label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 8px; }
 .tl-stat__value { display: block; font-size: 13px; font-weight: 500; }
-.tl-stat__value--rate { color: var(--tl-blue); font-weight: 600; }
+.tl-stat__value--rate { color: #000; font-weight: 600; }
 
 .tl-nodata { padding: 22px 16px; text-align: center; font-size: 13px; color: #475569; }
 

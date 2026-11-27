@@ -24,21 +24,32 @@
 .td-section__title { font-size: 17px; font-weight: 600; margin: 4px 0 16px 4px; color: #010101; }
 #td-roster-title { text-align: center; margin: 0 0 16px; font-size: 18px; font-weight: 700; }
 
-/* Ringkasan: ikon kiri, teks kanan */
+
+/* Ringkasan: ikon kiri, teks kanan (rata tengah, sesuai Figma) */
 .td-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .td-card {
   display: flex; flex-direction: row; align-items: center; gap: 12px;
-  height: 57px; padding: 0 12px;
+  min-height: 57px; height: auto; padding: 8px 12px;   /* min-height, bukan height */
   background: #fff; border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
   border: 1px solid #010101; border-bottom: 3px solid #2F6FED;
 }
 .td-card__icon { flex: 0 0 auto; display: inline-flex; }
-.td-card__icon .td-icon { width: 30px; height: 30px; }
-.td-card__text { display: grid; gap: 2px; min-width: 0; }
-.td-card__label { font-size: 11px; color: #010101; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.td-card__icon .td-icon { width: 30px; height: 30px; color: #000;}
+
+.td-card__text {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 2px; text-align: center;
+}
+.td-card__label {
+  font-size: 11px; line-height: 1.2; color: #010101;
+  white-space: normal;          /* boleh turun baris */
+  overflow: visible; text-overflow: clip;
+  word-break: normal; overflow-wrap: anywhere;
+}
 .td-card__value { font-size: 18px; font-weight: 700; color: #010101; line-height: 1.2; }
-.td-card__value--accent { color: #2F6FED; }
+.td-card__value--accent { color: #000; }
 
 /* Statistik game (Figma Detail_Team: kotak 343px, baris ~53px, label mulai x+70) */
 .td-list {
@@ -111,7 +122,7 @@
   /* Ringkasan: ukuran sama dengan Figma */
   .td-cards { gap: 16px; }
   .td-card { height: 57px; padding: 0 12px; gap: 12px; }
-  .td-card__icon .td-icon { width: 30px; height: 30px; }
+  .td-card__icon .td-icon { width: 30px; height: 30px; color: #000;}
   .td-card__label { font-size: 11px; }
   .td-card__value { font-size: 18px; }
 

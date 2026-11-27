@@ -51,71 +51,29 @@ class DashboardService
             $seasonId
         );
 
-
         /*
         |--------------------------------------------------------------------------
-        | 3. Ambil Top 5 Pick Rate
+        | 3. Data Hero & Schedule
         |--------------------------------------------------------------------------
+        |
+        | Jika season belum memiliki pertandingan ($lastWeek === null),
+        | kembalikan array kosong untuk seluruh data hero dan jadwal.
+        |
         */
 
-        $topPickRate = $this->dashboard->getTopPickRate(
-            $seasonId,
-            5
-        );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | 4. Ambil Top 5 Win Rate
-        |--------------------------------------------------------------------------
-        */
-
-        $topWinRate = $this->dashboard->getTopWinRate(
-            $seasonId,
-            5
-        );
-
-        
-/*
-|--------------------------------------------------------------------------
-| 4. Ambil Top 5 Ban Rate
-|--------------------------------------------------------------------------
-*/
-
-$topBanRate = $this->dashboard->getTopBanRate(
-    $seasonId,
-    5
-);
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | 5. Ambil jadwal week terakhir
-        |--------------------------------------------------------------------------
-        */
-
-        $schedule = [];
-
-        if ($lastWeek !== null) {
-            $schedule = $this->dashboard->getSchedule(
-                $seasonId,
-                $lastWeek
-            );
+        if ($lastWeek === null) {
+            $topPickRate = [];
+            $topWinRate  = [];
+            $topBanRate  = [];
+            $schedule    = [];
+            $heroMeta    = [];
+        } else {
+            $topPickRate = $this->dashboard->getTopPickRate($seasonId, 5);
+            $topWinRate  = $this->dashboard->getTopWinRate($seasonId, 5);
+            $topBanRate  = $this->dashboard->getTopBanRate($seasonId, 5);
+            $schedule    = $this->dashboard->getSchedule($seasonId, $lastWeek);
+            $heroMeta    = $this->dashboard->getHeroMeta($seasonId);
         }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | 6. Hero Meta
-        |--------------------------------------------------------------------------
-        |
-        | Data lengkap hero season.
-        |
-        */
-
-        $heroMeta = $this->dashboard->getHeroMeta(
-            $seasonId
-        );
 
 
         /*

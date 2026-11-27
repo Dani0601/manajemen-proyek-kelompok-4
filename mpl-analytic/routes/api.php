@@ -170,25 +170,24 @@ if ($uri === 'api/meta') {
     }
 }
 
-
 /*
 |--------------------------------------------------------------------------
-| SEASONS
+| META TRENDS  (Card 14.1)
 |--------------------------------------------------------------------------
 |
-| GET /api/seasons
+| GET /api/meta/trends  — Pick rate hero season berjalan
 |
 */
 
-if ($uri === 'api/seasons') {
+if ($uri === 'api/meta/trends') {
 
     $controller = loadController(
         'MetaController.php',
         'MetaController'
     );
 
-    if (method_exists($controller, 'seasons')) {
-        $controller->seasons();
+    if (method_exists($controller, 'trends')) {
+        $controller->trends();
     } else {
         jsonResponse(
             null,
@@ -202,6 +201,8 @@ if ($uri === 'api/seasons') {
         );
     }
 }
+
+
 
 
 /*
@@ -1055,6 +1056,23 @@ if (
 
     /*
     |--------------------------------------------------------------------------
+    | GET /api/games/{id}/drafts (Card 13.1)
+    |--------------------------------------------------------------------------
+    */
+
+    if (
+        isset($segments[3]) &&
+        $segments[3] === 'drafts'
+    ) {
+
+        $controller->drafts($gameId);
+        exit;
+    }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
     | GET /api/games/{id}
     |--------------------------------------------------------------------------
     */
@@ -1084,66 +1102,6 @@ if (
     );
 }
 
-
-/*
-|--------------------------------------------------------------------------
-| ITEMS
-|--------------------------------------------------------------------------
-|
-| GET /api/items
-| GET /api/items/{id}
-|
-*/
-
-if (
-    $method === 'GET' &&
-    $uri === 'api/items'
-) {
-
-    $controller = loadController(
-        'ItemController.php',
-        'ItemController'
-    );
-
-    $controller->index();
-    exit;
-}
-
-
-if (
-    $method === 'GET' &&
-    isset($segments[0], $segments[1]) &&
-    $segments[0] === 'api' &&
-    $segments[1] === 'items'
-) {
-
-    if (!isset($segments[2])) {
-
-        jsonResponse(
-            null,
-            'Endpoint item tidak ditemukan.',
-            404,
-            [
-                'error' => [
-                    'code' => 'ENDPOINT_NOT_FOUND',
-                ],
-            ]
-        );
-    }
-
-    $itemId = validatePositiveInteger(
-        $segments[2],
-        'item_id'
-    );
-
-    $controller = loadController(
-        'ItemController.php',
-        'ItemController'
-    );
-
-    $controller->show($itemId);
-    exit;
-}
 
 
 /*

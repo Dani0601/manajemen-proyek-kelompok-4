@@ -13,6 +13,34 @@ class MatchService{
     }
 
 
+    /**
+     * GET /api/matches — daftar pertandingan (opsional filter season)
+     */
+    public function getMatchList(?int $seasonId = null): array
+    {
+        $sql = "SELECT m.match_id, m.season_id, m.week, m.match_date, m.match_time,
+                       m.team1_id, t1.team_name AS team1_name,
+                       m.team2_id, t2.team_name AS team2_name,
+                       m.team1_score, m.team2_score,
+                       m.winner_team_id, m.status
+                FROM matches m
+                JOIN teams t1 ON t1.team_id = m.team1_id
+                JOIN teams t2 ON t2.team_id = m.team2_id";
+
+        $params = [];
+        if ($seasonId !== null) {
+            $sql .= " WHERE m.season_id = :sid";
+            $params[':sid'] = $seasonId;
+        }
+
+        $sql .= " ORDER BY m.match_date DESC, m.match_time DESC";
+
+        $stmt = $this->matchModel->getDb()->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
       // Detail pertandingan.
       // Target: GET /api/matches/{match_id}
 

@@ -13,6 +13,30 @@ class MatchController
     }
 
 
+    /**
+     * GET /api/matches
+     * Mengembalikan daftar pertandingan (opsional filter season)
+     */
+    public function index(): never
+    {
+        try {
+            $seasonId = isset($_GET['season']) ? (int)$_GET['season'] : null;
+            $data = $this->matchService->getMatchList($seasonId);
+
+            jsonResponse($data, 'Daftar pertandingan berhasil diambil.');
+
+        } catch (Throwable $e) {
+            error_log('MatchController::index - ' . $e->getMessage());
+
+            jsonResponse(null, 'Terjadi kesalahan pada server.', 500, [
+                'error' => [
+                    'code' => 'INTERNAL_SERVER_ERROR'
+                ]
+            ]);
+        }
+    }
+
+
     // GET /api/matches/{match_id}
 
     public function getDetail(string $matchId): never

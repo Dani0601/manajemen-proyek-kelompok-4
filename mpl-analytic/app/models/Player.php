@@ -16,6 +16,7 @@ class Player {
                     p.player_id, 
                     p.player_name,
                     p.player_photo_url,
+                    p.status,
                     (
                         SELECT t.team_id
                         FROM game_players gp
@@ -35,6 +36,7 @@ class Player {
                         LIMIT 1
                     ) AS team_name
                 FROM players p
+                WHERE p.status = 'active'
                 ORDER BY p.player_name ASC
                 LIMIT :limit OFFSET :offset";
                 
@@ -90,6 +92,7 @@ class Player {
                     p.player_id, 
                     p.player_name,
                     p.player_photo_url,
+                    p.status,
                     (
                         SELECT t.team_id
                         FROM game_players gp
@@ -295,6 +298,35 @@ class Player {
             if (preg_match('/EMBLEM\s+([A-Za-z0-9_\-\s]+)$/i', trim($row['emblem_name']), $m)) {
                 $row['emblem_name'] = 'Emblem ' . trim($m[1]);
             }
+        }
+        unset($row);
+
+        return $rows;
+    }
+
+    /**
+     * Mengambil daftar talent emblem yang direkomendasikan untuk hero tertentu
+     */
+    public function getHeroTalents(int $heroId): array {
+        $sql = "SELECT
+                    position,
+                    position AS tier,
+                    talent_name,
+                    talent_icon_url
+                FROM hero_build_talents
+                WHERE hero_id = :hero_id
+                  AND talent_icon_url IS NOT NULL
+                ORDER BY position ASC
+                LIMIT 3";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':hero_id', $heroId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($rows as &$row) {
+            $row['position'] = (int)$row['position'];
+            $row['tier']     = (int)$row['tier'];
         }
         unset($row);
 

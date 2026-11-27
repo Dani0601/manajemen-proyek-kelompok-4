@@ -26,7 +26,7 @@ $matchId = preg_replace('/[^A-Za-z0-9_\-]/', '', (string) ($_GET['id'] ?? ''));
      data-state="loading">
 
     <header class="md-header">
-        <a id="md-back" class="md-header__back" href="<?= $baseUrlAttr ?>/team-list" aria-label="Kembali">
+        <a id="md-back" class="md-header__back" href="<?= $baseUrlAttr ?>/tournament#tim" aria-label="Kembali">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                  stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M20 12H4M10 6l-6 6 6 6"></path>
@@ -75,13 +75,6 @@ $matchId = preg_replace('/[^A-Za-z0-9_\-]/', '', (string) ($_GET['id'] ?? ''));
 
 <template id="md-cards-tpl">
     <div class="md-s__cards">
-        <div class="md-s__card">
-            <img class="md-s__icon" src="<?= $assetBase ?>/images/icons/match/duration.svg" alt="" aria-hidden="true">
-            <span class="md-s__text">
-                <span class="md-s__label">Durasi</span>
-                <strong class="md-s__value" data-key="duration"></strong>
-            </span>
-        </div>
         <div class="md-s__card">
             <img class="md-s__icon" src="<?= $assetBase ?>/images/icons/match/kill.svg" alt="" aria-hidden="true">
             <span class="md-s__text">

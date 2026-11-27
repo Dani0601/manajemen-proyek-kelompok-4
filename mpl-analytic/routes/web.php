@@ -30,6 +30,13 @@ if ($scriptDir !== '' && str_starts_with($path, $scriptDir)) {
 
 $path = '/' . trim($path, '/');
 
+// Alamat lama /team-list tidak punya halaman. Daftar tim ada di tab "Tim" pada /tournament.
+// Dialihkan agar tombol Kembali / riwayat browser lama tidak berakhir di "Halaman tidak ditemukan".
+if ($path === '/team-list') {
+    header('Location: ' . (defined('BASE_URL') ? BASE_URL : $scriptDir) . '/tournament#tim', true, 302);
+    exit;
+}
+
 $routes = [
     '/' => BASE_PATH . '/views/pages/home.php',
     '/dashboard' => BASE_PATH . '/views/pages/dashboard.php',

@@ -125,13 +125,10 @@ class Dashboard
      * =========================================================
      * HERO META
      *
-     * Sumber:
-     *
-     * Pick Count / Pick Rate
-     * -> hero_season_stats
-     *
-     * Win Rate / Ban Rate
-     * -> hero_details
+     * Sumber data RANK dari tabel hero_details:
+     * - pick_rate : hero_details.pick_rate
+     * - win_rate  : hero_details.win_rate
+     * - ban_rate  : hero_details.ban_rate
      *
      * Method ini mengambil semua hero.
      * Ranking Top 5 menggunakan method terpisah.
@@ -146,25 +143,22 @@ class Dashboard
                 h.hero_slug,
                 h.hero_url,
 
-                hss.pick_count,
-                hss.pick_rate,
-
+                COALESCE(hss.pick_count, 0) AS pick_count,
+                hd.pick_rate,
                 hd.win_rate,
                 hd.ban_rate
 
-            FROM hero_season_stats hss
+            FROM heroes h
 
-            INNER JOIN heroes h
-                ON h.hero_id = hss.hero_id
-
-            LEFT JOIN hero_details hd
+            INNER JOIN hero_details hd
                 ON hd.hero_id = h.hero_id
 
-            WHERE
-                hss.season_id = :season_id
+            LEFT JOIN hero_season_stats hss
+                ON hss.hero_id = h.hero_id
+                AND hss.season_id = :season_id
 
             ORDER BY
-                hss.pick_rate DESC,
+                hd.pick_rate DESC,
                 h.hero_name ASC
         ";
 
@@ -183,7 +177,7 @@ class Dashboard
 
     /**
      * =========================================================
-     * TOP 5 PICK RATE
+     * TOP 5 PICK RATE (DATA RANK)
      * =========================================================
      */
     public function getTopPickRate(
@@ -194,27 +188,27 @@ class Dashboard
             SELECT
                 h.hero_id,
                 h.hero_name,
+                h.hero_url,
 
-                hss.pick_count,
-                hss.pick_rate,
-
+                COALESCE(hss.pick_count, 0) AS pick_count,
+                hd.pick_rate,
                 hd.win_rate,
                 hd.ban_rate
 
-            FROM hero_season_stats hss
+            FROM heroes h
 
-            INNER JOIN heroes h
-                ON h.hero_id = hss.hero_id
-
-            LEFT JOIN hero_details hd
+            INNER JOIN hero_details hd
                 ON hd.hero_id = h.hero_id
 
+            LEFT JOIN hero_season_stats hss
+                ON hss.hero_id = h.hero_id
+                AND hss.season_id = :season_id
+
             WHERE
-                hss.season_id = :season_id
+                hd.pick_rate IS NOT NULL
 
             ORDER BY
-                hss.pick_rate DESC,
-                hss.pick_count DESC,
+                hd.pick_rate DESC,
                 h.hero_name ASC
 
             LIMIT :limit
@@ -241,7 +235,7 @@ class Dashboard
 
     /**
      * =========================================================
-     * TOP 5 WIN RATE
+     * TOP 5 WIN RATE (DATA RANK)
      * =========================================================
      */
     public function getTopWinRate(
@@ -252,28 +246,27 @@ class Dashboard
             SELECT
                 h.hero_id,
                 h.hero_name,
+                h.hero_url,
 
-                hss.pick_count,
-                hss.pick_rate,
-
+                COALESCE(hss.pick_count, 0) AS pick_count,
+                hd.pick_rate,
                 hd.win_rate,
                 hd.ban_rate
 
-            FROM hero_season_stats hss
-
-            INNER JOIN heroes h
-                ON h.hero_id = hss.hero_id
+            FROM heroes h
 
             INNER JOIN hero_details hd
                 ON hd.hero_id = h.hero_id
 
+            LEFT JOIN hero_season_stats hss
+                ON hss.hero_id = h.hero_id
+                AND hss.season_id = :season_id
+
             WHERE
-                hss.season_id = :season_id
-                AND hd.win_rate IS NOT NULL
+                hd.win_rate IS NOT NULL
 
             ORDER BY
                 hd.win_rate DESC,
-                hss.pick_count DESC,
                 h.hero_name ASC
 
             LIMIT :limit
@@ -300,7 +293,7 @@ class Dashboard
 
     /**
      * =========================================================
-     * TOP 5 BAN RATE
+     * TOP 5 BAN RATE (DATA RANK)
      * =========================================================
      */
     public function getTopBanRate(
@@ -311,28 +304,27 @@ class Dashboard
             SELECT
                 h.hero_id,
                 h.hero_name,
+                h.hero_url,
 
-                hss.pick_count,
-                hss.pick_rate,
-
+                COALESCE(hss.pick_count, 0) AS pick_count,
+                hd.pick_rate,
                 hd.win_rate,
                 hd.ban_rate
 
-            FROM hero_season_stats hss
-
-            INNER JOIN heroes h
-                ON h.hero_id = hss.hero_id
+            FROM heroes h
 
             INNER JOIN hero_details hd
                 ON hd.hero_id = h.hero_id
 
+            LEFT JOIN hero_season_stats hss
+                ON hss.hero_id = h.hero_id
+                AND hss.season_id = :season_id
+
             WHERE
-                hss.season_id = :season_id
-                AND hd.ban_rate IS NOT NULL
+                hd.ban_rate IS NOT NULL
 
             ORDER BY
                 hd.ban_rate DESC,
-                hss.pick_count DESC,
                 h.hero_name ASC
 
             LIMIT :limit

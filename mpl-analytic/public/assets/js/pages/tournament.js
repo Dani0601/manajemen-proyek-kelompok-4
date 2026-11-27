@@ -14,7 +14,7 @@
 
   const RESULTS_CONTAINER = '#tr-results-content';
   const SEASON_ID = root.dataset.seasonId ? parseInt(root.dataset.seasonId, 10) : 1;
-
+  const MATCH_DETAIL_TEMPLATE = root.dataset.matchUrl || 'match-detail?id={id}';
   // Variabel untuk menyimpan data mentah dari API agar bisa difilter per minggu
   let currentMatchesData = [];
 
@@ -187,9 +187,9 @@
     
     // Ambil jam pertandingan (misal: "15:00") dari matchDate
     const matchTime = match.matchTime || "--:--";
-
+    const detailUrl = MATCH_DETAIL_TEMPLATE.replace('{id}', encodeURIComponent(matchId));
     return `
-      <a class="tr-res" href="#match-${escapeHTML(matchId)}" data-match-id="${escapeHTML(matchId)}">
+      <a class="tr-res" href="${escapeHTML(detailUrl)}" data-match-id="${escapeHTML(matchId)}">
         <div class="tr-res__time">${escapeHTML(matchTime)}</div>
         <div class="tr-res__teams">
           <div class="tr-res__team">

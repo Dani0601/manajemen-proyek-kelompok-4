@@ -152,6 +152,96 @@ class Game
 
     /**
      * =========================================================
+     * GAME DRAFTS (Card 13.1)
+     * =========================================================
+     * Mengambil urutan pick dan ban dalam satu game
+     */
+    public function getDrafts(string $gameId): array
+    {
+        $sql = "
+            SELECT
+                gb.game_ban_id AS draft_id,
+                gb.game_id,
+                CASE
+                    WHEN gb.ban_turn <= 6 THEN gb.ban_turn
+                    ELSE gb.ban_turn + 6
+                END AS pick_ban_turn,
+                gb.team_id,
+                t.team_name,
+                CASE WHEN gb.side = 'team1' THEN 'blue' ELSE 'red' END AS team_side,
+                'ban' AS type,
+                h.hero_id,
+                h.hero_name,
+                h.hero_url AS hero_image_url
+            FROM game_bans gb
+            JOIN teams t ON gb.team_id = t.team_id
+            JOIN heroes h ON gb.hero_id = h.hero_id
+            WHERE gb.game_id = :g1
+
+            UNION ALL
+
+            SELECT
+                p.draft_id,
+                p.game_id,
+                CASE
+                    WHEN p.side = 'team1' AND p.side_pick_no = 1 THEN 7
+                    WHEN p.side = 'team2' AND p.side_pick_no = 1 THEN 8
+                    WHEN p.side = 'team2' AND p.side_pick_no = 2 THEN 9
+                    WHEN p.side = 'team1' AND p.side_pick_no = 2 THEN 10
+                    WHEN p.side = 'team1' AND p.side_pick_no = 3 THEN 11
+                    WHEN p.side = 'team2' AND p.side_pick_no = 3 THEN 12
+                    WHEN p.side = 'team2' AND p.side_pick_no = 4 THEN 17
+                    WHEN p.side = 'team1' AND p.side_pick_no = 4 THEN 18
+                    WHEN p.side = 'team1' AND p.side_pick_no = 5 THEN 19
+                    WHEN p.side = 'team2' AND p.side_pick_no = 5 THEN 20
+                    ELSE 20 + p.side_pick_no
+                END AS pick_ban_turn,
+                p.team_id,
+                p.team_name,
+                CASE WHEN p.side = 'team1' THEN 'blue' ELSE 'red' END AS team_side,
+                'pick' AS type,
+                p.hero_id,
+                p.hero_name,
+                p.hero_image_url
+            FROM (
+                SELECT
+                    gp.game_pick_id AS draft_id,
+                    gp.game_id,
+                    gp.side,
+                    gp.team_id,
+                    t.team_name,
+                    h.hero_id,
+                    h.hero_name,
+                    h.hero_url AS hero_image_url,
+                    ROW_NUMBER() OVER (PARTITION BY gp.game_id, gp.side ORDER BY gp.game_pick_id) AS side_pick_no
+                FROM game_picks gp
+                JOIN teams t ON gp.team_id = t.team_id
+                JOIN heroes h ON gp.hero_id = h.hero_id
+                WHERE gp.game_id = :g2
+            ) p
+
+            ORDER BY pick_ban_turn ASC
+        ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            ':g1' => $gameId,
+            ':g2' => $gameId,
+        ]);
+
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($rows as &$r) {
+            $r['pick_ban_turn'] = (int)$r['pick_ban_turn'];
+            $r['team_id']       = (int)$r['team_id'];
+            $r['hero_id']       = (int)$r['hero_id'];
+        }
+        unset($r);
+
+        return $rows;
+    }
+
+    /**
+     * =========================================================
      * GAME PICKS
      * =========================================================
      */
