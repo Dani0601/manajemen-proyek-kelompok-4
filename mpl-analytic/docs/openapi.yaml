@@ -49,8 +49,6 @@ tags:
 - name: Games
   description: Rincian game individual Season 18, statistik pemain, pick hero, item
     build, dan talent emblem
-- name: Items
-  description: Master data item peralatan dalam game dan atribut spesifik
 paths:
   /api/dashboard:
     get:
@@ -250,59 +248,6 @@ paths:
                 data: null
                 error:
                   code: META_DATA_NOT_FOUND
-        '405':
-          description: Method HTTP tidak diizinkan (hanya GET didukung).
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                success: false
-                message: Method tidak diizinkan.
-                data: null
-                error:
-                  code: METHOD_NOT_ALLOWED
-        '501':
-          description: Fitur/Endpoint belum diimplementasikan di backend.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                success: false
-                message: Endpoint belum diimplementasikan.
-                data: null
-                error:
-                  code: NOT_IMPLEMENTED
-  /api/seasons:
-    get:
-      tags:
-      - Meta
-      summary: Master data seluruh musim turnamen (seasons)
-      operationId: listSeasons
-      responses:
-        '200':
-          description: Daftar musim berhasil diambil.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SuccessResponse'
-              example:
-                success: true
-                message: Data seasons berhasil diambil.
-                data:
-                - season_id: 1
-                  league: MPL Indonesia
-                  season_number: 18
-                  phase: Regular Season
-                  start_date: null
-                  end_date: null
-                - season_id: 4
-                  league: MPL Indonesia
-                  season_number: 17
-                  phase: Regular Season
-                  start_date: null
-                  end_date: null
         '405':
           description: Method HTTP tidak diizinkan (hanya GET didukung).
           content:
@@ -2910,124 +2855,6 @@ paths:
                 data: null
                 error:
                   code: METHOD_NOT_ALLOWED
-  /api/items:
-    get:
-      tags:
-      - Items
-      summary: Master katalog semua item peralatan dalam game
-      operationId: listItems
-      responses:
-        '200':
-          description: Master data item berhasil diambil.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SuccessResponse'
-              example:
-                success: true
-                message: Master data item berhasil diambil.
-                data:
-                - item_id: 1
-                  item_name: Blade of Despair
-                  category: Attack
-                  cost: 3010
-        '405':
-          description: Method HTTP tidak diizinkan (hanya GET didukung).
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                success: false
-                message: Method tidak diizinkan.
-                data: null
-                error:
-                  code: METHOD_NOT_ALLOWED
-        '501':
-          description: Fitur/Endpoint belum diimplementasikan di backend.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                success: false
-                message: Endpoint belum diimplementasikan.
-                data: null
-                error:
-                  code: NOT_IMPLEMENTED
-  /api/items/{item_id}:
-    get:
-      tags:
-      - Items
-      summary: Detail satu item perlengkapan
-      operationId: getItemDetail
-      parameters:
-      - $ref: '#/components/parameters/ItemId'
-      responses:
-        '200':
-          description: Detail item berhasil diambil.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SuccessResponse'
-              example:
-                success: true
-                message: Detail item berhasil diambil.
-                data:
-                  item_id: 1
-                  item_name: Blade of Despair
-                  category: Attack
-                  cost: 3010
-                  attributes:
-                    physical_attack: 160
-                    movement_spd: 5%
-        '400':
-          description: Validasi parameter item_id gagal (bukan angka positif).
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              examples:
-                InvalidInteger:
-                  summary: item_id bukan tipe integer
-                  value:
-                    success: false
-                    message: item_id harus berupa angka.
-                    data: null
-                    error:
-                      code: INVALID_INTEGER
-                InvalidITEM_ID:
-                  summary: item_id bernilai 0 atau negatif
-                  value:
-                    success: false
-                    message: item_id harus lebih besar dari 0.
-                    data: null
-                    error:
-                      code: INVALID_ITEM_ID
-        '405':
-          description: Method HTTP tidak diizinkan (hanya GET didukung).
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                success: false
-                message: Method tidak diizinkan.
-                data: null
-                error:
-                  code: METHOD_NOT_ALLOWED
-        '501':
-          description: Fitur/Endpoint belum diimplementasikan di backend.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                success: false
-                message: Endpoint belum diimplementasikan.
-                data: null
-                error:
-                  code: NOT_IMPLEMENTED
   /api/games/{game_id}/drafts:
     get:
       tags:
@@ -3462,15 +3289,6 @@ components:
       schema:
         type: string
         example: s18_w01_m01_g01
-    ItemId:
-      name: item_id
-      in: path
-      required: true
-      description: ID unik item perlengkapan (integer positif)
-      schema:
-        type: integer
-        minimum: 1
-        example: 1
   schemas:
     SuccessResponse:
       type: object
